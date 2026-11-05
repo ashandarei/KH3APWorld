@@ -1,0 +1,1004 @@
+{
+  "schema": "kh3ap.minimap_reference.v1",
+  "language": "en",
+  "sources": {
+    "minimap_ids": "EGS /Game/UI/Data/NaviMapData",
+    "map_names": "EGS Content/Localization/Game/en/kh3_map.locres",
+    "variant_map_names": "NaviMapData.ItemKeyName associates he04 with NAVI_MAP_HE03, fz04/fz05 with NAVI_MAP_FZ01, and bt08 with NAVI_MAP_BT01. These labels describe the broad region.",
+    "area_names": "ra01_01 and ra01_02 observed at RA_SAVE01 and RA_SAVE02 on 2026-09-21; AreaSelectData resolves those save points to Tower and Hills. ca02_Lagoon observed at ca_02_Lv_Save_05 on 2026-09-21; CA_SAVE08 resolves that start to Sandbar Isle. They are reference landmarks, not a claim that every named zone boundary changes the minimap.",
+    "caribbean_areas": "AreaSelectData and NauticalChartData destinations visited on EGS on 2026-09-21; labels from English kh3_map.locres and kh3_level.locres. Offshore arrivals were followed by on-island/underwater landings where required. Verification evidence lives in build/kh3-caribbean-reference; see docs/minimap_reference.md for the durable route summary."
+  },
+  "world_names": {
+    "tt": "Twilight Town",
+    "mi": "Monstropolis",
+    "kg": "Keyblade Graveyard",
+    "ts": "Toy Box",
+    "bx": "San Fransokyo",
+    "he": "Olympus",
+    "fz": "Arendelle",
+    "ra": "Kingdom of Corona",
+    "ca": "The Caribbean",
+    "bt": "Scala ad Caelum",
+    "po": "100 Acre Wood",
+    "dp": "Land of Departure",
+    "dw": "Realm of Darkness",
+    "ew": "The Final World",
+    "rg": "Radiant Garden",
+    "wm": "World Map",
+    "GardenOfAssemblage": "Garden of Assemblage"
+  },
+  "minimaps": {
+    "bt07_01": {
+      "world_code": "bt",
+      "map_name": "Breezy Quarter",
+      "area_name": "",
+      "name": "Breezy Quarter",
+      "map_name_key": "kh3_map.bt.bt_07",
+      "area_name_key": "",
+      "texture_id": "bt07_1"
+    },
+    "bt07_02": {
+      "world_code": "bt",
+      "map_name": "Breezy Quarter",
+      "area_name": "",
+      "name": "Breezy Quarter",
+      "map_name_key": "kh3_map.bt.bt_07",
+      "area_name_key": "",
+      "texture_id": "bt07_2"
+    },
+    "bt08_01": {
+      "world_code": "bt",
+      "map_name": "The Stairway to the Sky",
+      "area_name": "",
+      "name": "The Stairway to the Sky",
+      "map_name_key": "kh3_map.bt.bt_01",
+      "area_name_key": "",
+      "texture_id": "bt08_1"
+    },
+    "bt08_02": {
+      "world_code": "bt",
+      "map_name": "The Stairway to the Sky",
+      "area_name": "",
+      "name": "The Stairway to the Sky",
+      "map_name_key": "kh3_map.bt.bt_01",
+      "area_name_key": "",
+      "texture_id": "bt08_2"
+    },
+    "bx02_01": {
+      "world_code": "bx",
+      "map_name": "The City",
+      "area_name": "",
+      "name": "The City",
+      "map_name_key": "kh3_map.bx.bx_02",
+      "area_name_key": "",
+      "texture_id": "bx02_01"
+    },
+    "ca01": {
+      "world_code": "ca",
+      "map_name": "Port Royal",
+      "area_name": "",
+      "name": "Port Royal",
+      "map_name_key": "kh3_map.ca.ca_01",
+      "area_name_key": "",
+      "texture_id": "ca01_01"
+    },
+    "ca01_02": {
+      "world_code": "ca",
+      "map_name": "Port Royal",
+      "area_name": "",
+      "name": "Port Royal",
+      "map_name_key": "kh3_map.ca.ca_01",
+      "area_name_key": "",
+      "texture_id": "ca01_02"
+    },
+    "ca02": {
+      "world_code": "ca",
+      "map_name": "The High Seas",
+      "area_name": "",
+      "name": "The High Seas",
+      "map_name_key": "kh3_map.ca.ca_02",
+      "area_name_key": "",
+      "texture_id": "ca02_12"
+    },
+    "ca02_2": {
+      "world_code": "ca",
+      "map_name": "The High Seas",
+      "area_name": "",
+      "name": "The High Seas",
+      "map_name_key": "kh3_map.ca.ca_02",
+      "area_name_key": "",
+      "texture_id": "ca02_12_02"
+    },
+    "ca02_Center": {
+      "world_code": "ca",
+      "map_name": "The High Seas",
+      "area_name": "Horseshoe Island",
+      "name": "The High Seas / Horseshoe Island",
+      "map_name_key": "kh3_map.ca.ca_02",
+      "area_name_key": "kh3_level.ca.land_0090",
+      "texture_id": "ca02_07"
+    },
+    "ca02_Desert": {
+      "world_code": "ca",
+      "map_name": "The High Seas",
+      "area_name": "Forsaken Isle",
+      "name": "The High Seas / Forsaken Isle",
+      "map_name_key": "kh3_map.ca.ca_02",
+      "area_name_key": "kh3_map.ca.ca_02_0070",
+      "texture_id": "ca02_06"
+    },
+    "ca02_Forest": {
+      "world_code": "ca",
+      "map_name": "The High Seas",
+      "area_name": "Exile Island",
+      "name": "The High Seas / Exile Island",
+      "map_name_key": "kh3_map.ca.ca_02",
+      "area_name_key": "kh3_level.ca.land_0100",
+      "texture_id": "ca02_11"
+    },
+    "ca02_Lagoon": {
+      "world_code": "ca",
+      "map_name": "The High Seas",
+      "area_name": "Sandbar Isle",
+      "name": "The High Seas / Sandbar Isle",
+      "map_name_key": "kh3_map.ca.ca_02",
+      "area_name_key": "kh3_map.ca.ca_02_0060",
+      "texture_id": "ca02_02"
+    },
+    "ca02_Monkey": {
+      "world_code": "ca",
+      "map_name": "The High Seas",
+      "area_name": "Isla Verdemontaña",
+      "name": "The High Seas / Isla Verdemontaña",
+      "map_name_key": "kh3_map.ca.ca_02",
+      "area_name_key": "kh3_map.ca.ca_02_0080",
+      "texture_id": "ca02_01"
+    },
+    "ca02_Pirates_01": {
+      "world_code": "ca",
+      "map_name": "The High Seas",
+      "area_name": "Huddled Isles",
+      "name": "The High Seas / Huddled Isles",
+      "map_name_key": "kh3_map.ca.ca_02",
+      "area_name_key": "kh3_map.ca.ca_02_0040",
+      "texture_id": "ca02_03_01"
+    },
+    "ca02_Pirates_02": {
+      "world_code": "ca",
+      "map_name": "The High Seas",
+      "area_name": "Undersea Cavern",
+      "name": "The High Seas / Undersea Cavern",
+      "map_name_key": "kh3_map.ca.ca_02",
+      "area_name_key": "kh3_map.ca.ca_02_0050",
+      "texture_id": "ca02_03_02"
+    },
+    "ca02_Pirates_03": {
+      "world_code": "ca",
+      "map_name": "The High Seas",
+      "area_name": "The Huddled Isles",
+      "name": "The High Seas / The Huddled Isles",
+      "map_name_key": "kh3_map.ca.ca_02",
+      "area_name_key": "kh3_level.ca.land_0040",
+      "texture_id": "ca02_04"
+    },
+    "ca02_Pirates_04": {
+      "world_code": "ca",
+      "map_name": "The High Seas",
+      "area_name": "The Huddled Isles",
+      "name": "The High Seas / The Huddled Isles",
+      "map_name_key": "kh3_map.ca.ca_02",
+      "area_name_key": "kh3_level.ca.land_0040",
+      "texture_id": "ca02_13"
+    },
+    "ca02_Rock": {
+      "world_code": "ca",
+      "map_name": "The High Seas",
+      "area_name": "Confinement Island",
+      "name": "The High Seas / Confinement Island",
+      "map_name_key": "kh3_map.ca.ca_02",
+      "area_name_key": "kh3_level.ca.land_0080",
+      "texture_id": "ca02_05"
+    },
+    "ca02_SunkenShip_01": {
+      "world_code": "ca",
+      "map_name": "The High Seas",
+      "area_name": "Ship's End",
+      "name": "The High Seas / Ship's End",
+      "map_name_key": "kh3_map.ca.ca_02",
+      "area_name_key": "kh3_level.ca.land_0070",
+      "texture_id": "ca02_08_01"
+    },
+    "ca02_SunkenShip_02": {
+      "world_code": "ca",
+      "map_name": "The High Seas",
+      "area_name": "Ship's End",
+      "name": "The High Seas / Ship's End",
+      "map_name_key": "kh3_map.ca.ca_02",
+      "area_name_key": "kh3_level.ca.land_0070",
+      "texture_id": "ca02_08_02"
+    },
+    "ca02_Twoway_01": {
+      "world_code": "ca",
+      "map_name": "The High Seas",
+      "area_name": "Isla de los Mástiles",
+      "name": "The High Seas / Isla de los Mástiles",
+      "map_name_key": "kh3_map.ca.ca_02",
+      "area_name_key": "kh3_map.ca.ca_02_0090",
+      "texture_id": "ca02_09"
+    },
+    "ca02_Twoway_02": {
+      "world_code": "ca",
+      "map_name": "The High Seas",
+      "area_name": "Isla de los Mástiles",
+      "name": "The High Seas / Isla de los Mástiles",
+      "map_name_key": "kh3_map.ca.ca_02",
+      "area_name_key": "kh3_level.ca.land_0030",
+      "texture_id": "ca02_10"
+    },
+    "ca02_seabattle": {
+      "world_code": "ca",
+      "map_name": "The High Seas",
+      "area_name": "",
+      "name": "The High Seas",
+      "map_name_key": "kh3_map.ca.ca_02",
+      "area_name_key": "",
+      "texture_id": "ca02_15"
+    },
+    "ca02_west": {
+      "world_code": "ca",
+      "map_name": "The High Seas",
+      "area_name": "The Isle of Luck",
+      "name": "The High Seas / The Isle of Luck",
+      "map_name_key": "kh3_map.ca.ca_02",
+      "area_name_key": "kh3_level.ca.land_0110",
+      "texture_id": "ca02_14"
+    },
+    "fz01_01": {
+      "world_code": "fz",
+      "map_name": "The North Mountain",
+      "area_name": "",
+      "name": "The North Mountain",
+      "map_name_key": "kh3_map.fz.fz_01",
+      "area_name_key": "",
+      "texture_id": "fz01_01"
+    },
+    "fz01_02": {
+      "world_code": "fz",
+      "map_name": "The North Mountain",
+      "area_name": "",
+      "name": "The North Mountain",
+      "map_name_key": "kh3_map.fz.fz_01",
+      "area_name_key": "",
+      "texture_id": "fz01_02"
+    },
+    "fz01_03": {
+      "world_code": "fz",
+      "map_name": "The North Mountain",
+      "area_name": "",
+      "name": "The North Mountain",
+      "map_name_key": "kh3_map.fz.fz_01",
+      "area_name_key": "",
+      "texture_id": "fz01_03"
+    },
+    "fz01_04": {
+      "world_code": "fz",
+      "map_name": "The North Mountain",
+      "area_name": "",
+      "name": "The North Mountain",
+      "map_name_key": "kh3_map.fz.fz_01",
+      "area_name_key": "",
+      "texture_id": "fz01_04"
+    },
+    "fz01_05": {
+      "world_code": "fz",
+      "map_name": "The North Mountain",
+      "area_name": "",
+      "name": "The North Mountain",
+      "map_name_key": "kh3_map.fz.fz_01",
+      "area_name_key": "",
+      "texture_id": "fz01_05"
+    },
+    "fz02_01_01": {
+      "world_code": "fz",
+      "map_name": "The Labyrinth of Ice",
+      "area_name": "",
+      "name": "The Labyrinth of Ice",
+      "map_name_key": "kh3_map.fz.fz_02",
+      "area_name_key": "",
+      "texture_id": "fz02_01"
+    },
+    "fz02_01_02": {
+      "world_code": "fz",
+      "map_name": "The Labyrinth of Ice",
+      "area_name": "",
+      "name": "The Labyrinth of Ice",
+      "map_name_key": "kh3_map.fz.fz_02",
+      "area_name_key": "",
+      "texture_id": "fz02_02"
+    },
+    "fz02_02": {
+      "world_code": "fz",
+      "map_name": "The Labyrinth of Ice",
+      "area_name": "",
+      "name": "The Labyrinth of Ice",
+      "map_name_key": "kh3_map.fz.fz_02",
+      "area_name_key": "",
+      "texture_id": "fz02_03"
+    },
+    "fz02_03_01": {
+      "world_code": "fz",
+      "map_name": "The Labyrinth of Ice",
+      "area_name": "",
+      "name": "The Labyrinth of Ice",
+      "map_name_key": "kh3_map.fz.fz_02",
+      "area_name_key": "",
+      "texture_id": "fz02_04"
+    },
+    "fz02_03_02": {
+      "world_code": "fz",
+      "map_name": "The Labyrinth of Ice",
+      "area_name": "",
+      "name": "The Labyrinth of Ice",
+      "map_name_key": "kh3_map.fz.fz_02",
+      "area_name_key": "",
+      "texture_id": "fz02_05"
+    },
+    "fz02_03_03": {
+      "world_code": "fz",
+      "map_name": "The Labyrinth of Ice",
+      "area_name": "",
+      "name": "The Labyrinth of Ice",
+      "map_name_key": "kh3_map.fz.fz_02",
+      "area_name_key": "",
+      "texture_id": "fz02_06"
+    },
+    "fz02_03_04": {
+      "world_code": "fz",
+      "map_name": "The Labyrinth of Ice",
+      "area_name": "",
+      "name": "The Labyrinth of Ice",
+      "map_name_key": "kh3_map.fz.fz_02",
+      "area_name_key": "",
+      "texture_id": "fz02_07"
+    },
+    "fz02_03_05": {
+      "world_code": "fz",
+      "map_name": "The Labyrinth of Ice",
+      "area_name": "",
+      "name": "The Labyrinth of Ice",
+      "map_name_key": "kh3_map.fz.fz_02",
+      "area_name_key": "",
+      "texture_id": "fz02_08"
+    },
+    "fz02_03_06": {
+      "world_code": "fz",
+      "map_name": "The Labyrinth of Ice",
+      "area_name": "",
+      "name": "The Labyrinth of Ice",
+      "map_name_key": "kh3_map.fz.fz_02",
+      "area_name_key": "",
+      "texture_id": "fz02_09"
+    },
+    "fz02_03_07": {
+      "world_code": "fz",
+      "map_name": "The Labyrinth of Ice",
+      "area_name": "",
+      "name": "The Labyrinth of Ice",
+      "map_name_key": "kh3_map.fz.fz_02",
+      "area_name_key": "",
+      "texture_id": "fz02_17"
+    },
+    "fz02_03_08": {
+      "world_code": "fz",
+      "map_name": "The Labyrinth of Ice",
+      "area_name": "",
+      "name": "The Labyrinth of Ice",
+      "map_name_key": "kh3_map.fz.fz_02",
+      "area_name_key": "",
+      "texture_id": "fz02_18"
+    },
+    "fz02_04_01": {
+      "world_code": "fz",
+      "map_name": "The Labyrinth of Ice",
+      "area_name": "",
+      "name": "The Labyrinth of Ice",
+      "map_name_key": "kh3_map.fz.fz_02",
+      "area_name_key": "",
+      "texture_id": "fz02_10"
+    },
+    "fz02_04_02": {
+      "world_code": "fz",
+      "map_name": "The Labyrinth of Ice",
+      "area_name": "",
+      "name": "The Labyrinth of Ice",
+      "map_name_key": "kh3_map.fz.fz_02",
+      "area_name_key": "",
+      "texture_id": "fz02_11"
+    },
+    "fz02_04_03": {
+      "world_code": "fz",
+      "map_name": "The Labyrinth of Ice",
+      "area_name": "",
+      "name": "The Labyrinth of Ice",
+      "map_name_key": "kh3_map.fz.fz_02",
+      "area_name_key": "",
+      "texture_id": "fz02_16"
+    },
+    "fz02_05": {
+      "world_code": "fz",
+      "map_name": "The Labyrinth of Ice",
+      "area_name": "",
+      "name": "The Labyrinth of Ice",
+      "map_name_key": "kh3_map.fz.fz_02",
+      "area_name_key": "",
+      "texture_id": "fz02_12"
+    },
+    "fz02_06_01": {
+      "world_code": "fz",
+      "map_name": "The Labyrinth of Ice",
+      "area_name": "",
+      "name": "The Labyrinth of Ice",
+      "map_name_key": "kh3_map.fz.fz_02",
+      "area_name_key": "",
+      "texture_id": "fz02_13"
+    },
+    "fz02_06_02": {
+      "world_code": "fz",
+      "map_name": "The Labyrinth of Ice",
+      "area_name": "",
+      "name": "The Labyrinth of Ice",
+      "map_name_key": "kh3_map.fz.fz_02",
+      "area_name_key": "",
+      "texture_id": "fz02_14"
+    },
+    "fz02_07": {
+      "world_code": "fz",
+      "map_name": "The Labyrinth of Ice",
+      "area_name": "",
+      "name": "The Labyrinth of Ice",
+      "map_name_key": "kh3_map.fz.fz_02",
+      "area_name_key": "",
+      "texture_id": "fz02_15"
+    },
+    "fz04_01": {
+      "world_code": "fz",
+      "map_name": "The North Mountain",
+      "area_name": "",
+      "name": "The North Mountain",
+      "map_name_key": "kh3_map.fz.fz_01",
+      "area_name_key": "",
+      "texture_id": "fz04_01"
+    },
+    "fz04_02": {
+      "world_code": "fz",
+      "map_name": "The North Mountain",
+      "area_name": "",
+      "name": "The North Mountain",
+      "map_name_key": "kh3_map.fz.fz_01",
+      "area_name_key": "",
+      "texture_id": "fz04_02"
+    },
+    "fz04_03": {
+      "world_code": "fz",
+      "map_name": "The North Mountain",
+      "area_name": "",
+      "name": "The North Mountain",
+      "map_name_key": "kh3_map.fz.fz_01",
+      "area_name_key": "",
+      "texture_id": "fz04_03"
+    },
+    "fz05_01": {
+      "world_code": "fz",
+      "map_name": "The North Mountain",
+      "area_name": "",
+      "name": "The North Mountain",
+      "map_name_key": "kh3_map.fz.fz_01",
+      "area_name_key": "",
+      "texture_id": "fz05_01"
+    },
+    "he01_01": {
+      "world_code": "he",
+      "map_name": "Realm of the Gods",
+      "area_name": "",
+      "name": "Realm of the Gods",
+      "map_name_key": "kh3_map.he.he_01",
+      "area_name_key": "",
+      "texture_id": "he01_01"
+    },
+    "he01_02": {
+      "world_code": "he",
+      "map_name": "Realm of the Gods",
+      "area_name": "",
+      "name": "Realm of the Gods",
+      "map_name_key": "kh3_map.he.he_01",
+      "area_name_key": "",
+      "texture_id": "he01_02"
+    },
+    "he01_03": {
+      "world_code": "he",
+      "map_name": "Realm of the Gods",
+      "area_name": "",
+      "name": "Realm of the Gods",
+      "map_name_key": "kh3_map.he.he_01",
+      "area_name_key": "",
+      "texture_id": "he01_03"
+    },
+    "he01_04": {
+      "world_code": "he",
+      "map_name": "Realm of the Gods",
+      "area_name": "",
+      "name": "Realm of the Gods",
+      "map_name_key": "kh3_map.he.he_01",
+      "area_name_key": "",
+      "texture_id": "he01_04"
+    },
+    "he02_01": {
+      "world_code": "he",
+      "map_name": "Mount Olympus",
+      "area_name": "",
+      "name": "Mount Olympus",
+      "map_name_key": "kh3_map.he.he_02",
+      "area_name_key": "",
+      "texture_id": "he02_01"
+    },
+    "he02_03": {
+      "world_code": "he",
+      "map_name": "Mount Olympus",
+      "area_name": "",
+      "name": "Mount Olympus",
+      "map_name_key": "kh3_map.he.he_02",
+      "area_name_key": "",
+      "texture_id": "he02_03"
+    },
+    "he02_04": {
+      "world_code": "he",
+      "map_name": "Mount Olympus",
+      "area_name": "",
+      "name": "Mount Olympus",
+      "map_name_key": "kh3_map.he.he_02",
+      "area_name_key": "",
+      "texture_id": "he02_04"
+    },
+    "he02_04b": {
+      "world_code": "he",
+      "map_name": "Mount Olympus",
+      "area_name": "",
+      "name": "Mount Olympus",
+      "map_name_key": "kh3_map.he.he_02",
+      "area_name_key": "",
+      "texture_id": "he02_04b"
+    },
+    "he02_04c": {
+      "world_code": "he",
+      "map_name": "Mount Olympus",
+      "area_name": "",
+      "name": "Mount Olympus",
+      "map_name_key": "kh3_map.he.he_02",
+      "area_name_key": "",
+      "texture_id": "he02_04c"
+    },
+    "he02_05": {
+      "world_code": "he",
+      "map_name": "Mount Olympus",
+      "area_name": "",
+      "name": "Mount Olympus",
+      "map_name_key": "kh3_map.he.he_02",
+      "area_name_key": "",
+      "texture_id": "he02_05"
+    },
+    "he02_06": {
+      "world_code": "he",
+      "map_name": "Mount Olympus",
+      "area_name": "",
+      "name": "Mount Olympus",
+      "map_name_key": "kh3_map.he.he_02",
+      "area_name_key": "",
+      "texture_id": "he02_06"
+    },
+    "he02_07": {
+      "world_code": "he",
+      "map_name": "Mount Olympus",
+      "area_name": "",
+      "name": "Mount Olympus",
+      "map_name_key": "kh3_map.he.he_02",
+      "area_name_key": "",
+      "texture_id": "he02_07"
+    },
+    "he03_01": {
+      "world_code": "he",
+      "map_name": "Thebes",
+      "area_name": "",
+      "name": "Thebes",
+      "map_name_key": "kh3_map.he.he_03",
+      "area_name_key": "",
+      "texture_id": "he03_01"
+    },
+    "he03_02a": {
+      "world_code": "he",
+      "map_name": "Thebes",
+      "area_name": "",
+      "name": "Thebes",
+      "map_name_key": "kh3_map.he.he_03",
+      "area_name_key": "",
+      "texture_id": "he03_02a"
+    },
+    "he03_02b": {
+      "world_code": "he",
+      "map_name": "Thebes",
+      "area_name": "",
+      "name": "Thebes",
+      "map_name_key": "kh3_map.he.he_03",
+      "area_name_key": "",
+      "texture_id": "he03_02b"
+    },
+    "he04_01": {
+      "world_code": "he",
+      "map_name": "Thebes",
+      "area_name": "",
+      "name": "Thebes",
+      "map_name_key": "kh3_map.he.he_03",
+      "area_name_key": "",
+      "texture_id": "he04_01"
+    },
+    "he04_02": {
+      "world_code": "he",
+      "map_name": "Thebes",
+      "area_name": "",
+      "name": "Thebes",
+      "map_name_key": "kh3_map.he.he_03",
+      "area_name_key": "",
+      "texture_id": "he04_02"
+    },
+    "kg01_01": {
+      "world_code": "kg",
+      "map_name": "The Badlands",
+      "area_name": "",
+      "name": "The Badlands",
+      "map_name_key": "kh3_map.kg.kg_01",
+      "area_name_key": "",
+      "texture_id": "kg01_01"
+    },
+    "kg02_01": {
+      "world_code": "kg",
+      "map_name": "The Skein of Severance",
+      "area_name": "",
+      "name": "The Skein of Severance",
+      "map_name_key": "kh3_map.kg.kg_02",
+      "area_name_key": "",
+      "texture_id": "kg02_01"
+    },
+    "kg02_02": {
+      "world_code": "kg",
+      "map_name": "The Skein of Severance",
+      "area_name": "",
+      "name": "The Skein of Severance",
+      "map_name_key": "kh3_map.kg.kg_02",
+      "area_name_key": "",
+      "texture_id": "kg02_02"
+    },
+    "mi01_01": {
+      "world_code": "mi",
+      "map_name": "Monsters, Inc.",
+      "area_name": "",
+      "name": "Monsters, Inc.",
+      "map_name_key": "kh3_map.mi.mi_01",
+      "area_name_key": "",
+      "texture_id": "mi01_01"
+    },
+    "mi02_01": {
+      "world_code": "mi",
+      "map_name": "The Factory",
+      "area_name": "",
+      "name": "The Factory",
+      "map_name_key": "kh3_map.mi.mi_02",
+      "area_name_key": "",
+      "texture_id": "mi02_01"
+    },
+    "mi02_02": {
+      "world_code": "mi",
+      "map_name": "The Factory",
+      "area_name": "",
+      "name": "The Factory",
+      "map_name_key": "kh3_map.mi.mi_02",
+      "area_name_key": "",
+      "texture_id": "mi02_02"
+    },
+    "mi03_01": {
+      "world_code": "mi",
+      "map_name": "The Power Plant",
+      "area_name": "",
+      "name": "The Power Plant",
+      "map_name_key": "kh3_map.mi.mi_03",
+      "area_name_key": "",
+      "texture_id": "mi03_01"
+    },
+    "mi03_02_01": {
+      "world_code": "mi",
+      "map_name": "The Power Plant",
+      "area_name": "",
+      "name": "The Power Plant",
+      "map_name_key": "kh3_map.mi.mi_03",
+      "area_name_key": "",
+      "texture_id": "mi03_02_01"
+    },
+    "mi03_02_02": {
+      "world_code": "mi",
+      "map_name": "The Power Plant",
+      "area_name": "",
+      "name": "The Power Plant",
+      "map_name_key": "kh3_map.mi.mi_03",
+      "area_name_key": "",
+      "texture_id": "mi03_02_02"
+    },
+    "mi04_01_01": {
+      "world_code": "mi",
+      "map_name": "The Door Vault",
+      "area_name": "",
+      "name": "The Door Vault",
+      "map_name_key": "kh3_map.mi.mi_04",
+      "area_name_key": "",
+      "texture_id": "mi04_01_01"
+    },
+    "mi04_01_02": {
+      "world_code": "mi",
+      "map_name": "The Door Vault",
+      "area_name": "",
+      "name": "The Door Vault",
+      "map_name_key": "kh3_map.mi.mi_04",
+      "area_name_key": "",
+      "texture_id": "mi04_01_02"
+    },
+    "mi04_02_01": {
+      "world_code": "mi",
+      "map_name": "The Door Vault",
+      "area_name": "",
+      "name": "The Door Vault",
+      "map_name_key": "kh3_map.mi.mi_04",
+      "area_name_key": "",
+      "texture_id": "mi04_02_01"
+    },
+    "mi04_02_02": {
+      "world_code": "mi",
+      "map_name": "The Door Vault",
+      "area_name": "",
+      "name": "The Door Vault",
+      "map_name_key": "kh3_map.mi.mi_04",
+      "area_name_key": "",
+      "texture_id": "mi04_02_02"
+    },
+    "mi04_03": {
+      "world_code": "mi",
+      "map_name": "The Door Vault",
+      "area_name": "",
+      "name": "The Door Vault",
+      "map_name_key": "kh3_map.mi.mi_04",
+      "area_name_key": "",
+      "texture_id": "mi04_03"
+    },
+    "mi04_04": {
+      "world_code": "mi",
+      "map_name": "The Door Vault",
+      "area_name": "",
+      "name": "The Door Vault",
+      "map_name_key": "kh3_map.mi.mi_04",
+      "area_name_key": "",
+      "texture_id": "mi04_04"
+    },
+    "ra01_01": {
+      "world_code": "ra",
+      "map_name": "The Forest",
+      "area_name": "Tower",
+      "name": "The Forest / Tower",
+      "map_name_key": "kh3_map.ra.ra_01",
+      "area_name_key": "kh3_map.ra.ra_01_0010",
+      "texture_id": "ra01_01"
+    },
+    "ra01_02": {
+      "world_code": "ra",
+      "map_name": "The Forest",
+      "area_name": "Hills",
+      "name": "The Forest / Hills",
+      "map_name_key": "kh3_map.ra.ra_01",
+      "area_name_key": "kh3_map.ra.ra_01_0020",
+      "texture_id": "ra01_02"
+    },
+    "ra01_03": {
+      "world_code": "ra",
+      "map_name": "The Forest",
+      "area_name": "",
+      "name": "The Forest",
+      "map_name_key": "kh3_map.ra.ra_01",
+      "area_name_key": "",
+      "texture_id": "ra01_03"
+    },
+    "ra01_03_2": {
+      "world_code": "ra",
+      "map_name": "The Forest",
+      "area_name": "",
+      "name": "The Forest",
+      "map_name_key": "kh3_map.ra.ra_01",
+      "area_name_key": "",
+      "texture_id": "ra01_03"
+    },
+    "ra01_04": {
+      "world_code": "ra",
+      "map_name": "The Forest",
+      "area_name": "",
+      "name": "The Forest",
+      "map_name_key": "kh3_map.ra.ra_01",
+      "area_name_key": "",
+      "texture_id": "ra01_04"
+    },
+    "ra01_05": {
+      "world_code": "ra",
+      "map_name": "The Forest",
+      "area_name": "",
+      "name": "The Forest",
+      "map_name_key": "kh3_map.ra.ra_01",
+      "area_name_key": "",
+      "texture_id": "ra01_05"
+    },
+    "ra02": {
+      "world_code": "ra",
+      "map_name": "The Kingdom",
+      "area_name": "",
+      "name": "The Kingdom",
+      "map_name_key": "kh3_map.ra.ra_02",
+      "area_name_key": "",
+      "texture_id": "ra02"
+    },
+    "ts01_1": {
+      "world_code": "ts",
+      "map_name": "Andy's House",
+      "area_name": "",
+      "name": "Andy's House",
+      "map_name_key": "kh3_map.ts.ts_01",
+      "area_name_key": "",
+      "texture_id": "ts01_1"
+    },
+    "ts01_2": {
+      "world_code": "ts",
+      "map_name": "Andy's House",
+      "area_name": "",
+      "name": "Andy's House",
+      "map_name_key": "kh3_map.ts.ts_01",
+      "area_name_key": "",
+      "texture_id": "ts01_2"
+    },
+    "ts02_1": {
+      "world_code": "ts",
+      "map_name": "Galaxy Toys",
+      "area_name": "",
+      "name": "Galaxy Toys",
+      "map_name_key": "kh3_map.ts.ts_02",
+      "area_name_key": "",
+      "texture_id": "ts02_1"
+    },
+    "ts02_2": {
+      "world_code": "ts",
+      "map_name": "Galaxy Toys",
+      "area_name": "",
+      "name": "Galaxy Toys",
+      "map_name_key": "kh3_map.ts.ts_02",
+      "area_name_key": "",
+      "texture_id": "ts02_2"
+    },
+    "ts02_3": {
+      "world_code": "ts",
+      "map_name": "Galaxy Toys",
+      "area_name": "",
+      "name": "Galaxy Toys",
+      "map_name_key": "kh3_map.ts.ts_02",
+      "area_name_key": "",
+      "texture_id": "ts02_3"
+    },
+    "ts02_3a": {
+      "world_code": "ts",
+      "map_name": "Galaxy Toys",
+      "area_name": "",
+      "name": "Galaxy Toys",
+      "map_name_key": "kh3_map.ts.ts_02",
+      "area_name_key": "",
+      "texture_id": "ts02_3a"
+    },
+    "ts02_3b": {
+      "world_code": "ts",
+      "map_name": "Galaxy Toys",
+      "area_name": "",
+      "name": "Galaxy Toys",
+      "map_name_key": "kh3_map.ts.ts_02",
+      "area_name_key": "",
+      "texture_id": "ts02_3b"
+    },
+    "ts02_3c": {
+      "world_code": "ts",
+      "map_name": "Galaxy Toys",
+      "area_name": "",
+      "name": "Galaxy Toys",
+      "map_name_key": "kh3_map.ts.ts_02",
+      "area_name_key": "",
+      "texture_id": "ts02_3c"
+    },
+    "ts02_U": {
+      "world_code": "ts",
+      "map_name": "Galaxy Toys",
+      "area_name": "",
+      "name": "Galaxy Toys",
+      "map_name_key": "kh3_map.ts.ts_02",
+      "area_name_key": "",
+      "texture_id": "ts02_U"
+    },
+    "ts02_d01": {
+      "world_code": "ts",
+      "map_name": "Galaxy Toys",
+      "area_name": "",
+      "name": "Galaxy Toys",
+      "map_name_key": "kh3_map.ts.ts_02",
+      "area_name_key": "",
+      "texture_id": "ts02_d01"
+    },
+    "ts02_d02": {
+      "world_code": "ts",
+      "map_name": "Galaxy Toys",
+      "area_name": "",
+      "name": "Galaxy Toys",
+      "map_name_key": "kh3_map.ts.ts_02",
+      "area_name_key": "",
+      "texture_id": "ts02_d02"
+    },
+    "ts02_d03": {
+      "world_code": "ts",
+      "map_name": "Galaxy Toys",
+      "area_name": "",
+      "name": "Galaxy Toys",
+      "map_name_key": "kh3_map.ts.ts_02",
+      "area_name_key": "",
+      "texture_id": "ts02_d03"
+    },
+    "ts03_01": {
+      "world_code": "ts",
+      "map_name": "",
+      "area_name": "",
+      "name": "Toy Box",
+      "map_name_key": "",
+      "area_name_key": "",
+      "texture_id": "ts03_01"
+    },
+    "tt01_00": {
+      "world_code": "tt",
+      "map_name": "The Neighborhood",
+      "area_name": "",
+      "name": "The Neighborhood",
+      "map_name_key": "kh3_map.tt.tt_01",
+      "area_name_key": "",
+      "texture_id": "tt01_00"
+    },
+    "tt01_10": {
+      "world_code": "tt",
+      "map_name": "The Neighborhood",
+      "area_name": "",
+      "name": "The Neighborhood",
+      "map_name_key": "kh3_map.tt.tt_01",
+      "area_name_key": "",
+      "texture_id": "tt01_10"
+    },
+    "tt01_20": {
+      "world_code": "tt",
+      "map_name": "The Neighborhood",
+      "area_name": "",
+      "name": "The Neighborhood",
+      "map_name_key": "kh3_map.tt.tt_01",
+      "area_name_key": "",
+      "texture_id": "tt01_20"
+    }
+  },
+  "caribbean_landmarks": {
+    "Gateway of Regret": {
+      "name": "The Gateway of Regret",
+      "name_key": "kh3_level.ca.land_0115",
+      "minimap_id": "ca02_2",
+      "shared_minimap": true,
+      "note": "Observed at the offshore arrival and on the island near its chest. This minimap is shared with the open sea, so minimap events cannot uniquely identify arrival here. Do not label ca02_2 as Gateway of Regret."
+    }
+  }
+}

@@ -1,0 +1,85 @@
+# Generated pak/runtime output and the legacy DirectX-dependent UnrealPak; do not ship in the APWorld.
+/Engine
+/.aphostignore
+/randomizer/**/bin
+/randomizer/**/obj
+/randomizer/Seeds
+/randomizer/wwwroot/pak/Seeds
+/randomizer/wwwroot/pak/platform-artifacts
+/randomizer/wwwroot/pak/filelist.txt
+/randomizer/wwwroot/pak/UnrealPak.exe
+/randomizer/wwwroot/pak/UnrealPak-With-Compression.bat
+/randomizer/wwwroot/pak/UnrealPak-Unpack.bat
+/randomizer/wwwroot/pak/readme.txt
+/runtime/Mods/KH3APProbeCpp/dlls/main.dll.bak*
+# Patch Game fetches UE4SS and its proxy from the pinned ue4ss-goa GitHub release.
+/runtime/Win64/UE4SS.dll
+/runtime/Win64/dwmapi.dll
+# Install Mod downloads the companion from the pinned 02-GoA release.
+/runtime/KH02/main.dll*
+# Patch Game downloads the authored host map from the pinned GoA release.
+/runtime/KH02/KH02_CastleTownHost_P.pak*
+# Microsoft XInput must not be bundled as a loose DLL.
+/runtime/**/[xX][iI][nN][pP][uU][tT]1_3.[dD][lL][lL]*
+# Source catalog used only by the repository's data extraction helper.
+/data/source_descriptions.json
+/extract_data.py
+
+# Native catalog export input; not used by the installed APWorld.
+/data/alternate_weapons.json
+
+# Enemy level maps are now represented by DefaultEnemyRuntimeTargets.json and
+# remapped by the UE4SS BeginPlay hook. Only the unrelated Avalanche QoL patch
+# still needs a cooked level pair in the APWorld.
+/randomizer/Content/Levels/**/*.umap
+/randomizer/Content/Levels/**/*.uexp
+!/randomizer/Content/Levels/fz/fz_03/umap/fz_03_gimmick_Avalanche.umap
+!/randomizer/Content/Levels/fz/fz_03/umap/fz_03_gimmick_Avalanche.uexp
+
+# EXP uses the native award hook; the QoL BOSS_002 adjustment only needs e_ex021.
+/randomizer/Content/DataTable/Enemy/Base/*
+!/randomizer/Content/DataTable/Enemy/Base/e_ex021_BaseDataTable.uasset
+!/randomizer/Content/DataTable/Enemy/Base/e_ex021_BaseDataTable.uexp
+
+# Keep developer notes out, but ship the player-facing guides.
+*.md
+!/LICENSE
+!/COPYRIGHT.txt
+!/LICENSE-Archipelago.txt
+!/LICENSE-KH3RandomizerClient.txt
+!/THIRD_PARTY_NOTICES.txt
+!/UPSTREAM-KH3RandomizerClient-CREDITS.txt
+!/runtime/THIRD_PARTY_NOTICES.md
+!/runtime/Mods/KH3APProbeCpp/THIRD_PARTY_NOTICES.md
+!/runtime/Win64/KH3AP-Licenses/**
+!/runtime/KH02/02-GoA-Licenses/**
+/runtime/MoM
+!/docs/en_Kingdom Hearts III.md
+!/docs/setup_en.md
+!/docs/hosting_en.md
+!/docs/olympus_coliseum_mod.md
+!/docs/equipment-and-minigame-pools.md
+
+# Local runtime/debug state.
+*.log
+*.pyc
+__pycache__
+
+# Tests run from the source tree and are not needed by the installed APWorld.
+/test
+
+# Pak operations now run in the client Python runtime. Keep native tools repo-only.
+/tools/repak
+/randomizer/.gitignore
+
+# Native AP generation no longer reads these templates.
+/randomizer/Content/Load/Common/EnemyBaseStatus.*
+/randomizer/Content/Load/Tres/TresBossData.*
+/randomizer/Content/Load/Tres/TresPartyData.*
+/randomizer/Content/Blueprints/GoA/Data/BattleLevel_DT.*
+/randomizer/Content/Blueprints/GoA/Data/BattleLevelData_Struct.*
+/randomizer/Content/Load/Tres/TresTreasureData*.*
+
+!/docs/music.md
+!/docs/stat-options.md
+!/docs/melody-of-memory.md

@@ -1,0 +1,646 @@
+{
+  "schema_version": 1,
+  "source": "EGS Track Selection catalog, Unity 2019.3.5f1; field battles only",
+  "songs": [
+    {
+      "song_id": 0,
+      "name": "The 13th Struggle",
+      "series": "KINGDOM HEARTS II"
+    },
+    {
+      "song_id": 1,
+      "name": "Shrouding Dark Cloud",
+      "series": "KINGDOM HEARTS"
+    },
+    {
+      "song_id": 2,
+      "name": "Traverse Town",
+      "series": "KINGDOM HEARTS"
+    },
+    {
+      "song_id": 3,
+      "name": "Hand in Hand",
+      "series": "KINGDOM HEARTS"
+    },
+    {
+      "song_id": 4,
+      "name": "A Very Small Wish",
+      "series": "KINGDOM HEARTS"
+    },
+    {
+      "song_id": 5,
+      "name": "Monstrous Monstro",
+      "series": "KINGDOM HEARTS"
+    },
+    {
+      "song_id": 6,
+      "name": "Welcome to Wonderland",
+      "series": "KINGDOM HEARTS"
+    },
+    {
+      "song_id": 7,
+      "name": "To Our Surprise",
+      "series": "KINGDOM HEARTS"
+    },
+    {
+      "song_id": 8,
+      "name": "This is Halloween",
+      "series": "KINGDOM HEARTS"
+    },
+    {
+      "song_id": 9,
+      "name": "Spooks of Halloween Town",
+      "series": "KINGDOM HEARTS"
+    },
+    {
+      "song_id": 10,
+      "name": "Captain Hook's Pirate Ship",
+      "series": "KINGDOM HEARTS"
+    },
+    {
+      "song_id": 11,
+      "name": "Pirate's Gigue",
+      "series": "KINGDOM HEARTS"
+    },
+    {
+      "song_id": 12,
+      "name": "A Day in Agrabah",
+      "series": "KINGDOM HEARTS"
+    },
+    {
+      "song_id": 13,
+      "name": "Arabian Dream",
+      "series": "KINGDOM HEARTS"
+    },
+    {
+      "song_id": 14,
+      "name": "Hollow Bastion",
+      "series": "KINGDOM HEARTS"
+    },
+    {
+      "song_id": 15,
+      "name": "Scherzo Di Notte",
+      "series": "KINGDOM HEARTS"
+    },
+    {
+      "song_id": 16,
+      "name": "The Home of Dragons",
+      "series": "KINGDOM HEARTS II"
+    },
+    {
+      "song_id": 17,
+      "name": "Fields of Honor",
+      "series": "KINGDOM HEARTS II"
+    },
+    {
+      "song_id": 18,
+      "name": "Under the Sea",
+      "series": "KINGDOM HEARTS"
+    },
+    {
+      "song_id": 19,
+      "name": "An Adventure in Atlantica",
+      "series": "KINGDOM HEARTS"
+    },
+    {
+      "song_id": 20,
+      "name": "Olympus Coliseum",
+      "series": "KINGDOM HEARTS"
+    },
+    {
+      "song_id": 21,
+      "name": "Go for It!",
+      "series": "KINGDOM HEARTS"
+    },
+    {
+      "song_id": 22,
+      "name": "Lazy Afternoons",
+      "series": "KINGDOM HEARTS II"
+    },
+    {
+      "song_id": 23,
+      "name": "Sinister Sundown",
+      "series": "KINGDOM HEARTS II"
+    },
+    {
+      "song_id": 24,
+      "name": "The Afternoon Streets",
+      "series": "KINGDOM HEARTS II"
+    },
+    {
+      "song_id": 25,
+      "name": "Working Together",
+      "series": "KINGDOM HEARTS II"
+    },
+    {
+      "song_id": 26,
+      "name": "End of the World",
+      "series": "KINGDOM HEARTS"
+    },
+    {
+      "song_id": 27,
+      "name": "Fragments of Sorrow",
+      "series": "KINGDOM HEARTS"
+    },
+    {
+      "song_id": 28,
+      "name": "Waltz of the Damned",
+      "series": "KINGDOM HEARTS II"
+    },
+    {
+      "song_id": 29,
+      "name": "Dance of the Daring",
+      "series": "KINGDOM HEARTS II"
+    },
+    {
+      "song_id": 30,
+      "name": "Space Paranoids",
+      "series": "KINGDOM HEARTS II"
+    },
+    {
+      "song_id": 31,
+      "name": "Byte Bashing",
+      "series": "KINGDOM HEARTS II"
+    },
+    {
+      "song_id": 32,
+      "name": "Radiant Garden",
+      "series": "KINGDOM HEARTS Birth by Sleep"
+    },
+    {
+      "song_id": 33,
+      "name": "Black Garden",
+      "series": "KINGDOM HEARTS Birth by Sleep"
+    },
+    {
+      "song_id": 34,
+      "name": "The Underworld",
+      "series": "KINGDOM HEARTS II"
+    },
+    {
+      "song_id": 35,
+      "name": "What Lies Beneath",
+      "series": "KINGDOM HEARTS II"
+    },
+    {
+      "song_id": 36,
+      "name": "Bibbidi-Bobbidi-Boo",
+      "series": "KINGDOM HEARTS Birth by Sleep"
+    },
+    {
+      "song_id": 37,
+      "name": "Castle Escapade",
+      "series": "KINGDOM HEARTS Birth by Sleep"
+    },
+    {
+      "song_id": 38,
+      "name": "Mickey Mouse March",
+      "series": "KINGDOM HEARTS Birth by Sleep"
+    },
+    {
+      "song_id": 39,
+      "name": "Up Down Adventure",
+      "series": "KINGDOM HEARTS Birth by Sleep"
+    },
+    {
+      "song_id": 40,
+      "name": "What A Surprise?!",
+      "series": "KINGDOM HEARTS II -FINAL MIX-"
+    },
+    {
+      "song_id": 41,
+      "name": "Happy Holidays!",
+      "series": "KINGDOM HEARTS II -FINAL MIX-"
+    },
+    {
+      "song_id": 42,
+      "name": "Castle Oblivion",
+      "series": "KINGDOM HEARTS Re:Chain of Memories"
+    },
+    {
+      "song_id": 43,
+      "name": "Forgotten Challenge",
+      "series": "KINGDOM HEARTS Re:Chain of Memories"
+    },
+    {
+      "song_id": 44,
+      "name": "Magical Mystery",
+      "series": "KINGDOM HEARTS II"
+    },
+    {
+      "song_id": 45,
+      "name": "Destiny Islands",
+      "series": "KINGDOM HEARTS"
+    },
+    {
+      "song_id": 46,
+      "name": "Bustin' Up on the Beach",
+      "series": "KINGDOM HEARTS"
+    },
+    {
+      "song_id": 47,
+      "name": "Traverse in Trance",
+      "series": "KINGDOM HEARTS 3D [Dream Drop Distance]"
+    },
+    {
+      "song_id": 48,
+      "name": "Hand to Hand",
+      "series": "KINGDOM HEARTS 3D [Dream Drop Distance]"
+    },
+    {
+      "song_id": 50,
+      "name": "Daydream upon Neverland",
+      "series": "KINGDOM HEARTS Birth by Sleep"
+    },
+    {
+      "song_id": 51,
+      "name": "Neverland's Scherzo",
+      "series": "KINGDOM HEARTS Birth by Sleep"
+    },
+    {
+      "song_id": 52,
+      "name": "Secret of Neverland",
+      "series": "KINGDOM HEARTS 358/2 Days"
+    },
+    {
+      "song_id": 53,
+      "name": "Crossing to Neverland",
+      "series": "KINGDOM HEARTS 358/2 Days"
+    },
+    {
+      "song_id": 54,
+      "name": "Monochrome Dreams",
+      "series": "KINGDOM HEARTS II"
+    },
+    {
+      "song_id": 55,
+      "name": "Old Friends, Old Rivals",
+      "series": "KINGDOM HEARTS II"
+    },
+    {
+      "song_id": 56,
+      "name": "Adventures in the Savannah",
+      "series": "KINGDOM HEARTS II"
+    },
+    {
+      "song_id": 57,
+      "name": "Savannah Pride",
+      "series": "KINGDOM HEARTS II"
+    },
+    {
+      "song_id": 58,
+      "name": "Sacred Moon",
+      "series": "KINGDOM HEARTS II"
+    },
+    {
+      "song_id": 59,
+      "name": "Deep Drive",
+      "series": "KINGDOM HEARTS II"
+    },
+    {
+      "song_id": 60,
+      "name": "Sacred Distance",
+      "series": "KINGDOM HEARTS 3D [Dream Drop Distance]"
+    },
+    {
+      "song_id": 61,
+      "name": "Deep Drop",
+      "series": "KINGDOM HEARTS 3D [Dream Drop Distance]"
+    },
+    {
+      "song_id": 62,
+      "name": "The Promised Beginning",
+      "series": "KINGDOM HEARTS Birth by Sleep"
+    },
+    {
+      "song_id": 63,
+      "name": "Future Masters",
+      "series": "KINGDOM HEARTS Birth by Sleep"
+    },
+    {
+      "song_id": 64,
+      "name": "Reviving Hollow Bastion",
+      "series": "KINGDOM HEARTS II"
+    },
+    {
+      "song_id": 65,
+      "name": "Scherzo Di Notte",
+      "series": "KINGDOM HEARTS II"
+    },
+    {
+      "song_id": 66,
+      "name": "The Silent Forest",
+      "series": "KINGDOM HEARTS Birth by Sleep"
+    },
+    {
+      "song_id": 67,
+      "name": "The Rustling Forest",
+      "series": "KINGDOM HEARTS Birth by Sleep"
+    },
+    {
+      "song_id": 68,
+      "name": "The Secret Whispers",
+      "series": "KINGDOM HEARTS Birth by Sleep"
+    },
+    {
+      "song_id": 69,
+      "name": "Risky Romp",
+      "series": "KINGDOM HEARTS Birth by Sleep"
+    },
+    {
+      "song_id": 70,
+      "name": "Hau'oli, Hau'oli",
+      "series": "KINGDOM HEARTS Birth by Sleep"
+    },
+    {
+      "song_id": 71,
+      "name": "Mákaukau?",
+      "series": "KINGDOM HEARTS Birth by Sleep"
+    },
+    {
+      "song_id": 72,
+      "name": "La Cloche",
+      "series": "KINGDOM HEARTS 3D [Dream Drop Distance]"
+    },
+    {
+      "song_id": 73,
+      "name": "Le Sanctuaire",
+      "series": "KINGDOM HEARTS 3D [Dream Drop Distance]"
+    },
+    {
+      "song_id": 74,
+      "name": "Access the Grid",
+      "series": "KINGDOM HEARTS 3D [Dream Drop Distance]"
+    },
+    {
+      "song_id": 75,
+      "name": "Digital Domination",
+      "series": "KINGDOM HEARTS 3D [Dream Drop Distance]"
+    },
+    {
+      "song_id": 76,
+      "name": "The Fun Fair",
+      "series": "KINGDOM HEARTS 3D [Dream Drop Distance]"
+    },
+    {
+      "song_id": 77,
+      "name": "Prankster's Party",
+      "series": "KINGDOM HEARTS 3D [Dream Drop Distance]"
+    },
+    {
+      "song_id": 78,
+      "name": "One for All",
+      "series": "KINGDOM HEARTS 3D [Dream Drop Distance]"
+    },
+    {
+      "song_id": 79,
+      "name": "All for One",
+      "series": "KINGDOM HEARTS 3D [Dream Drop Distance]"
+    },
+    {
+      "song_id": 82,
+      "name": "Wonder of Electron",
+      "series": "KINGDOM HEARTS Re:coded"
+    },
+    {
+      "song_id": 83,
+      "name": "No More Bugs!!",
+      "series": "KINGDOM HEARTS Re:coded"
+    },
+    {
+      "song_id": 86,
+      "name": "Squirming Evil",
+      "series": "KINGDOM HEARTS"
+    },
+    {
+      "song_id": 87,
+      "name": "The Force in You",
+      "series": "KINGDOM HEARTS Re:Chain of Memories"
+    },
+    {
+      "song_id": 88,
+      "name": "Lord of the Castle",
+      "series": "KINGDOM HEARTS Re:Chain of Memories"
+    },
+    {
+      "song_id": 89,
+      "name": "Tension Rising",
+      "series": "KINGDOM HEARTS II"
+    },
+    {
+      "song_id": 90,
+      "name": "The 13th Dilemma",
+      "series": "KINGDOM HEARTS II"
+    },
+    {
+      "song_id": 91,
+      "name": "Desire for All That Is Lost",
+      "series": "KINGDOM HEARTS II"
+    },
+    {
+      "song_id": 92,
+      "name": "Vim and Vigor",
+      "series": "KINGDOM HEARTS II"
+    },
+    {
+      "song_id": 93,
+      "name": "Rowdy Rumble",
+      "series": "KINGDOM HEARTS II"
+    },
+    {
+      "song_id": 95,
+      "name": "Sinister Shadows",
+      "series": "KINGDOM HEARTS II"
+    },
+    {
+      "song_id": 97,
+      "name": "Fight and Away",
+      "series": "KINGDOM HEARTS 358/2 Days"
+    },
+    {
+      "song_id": 98,
+      "name": "Vector to the Heavens",
+      "series": "KINGDOM HEARTS 358/2 Days"
+    },
+    {
+      "song_id": 99,
+      "name": "Another Side - Battle Ver. -",
+      "series": "KINGDOM HEARTS 358/2 Days"
+    },
+    {
+      "song_id": 100,
+      "name": "The Tumbling",
+      "series": "KINGDOM HEARTS Birth by Sleep"
+    },
+    {
+      "song_id": 101,
+      "name": "Black Powder",
+      "series": "KINGDOM HEARTS Birth by Sleep"
+    },
+    {
+      "song_id": 102,
+      "name": "Rage Awakened -The Origin-",
+      "series": "KINGDOM HEARTS Birth by Sleep"
+    },
+    {
+      "song_id": 103,
+      "name": "Enter the Darkness",
+      "series": "KINGDOM HEARTS Birth by Sleep"
+    },
+    {
+      "song_id": 104,
+      "name": "Dismiss",
+      "series": "KINGDOM HEARTS Birth by Sleep"
+    },
+    {
+      "song_id": 105,
+      "name": "Night of Fate",
+      "series": "KINGDOM HEARTS"
+    },
+    {
+      "song_id": 106,
+      "name": "Majestic Wings",
+      "series": "KINGDOM HEARTS 3D [Dream Drop Distance]"
+    },
+    {
+      "song_id": 107,
+      "name": "L'Oscurità dell'Ignoto",
+      "series": "KINGDOM HEARTS 3D [Dream Drop Distance]"
+    },
+    {
+      "song_id": 108,
+      "name": "L'Impeto Oscuro",
+      "series": "KINGDOM HEARTS 3D [Dream Drop Distance]"
+    },
+    {
+      "song_id": 109,
+      "name": "The Eye of Darkness",
+      "series": "KINGDOM HEARTS 3D [Dream Drop Distance]"
+    },
+    {
+      "song_id": 110,
+      "name": "Wave of Darkness I",
+      "series": "KINGDOM HEARTS 0.2 Birth by Sleep -A fragmentary passage-"
+    },
+    {
+      "song_id": 122,
+      "name": "Another Side",
+      "series": "KINGDOM HEARTS -FINAL MIX-"
+    },
+    {
+      "song_id": 123,
+      "name": "Fate of the Unknown",
+      "series": "KINGDOM HEARTS II -FINAL MIX-"
+    },
+    {
+      "song_id": 124,
+      "name": "One-Winged Angel (from FINAL FANTASY VII)",
+      "series": "KINGDOM HEARTS -FINAL MIX-"
+    },
+    {
+      "song_id": 125,
+      "name": "Rage Awakened",
+      "series": "KINGDOM HEARTS II -FINAL MIX-"
+    },
+    {
+      "song_id": 127,
+      "name": "The Other Promise",
+      "series": "KINGDOM HEARTS II -FINAL MIX-"
+    },
+    {
+      "song_id": 128,
+      "name": "CALLING -KINGDOM MIX-",
+      "series": "KINGDOM HEARTS 3D [Dream Drop Distance]"
+    },
+    {
+      "song_id": 140,
+      "name": "A Whole New World",
+      "series": "Other Titles"
+    },
+    {
+      "song_id": 143,
+      "name": "Circle Of Life",
+      "series": "Other Titles"
+    },
+    {
+      "song_id": 144,
+      "name": "Hand in Hand",
+      "series": "Piano Collections KINGDOM HEARTS"
+    },
+    {
+      "song_id": 145,
+      "name": "Working Together - Allegro vivace",
+      "series": "Piano Collections KINGDOM HEARTS"
+    },
+    {
+      "song_id": 146,
+      "name": "Sora - Allegro con brio",
+      "series": "Piano Collections KINGDOM HEARTS"
+    },
+    {
+      "song_id": 147,
+      "name": "Medley of Conflict",
+      "series": "Piano Collections KINGDOM HEARTS FIELD & BATTLE"
+    },
+    {
+      "song_id": 148,
+      "name": "Destati",
+      "series": "KINGDOM HEARTS Orchestra -World Tour- Album"
+    },
+    {
+      "song_id": 161,
+      "name": "Destiny's Force",
+      "series": "KINGDOM HEARTS"
+    },
+    {
+      "song_id": 162,
+      "name": "Guardando nel buio",
+      "series": "KINGDOM HEARTS"
+    },
+    {
+      "song_id": 163,
+      "name": "The Encounter -Birth by Sleep Version-",
+      "series": "KINGDOM HEARTS Birth by Sleep"
+    },
+    {
+      "song_id": 164,
+      "name": "Darkness of the Unknown",
+      "series": "KINGDOM HEARTS II"
+    },
+    {
+      "song_id": 168,
+      "name": "Simple And Clean",
+      "series": "KINGDOM HEARTS"
+    },
+    {
+      "song_id": 169,
+      "name": "Sanctuary ~opening version~",
+      "series": "KINGDOM HEARTS II"
+    },
+    {
+      "song_id": 170,
+      "name": "Don't Think Twice",
+      "series": "KINGDOM HEARTS III"
+    },
+    {
+      "song_id": 174,
+      "name": "Graveyard Labyrinth",
+      "series": "KINGDOM HEARTS III"
+    },
+    {
+      "song_id": 175,
+      "name": "Rise of the Union",
+      "series": "KINGDOM HEARTS III"
+    },
+    {
+      "song_id": 203,
+      "name": "Dark Domination",
+      "series": "KINGDOM HEARTS III"
+    },
+    {
+      "song_id": 206,
+      "name": "Beauty and the Beast",
+      "series": "Other Titles"
+    }
+  ]
+}

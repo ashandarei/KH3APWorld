@@ -1,0 +1,18 @@
+# KH3 tests and authoring checks; no game or native checkout required.
+pytest==9.0.3
+ruff==0.15.21
+colorama==0.4.6
+websockets==13.1
+PyYAML==6.0.3
+jellyfish==1.2.1
+jinja2==3.1.6
+schema==0.7.8
+bsdiff4==1.2.6
+platformdirs==4.9.4
+certifi==2026.2.25
+orjson==3.11.7
+typing_extensions==4.15.0
+pathspec==1.0.4
+Pymem==1.14.0
+pillow==12.2.0
+psutil==7.2.2

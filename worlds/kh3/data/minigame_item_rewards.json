@@ -1,0 +1,280 @@
+[
+  {
+    "source_id": "TS_MINIGAME_Rank_A_1st",
+    "crc": 2930922868,
+    "world": "Toy Box",
+    "name": "Toy Box - Verum Rex - A Rank First Item Reward",
+    "completion": "EVENT_KEYBLADE_003",
+    "tokens": [
+      "ITEM_POWERUP"
+    ]
+  },
+  {
+    "source_id": "TS_MINIGAME_Rank_A",
+    "crc": 2588965220,
+    "world": "Toy Box",
+    "name": "Toy Box - Verum Rex - A Rank Repeat Item Reward",
+    "completion": "EVENT_KEYBLADE_003",
+    "tokens": [
+      "ACC_ITEM81",
+      "ACC_ITEM84",
+      "ACC_ITEM29"
+    ]
+  },
+  {
+    "source_id": "TS_MINIGAME_Rank_B",
+    "crc": 2977770151,
+    "world": "Toy Box",
+    "name": "Toy Box - Verum Rex - B Rank Item Reward",
+    "completion": "EVENT_KEYBLADE_003",
+    "tokens": [
+      "ACC_ITEM28",
+      "ACC_ITEM88",
+      "ACC_ITEM89"
+    ]
+  },
+  {
+    "source_id": "TS_MINIGAME_Rank_C",
+    "crc": 2825264102,
+    "world": "Toy Box",
+    "name": "Toy Box - Verum Rex - C Rank Item Reward",
+    "completion": "EVENT_KEYBLADE_003",
+    "tokens": [
+      "MAT_ITEM46"
+    ]
+  },
+  {
+    "source_id": "TS_MINIGAME_Rank_D",
+    "crc": 3878128929,
+    "world": "Toy Box",
+    "name": "Toy Box - Verum Rex - D Rank Item Reward",
+    "completion": "EVENT_KEYBLADE_003",
+    "tokens": [
+      "MAT_ITEM45"
+    ]
+  },
+  {
+    "source_id": "RA_MINIGAME_Rank_A_1st",
+    "crc": 3631653579,
+    "world": "Kingdom of Corona",
+    "name": "Kingdom of Corona - Festival Dance - A Rank First Item Reward",
+    "completion": "EVENT_KEYBLADE_004",
+    "tokens": [
+      "ITEM_MAGICUP"
+    ]
+  },
+  {
+    "source_id": "RA_MINIGAME_Rank_A",
+    "crc": 1059206487,
+    "world": "Kingdom of Corona",
+    "name": "Kingdom of Corona - Festival Dance - A Rank Repeat Item Reward",
+    "completion": "EVENT_KEYBLADE_004",
+    "tokens": [
+      "ACC_ITEM82",
+      "ACC_ITEM94",
+      "ACC_ITEM95"
+    ]
+  },
+  {
+    "source_id": "RA_MINIGAME_Rank_B",
+    "crc": 336553620,
+    "world": "Kingdom of Corona",
+    "name": "Kingdom of Corona - Festival Dance - B Rank Item Reward",
+    "completion": "EVENT_KEYBLADE_004",
+    "tokens": [
+      "ACC_ITEM102",
+      "ACC_ITEM90",
+      "ACC_ITEM92"
+    ]
+  },
+  {
+    "source_id": "RA_MINIGAME_Rank_C",
+    "crc": 219437013,
+    "world": "Kingdom of Corona",
+    "name": "Kingdom of Corona - Festival Dance - C Rank Item Reward",
+    "completion": "EVENT_KEYBLADE_004",
+    "tokens": [
+      "MAT_ITEM46"
+    ]
+  },
+  {
+    "source_id": "RA_MINIGAME_Rank_D",
+    "crc": 1112916242,
+    "world": "Kingdom of Corona",
+    "name": "Kingdom of Corona - Festival Dance - D Rank Item Reward",
+    "completion": "EVENT_KEYBLADE_004",
+    "tokens": [
+      "MAT_ITEM45"
+    ]
+  },
+  {
+    "source_id": "FZ_MINIGAME_Rank_A_1st",
+    "crc": 2639272202,
+    "world": "Arendelle",
+    "name": "Arendelle - Frozen Slider - A Rank First Item Reward",
+    "completion": "EVENT_KEYBLADE_007",
+    "tokens": [
+      "ITEM_GUARDUP"
+    ]
+  },
+  {
+    "source_id": "FZ_MINIGAME_Rank_A",
+    "crc": 1365273236,
+    "world": "Arendelle",
+    "name": "Arendelle - Frozen Slider - A Rank Repeat Item Reward",
+    "completion": "EVENT_KEYBLADE_007",
+    "tokens": [
+      "ACC_ITEM106",
+      "ACC_ITEM93",
+      "ACC_ITEM105"
+    ]
+  },
+  {
+    "source_id": "FZ_MINIGAME_Rank_B",
+    "crc": 2051881303,
+    "world": "Arendelle",
+    "name": "Arendelle - Frozen Slider - B Rank Item Reward",
+    "completion": "EVENT_KEYBLADE_007",
+    "tokens": [
+      "ACC_ITEM100",
+      "ACC_ITEM83",
+      "ACC_ITEM91"
+    ]
+  },
+  {
+    "source_id": "FZ_MINIGAME_Rank_C",
+    "crc": 1666582550,
+    "world": "Arendelle",
+    "name": "Arendelle - Frozen Slider - C Rank Item Reward",
+    "completion": "EVENT_KEYBLADE_007",
+    "tokens": [
+      "MAT_ITEM46"
+    ]
+  },
+  {
+    "source_id": "FZ_MINIGAME_Rank_D",
+    "crc": 739745489,
+    "world": "Arendelle",
+    "name": "Arendelle - Frozen Slider - D Rank Item Reward",
+    "completion": "EVENT_KEYBLADE_007",
+    "tokens": [
+      "MAT_ITEM45"
+    ]
+  },
+  {
+    "source_id": "FZ_MINIGAME_TREASURE",
+    "crc": 3115261971,
+    "world": "Arendelle",
+    "name": "Arendelle - Frozen Slider - All Treasures Item Reward",
+    "completion": "EVENT_KEYBLADE_007",
+    "tokens": [
+      "MAT_ITEM57"
+    ]
+  },
+  {
+    "source_id": "BX_MINIGAME_1_Rank_A_1st",
+    "crc": 1156003644,
+    "world": "San Fransokyo",
+    "name": "San Fransokyo - Flash Tracer Course A - A Rank First Item Reward",
+    "completion": "EVENT_KEYBLADE_009",
+    "tokens": [
+      "ITEM_POWERUP"
+    ]
+  },
+  {
+    "source_id": "BX_MINIGAME_1_Rank_A",
+    "crc": 3704587400,
+    "world": "San Fransokyo",
+    "name": "San Fransokyo - Flash Tracer Course A - A Rank Repeat Item Reward",
+    "completion": "EVENT_KEYBLADE_009",
+    "tokens": [
+      "ACC_ITEM107",
+      "ACC_ITEM96",
+      "ACC_ITEM30"
+    ]
+  },
+  {
+    "source_id": "BX_MINIGAME_1_Rank_B",
+    "crc": 4158838603,
+    "world": "San Fransokyo",
+    "name": "San Fransokyo - Flash Tracer Course A - B Rank Item Reward",
+    "completion": "EVENT_KEYBLADE_009",
+    "tokens": [
+      "ACC_ITEM97",
+      "ACC_ITEM101"
+    ]
+  },
+  {
+    "source_id": "BX_MINIGAME_1_Rank_C",
+    "crc": 4009354762,
+    "world": "San Fransokyo",
+    "name": "San Fransokyo - Flash Tracer Course A - C Rank Item Reward",
+    "completion": "EVENT_KEYBLADE_009",
+    "tokens": [
+      "MAT_ITEM46"
+    ]
+  },
+  {
+    "source_id": "BX_MINIGAME_1_Rank_D",
+    "crc": 2713219277,
+    "world": "San Fransokyo",
+    "name": "San Fransokyo - Flash Tracer Course A - D Rank Item Reward",
+    "completion": "EVENT_KEYBLADE_009",
+    "tokens": [
+      "MAT_ITEM45"
+    ]
+  },
+  {
+    "source_id": "BX_MINIGAME_2_Rank_A_1st",
+    "crc": 486120980,
+    "world": "San Fransokyo",
+    "name": "San Fransokyo - Flash Tracer Course B - A Rank First Item Reward",
+    "completion": "EVENT_KEYBLADE_009",
+    "tokens": [
+      "ITEM_MAGICUP"
+    ]
+  },
+  {
+    "source_id": "BX_MINIGAME_2_Rank_A",
+    "crc": 4110889082,
+    "world": "San Fransokyo",
+    "name": "San Fransokyo - Flash Tracer Course B - A Rank Repeat Item Reward",
+    "completion": "EVENT_KEYBLADE_009",
+    "tokens": [
+      "ACC_ITEM98",
+      "ACC_ITEM104",
+      "ACC_ITEM110"
+    ]
+  },
+  {
+    "source_id": "BX_MINIGAME_2_Rank_B",
+    "crc": 3727319993,
+    "world": "San Fransokyo",
+    "name": "San Fransokyo - Flash Tracer Course B - B Rank Item Reward",
+    "completion": "EVENT_KEYBLADE_009",
+    "tokens": [
+      "ACC_ITEM99",
+      "ACC_ITEM103"
+    ]
+  },
+  {
+    "source_id": "BX_MINIGAME_2_Rank_C",
+    "crc": 3341898488,
+    "world": "San Fransokyo",
+    "name": "San Fransokyo - Flash Tracer Course B - C Rank Item Reward",
+    "completion": "EVENT_KEYBLADE_009",
+    "tokens": [
+      "MAT_ITEM46"
+    ]
+  },
+  {
+    "source_id": "BX_MINIGAME_2_Rank_D",
+    "crc": 2289091647,
+    "world": "San Fransokyo",
+    "name": "San Fransokyo - Flash Tracer Course B - D Rank Item Reward",
+    "completion": "EVENT_KEYBLADE_009",
+    "tokens": [
+      "MAT_ITEM45"
+    ]
+  }
+]

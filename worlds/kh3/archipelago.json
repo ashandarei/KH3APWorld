@@ -1,0 +1,9 @@
+{
+    "game": "Kingdom Hearts III",
+    "authors": ["Codex", "Aesais"],
+    "license": "GPL-3.0-only",
+    "minimum_ap_version": "0.6.7",
+    "world_version": "2.0.0",
+    "release_name": "KH3 client",
+    "description": "KH3 Archipelago client with persistent chest checks, rollback reward replay, and runtime performance improvements"
+}

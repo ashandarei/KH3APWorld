@@ -1,0 +1,16 @@
+{
+  "VBonus": {
+    "Vbonus_004": {
+      "Sora_Bonus1": "ETresVictoryBonusKind::NONE\u0000",
+      "Sora_Ability1": "ITEM_POTION\u0000",
+      "Sora_Bonus2": "ETresVictoryBonusKind::NONE\u0000",
+      "Sora_Ability2": "ETresAbilityKind::NONE\u0000"
+    },
+    "Vbonus_064": {
+      "Sora_Bonus1": "ETresVictoryBonusKind::NONE\u0000",
+      "Sora_Ability1": "ETresAbilityKind::NONE\u0000",
+      "Sora_Bonus2": "ETresVictoryBonusKind::NONE\u0000",
+      "Sora_Ability2": "ETresAbilityKind::NONE\u0000"
+    }
+  }
+}

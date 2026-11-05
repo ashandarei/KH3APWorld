@@ -1,0 +1,25 @@
+name: KH3 checks
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  kh3:
+    runs-on: windows-latest
+    env:
+      AP_TEST_WORLDS: kh3
+      SKIP_REQUIREMENTS_UPDATE: '1'
+    steps:
+      - uses: actions/checkout@v6.0.2
+      - uses: actions/setup-python@v6.2.0
+        with:
+          python-version: '3.13'
+      - name: Install test dependencies
+        run: python -m pip install -r requirements-kh3-dev.txt
+      - name: Check Python
+        run: python -m ruff check --config ruff.toml --select E9,F821,F822,F823,F401,F841 KH3Client.py worlds/kh3 tools/kh3 scripts
+      - name: Test world, client and tools
+        run: ./scripts/test-kh3.ps1

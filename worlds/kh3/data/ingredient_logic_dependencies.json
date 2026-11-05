@@ -1,0 +1,1364 @@
+{
+  "schema": 1,
+  "notes": "Approximate access anchors from nearest distinct chest in each authored actor map. These are shared logic dependencies, not verified physical routes. Edit source keys as routes are reviewed.",
+  "spots": {
+    "BX_02_PF_001": [
+      "TreasureBX:BX_SBOX_026"
+    ],
+    "BX_02_PF_002": [
+      "TreasureBX:BX_SBOX_020"
+    ],
+    "BX_02_PF_003": [
+      "TreasureBX:BX_LBOX_001"
+    ],
+    "BX_02_PF_004": [
+      "TreasureBX:BX_LBOX_007"
+    ],
+    "BX_02_PF_005": [
+      "TreasureBX:BX_LBOX_007"
+    ],
+    "BX_02_PF_006": [
+      "TreasureBX:BX_LBOX_007"
+    ],
+    "BX_02_PF_007": [
+      "TreasureBX:BX_LBOX_007"
+    ],
+    "BX_02_PF_008": [
+      "TreasureBX:BX_LBOX_007"
+    ],
+    "BX_02_PF_009": [
+      "TreasureBX:BX_SBOX_021"
+    ],
+    "BX_02_PF_010": [
+      "TreasureBX:BX_SBOX_005"
+    ],
+    "BX_02_PF_011": [
+      "TreasureBX:BX_LBOX_005"
+    ],
+    "BX_02_PF_012": [
+      "TreasureBX:BX_SBOX_028"
+    ],
+    "BX_02_PF_013": [
+      "TreasureBX:BX_SBOX_031"
+    ],
+    "BX_02_PF_014": [
+      "TreasureBX:BX_SBOX_028"
+    ],
+    "BX_02_PF_015": [
+      "TreasureBX:BX_SBOX_004"
+    ],
+    "BX_02_PF_016": [
+      "TreasureBX:BX_SBOX_013"
+    ],
+    "CA_01_PF_001": [
+      "TreasureCA:CA_SBOX_003"
+    ],
+    "CA_01_PF_002": [
+      "TreasureCA:CA_SBOX_003"
+    ],
+    "CA_01_PF_003": [
+      "TreasureCA:CA_SBOX_004"
+    ],
+    "CA_01_PF_004": [
+      "TreasureCA:CA_SBOX_005"
+    ],
+    "CA_01_PF_005": [
+      "TreasureCA:CA_SBOX_005"
+    ],
+    "CA_01_PF_006": [
+      "TreasureCA:CA_SBOX_005"
+    ],
+    "CA_01_PF_007": [
+      "TreasureCA:CA_SBOX_005"
+    ],
+    "CA_01_PF_008": [
+      "TreasureCA:CA_SBOX_005"
+    ],
+    "CA_01_PF_009": [
+      "TreasureCA:CA_SBOX_005"
+    ],
+    "CA_01_PF_010": [
+      "TreasureCA:CA_SBOX_005"
+    ],
+    "CA_01_PF_011": [
+      "TreasureCA:CA_SBOX_005"
+    ],
+    "CA_01_PF_012": [
+      "TreasureCA:CA_SBOX_009"
+    ],
+    "CA_01_PF_013": [
+      "TreasureCA:CA_LBOX_006"
+    ],
+    "CA_01_PF_014": [
+      "TreasureCA:CA_SBOX_006"
+    ],
+    "CA_01_PF_015": [
+      "TreasureCA:CA_LBOX_001"
+    ],
+    "CA_01_PF_016": [
+      "TreasureCA:CA_LBOX_001"
+    ],
+    "CA_01_PF_017": [
+      "TreasureCA:CA_LBOX_001"
+    ],
+    "CA_01_PF_018": [
+      "TreasureCA:CA_LBOX_001"
+    ],
+    "CA_01_PF_019": [
+      "TreasureCA:CA_LBOX_001"
+    ],
+    "CA_01_PF_020": [
+      "TreasureCA:CA_LBOX_001"
+    ],
+    "CA_02a_F_001": [
+      "TreasureCA:CA_SBOX_017"
+    ],
+    "CA_02a_F_002": [
+      "TreasureCA:CA_SBOX_017"
+    ],
+    "CA_02a_F_003": [
+      "TreasureCA:CA_SBOX_028"
+    ],
+    "CA_02a_F_004": [
+      "TreasureCA:CA_SBOX_017"
+    ],
+    "CA_02a_F_005": [
+      "TreasureCA:CA_SBOX_017"
+    ],
+    "CA_02a_F_006": [
+      "TreasureCA:CA_SBOX_032"
+    ],
+    "CA_02a_F_007": [
+      "TreasureCA:CA_SBOX_031"
+    ],
+    "CA_02a_F_008": [
+      "TreasureCA:CA_SBOX_017"
+    ],
+    "CA_02a_F_009": [
+      "TreasureCA:CA_SBOX_033"
+    ],
+    "CA_02a_F_010": [
+      "TreasureCA:CA_SBOX_040"
+    ],
+    "CA_02a_F_011": [
+      "TreasureCA:CA_SBOX_039"
+    ],
+    "CA_02a_F_012": [
+      "TreasureCA:CA_SBOX_031"
+    ],
+    "CA_02a_F_013": [
+      "TreasureCA:CA_SBOX_031"
+    ],
+    "CA_02b_F_001": [
+      "TreasureCA:CA_LBOX_005"
+    ],
+    "CA_02b_F_002": [
+      "TreasureCA:CA_LBOX_005"
+    ],
+    "CA_02b_F_003": [
+      "TreasureCA:CA_LBOX_005"
+    ],
+    "CA_02b_F_004": [
+      "TreasureCA:CA_SBOX_022"
+    ],
+    "CA_02b_F_005": [
+      "TreasureCA:CA_SBOX_022"
+    ],
+    "CA_02b_F_006": [
+      "TreasureCA:CA_SBOX_011"
+    ],
+    "CA_02b_F_007": [
+      "TreasureCA:CA_LBOX_005"
+    ],
+    "CA_02b_F_008": [
+      "TreasureCA:CA_LBOX_005"
+    ],
+    "CA_02b_F_009": [
+      "TreasureCA:CA_SBOX_010"
+    ],
+    "CA_02b_F_010": [
+      "TreasureCA:CA_SBOX_010"
+    ],
+    "CA_02b_F_011": [
+      "TreasureCA:CA_SBOX_022"
+    ],
+    "CA_02b_F_012": [
+      "TreasureCA:CA_SBOX_022"
+    ],
+    "CA_02b_F_013": [
+      "TreasureCA:CA_SBOX_022"
+    ],
+    "CA_02b_F_014": [
+      "TreasureCA:CA_SBOX_011"
+    ],
+    "CA_02c_F_001": [
+      "TreasureCA:CA_SBOX_042"
+    ],
+    "CA_02c_F_002": [
+      "TreasureCA:CA_SBOX_042"
+    ],
+    "CA_02c_F_003": [
+      "TreasureCA:CA_SBOX_042"
+    ],
+    "CA_02c_F_004": [
+      "TreasureCA:CA_SBOX_042"
+    ],
+    "CA_02c_F_005": [
+      "TreasureCA:CA_SBOX_042"
+    ],
+    "CA_02c_F_006": [
+      "TreasureCA:CA_SBOX_042"
+    ],
+    "CA_02c_F_007": [
+      "TreasureCA:CA_SBOX_042"
+    ],
+    "CA_02d_F_001": [
+      "TreasureCA:CA_LBOX_009"
+    ],
+    "CA_02d_F_002": [
+      "TreasureCA:CA_LBOX_009"
+    ],
+    "CA_02d_F_003": [
+      "TreasureCA:CA_LBOX_009"
+    ],
+    "CA_02d_F_004": [
+      "TreasureCA:CA_LBOX_009"
+    ],
+    "CA_02d_F_005": [
+      "TreasureCA:CA_LBOX_009"
+    ],
+    "CA_02d_F_006": [
+      "TreasureCA:CA_LBOX_009"
+    ],
+    "CA_02e_F_001": [
+      "TreasureCA:CA_SBOX_016"
+    ],
+    "CA_02e_F_002": [
+      "TreasureCA:CA_SBOX_016"
+    ],
+    "CA_02f_F_001": [
+      "TreasureCA:CA_SBOX_045"
+    ],
+    "CA_02f_F_002": [
+      "TreasureCA:CA_SBOX_045"
+    ],
+    "CA_02f_F_003": [
+      "TreasureCA:CA_SBOX_042"
+    ],
+    "CA_02f_F_004": [
+      "TreasureCA:CA_SBOX_042"
+    ],
+    "CA_02f_F_005": [
+      "TreasureCA:CA_SBOX_045"
+    ],
+    "CA_02f_F_006": [
+      "TreasureCA:CA_SBOX_042"
+    ],
+    "CA_02f_F_007": [
+      "TreasureCA:CA_SBOX_042"
+    ],
+    "CA_02f_F_008": [
+      "TreasureCA:CA_SBOX_042"
+    ],
+    "CA_02g_F_001": [
+      "TreasureCA:CA_SBOX_015"
+    ],
+    "CA_02g_F_002": [
+      "TreasureCA:CA_SBOX_015"
+    ],
+    "CA_02g_F_003": [
+      "TreasureCA:CA_LBOX_003"
+    ],
+    "CA_02g_F_004": [
+      "TreasureCA:CA_LBOX_003"
+    ],
+    "CA_02g_F_005": [
+      "TreasureCA:CA_LBOX_003"
+    ],
+    "CA_02g_F_006": [
+      "TreasureCA:CA_LBOX_003"
+    ],
+    "CA_02g_F_007": [
+      "TreasureCA:CA_LBOX_003"
+    ],
+    "CA_02h_F_001": [
+      "TreasureCA:CA_LBOX_011"
+    ],
+    "CA_02h_F_002": [
+      "TreasureCA:CA_LBOX_002"
+    ],
+    "CA_02h_F_003": [
+      "TreasureCA:CA_LBOX_011"
+    ],
+    "CA_02h_F_004": [
+      "TreasureCA:CA_LBOX_002"
+    ],
+    "CA_02h_F_005": [
+      "TreasureCA:CA_LBOX_011"
+    ],
+    "CA_02h_F_006": [
+      "TreasureCA:CA_LBOX_011"
+    ],
+    "CA_02h_F_007": [
+      "TreasureCA:CA_LBOX_011"
+    ],
+    "CA_02h_F_008": [
+      "TreasureCA:CA_LBOX_011"
+    ],
+    "CA_02h_F_009": [
+      "TreasureCA:CA_LBOX_002"
+    ],
+    "CA_02h_F_010": [
+      "TreasureCA:CA_LBOX_011"
+    ],
+    "CA_02h_F_011": [
+      "TreasureCA:CA_LBOX_011"
+    ],
+    "CA_02h_F_012": [
+      "TreasureCA:CA_LBOX_011"
+    ],
+    "CA_02h_F_013": [
+      "TreasureCA:CA_LBOX_002"
+    ],
+    "CA_02i_F_001": [
+      "TreasureCA:CA_SBOX_018"
+    ],
+    "CA_02i_F_002": [
+      "TreasureCA:CA_SBOX_018"
+    ],
+    "CA_02i_F_003": [
+      "TreasureCA:CA_SBOX_018"
+    ],
+    "CA_02j_F_001": [
+      "TreasureCA:CA_SBOX_026"
+    ],
+    "CA_02j_F_002": [
+      "TreasureCA:CA_SBOX_026"
+    ],
+    "CA_02j_F_003": [
+      "TreasureCA:CA_SBOX_026"
+    ],
+    "CA_02j_F_004": [
+      "TreasureCA:CA_SBOX_016"
+    ],
+    "CA_02j_F_005": [
+      "TreasureCA:CA_LBOX_008"
+    ],
+    "CA_02j_F_006": [
+      "TreasureCA:CA_SBOX_026"
+    ],
+    "CA_02j_F_007": [
+      "TreasureCA:CA_LBOX_008"
+    ],
+    "CA_02j_F_008": [
+      "TreasureCA:CA_LBOX_008"
+    ],
+    "CA_02j_F_009": [
+      "TreasureCA:CA_SBOX_026"
+    ],
+    "CA_02j_F_010": [
+      "TreasureCA:CA_LBOX_008"
+    ],
+    "CA_02j_F_011": [
+      "TreasureCA:CA_LBOX_008"
+    ],
+    "CA_02j_F_012": [
+      "TreasureCA:CA_SBOX_026"
+    ],
+    "CA_02j_F_013": [
+      "TreasureCA:CA_SBOX_026"
+    ],
+    "FZ_01_F_001": [
+      "TreasureFZ:FZ_SBOX_001"
+    ],
+    "FZ_01_F_004": [
+      "TreasureFZ:FZ_LBOX_003"
+    ],
+    "FZ_01_F_005": [
+      "TreasureFZ:FZ_SBOX_005"
+    ],
+    "FZ_01_F_006": [
+      "TreasureFZ:FZ_SBOX_004"
+    ],
+    "FZ_01_F_007": [
+      "TreasureFZ:FZ_SBOX_007"
+    ],
+    "FZ_01_F_008": [
+      "TreasureFZ:FZ_SBOX_007"
+    ],
+    "FZ_01_PF_002": [
+      "TreasureFZ:FZ_LBOX_001"
+    ],
+    "FZ_01_PF_003": [
+      "TreasureFZ:FZ_SBOX_001"
+    ],
+    "FZ_01_PF_009": [
+      "TreasureFZ:FZ_LBOX_004"
+    ],
+    "FZ_01_PF_010": [
+      "TreasureFZ:FZ_SBOX_001"
+    ],
+    "FZ_01_PF_011": [
+      "TreasureFZ:FZ_LBOX_004"
+    ],
+    "FZ_04_F_002": [
+      "TreasureFZ:FZ_SBOX_022"
+    ],
+    "FZ_04_F_003": [
+      "TreasureFZ:FZ_SBOX_023"
+    ],
+    "FZ_04_F_004": [
+      "TreasureFZ:FZ_SBOX_024"
+    ],
+    "FZ_04_F_005": [
+      "TreasureFZ:FZ_SBOX_024"
+    ],
+    "FZ_04_PF_001": [
+      "TreasureFZ:FZ_SBOX_016"
+    ],
+    "FZ_05_F_001": [
+      "TreasureFZ:FZ_SBOX_027"
+    ],
+    "FZ_05_PF_002": [
+      "TreasureFZ:FZ_SBOX_029"
+    ],
+    "HE_02_F_002": [
+      "TreasureHE:HE_LBOX_002"
+    ],
+    "HE_02_F_004": [
+      "TreasureHE:HE_SBOX_014"
+    ],
+    "HE_02_F_005": [
+      "TreasureHE:HE_SBOX_011"
+    ],
+    "HE_02_F_006": [
+      "TreasureHE:HE_SBOX_016"
+    ],
+    "HE_02_F_007": [
+      "TreasureHE:HE_SBOX_011"
+    ],
+    "HE_02_F_008": [
+      "TreasureHE:HE_SBOX_017"
+    ],
+    "HE_02_PF_001": [
+      "TreasureHE:HE_SBOX_017"
+    ],
+    "HE_02_PF_003": [
+      "TreasureHE:HE_SBOX_011"
+    ],
+    "HE_02_PF_009": [
+      "TreasureHE:HE_SBOX_020"
+    ],
+    "HE_03_F_006": [
+      "TreasureHE:HE_SBOX_030"
+    ],
+    "HE_03_F_007": [
+      "TreasureHE:HE_SBOX_027"
+    ],
+    "HE_03_F_008": [
+      "TreasureHE:HE_SBOX_027"
+    ],
+    "HE_03_F_009": [
+      "TreasureHE:HE_SBOX_027"
+    ],
+    "HE_03_F_010": [
+      "TreasureHE:HE_SBOX_027"
+    ],
+    "HE_03_F_011": [
+      "TreasureHE:HE_SBOX_027"
+    ],
+    "HE_03_F_012": [
+      "TreasureHE:HE_SBOX_027"
+    ],
+    "HE_03_F_016": [
+      "TreasureHE:HE_SBOX_025"
+    ],
+    "HE_03_F_017": [
+      "TreasureHE:HE_SBOX_025"
+    ],
+    "HE_03_F_018": [
+      "TreasureHE:HE_SBOX_025"
+    ],
+    "HE_03_F_019": [
+      "TreasureHE:HE_SBOX_022"
+    ],
+    "HE_03_F_020": [
+      "TreasureHE:HE_SBOX_022"
+    ],
+    "HE_03_F_021": [
+      "TreasureHE:HE_SBOX_022"
+    ],
+    "HE_03_F_022": [
+      "TreasureHE:HE_SBOX_022"
+    ],
+    "HE_03_F_023": [
+      "TreasureHE:HE_SBOX_023"
+    ],
+    "HE_03_PF_001": [
+      "TreasureHE:HE_SBOX_025"
+    ],
+    "HE_03_PF_002": [
+      "TreasureHE:HE_LBOX_004"
+    ],
+    "HE_03_PF_003": [
+      "TreasureHE:HE_SBOX_025"
+    ],
+    "HE_03_PF_004": [
+      "TreasureHE:HE_SBOX_029"
+    ],
+    "HE_03_PF_005": [
+      "TreasureHE:HE_SBOX_029"
+    ],
+    "HE_03_PF_014": [
+      "TreasureHE:HE_SBOX_025"
+    ],
+    "HE_03_PF_015": [
+      "TreasureHE:HE_SBOX_025"
+    ],
+    "HE_03_PF_024": [
+      "TreasureHE:HE_SBOX_023"
+    ],
+    "HE_03_PF_025": [
+      "TreasureHE:HE_SBOX_023"
+    ],
+    "MI_01_PF_001": [
+      "TreasureMI:MI_SBOX_002"
+    ],
+    "MI_01_PF_002": [
+      "TreasureMI:MI_SBOX_002"
+    ],
+    "MI_01_PF_003": [
+      "TreasureMI:MI_SBOX_002"
+    ],
+    "MI_01_PF_004": [
+      "TreasureMI:MI_SBOX_003"
+    ],
+    "MI_02_PF_001": [
+      "TreasureMI:MI_LBOX_004"
+    ],
+    "MI_02_PF_002": [
+      "TreasureMI:MI_SBOX_007"
+    ],
+    "MI_03_PF_001": [
+      "TreasureMI:MI_SBOX_009"
+    ],
+    "MI_03_PF_002": [
+      "TreasureMI:MI_SBOX_015"
+    ],
+    "MI_03_PF_003": [
+      "TreasureMI:MI_LBOX_003"
+    ],
+    "MI_03_PF_004": [
+      "TreasureMI:MI_LBOX_003"
+    ],
+    "MI_04_PF_001": [
+      "TreasureMI:MI_SBOX_017"
+    ],
+    "MI_04_PF_002": [
+      "TreasureMI:MI_SBOX_017"
+    ],
+    "MI_04_PF_003": [
+      "TreasureMI:MI_SBOX_017"
+    ],
+    "MI_04_PF_004": [
+      "TreasureMI:MI_SBOX_017"
+    ],
+    "MI_04_PF_005": [
+      "TreasureMI:MI_SBOX_017"
+    ],
+    "RA_01_F_001": [
+      "TreasureRA:RA_SBOX_007"
+    ],
+    "RA_01_F_002": [
+      "TreasureRA:RA_SBOX_007"
+    ],
+    "RA_01_F_003": [
+      "TreasureRA:RA_LBOX_001"
+    ],
+    "RA_01_F_004": [
+      "TreasureRA:RA_LBOX_001"
+    ],
+    "RA_01_F_005": [
+      "TreasureRA:RA_SBOX_005"
+    ],
+    "RA_01_F_006": [
+      "TreasureRA:RA_SBOX_005"
+    ],
+    "RA_01_F_007": [
+      "TreasureRA:RA_SBOX_005"
+    ],
+    "RA_01_F_008": [
+      "TreasureRA:RA_SBOX_005"
+    ],
+    "RA_01_F_009": [
+      "TreasureRA:RA_SBOX_005"
+    ],
+    "RA_01_F_010": [
+      "TreasureRA:RA_SBOX_004"
+    ],
+    "RA_01_F_011": [
+      "TreasureRA:RA_SBOX_004"
+    ],
+    "RA_01_F_012": [
+      "TreasureRA:RA_SBOX_006"
+    ],
+    "RA_01_F_013": [
+      "TreasureRA:RA_SBOX_003"
+    ],
+    "RA_01_F_014": [
+      "TreasureRA:RA_SBOX_003"
+    ],
+    "RA_01_F_015": [
+      "TreasureRA:RA_SBOX_002"
+    ],
+    "RA_01_F_016": [
+      "TreasureRA:RA_SBOX_002"
+    ],
+    "RA_01_F_017": [
+      "TreasureRA:RA_SBOX_002"
+    ],
+    "RA_01_F_018": [
+      "TreasureRA:RA_SBOX_009"
+    ],
+    "RA_01_F_019": [
+      "TreasureRA:RA_SBOX_008"
+    ],
+    "RA_01_F_020": [
+      "TreasureRA:RA_SBOX_008"
+    ],
+    "RA_01_F_021": [
+      "TreasureRA:RA_LBOX_002"
+    ],
+    "RA_01_F_022": [
+      "TreasureRA:RA_SBOX_009"
+    ],
+    "RA_01_F_023": [
+      "TreasureRA:RA_LBOX_002"
+    ],
+    "RA_01_F_024": [
+      "TreasureRA:RA_SBOX_011"
+    ],
+    "RA_01_F_025": [
+      "TreasureRA:RA_SBOX_011"
+    ],
+    "RA_01_F_026": [
+      "TreasureRA:RA_SBOX_011"
+    ],
+    "RA_01_F_027": [
+      "TreasureRA:RA_SBOX_014"
+    ],
+    "RA_01_F_028": [
+      "TreasureRA:RA_SBOX_016"
+    ],
+    "RA_01_F_029": [
+      "TreasureRA:RA_SBOX_016"
+    ],
+    "RA_01_F_030": [
+      "TreasureRA:RA_SBOX_016"
+    ],
+    "RA_01_F_031": [
+      "TreasureRA:RA_SBOX_016"
+    ],
+    "RA_01_F_032": [
+      "TreasureRA:RA_SBOX_016"
+    ],
+    "RA_01_F_033": [
+      "TreasureRA:RA_SBOX_016"
+    ],
+    "RA_01_F_034": [
+      "TreasureRA:RA_SBOX_001"
+    ],
+    "RA_01_F_035": [
+      "TreasureRA:RA_SBOX_001"
+    ],
+    "RA_01_F_036": [
+      "TreasureRA:RA_SBOX_007"
+    ],
+    "RA_01_F_037": [
+      "TreasureRA:RA_SBOX_005"
+    ],
+    "RA_01_F_038": [
+      "TreasureRA:RA_SBOX_005"
+    ],
+    "RA_01_F_039": [
+      "TreasureRA:RA_SBOX_005"
+    ],
+    "RA_01_F_040": [
+      "TreasureRA:RA_SBOX_009"
+    ],
+    "RA_01_F_041": [
+      "TreasureRA:RA_SBOX_016"
+    ],
+    "RA_01_F_042": [
+      "TreasureRA:RA_SBOX_016"
+    ],
+    "RA_01_F_043": [
+      "TreasureRA:RA_SBOX_016"
+    ],
+    "RA_02_F_001": [
+      "TreasureRA:RA_SBOX_022"
+    ],
+    "RA_02_F_002": [
+      "TreasureRA:RA_SBOX_020"
+    ],
+    "RA_02_F_003": [
+      "TreasureRA:RA_SBOX_022"
+    ],
+    "RA_02_F_004": [
+      "TreasureRA:RA_SBOX_022"
+    ],
+    "RA_02_F_005": [
+      "TreasureRA:RA_SBOX_022"
+    ],
+    "RA_02_F_006": [
+      "TreasureRA:RA_SBOX_021"
+    ],
+    "RA_02_F_007": [
+      "TreasureRA:RA_SBOX_021"
+    ],
+    "RA_02_F_008": [
+      "TreasureRA:RA_SBOX_020"
+    ],
+    "RA_02_F_009": [
+      "TreasureRA:RA_SBOX_020"
+    ],
+    "RA_02_F_010": [
+      "TreasureRA:RA_SBOX_020"
+    ],
+    "RA_02_PF_011": [
+      "TreasureRA:RA_LBOX_005"
+    ],
+    "RA_02_PF_012": [
+      "TreasureRA:RA_LBOX_005"
+    ],
+    "RA_02_PF_013": [
+      "TreasureRA:RA_LBOX_005"
+    ],
+    "RA_02_PF_014": [
+      "TreasureRA:RA_LBOX_005"
+    ],
+    "RA_02_PF_015": [
+      "TreasureRA:RA_LBOX_005"
+    ],
+    "RA_02_PF_016": [
+      "TreasureRA:RA_LBOX_005"
+    ],
+    "RA_02_PF_017": [
+      "TreasureRA:RA_LBOX_005"
+    ],
+    "RA_02_PF_018": [
+      "TreasureRA:RA_LBOX_005"
+    ],
+    "RA_02_PF_019": [
+      "TreasureRA:RA_SBOX_018"
+    ],
+    "RA_02_PF_020": [
+      "TreasureRA:RA_SBOX_018"
+    ],
+    "TS_01_F_001": [
+      "TreasureTS:TS_SBOX_001"
+    ],
+    "TS_01_F_002": [
+      "TreasureTS:TS_SBOX_001"
+    ],
+    "TS_01_F_003": [
+      "TreasureTS:TS_SBOX_001"
+    ],
+    "TS_01_F_004": [
+      "TreasureTS:TS_LBOX_001"
+    ],
+    "TS_01_F_005": [
+      "TreasureTS:TS_LBOX_001"
+    ],
+    "TS_01_F_006": [
+      "TreasureTS:TS_SBOX_001"
+    ],
+    "TS_01_F_007": [
+      "TreasureTS:TS_LBOX_001"
+    ],
+    "TS_01_F_008": [
+      "TreasureTS:TS_LBOX_001"
+    ],
+    "TS_01_F_009": [
+      "TreasureTS:TS_SBOX_001"
+    ],
+    "TS_01_F_010": [
+      "TreasureTS:TS_SBOX_001"
+    ],
+    "TS_01_F_011": [
+      "TreasureTS:TS_LBOX_001"
+    ],
+    "TS_01_F_012": [
+      "TreasureTS:TS_LBOX_001"
+    ],
+    "TS_01_F_013": [
+      "TreasureTS:TS_LBOX_001"
+    ],
+    "TS_01_F_014": [
+      "TreasureTS:TS_LBOX_001"
+    ],
+    "TS_01_F_015": [
+      "TreasureTS:TS_LBOX_002"
+    ],
+    "TS_01_F_016": [
+      "TreasureTS:TS_LBOX_002"
+    ],
+    "TS_01_F_017": [
+      "TreasureTS:TS_LBOX_002"
+    ],
+    "TS_01_F_018": [
+      "TreasureTS:TS_LBOX_002"
+    ],
+    "TS_02_PF_001": [
+      "TreasureTS:TS_SBOX_024"
+    ],
+    "TS_02_PF_002": [
+      "TreasureTS:TS_SBOX_006"
+    ],
+    "TS_02_PF_003": [
+      "TreasureTS:TS_SBOX_007"
+    ],
+    "TS_02_PF_004": [
+      "TreasureTS:TS_SBOX_012"
+    ],
+    "TS_02_PF_005": [
+      "TreasureTS:TS_SBOX_015"
+    ],
+    "TS_02_PF_006": [
+      "TreasureTS:TS_SBOX_011"
+    ],
+    "TS_02_PF_007": [
+      "TreasureTS:TS_SBOX_023"
+    ],
+    "TS_02_PF_008": [
+      "TreasureTS:TS_SBOX_023"
+    ],
+    "TS_02_PF_009": [
+      "TreasureTS:TS_SBOX_012"
+    ],
+    "TS_02_PF_010": [
+      "TreasureTS:TS_LBOX_003"
+    ],
+    "TS_02_PF_011": [
+      "TreasureTS:TS_SBOX_003"
+    ],
+    "TT_01_PF_001": [
+      "TreasureTT:TT_SBOX_002"
+    ],
+    "TT_01_PF_002": [
+      "TreasureTT:TT_LBOX_001"
+    ],
+    "TT_01_PF_003": [
+      "TreasureTT:TT_LBOX_001"
+    ],
+    "TT_01_PF_004": [
+      "TreasureTT:TT_SBOX_001"
+    ],
+    "TT_01_PF_006": [
+      "TreasureTT:TT_SBOX_004"
+    ],
+    "TT_01_PF_007": [
+      "TreasureTT:TT_SBOX_001"
+    ],
+    "TT_01_PF_008": [
+      "TreasureTT:TT_SBOX_001"
+    ],
+    "TT_01_PF_009": [
+      "TreasureTT:TT_SBOX_003"
+    ],
+    "TT_01_PF_010": [
+      "TreasureTT:TT_SBOX_003"
+    ],
+    "TT_01_PF_011": [
+      "TreasureTT:TT_SBOX_003"
+    ],
+    "TT_01_PF_012": [
+      "TreasureTT:TT_LBOX_001"
+    ],
+    "TT_01_PF_013": [
+      "TreasureTT:TT_SBOX_004"
+    ],
+    "TT_01_PF_014": [
+      "TreasureTT:TT_SBOX_003"
+    ],
+    "TT_01c_F_001": [
+      "TreasureTT:TT_SBOX_007"
+    ],
+    "TT_01c_F_002": [
+      "TreasureTT:TT_SBOX_006"
+    ],
+    "TT_01c_F_003": [
+      "TreasureTT:TT_SBOX_008"
+    ],
+    "TT_01c_F_004": [
+      "TreasureTT:TT_SBOX_008"
+    ],
+    "TT_01d_F_001": [
+      "TreasureTT:TT_SBOX_009"
+    ]
+  },
+  "ingredients": {
+    "FST_ITEM01": [
+      "CA_02a_F_004",
+      "CA_02a_F_005",
+      "CA_02b_F_002",
+      "CA_02b_F_003",
+      "CA_02b_F_004",
+      "CA_02c_F_003",
+      "CA_02c_F_004",
+      "CA_02f_F_003",
+      "CA_02f_F_004",
+      "CA_02f_F_005",
+      "CA_02h_F_006",
+      "CA_02h_F_007",
+      "CA_02h_F_008",
+      "CA_02h_F_009"
+    ],
+    "FST_ITEM02": [
+      "CA_02a_F_012",
+      "CA_02a_F_013",
+      "CA_02b_F_011",
+      "CA_02b_F_012",
+      "CA_02b_F_013",
+      "CA_02b_F_014",
+      "CA_02c_F_005",
+      "CA_02c_F_006",
+      "CA_02d_F_004",
+      "CA_02d_F_005",
+      "CA_02d_F_006",
+      "CA_02h_F_010",
+      "CA_02h_F_011",
+      "CA_02h_F_012",
+      "CA_02h_F_013",
+      "RA_01_F_032",
+      "RA_01_F_033",
+      "RA_02_F_010"
+    ],
+    "FST_ITEM03": [
+      "CA_02a_F_006",
+      "CA_02a_F_007",
+      "CA_02b_F_005",
+      "CA_02b_F_006",
+      "CA_02d_F_002",
+      "CA_02d_F_003",
+      "CA_02g_F_003",
+      "CA_02g_F_004",
+      "CA_02g_F_005",
+      "CA_02j_F_007",
+      "CA_02j_F_008",
+      "CA_02j_F_009",
+      "RA_01_F_041",
+      "RA_02_F_002"
+    ],
+    "FST_ITEM04": [
+      "RA_02_F_008",
+      "TT_01_PF_007",
+      "TT_01_PF_014"
+    ],
+    "FST_ITEM05": [
+      "RA_01_F_005",
+      "RA_01_F_018",
+      "RA_01_F_028",
+      "RA_01_F_034",
+      "RA_01_F_035",
+      "RA_01_F_036",
+      "RA_01_F_037",
+      "RA_01_F_038",
+      "RA_01_F_039",
+      "RA_01_F_040",
+      "TT_01_PF_014"
+    ],
+    "FST_ITEM06": [
+      "BX_02_PF_001",
+      "RA_01_F_042",
+      "RA_01_F_043",
+      "RA_02_F_003",
+      "RA_02_F_005"
+    ],
+    "FST_ITEM07": [
+      "CA_02a_F_008",
+      "CA_02a_F_009",
+      "CA_02a_F_010",
+      "CA_02a_F_011",
+      "CA_02b_F_007",
+      "CA_02b_F_008",
+      "CA_02b_F_009",
+      "CA_02b_F_010",
+      "CA_02c_F_007",
+      "CA_02f_F_006",
+      "CA_02f_F_007",
+      "CA_02f_F_008",
+      "CA_02g_F_006",
+      "CA_02g_F_007",
+      "CA_02j_F_010",
+      "CA_02j_F_011",
+      "CA_02j_F_012",
+      "CA_02j_F_013",
+      "MI_03_PF_002",
+      "RA_02_F_006",
+      "RA_02_F_007"
+    ],
+    "FST_ITEM08": [
+      "FZ_01_PF_009",
+      "FZ_01_PF_011",
+      "RA_02_F_001",
+      "RA_02_F_004",
+      "RA_02_F_009"
+    ],
+    "FST_ITEM09": [
+      "CA_01_PF_007",
+      "CA_01_PF_009",
+      "CA_01_PF_011",
+      "RA_02_PF_011",
+      "RA_02_PF_016",
+      "TS_02_PF_002",
+      "TS_02_PF_006"
+    ],
+    "FST_ITEM10": [
+      "BX_02_PF_007",
+      "BX_02_PF_008",
+      "BX_02_PF_015",
+      "BX_02_PF_016",
+      "RA_02_PF_012",
+      "RA_02_PF_017"
+    ],
+    "FST_ITEM11": [
+      "BX_02_PF_002",
+      "CA_01_PF_006",
+      "CA_01_PF_009",
+      "CA_01_PF_012",
+      "HE_03_PF_002",
+      "HE_03_PF_005",
+      "HE_03_PF_014",
+      "HE_03_PF_024",
+      "MI_02_PF_002"
+    ],
+    "FST_ITEM12": [
+      "BX_02_PF_008",
+      "BX_02_PF_013",
+      "BX_02_PF_016",
+      "CA_01_PF_005",
+      "CA_01_PF_012",
+      "MI_04_PF_002",
+      "RA_02_PF_013",
+      "RA_02_PF_018",
+      "TS_02_PF_002",
+      "TS_02_PF_006"
+    ],
+    "FST_ITEM13": [
+      "BX_02_PF_002",
+      "BX_02_PF_003",
+      "BX_02_PF_013",
+      "BX_02_PF_014",
+      "RA_02_PF_014",
+      "RA_02_PF_019"
+    ],
+    "FST_ITEM14": [
+      "CA_01_PF_005",
+      "CA_01_PF_010",
+      "CA_01_PF_017",
+      "FZ_01_PF_002",
+      "FZ_01_PF_003",
+      "FZ_01_PF_010",
+      "FZ_04_PF_001",
+      "FZ_05_PF_002"
+    ],
+    "FST_ITEM15": [
+      "BX_02_PF_003",
+      "BX_02_PF_007",
+      "BX_02_PF_014",
+      "BX_02_PF_015",
+      "RA_02_PF_015",
+      "RA_02_PF_020",
+      "TS_02_PF_004",
+      "TS_02_PF_008"
+    ],
+    "FST_ITEM16": [
+      "CA_01_PF_006",
+      "CA_01_PF_007",
+      "CA_01_PF_010",
+      "CA_01_PF_011",
+      "CA_01_PF_017",
+      "HE_03_PF_002",
+      "HE_03_PF_005",
+      "HE_03_PF_014",
+      "HE_03_PF_024",
+      "MI_03_PF_004"
+    ],
+    "FST_ITEM17": [
+      "CA_02j_F_001",
+      "CA_02j_F_002",
+      "FZ_01_F_007",
+      "HE_03_F_008",
+      "RA_01_F_011",
+      "RA_01_F_021"
+    ],
+    "FST_ITEM18": [
+      "CA_02i_F_001",
+      "CA_02i_F_002",
+      "HE_03_F_006",
+      "HE_03_F_022"
+    ],
+    "FST_ITEM19": [
+      "CA_02h_F_001",
+      "HE_03_F_019",
+      "RA_01_F_012",
+      "RA_01_F_022",
+      "RA_01_F_031",
+      "TT_01c_F_003"
+    ],
+    "FST_ITEM20": [
+      "CA_02f_F_001",
+      "CA_02g_F_001",
+      "FZ_04_F_003"
+    ],
+    "FST_ITEM21": [
+      "CA_02c_F_001",
+      "FZ_01_F_001",
+      "HE_03_F_017",
+      "RA_01_F_017"
+    ],
+    "FST_ITEM22": [
+      "CA_02j_F_003",
+      "CA_02j_F_004",
+      "HE_03_F_012",
+      "HE_03_F_020",
+      "RA_01_F_019",
+      "RA_01_F_023"
+    ],
+    "FST_ITEM23": [
+      "CA_02h_F_002",
+      "RA_01_F_020",
+      "RA_01_F_027",
+      "TT_01c_F_002"
+    ],
+    "FST_ITEM24": [
+      "CA_02a_F_003",
+      "CA_02b_F_001",
+      "CA_02e_F_001",
+      "FZ_01_F_006"
+    ],
+    "FST_ITEM25": [
+      "CA_02j_F_005",
+      "HE_03_F_007",
+      "HE_03_F_010",
+      "HE_03_F_011",
+      "HE_03_F_018",
+      "HE_03_F_023",
+      "TS_01_F_007",
+      "TS_01_F_013",
+      "TS_01_F_015"
+    ],
+    "FST_ITEM26": [
+      "CA_02j_F_006",
+      "HE_03_F_009",
+      "RA_01_F_001",
+      "RA_01_F_002",
+      "RA_01_F_013",
+      "RA_01_F_026",
+      "TS_01_F_001",
+      "TS_01_F_006",
+      "TS_01_F_014"
+    ],
+    "FST_ITEM27": [
+      "CA_02f_F_002",
+      "CA_02g_F_002",
+      "RA_01_F_006",
+      "RA_01_F_007",
+      "RA_01_F_015",
+      "RA_01_F_016",
+      "TS_01_F_005",
+      "TS_01_F_011",
+      "TS_01_F_017"
+    ],
+    "FST_ITEM28": [
+      "CA_02i_F_003",
+      "HE_03_F_021",
+      "RA_01_F_003",
+      "RA_01_F_004",
+      "RA_01_F_009",
+      "RA_01_F_014",
+      "RA_01_F_029",
+      "TS_01_F_010",
+      "TS_01_F_018"
+    ],
+    "FST_ITEM29": [
+      "CA_02h_F_003",
+      "RA_01_F_008",
+      "RA_01_F_010",
+      "RA_01_F_024",
+      "RA_01_F_025",
+      "RA_01_F_030",
+      "TS_01_F_004",
+      "TS_01_F_008",
+      "TS_01_F_009",
+      "TS_01_F_016"
+    ],
+    "FST_ITEM30": [
+      "CA_02d_F_001",
+      "CA_02e_F_002",
+      "CA_02h_F_004",
+      "CA_02h_F_005",
+      "MI_01_PF_002",
+      "MI_04_PF_002"
+    ],
+    "FST_ITEM31": [
+      "CA_02a_F_001",
+      "HE_03_F_016",
+      "TS_01_F_002",
+      "TS_01_F_003",
+      "TS_01_F_012",
+      "TT_01d_F_001"
+    ],
+    "FST_ITEM32": [
+      "CA_02a_F_002",
+      "CA_02c_F_002",
+      "MI_01_PF_002",
+      "MI_03_PF_004"
+    ],
+    "FST_ITEM33": [
+      "CA_01_PF_002",
+      "CA_01_PF_018",
+      "HE_02_F_004",
+      "HE_02_F_007",
+      "TT_01_PF_001",
+      "TT_01_PF_002"
+    ],
+    "FST_ITEM34": [
+      "CA_01_PF_002",
+      "CA_01_PF_008",
+      "CA_01_PF_019",
+      "FZ_01_F_004",
+      "FZ_01_F_008"
+    ],
+    "FST_ITEM35": [
+      "CA_01_PF_016",
+      "CA_01_PF_019",
+      "CA_01_PF_020",
+      "HE_03_PF_004",
+      "HE_03_PF_015",
+      "HE_03_PF_025",
+      "MI_01_PF_001",
+      "MI_04_PF_001",
+      "TT_01_PF_002",
+      "TT_01_PF_003",
+      "TT_01_PF_004"
+    ],
+    "FST_ITEM36": [
+      "CA_01_PF_016",
+      "CA_01_PF_018",
+      "CA_01_PF_020",
+      "MI_01_PF_001",
+      "MI_03_PF_003",
+      "MI_04_PF_001"
+    ],
+    "FST_ITEM37": [
+      "FZ_01_F_005",
+      "FZ_04_F_002",
+      "FZ_04_F_005"
+    ],
+    "FST_ITEM38": [
+      "CA_01_PF_008",
+      "HE_02_PF_009",
+      "MI_03_PF_003",
+      "MI_04_PF_004",
+      "TT_01_PF_001",
+      "TT_01_PF_003",
+      "TT_01_PF_006"
+    ],
+    "FST_ITEM39": [
+      "FZ_04_F_004",
+      "FZ_05_F_001"
+    ],
+    "FST_ITEM40": [
+      "HE_02_F_002",
+      "HE_02_F_005",
+      "HE_02_F_006",
+      "HE_02_F_008",
+      "TT_01_PF_004",
+      "TT_01_PF_006"
+    ],
+    "FST_ITEM41": [
+      "BX_02_PF_004",
+      "BX_02_PF_010",
+      "MI_02_PF_001",
+      "TS_02_PF_001",
+      "TS_02_PF_005",
+      "TS_02_PF_009"
+    ],
+    "FST_ITEM42": [
+      "TS_02_PF_003",
+      "TS_02_PF_010",
+      "TT_01_PF_009",
+      "TT_01_PF_011",
+      "TT_01_PF_012"
+    ],
+    "FST_ITEM43": [
+      "TS_02_PF_001",
+      "TS_02_PF_010",
+      "TT_01_PF_008",
+      "TT_01_PF_010",
+      "TT_01_PF_011",
+      "TT_01_PF_013"
+    ],
+    "FST_ITEM44": [
+      "BX_02_PF_005",
+      "BX_02_PF_011",
+      "TS_02_PF_007",
+      "TS_02_PF_011",
+      "TT_01_PF_009",
+      "TT_01_PF_010",
+      "TT_01_PF_012",
+      "TT_01_PF_013"
+    ],
+    "FST_ITEM45": [
+      "BX_02_PF_005",
+      "BX_02_PF_006",
+      "BX_02_PF_011",
+      "BX_02_PF_012",
+      "MI_03_PF_001",
+      "MI_04_PF_003",
+      "TS_02_PF_005",
+      "TS_02_PF_009"
+    ],
+    "FST_ITEM46": [
+      "TS_02_PF_003",
+      "TS_02_PF_007",
+      "TS_02_PF_011",
+      "TT_01_PF_008"
+    ],
+    "FST_ITEM47": [
+      "BX_02_PF_001",
+      "BX_02_PF_006",
+      "BX_02_PF_009",
+      "BX_02_PF_012",
+      "MI_01_PF_003"
+    ],
+    "FST_ITEM56": [
+      "CA_01_PF_001",
+      "HE_02_PF_003",
+      "HE_03_PF_003",
+      "TT_01_PF_007"
+    ],
+    "FST_ITEM57": [
+      "CA_01_PF_003",
+      "HE_02_PF_001",
+      "HE_03_PF_001",
+      "MI_04_PF_005",
+      "TS_02_PF_004",
+      "TS_02_PF_008"
+    ],
+    "FST_ITEM58": [
+      "BX_02_PF_004",
+      "BX_02_PF_009",
+      "BX_02_PF_010",
+      "CA_01_PF_004",
+      "CA_01_PF_015"
+    ],
+    "FST_ITEM59": [
+      "CA_01_PF_013",
+      "CA_01_PF_014",
+      "MI_01_PF_004"
+    ]
+  }
+}

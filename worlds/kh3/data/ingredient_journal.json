@@ -1,0 +1,1786 @@
+{
+  "schema": 1,
+  "ingredients": [
+    {
+      "id": "FST_ITEM01",
+      "name": "Crab",
+      "icon": "/Game/UI/Icon/Item/food001.food001",
+      "sources": [
+        {
+          "world": "The Caribbean",
+          "map": "The High Seas",
+          "key": "FST_ITEM01:0",
+          "actors": [
+            "/Game/Levels/ca/ca_02/umap/ca_02_food_swim.ca_02_food_swim:PersistentLevel.g_ca_Lobster_01_002",
+            "/Game/Levels/ca/ca_02/umap/ca_02_food_swim.ca_02_food_swim:PersistentLevel.g_ca_Lobster_01_003",
+            "/Game/Levels/ca/ca_02/umap/ca_02_food_swim.ca_02_food_swim:PersistentLevel.g_ca_Lobster_01_003_117",
+            "/Game/Levels/ca/ca_02/umap/ca_02_food_swim.ca_02_food_swim:PersistentLevel.g_ca_Lobster_01_003_156",
+            "/Game/Levels/ca/ca_02/umap/ca_02_food_swim.ca_02_food_swim:PersistentLevel.g_ca_Lobster_01_004",
+            "/Game/Levels/ca/ca_02/umap/ca_02_food_swim.ca_02_food_swim:PersistentLevel.g_ca_Lobster_01_004_101",
+            "/Game/Levels/ca/ca_02/umap/ca_02_food_swim.ca_02_food_swim:PersistentLevel.g_ca_Lobster_01_004_122",
+            "/Game/Levels/ca/ca_02/umap/ca_02_food_swim.ca_02_food_swim:PersistentLevel.g_ca_Lobster_01_004_153",
+            "/Game/Levels/ca/ca_02/umap/ca_02_food_swim.ca_02_food_swim:PersistentLevel.g_ca_Lobster_01_005",
+            "/Game/Levels/ca/ca_02/umap/ca_02_food_swim.ca_02_food_swim:PersistentLevel.g_ca_Lobster_01_005_150",
+            "/Game/Levels/ca/ca_02/umap/ca_02_food_swim.ca_02_food_swim:PersistentLevel.g_ca_Lobster_01_006_182",
+            "/Game/Levels/ca/ca_02/umap/ca_02_food_swim.ca_02_food_swim:PersistentLevel.g_ca_Lobster_01_007_187",
+            "/Game/Levels/ca/ca_02/umap/ca_02_food_swim.ca_02_food_swim:PersistentLevel.g_ca_Lobster_01_008",
+            "/Game/Levels/ca/ca_02/umap/ca_02_food_swim.ca_02_food_swim:PersistentLevel.g_ca_Lobster_01_009"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "FST_ITEM02",
+      "name": "Scallop",
+      "icon": "/Game/UI/Icon/Item/food001.food001",
+      "sources": [
+        {
+          "world": "Kingdom of Corona",
+          "map": "The Forest",
+          "key": "FST_ITEM02:0",
+          "actors": [
+            "/Game/Levels/ra/ra_01/umap/ra_01_food_AreaM.ra_01_food_AreaM:PersistentLevel.g_ra_shellfish_032",
+            "/Game/Levels/ra/ra_01/umap/ra_01_food_AreaM.ra_01_food_AreaM:PersistentLevel.g_ra_shellfish_033"
+          ]
+        },
+        {
+          "world": "Kingdom of Corona",
+          "map": "The Kingdom",
+          "key": "FST_ITEM02:1",
+          "actors": [
+            "/Game/Levels/ra/ra_02/umap/ra_02_food.ra_02_food:PersistentLevel.g_ra_bubble_010"
+          ]
+        },
+        {
+          "world": "The Caribbean",
+          "map": "The High Seas",
+          "key": "FST_ITEM02:2",
+          "actors": [
+            "/Game/Levels/ca/ca_02/umap/ca_02_food_swim.ca_02_food_swim:PersistentLevel.g_ca_Oyster_01_x5_004",
+            "/Game/Levels/ca/ca_02/umap/ca_02_food_swim.ca_02_food_swim:PersistentLevel.g_ca_Oyster_01_x5_005",
+            "/Game/Levels/ca/ca_02/umap/ca_02_food_swim.ca_02_food_swim:PersistentLevel.g_ca_Oyster_01_x5_006",
+            "/Game/Levels/ca/ca_02/umap/ca_02_food_swim.ca_02_food_swim:PersistentLevel.g_ca_Oyster_01_x5_012",
+            "/Game/Levels/ca/ca_02/umap/ca_02_food_swim.ca_02_food_swim:PersistentLevel.g_ca_Oyster_01_x5_012_217",
+            "/Game/Levels/ca/ca_02/umap/ca_02_food_swim.ca_02_food_swim:PersistentLevel.g_ca_Oyster_01_x5_012_381",
+            "/Game/Levels/ca/ca_02/umap/ca_02_food_swim.ca_02_food_swim:PersistentLevel.g_ca_Oyster_01_x5_014",
+            "/Game/Levels/ca/ca_02/umap/ca_02_food_swim.ca_02_food_swim:PersistentLevel.g_ca_Oyster_01_x7_005",
+            "/Game/Levels/ca/ca_02/umap/ca_02_food_swim.ca_02_food_swim:PersistentLevel.g_ca_Oyster_01_x7_006",
+            "/Game/Levels/ca/ca_02/umap/ca_02_food_swim.ca_02_food_swim:PersistentLevel.g_ca_Oyster_01_x7_010",
+            "/Game/Levels/ca/ca_02/umap/ca_02_food_swim.ca_02_food_swim:PersistentLevel.g_ca_Oyster_01_x7_011",
+            "/Game/Levels/ca/ca_02/umap/ca_02_food_swim.ca_02_food_swim:PersistentLevel.g_ca_Oyster_01_x7_011_444",
+            "/Game/Levels/ca/ca_02/umap/ca_02_food_swim.ca_02_food_swim:PersistentLevel.g_ca_Oyster_01_x7_013",
+            "/Game/Levels/ca/ca_02/umap/ca_02_food_swim.ca_02_food_swim:PersistentLevel.g_ca_Oyster_01_x7_013_292",
+            "/Game/Levels/ca/ca_02/umap/ca_02_food_swim.ca_02_food_swim:PersistentLevel.g_ca_Oyster_01_x7_013_465"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "FST_ITEM03",
+      "name": "Lobster",
+      "icon": "/Game/UI/Icon/Item/food001.food001",
+      "sources": [
+        {
+          "world": "Kingdom of Corona",
+          "map": "The Forest",
+          "key": "FST_ITEM03:0",
+          "actors": [
+            "/Game/Levels/ra/ra_01/umap/ra_01_food_AreaM.ra_01_food_AreaM:PersistentLevel.g_ra_bubble_041"
+          ]
+        },
+        {
+          "world": "Kingdom of Corona",
+          "map": "The Kingdom",
+          "key": "FST_ITEM03:1",
+          "actors": [
+            "/Game/Levels/ra/ra_02/umap/ra_02_food.ra_02_food:PersistentLevel.g_ra_bubble_002"
+          ]
+        },
+        {
+          "world": "The Caribbean",
+          "map": "The High Seas",
+          "key": "FST_ITEM03:2",
+          "actors": [
+            "/Game/Levels/ca/ca_02/umap/ca_02_food_swim.ca_02_food_swim:PersistentLevel.g_ca_Lobster_01_002_129",
+            "/Game/Levels/ca/ca_02/umap/ca_02_food_swim.ca_02_food_swim:PersistentLevel.g_ca_Lobster_01_003_134",
+            "/Game/Levels/ca/ca_02/umap/ca_02_food_swim.ca_02_food_swim:PersistentLevel.g_ca_Lobster_01_003_170",
+            "/Game/Levels/ca/ca_02/umap/ca_02_food_swim.ca_02_food_swim:PersistentLevel.g_ca_Lobster_01_004_167",
+            "/Game/Levels/ca/ca_02/umap/ca_02_food_swim.ca_02_food_swim:PersistentLevel.g_ca_Lobster_01_005_104",
+            "/Game/Levels/ca/ca_02/umap/ca_02_food_swim.ca_02_food_swim:PersistentLevel.g_ca_Lobster_01_005_173",
+            "/Game/Levels/ca/ca_02/umap/ca_02_food_swim.ca_02_food_swim:PersistentLevel.g_ca_Lobster_01_006",
+            "/Game/Levels/ca/ca_02/umap/ca_02_food_swim.ca_02_food_swim:PersistentLevel.g_ca_Lobster_01_006_86",
+            "/Game/Levels/ca/ca_02/umap/ca_02_food_swim.ca_02_food_swim:PersistentLevel.g_ca_Lobster_01_007",
+            "/Game/Levels/ca/ca_02/umap/ca_02_food_swim.ca_02_food_swim:PersistentLevel.g_ca_Lobster_01_007_200",
+            "/Game/Levels/ca/ca_02/umap/ca_02_food_swim.ca_02_food_swim:PersistentLevel.g_ca_Lobster_01_008_203",
+            "/Game/Levels/ca/ca_02/umap/ca_02_food_swim.ca_02_food_swim:PersistentLevel.g_ca_Lobster_01_009_206"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "FST_ITEM04",
+      "name": "Sole",
+      "icon": "/Game/UI/Icon/Item/food001.food001",
+      "sources": [
+        {
+          "world": "Kingdom of Corona",
+          "map": "The Kingdom",
+          "key": "FST_ITEM04:0",
+          "actors": [
+            "/Game/Levels/ra/ra_02/umap/ra_02_food.ra_02_food:PersistentLevel.g_ra_bubble_008"
+          ]
+        },
+        {
+          "world": "Twilight Town",
+          "map": "The Neighborhood",
+          "key": "FST_ITEM04:1",
+          "actors": [
+            "/Game/Levels/tt/tt_01/umap/tt_01_Food.tt_01_Food:PersistentLevel.g_tt_takeoutbox_007",
+            "/Game/Levels/tt/tt_01/umap/tt_01_Food.tt_01_Food:PersistentLevel.g_tt_takeoutbox_014"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "FST_ITEM05",
+      "name": "Eel",
+      "icon": "/Game/UI/Icon/Item/food001.food001",
+      "sources": [
+        {
+          "world": "Kingdom of Corona",
+          "map": "The Forest",
+          "key": "FST_ITEM05:0",
+          "actors": [
+            "/Game/Levels/ra/ra_01/umap/ra_01_food_AreaA.ra_01_food_AreaA:PersistentLevel.g_ra_bubble_036",
+            "/Game/Levels/ra/ra_01/umap/ra_01_food_AreaC.ra_01_food_AreaC:PersistentLevel.g_ra_bubble_005",
+            "/Game/Levels/ra/ra_01/umap/ra_01_food_AreaC.ra_01_food_AreaC:PersistentLevel.g_ra_bubble_037",
+            "/Game/Levels/ra/ra_01/umap/ra_01_food_AreaC.ra_01_food_AreaC:PersistentLevel.g_ra_bubble_038",
+            "/Game/Levels/ra/ra_01/umap/ra_01_food_AreaC.ra_01_food_AreaC:PersistentLevel.g_ra_bubble_039",
+            "/Game/Levels/ra/ra_01/umap/ra_01_food_AreaG.ra_01_food_AreaG:PersistentLevel.g_ra_bubble_018",
+            "/Game/Levels/ra/ra_01/umap/ra_01_food_AreaG.ra_01_food_AreaG:PersistentLevel.g_ra_bubble_040",
+            "/Game/Levels/ra/ra_01/umap/ra_01_food_AreaM.ra_01_food_AreaM:PersistentLevel.g_ra_bubble_028",
+            "/Game/Levels/ra/ra_01/umap/ra_01_food_AreaTower.ra_01_food_AreaTower:PersistentLevel.g_ra_bubble_034",
+            "/Game/Levels/ra/ra_01/umap/ra_01_food_AreaTower.ra_01_food_AreaTower:PersistentLevel.g_ra_bubble_035"
+          ]
+        },
+        {
+          "world": "Twilight Town",
+          "map": "The Neighborhood",
+          "key": "FST_ITEM05:1",
+          "actors": [
+            "/Game/Levels/tt/tt_01/umap/tt_01_Food.tt_01_Food:PersistentLevel.g_tt_takeoutbox_014"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "FST_ITEM06",
+      "name": "Sea Bass",
+      "icon": "/Game/UI/Icon/Item/food001.food001",
+      "sources": [
+        {
+          "world": "Kingdom of Corona",
+          "map": "The Forest",
+          "key": "FST_ITEM06:0",
+          "actors": [
+            "/Game/Levels/ra/ra_01/umap/ra_01_food_AreaM.ra_01_food_AreaM:PersistentLevel.g_ra_bubble_042",
+            "/Game/Levels/ra/ra_01/umap/ra_01_food_AreaM.ra_01_food_AreaM:PersistentLevel.g_ra_bubble_043"
+          ]
+        },
+        {
+          "world": "Kingdom of Corona",
+          "map": "The Kingdom",
+          "key": "FST_ITEM06:1",
+          "actors": [
+            "/Game/Levels/ra/ra_02/umap/ra_02_food.ra_02_food:PersistentLevel.g_ra_bubble_003",
+            "/Game/Levels/ra/ra_02/umap/ra_02_food.ra_02_food:PersistentLevel.g_ra_bubble_005"
+          ]
+        },
+        {
+          "world": "San Fransokyo",
+          "map": "The City",
+          "key": "FST_ITEM06:2",
+          "actors": [
+            "/Game/Levels/bx/bx_02/umap/bx_02_food.bx_02_food:PersistentLevel.g_bx_takeoutbox_001"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "FST_ITEM07",
+      "name": "Mussel",
+      "icon": "/Game/UI/Icon/Item/food001.food001",
+      "sources": [
+        {
+          "world": "Kingdom of Corona",
+          "map": "The Kingdom",
+          "key": "FST_ITEM07:0",
+          "actors": [
+            "/Game/Levels/ra/ra_02/umap/ra_02_food.ra_02_food:PersistentLevel.g_ra_bubble_006",
+            "/Game/Levels/ra/ra_02/umap/ra_02_food.ra_02_food:PersistentLevel.g_ra_bubble_007"
+          ]
+        },
+        {
+          "world": "Monstropolis",
+          "map": "The Power Plant",
+          "key": "FST_ITEM07:1",
+          "actors": [
+            "/Game/Levels/mi/mi_03/umap/mi_03_food.mi_03_food:PersistentLevel.g_mi_takeoutbox_2"
+          ]
+        },
+        {
+          "world": "The Caribbean",
+          "map": "The High Seas",
+          "key": "FST_ITEM07:2",
+          "actors": [
+            "/Game/Levels/ca/ca_02/umap/ca_02_food_swim.ca_02_food_swim:PersistentLevel.g_ca_Oyster_01_x5_006_331",
+            "/Game/Levels/ca/ca_02/umap/ca_02_food_swim.ca_02_food_swim:PersistentLevel.g_ca_Oyster_01_x5_007",
+            "/Game/Levels/ca/ca_02/umap/ca_02_food_swim.ca_02_food_swim:PersistentLevel.g_ca_Oyster_01_x5_007_282",
+            "/Game/Levels/ca/ca_02/umap/ca_02_food_swim.ca_02_food_swim:PersistentLevel.g_ca_Oyster_01_x5_007_340",
+            "/Game/Levels/ca/ca_02/umap/ca_02_food_swim.ca_02_food_swim:PersistentLevel.g_ca_Oyster_01_x5_008",
+            "/Game/Levels/ca/ca_02/umap/ca_02_food_swim.ca_02_food_swim:PersistentLevel.g_ca_Oyster_01_x5_010",
+            "/Game/Levels/ca/ca_02/umap/ca_02_food_swim.ca_02_food_swim:PersistentLevel.g_ca_Oyster_01_x5_010_208",
+            "/Game/Levels/ca/ca_02/umap/ca_02_food_swim.ca_02_food_swim:PersistentLevel.g_ca_Oyster_01_x5_011",
+            "/Game/Levels/ca/ca_02/umap/ca_02_food_swim.ca_02_food_swim:PersistentLevel.g_ca_Oyster_01_x5_012_398",
+            "/Game/Levels/ca/ca_02/umap/ca_02_food_swim.ca_02_food_swim:PersistentLevel.g_ca_Oyster_01_x7_006_383",
+            "/Game/Levels/ca/ca_02/umap/ca_02_food_swim.ca_02_food_swim:PersistentLevel.g_ca_Oyster_01_x7_008",
+            "/Game/Levels/ca/ca_02/umap/ca_02_food_swim.ca_02_food_swim:PersistentLevel.g_ca_Oyster_01_x7_008_260",
+            "/Game/Levels/ca/ca_02/umap/ca_02_food_swim.ca_02_food_swim:PersistentLevel.g_ca_Oyster_01_x7_009",
+            "/Game/Levels/ca/ca_02/umap/ca_02_food_swim.ca_02_food_swim:PersistentLevel.g_ca_Oyster_01_x7_009_271",
+            "/Game/Levels/ca/ca_02/umap/ca_02_food_swim.ca_02_food_swim:PersistentLevel.g_ca_Oyster_01_x7_010_486",
+            "/Game/Levels/ca/ca_02/umap/ca_02_food_swim.ca_02_food_swim:PersistentLevel.g_ca_Oyster_01_x7_011_497",
+            "/Game/Levels/ca/ca_02/umap/ca_02_food_swim.ca_02_food_swim:PersistentLevel.g_ca_Oyster_01_x7_013_508",
+            "/Game/Levels/ca/ca_02/umap/ca_02_food_swim.ca_02_food_swim:PersistentLevel.g_ca_Oyster_01_x8_007"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "FST_ITEM08",
+      "name": "Cod",
+      "icon": "/Game/UI/Icon/Item/food001.food001",
+      "sources": [
+        {
+          "world": "Arendelle",
+          "map": "The North Mountain",
+          "key": "FST_ITEM08:0",
+          "actors": [
+            "/Game/Levels/fz/fz_01/umap/fz_01_food.fz_01_food:PersistentLevel.g_fz_foodbox_009",
+            "/Game/Levels/fz/fz_01/umap/fz_01_food.fz_01_food:PersistentLevel.g_fz_foodbox_011"
+          ]
+        },
+        {
+          "world": "Kingdom of Corona",
+          "map": "The Kingdom",
+          "key": "FST_ITEM08:1",
+          "actors": [
+            "/Game/Levels/ra/ra_02/umap/ra_02_food.ra_02_food:PersistentLevel.g_ra_bubble_001",
+            "/Game/Levels/ra/ra_02/umap/ra_02_food.ra_02_food:PersistentLevel.g_ra_bubble_004",
+            "/Game/Levels/ra/ra_02/umap/ra_02_food.ra_02_food:PersistentLevel.g_ra_bubble_009"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "FST_ITEM09",
+      "name": "Pumpkin",
+      "icon": "/Game/UI/Icon/Item/food002.food002",
+      "sources": [
+        {
+          "world": "Kingdom of Corona",
+          "map": "The Kingdom",
+          "key": "FST_ITEM09:0",
+          "actors": [
+            "/Game/Levels/ra/ra_02/umap/ra_02_food.ra_02_food:PersistentLevel.g_ra_FoodPoint_011_116",
+            "/Game/Levels/ra/ra_02/umap/ra_02_food.ra_02_food:PersistentLevel.g_ra_FoodPoint_016"
+          ]
+        },
+        {
+          "world": "The Caribbean",
+          "map": "Port Royal",
+          "key": "FST_ITEM09:1",
+          "actors": [
+            "/Game/Levels/ca/ca_01/umap/ca_01_food.ca_01_food:PersistentLevel.g_ca_Cart_A_011",
+            "/Game/Levels/ca/ca_01/umap/ca_01_food.ca_01_food:PersistentLevel.g_ca_Cart_B_007",
+            "/Game/Levels/ca/ca_01/umap/ca_01_food.ca_01_food:PersistentLevel.g_ca_Cart_B_009"
+          ]
+        },
+        {
+          "world": "Toy Box",
+          "map": "Galaxy Toys",
+          "key": "FST_ITEM09:2",
+          "actors": [
+            "/Game/Levels/ts/ts_02/umap/ts_02_food.ts_02_food:PersistentLevel.g_ts_takeoutbox_002",
+            "/Game/Levels/ts/ts_02/umap/ts_02_food.ts_02_food:PersistentLevel.g_ts_takeoutbox_006"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "FST_ITEM10",
+      "name": "Zucchini",
+      "icon": "/Game/UI/Icon/Item/food002.food002",
+      "sources": [
+        {
+          "world": "Kingdom of Corona",
+          "map": "The Kingdom",
+          "key": "FST_ITEM10:0",
+          "actors": [
+            "/Game/Levels/ra/ra_02/umap/ra_02_food.ra_02_food:PersistentLevel.g_ra_FoodPoint_012_123",
+            "/Game/Levels/ra/ra_02/umap/ra_02_food.ra_02_food:PersistentLevel.g_ra_FoodPoint_017"
+          ]
+        },
+        {
+          "world": "San Fransokyo",
+          "map": "The City",
+          "key": "FST_ITEM10:1",
+          "actors": [
+            "/Game/Levels/bx/bx_02/umap/bx_02_food.bx_02_food:PersistentLevel.g_bx_yasaidanboru_007",
+            "/Game/Levels/bx/bx_02/umap/bx_02_food.bx_02_food:PersistentLevel.g_bx_yasaidanboru_008",
+            "/Game/Levels/bx/bx_02/umap/bx_02_food.bx_02_food:PersistentLevel.g_bx_yasaidanboru_015",
+            "/Game/Levels/bx/bx_02/umap/bx_02_food.bx_02_food:PersistentLevel.g_bx_yasaidanboru_016"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "FST_ITEM11",
+      "name": "Onion",
+      "icon": "/Game/UI/Icon/Item/food002.food002",
+      "sources": [
+        {
+          "world": "Monstropolis",
+          "map": "The Factory",
+          "key": "FST_ITEM11:0",
+          "actors": [
+            "/Game/Levels/mi/mi_02/umap/mi_02_food.mi_02_food:PersistentLevel.g_mi_takeoutbox_2"
+          ]
+        },
+        {
+          "world": "Olympus",
+          "map": "Thebes",
+          "key": "FST_ITEM11:1",
+          "actors": [
+            "/Game/Levels/he/he_03/umap/he_03_food.he_03_food:PersistentLevel.g_he_begibasket_002",
+            "/Game/Levels/he/he_03/umap/he_03_food.he_03_food:PersistentLevel.g_he_begibasket_005",
+            "/Game/Levels/he/he_03/umap/he_03_food.he_03_food:PersistentLevel.g_he_begibasket_014",
+            "/Game/Levels/he/he_03/umap/he_03_food.he_03_food:PersistentLevel.g_he_begibasket_024",
+            "/Game/Levels/he/he_04/umap/he_04_food.he_04_food:PersistentLevel.g_he_begibasket_002",
+            "/Game/Levels/he/he_04/umap/he_04_food.he_04_food:PersistentLevel.g_he_begibasket_005",
+            "/Game/Levels/he/he_04/umap/he_04_food.he_04_food:PersistentLevel.g_he_begibasket_014",
+            "/Game/Levels/he/he_04/umap/he_04_food.he_04_food:PersistentLevel.g_he_begibasket_024"
+          ]
+        },
+        {
+          "world": "San Fransokyo",
+          "map": "The City",
+          "key": "FST_ITEM11:2",
+          "actors": [
+            "/Game/Levels/bx/bx_02/umap/bx_02_food.bx_02_food:PersistentLevel.g_bx_yasaidanboru_002"
+          ]
+        },
+        {
+          "world": "The Caribbean",
+          "map": "Port Royal",
+          "key": "FST_ITEM11:3",
+          "actors": [
+            "/Game/Levels/ca/ca_01/umap/ca_01_food.ca_01_food:PersistentLevel.g_ca_Cart_B_006",
+            "/Game/Levels/ca/ca_01/umap/ca_01_food.ca_01_food:PersistentLevel.g_ca_Cart_B_009",
+            "/Game/Levels/ca/ca_01/umap/ca_01_food.ca_01_food:PersistentLevel.g_ca_Cart_B_012"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "FST_ITEM12",
+      "name": "Tomato",
+      "icon": "/Game/UI/Icon/Item/food002.food002",
+      "sources": [
+        {
+          "world": "Kingdom of Corona",
+          "map": "The Kingdom",
+          "key": "FST_ITEM12:0",
+          "actors": [
+            "/Game/Levels/ra/ra_02/umap/ra_02_food.ra_02_food:PersistentLevel.g_ra_FoodPoint_013_130",
+            "/Game/Levels/ra/ra_02/umap/ra_02_food.ra_02_food:PersistentLevel.g_ra_FoodPoint_018"
+          ]
+        },
+        {
+          "world": "Monstropolis",
+          "map": "The Door Vault",
+          "key": "FST_ITEM12:1",
+          "actors": [
+            "/Game/Levels/mi/mi_04/umap/mi_04_food.mi_04_food:PersistentLevel.g_mi_jihanki_2"
+          ]
+        },
+        {
+          "world": "San Fransokyo",
+          "map": "The City",
+          "key": "FST_ITEM12:2",
+          "actors": [
+            "/Game/Levels/bx/bx_02/umap/bx_02_food.bx_02_food:PersistentLevel.g_bx_yasaidanboru_008",
+            "/Game/Levels/bx/bx_02/umap/bx_02_food.bx_02_food:PersistentLevel.g_bx_yasaidanboru_013",
+            "/Game/Levels/bx/bx_02/umap/bx_02_food.bx_02_food:PersistentLevel.g_bx_yasaidanboru_016"
+          ]
+        },
+        {
+          "world": "The Caribbean",
+          "map": "Port Royal",
+          "key": "FST_ITEM12:3",
+          "actors": [
+            "/Game/Levels/ca/ca_01/umap/ca_01_food.ca_01_food:PersistentLevel.g_ca_Cart_A_005",
+            "/Game/Levels/ca/ca_01/umap/ca_01_food.ca_01_food:PersistentLevel.g_ca_Cart_B_012"
+          ]
+        },
+        {
+          "world": "Toy Box",
+          "map": "Galaxy Toys",
+          "key": "FST_ITEM12:4",
+          "actors": [
+            "/Game/Levels/ts/ts_02/umap/ts_02_food.ts_02_food:PersistentLevel.g_ts_takeoutbox_002",
+            "/Game/Levels/ts/ts_02/umap/ts_02_food.ts_02_food:PersistentLevel.g_ts_takeoutbox_006"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "FST_ITEM13",
+      "name": "Eggplant",
+      "icon": "/Game/UI/Icon/Item/food002.food002",
+      "sources": [
+        {
+          "world": "Kingdom of Corona",
+          "map": "The Kingdom",
+          "key": "FST_ITEM13:0",
+          "actors": [
+            "/Game/Levels/ra/ra_02/umap/ra_02_food.ra_02_food:PersistentLevel.g_ra_FoodPoint_014",
+            "/Game/Levels/ra/ra_02/umap/ra_02_food.ra_02_food:PersistentLevel.g_ra_FoodPoint_019"
+          ]
+        },
+        {
+          "world": "San Fransokyo",
+          "map": "The City",
+          "key": "FST_ITEM13:1",
+          "actors": [
+            "/Game/Levels/bx/bx_02/umap/bx_02_food.bx_02_food:PersistentLevel.g_bx_yasaidanboru_002",
+            "/Game/Levels/bx/bx_02/umap/bx_02_food.bx_02_food:PersistentLevel.g_bx_yasaidanboru_003",
+            "/Game/Levels/bx/bx_02/umap/bx_02_food.bx_02_food:PersistentLevel.g_bx_yasaidanboru_013",
+            "/Game/Levels/bx/bx_02/umap/bx_02_food.bx_02_food:PersistentLevel.g_bx_yasaidanboru_014"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "FST_ITEM14",
+      "name": "Carrot",
+      "icon": "/Game/UI/Icon/Item/food002.food002",
+      "sources": [
+        {
+          "world": "Arendelle",
+          "map": "The North Mountain",
+          "key": "FST_ITEM14:0",
+          "actors": [
+            "/Game/Levels/fz/fz_01/umap/fz_01_food.fz_01_food:PersistentLevel.g_fz_foodbox_002",
+            "/Game/Levels/fz/fz_01/umap/fz_01_food.fz_01_food:PersistentLevel.g_fz_foodbox_003",
+            "/Game/Levels/fz/fz_01/umap/fz_01_food.fz_01_food:PersistentLevel.g_fz_foodbox_010",
+            "/Game/Levels/fz/fz_04/umap/fz_04_food.fz_04_food:PersistentLevel.g_fz_foodbox_001",
+            "/Game/Levels/fz/fz_05/umap/fz_05_food.fz_05_food:PersistentLevel.g_fz_foodbox_01_92"
+          ]
+        },
+        {
+          "world": "The Caribbean",
+          "map": "Port Royal",
+          "key": "FST_ITEM14:1",
+          "actors": [
+            "/Game/Levels/ca/ca_01/umap/ca_01_food.ca_01_food:PersistentLevel.g_ca_Cart_A_005",
+            "/Game/Levels/ca/ca_01/umap/ca_01_food.ca_01_food:PersistentLevel.g_ca_Cart_B_010",
+            "/Game/Levels/ca/ca_01/umap/ca_01_food.ca_01_food:PersistentLevel.g_ca_Cart_B_017"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "FST_ITEM15",
+      "name": "Garlic",
+      "icon": "/Game/UI/Icon/Item/food002.food002",
+      "sources": [
+        {
+          "world": "Kingdom of Corona",
+          "map": "The Kingdom",
+          "key": "FST_ITEM15:0",
+          "actors": [
+            "/Game/Levels/ra/ra_02/umap/ra_02_food.ra_02_food:PersistentLevel.g_ra_FoodPoint_015",
+            "/Game/Levels/ra/ra_02/umap/ra_02_food.ra_02_food:PersistentLevel.g_ra_FoodPoint_020"
+          ]
+        },
+        {
+          "world": "San Fransokyo",
+          "map": "The City",
+          "key": "FST_ITEM15:1",
+          "actors": [
+            "/Game/Levels/bx/bx_02/umap/bx_02_food.bx_02_food:PersistentLevel.g_bx_yasaidanboru_003",
+            "/Game/Levels/bx/bx_02/umap/bx_02_food.bx_02_food:PersistentLevel.g_bx_yasaidanboru_007",
+            "/Game/Levels/bx/bx_02/umap/bx_02_food.bx_02_food:PersistentLevel.g_bx_yasaidanboru_014",
+            "/Game/Levels/bx/bx_02/umap/bx_02_food.bx_02_food:PersistentLevel.g_bx_yasaidanboru_015"
+          ]
+        },
+        {
+          "world": "Toy Box",
+          "map": "Galaxy Toys",
+          "key": "FST_ITEM15:2",
+          "actors": [
+            "/Game/Levels/ts/ts_02/umap/ts_02_food.ts_02_food:PersistentLevel.g_ts_takeoutbox_004",
+            "/Game/Levels/ts/ts_02/umap/ts_02_food.ts_02_food:PersistentLevel.g_ts_takeoutbox_008"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "FST_ITEM16",
+      "name": "Celery",
+      "icon": "/Game/UI/Icon/Item/food002.food002",
+      "sources": [
+        {
+          "world": "Monstropolis",
+          "map": "The Power Plant",
+          "key": "FST_ITEM16:0",
+          "actors": [
+            "/Game/Levels/mi/mi_03/umap/mi_03_food.mi_03_food:PersistentLevel.g_mi_jihanki_4"
+          ]
+        },
+        {
+          "world": "Olympus",
+          "map": "Thebes",
+          "key": "FST_ITEM16:1",
+          "actors": [
+            "/Game/Levels/he/he_03/umap/he_03_food.he_03_food:PersistentLevel.g_he_begibasket_002",
+            "/Game/Levels/he/he_03/umap/he_03_food.he_03_food:PersistentLevel.g_he_begibasket_005",
+            "/Game/Levels/he/he_03/umap/he_03_food.he_03_food:PersistentLevel.g_he_begibasket_014",
+            "/Game/Levels/he/he_03/umap/he_03_food.he_03_food:PersistentLevel.g_he_begibasket_024",
+            "/Game/Levels/he/he_04/umap/he_04_food.he_04_food:PersistentLevel.g_he_begibasket_002",
+            "/Game/Levels/he/he_04/umap/he_04_food.he_04_food:PersistentLevel.g_he_begibasket_005",
+            "/Game/Levels/he/he_04/umap/he_04_food.he_04_food:PersistentLevel.g_he_begibasket_014",
+            "/Game/Levels/he/he_04/umap/he_04_food.he_04_food:PersistentLevel.g_he_begibasket_024"
+          ]
+        },
+        {
+          "world": "The Caribbean",
+          "map": "Port Royal",
+          "key": "FST_ITEM16:2",
+          "actors": [
+            "/Game/Levels/ca/ca_01/umap/ca_01_food.ca_01_food:PersistentLevel.g_ca_Cart_A_011",
+            "/Game/Levels/ca/ca_01/umap/ca_01_food.ca_01_food:PersistentLevel.g_ca_Cart_B_006",
+            "/Game/Levels/ca/ca_01/umap/ca_01_food.ca_01_food:PersistentLevel.g_ca_Cart_B_007",
+            "/Game/Levels/ca/ca_01/umap/ca_01_food.ca_01_food:PersistentLevel.g_ca_Cart_B_010",
+            "/Game/Levels/ca/ca_01/umap/ca_01_food.ca_01_food:PersistentLevel.g_ca_Cart_B_017"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "FST_ITEM17",
+      "name": "Morel",
+      "icon": "/Game/UI/Icon/Item/food003.food003",
+      "sources": [
+        {
+          "world": "Arendelle",
+          "map": "The North Mountain",
+          "key": "FST_ITEM17:0",
+          "actors": [
+            "/Game/Levels/fz/fz_01/umap/fz_01_food.fz_01_food:PersistentLevel.g_fz_mushroom_007"
+          ]
+        },
+        {
+          "world": "Kingdom of Corona",
+          "map": "The Forest",
+          "key": "FST_ITEM17:1",
+          "actors": [
+            "/Game/Levels/ra/ra_01/umap/ra_01_food_AreaC.ra_01_food_AreaC:PersistentLevel.g_ra_mushroom_011",
+            "/Game/Levels/ra/ra_01/umap/ra_01_food_AreaG.ra_01_food_AreaG:PersistentLevel.g_ra_mushroom_021"
+          ]
+        },
+        {
+          "world": "Olympus",
+          "map": "Thebes",
+          "key": "FST_ITEM17:2",
+          "actors": [
+            "/Game/Levels/he/he_03/umap/he_03_food.he_03_food:PersistentLevel.g_he_mushroom_008",
+            "/Game/Levels/he/he_04/umap/he_04_food.he_04_food:PersistentLevel.g_he_mushroom_008"
+          ]
+        },
+        {
+          "world": "The Caribbean",
+          "map": "The High Seas",
+          "key": "FST_ITEM17:3",
+          "actors": [
+            "/Game/Levels/ca/ca_02/umap/ca_02_food.ca_02_food:PersistentLevel.g_ca_mushroom_01_001_77",
+            "/Game/Levels/ca/ca_02/umap/ca_02_food.ca_02_food:PersistentLevel.g_ca_mushroom_01_002_80"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "FST_ITEM18",
+      "name": "Porcini",
+      "icon": "/Game/UI/Icon/Item/food003.food003",
+      "sources": [
+        {
+          "world": "Olympus",
+          "map": "Thebes",
+          "key": "FST_ITEM18:0",
+          "actors": [
+            "/Game/Levels/he/he_03/umap/he_03_food.he_03_food:PersistentLevel.g_he_mushroom_006",
+            "/Game/Levels/he/he_03/umap/he_03_food.he_03_food:PersistentLevel.g_he_mushroom_022",
+            "/Game/Levels/he/he_04/umap/he_04_food.he_04_food:PersistentLevel.g_he_mushroom_006",
+            "/Game/Levels/he/he_04/umap/he_04_food.he_04_food:PersistentLevel.g_he_mushroom_022"
+          ]
+        },
+        {
+          "world": "The Caribbean",
+          "map": "The High Seas",
+          "key": "FST_ITEM18:1",
+          "actors": [
+            "/Game/Levels/ca/ca_02/umap/ca_02_food.ca_02_food:PersistentLevel.g_ca_mushroom_01_001_65",
+            "/Game/Levels/ca/ca_02/umap/ca_02_food.ca_02_food:PersistentLevel.g_ca_mushroom_01_002_70"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "FST_ITEM19",
+      "name": "Chanterelle",
+      "icon": "/Game/UI/Icon/Item/food003.food003",
+      "sources": [
+        {
+          "world": "Kingdom of Corona",
+          "map": "The Forest",
+          "key": "FST_ITEM19:0",
+          "actors": [
+            "/Game/Levels/ra/ra_01/umap/ra_01_food_AreaC.ra_01_food_AreaC:PersistentLevel.g_ra_mushroom_012",
+            "/Game/Levels/ra/ra_01/umap/ra_01_food_AreaG.ra_01_food_AreaG:PersistentLevel.g_ra_mushroom_022",
+            "/Game/Levels/ra/ra_01/umap/ra_01_food_AreaM.ra_01_food_AreaM:PersistentLevel.g_ra_mushroom_031"
+          ]
+        },
+        {
+          "world": "Olympus",
+          "map": "Thebes",
+          "key": "FST_ITEM19:1",
+          "actors": [
+            "/Game/Levels/he/he_03/umap/he_03_food.he_03_food:PersistentLevel.g_he_mushroom_019",
+            "/Game/Levels/he/he_04/umap/he_04_food.he_04_food:PersistentLevel.g_he_mushroom_019"
+          ]
+        },
+        {
+          "world": "The Caribbean",
+          "map": "The High Seas",
+          "key": "FST_ITEM19:2",
+          "actors": [
+            "/Game/Levels/ca/ca_02/umap/ca_02_food.ca_02_food:PersistentLevel.g_ca_mushroom_01_001_56"
+          ]
+        },
+        {
+          "world": "Twilight Town",
+          "map": "The Neighborhood",
+          "key": "FST_ITEM19:3",
+          "actors": [
+            "/Game/Levels/tt/tt_01/umap/tt_01_Food.tt_01_Food:PersistentLevel.g_tt_mushroom_003"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "FST_ITEM20",
+      "name": "Portobello",
+      "icon": "/Game/UI/Icon/Item/food003.food003",
+      "sources": [
+        {
+          "world": "Arendelle",
+          "map": "The North Mountain",
+          "key": "FST_ITEM20:0",
+          "actors": [
+            "/Game/Levels/fz/fz_04/umap/fz_04_food.fz_04_food:PersistentLevel.g_fz_mushroom_003"
+          ]
+        },
+        {
+          "world": "The Caribbean",
+          "map": "The High Seas",
+          "key": "FST_ITEM20:1",
+          "actors": [
+            "/Game/Levels/ca/ca_02/umap/ca_02_food.ca_02_food:PersistentLevel.g_ca_mushroom_01_001_48",
+            "/Game/Levels/ca/ca_02/umap/ca_02_food.ca_02_food:PersistentLevel.g_ca_mushroom_01_001_51"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "FST_ITEM21",
+      "name": "Black Truffle",
+      "icon": "/Game/UI/Icon/Item/food003.food003",
+      "sources": [
+        {
+          "world": "Arendelle",
+          "map": "The North Mountain",
+          "key": "FST_ITEM21:0",
+          "actors": [
+            "/Game/Levels/fz/fz_01/umap/fz_01_food.fz_01_food:PersistentLevel.g_fz_mushroom_001"
+          ]
+        },
+        {
+          "world": "Kingdom of Corona",
+          "map": "The Forest",
+          "key": "FST_ITEM21:1",
+          "actors": [
+            "/Game/Levels/ra/ra_01/umap/ra_01_food_AreaFb.ra_01_food_AreaFb:PersistentLevel.g_ra_mushroom_017_4"
+          ]
+        },
+        {
+          "world": "Olympus",
+          "map": "Thebes",
+          "key": "FST_ITEM21:2",
+          "actors": [
+            "/Game/Levels/he/he_03/umap/he_03_food.he_03_food:PersistentLevel.g_he_mushroom_017",
+            "/Game/Levels/he/he_04/umap/he_04_food.he_04_food:PersistentLevel.g_he_mushroom_017"
+          ]
+        },
+        {
+          "world": "The Caribbean",
+          "map": "The High Seas",
+          "key": "FST_ITEM21:3",
+          "actors": [
+            "/Game/Levels/ca/ca_02/umap/ca_02_food.ca_02_food:PersistentLevel.g_ca_mushroom_01_001_38"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "FST_ITEM22",
+      "name": "King Oyster Mushroom",
+      "icon": "/Game/UI/Icon/Item/food003.food003",
+      "sources": [
+        {
+          "world": "Kingdom of Corona",
+          "map": "The Forest",
+          "key": "FST_ITEM22:0",
+          "actors": [
+            "/Game/Levels/ra/ra_01/umap/ra_01_food_AreaG.ra_01_food_AreaG:PersistentLevel.g_ra_mushroom_019",
+            "/Game/Levels/ra/ra_01/umap/ra_01_food_AreaG.ra_01_food_AreaG:PersistentLevel.g_ra_mushroom_023"
+          ]
+        },
+        {
+          "world": "Olympus",
+          "map": "Thebes",
+          "key": "FST_ITEM22:1",
+          "actors": [
+            "/Game/Levels/he/he_03/umap/he_03_food.he_03_food:PersistentLevel.g_he_mushroom_012",
+            "/Game/Levels/he/he_03/umap/he_03_food.he_03_food:PersistentLevel.g_he_mushroom_020",
+            "/Game/Levels/he/he_04/umap/he_04_food.he_04_food:PersistentLevel.g_he_mushroom_012",
+            "/Game/Levels/he/he_04/umap/he_04_food.he_04_food:PersistentLevel.g_he_mushroom_020"
+          ]
+        },
+        {
+          "world": "The Caribbean",
+          "map": "The High Seas",
+          "key": "FST_ITEM22:2",
+          "actors": [
+            "/Game/Levels/ca/ca_02/umap/ca_02_food.ca_02_food:PersistentLevel.g_ca_mushroom_01_003_83",
+            "/Game/Levels/ca/ca_02/umap/ca_02_food.ca_02_food:PersistentLevel.g_ca_mushroom_01_004"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "FST_ITEM23",
+      "name": "Black Trumpet",
+      "icon": "/Game/UI/Icon/Item/food003.food003",
+      "sources": [
+        {
+          "world": "Kingdom of Corona",
+          "map": "The Forest",
+          "key": "FST_ITEM23:0",
+          "actors": [
+            "/Game/Levels/ra/ra_01/umap/ra_01_food_AreaG.ra_01_food_AreaG:PersistentLevel.g_ra_mushroom_020",
+            "/Game/Levels/ra/ra_01/umap/ra_01_food_AreaIb.ra_01_food_AreaIb:PersistentLevel.g_ra_mushroom_027"
+          ]
+        },
+        {
+          "world": "The Caribbean",
+          "map": "The High Seas",
+          "key": "FST_ITEM23:1",
+          "actors": [
+            "/Game/Levels/ca/ca_02/umap/ca_02_food.ca_02_food:PersistentLevel.g_ca_mushroom_01_002"
+          ]
+        },
+        {
+          "world": "Twilight Town",
+          "map": "The Neighborhood",
+          "key": "FST_ITEM23:2",
+          "actors": [
+            "/Game/Levels/tt/tt_01/umap/tt_01_Food.tt_01_Food:PersistentLevel.g_tt_mushroom_002"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "FST_ITEM24",
+      "name": "Miller Mushroom",
+      "icon": "/Game/UI/Icon/Item/food003.food003",
+      "sources": [
+        {
+          "world": "Arendelle",
+          "map": "The North Mountain",
+          "key": "FST_ITEM24:0",
+          "actors": [
+            "/Game/Levels/fz/fz_01/umap/fz_01_food.fz_01_food:PersistentLevel.g_fz_mushroom_006"
+          ]
+        },
+        {
+          "world": "The Caribbean",
+          "map": "The High Seas",
+          "key": "FST_ITEM24:1",
+          "actors": [
+            "/Game/Levels/ca/ca_02/umap/ca_02_food.ca_02_food:PersistentLevel.g_ca_mushroom_01_001",
+            "/Game/Levels/ca/ca_02/umap/ca_02_food.ca_02_food:PersistentLevel.g_ca_mushroom_01_001_41",
+            "/Game/Levels/ca/ca_02/umap/ca_02_food.ca_02_food:PersistentLevel.g_ca_mushroom_01_003"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "FST_ITEM25",
+      "name": "Cloves",
+      "icon": "/Game/UI/Icon/Item/food004.food004",
+      "sources": [
+        {
+          "world": "Olympus",
+          "map": "Thebes",
+          "key": "FST_ITEM25:0",
+          "actors": [
+            "/Game/Levels/he/he_03/umap/he_03_food.he_03_food:PersistentLevel.g_he_herb_007",
+            "/Game/Levels/he/he_03/umap/he_03_food.he_03_food:PersistentLevel.g_he_herb_010",
+            "/Game/Levels/he/he_03/umap/he_03_food.he_03_food:PersistentLevel.g_he_herb_011",
+            "/Game/Levels/he/he_03/umap/he_03_food.he_03_food:PersistentLevel.g_he_herb_018",
+            "/Game/Levels/he/he_03/umap/he_03_food.he_03_food:PersistentLevel.g_he_herb_023",
+            "/Game/Levels/he/he_04/umap/he_04_food.he_04_food:PersistentLevel.g_he_herb_007",
+            "/Game/Levels/he/he_04/umap/he_04_food.he_04_food:PersistentLevel.g_he_herb_010",
+            "/Game/Levels/he/he_04/umap/he_04_food.he_04_food:PersistentLevel.g_he_herb_011",
+            "/Game/Levels/he/he_04/umap/he_04_food.he_04_food:PersistentLevel.g_he_herb_018",
+            "/Game/Levels/he/he_04/umap/he_04_food.he_04_food:PersistentLevel.g_he_herb_023"
+          ]
+        },
+        {
+          "world": "The Caribbean",
+          "map": "The High Seas",
+          "key": "FST_ITEM25:1",
+          "actors": [
+            "/Game/Levels/ca/ca_02/umap/ca_02_food.ca_02_food:PersistentLevel.g_ca_herb_01_005_84"
+          ]
+        },
+        {
+          "world": "Toy Box",
+          "map": "Andy's House",
+          "key": "FST_ITEM25:2",
+          "actors": [
+            "/Game/Levels/ts/ts_01/umap/ts_01_food.ts_01_food:PersistentLevel.g_ts_herb_007",
+            "/Game/Levels/ts/ts_01/umap/ts_01_food.ts_01_food:PersistentLevel.g_ts_herb_013",
+            "/Game/Levels/ts/ts_01/umap/ts_01_food.ts_01_food:PersistentLevel.g_ts_herb_015"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "FST_ITEM26",
+      "name": "Rosemary",
+      "icon": "/Game/UI/Icon/Item/food004.food004",
+      "sources": [
+        {
+          "world": "Kingdom of Corona",
+          "map": "The Forest",
+          "key": "FST_ITEM26:0",
+          "actors": [
+            "/Game/Levels/ra/ra_01/umap/ra_01_food_AreaA.ra_01_food_AreaA:PersistentLevel.g_ra_herb_001",
+            "/Game/Levels/ra/ra_01/umap/ra_01_food_AreaA.ra_01_food_AreaA:PersistentLevel.g_ra_herb_002",
+            "/Game/Levels/ra/ra_01/umap/ra_01_food_AreaFa.ra_01_food_AreaFa:PersistentLevel.g_ra_herb_013_0",
+            "/Game/Levels/ra/ra_01/umap/ra_01_food_AreaIb.ra_01_food_AreaIb:PersistentLevel.g_ra_herb_026"
+          ]
+        },
+        {
+          "world": "Olympus",
+          "map": "Thebes",
+          "key": "FST_ITEM26:1",
+          "actors": [
+            "/Game/Levels/he/he_03/umap/he_03_food.he_03_food:PersistentLevel.g_he_herb_009",
+            "/Game/Levels/he/he_04/umap/he_04_food.he_04_food:PersistentLevel.g_he_herb_009"
+          ]
+        },
+        {
+          "world": "The Caribbean",
+          "map": "The High Seas",
+          "key": "FST_ITEM26:2",
+          "actors": [
+            "/Game/Levels/ca/ca_02/umap/ca_02_food.ca_02_food:PersistentLevel.g_ca_herb_01_006"
+          ]
+        },
+        {
+          "world": "Toy Box",
+          "map": "Andy's House",
+          "key": "FST_ITEM26:3",
+          "actors": [
+            "/Game/Levels/ts/ts_01/umap/ts_01_food.ts_01_food:PersistentLevel.g_ts_herb_001",
+            "/Game/Levels/ts/ts_01/umap/ts_01_food.ts_01_food:PersistentLevel.g_ts_herb_006",
+            "/Game/Levels/ts/ts_01/umap/ts_01_food.ts_01_food:PersistentLevel.g_ts_herb_014"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "FST_ITEM27",
+      "name": "Thyme",
+      "icon": "/Game/UI/Icon/Item/food004.food004",
+      "sources": [
+        {
+          "world": "Kingdom of Corona",
+          "map": "The Forest",
+          "key": "FST_ITEM27:0",
+          "actors": [
+            "/Game/Levels/ra/ra_01/umap/ra_01_food_AreaC.ra_01_food_AreaC:PersistentLevel.g_ra_herb_006_0",
+            "/Game/Levels/ra/ra_01/umap/ra_01_food_AreaC.ra_01_food_AreaC:PersistentLevel.g_ra_herb_007_2",
+            "/Game/Levels/ra/ra_01/umap/ra_01_food_AreaFb.ra_01_food_AreaFb:PersistentLevel.g_ra_herb_015_0",
+            "/Game/Levels/ra/ra_01/umap/ra_01_food_AreaFb.ra_01_food_AreaFb:PersistentLevel.g_ra_herb_016_2"
+          ]
+        },
+        {
+          "world": "The Caribbean",
+          "map": "The High Seas",
+          "key": "FST_ITEM27:1",
+          "actors": [
+            "/Game/Levels/ca/ca_02/umap/ca_02_food.ca_02_food:PersistentLevel.g_ca_herb_01_002_58",
+            "/Game/Levels/ca/ca_02/umap/ca_02_food.ca_02_food:PersistentLevel.g_ca_herb_01_002_61"
+          ]
+        },
+        {
+          "world": "Toy Box",
+          "map": "Andy's House",
+          "key": "FST_ITEM27:2",
+          "actors": [
+            "/Game/Levels/ts/ts_01/umap/ts_01_food.ts_01_food:PersistentLevel.g_ts_herb_005",
+            "/Game/Levels/ts/ts_01/umap/ts_01_food.ts_01_food:PersistentLevel.g_ts_herb_011",
+            "/Game/Levels/ts/ts_01/umap/ts_01_food.ts_01_food:PersistentLevel.g_ts_herb_017"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "FST_ITEM28",
+      "name": "Bay Leaf",
+      "icon": "/Game/UI/Icon/Item/food004.food004",
+      "sources": [
+        {
+          "world": "Kingdom of Corona",
+          "map": "The Forest",
+          "key": "FST_ITEM28:0",
+          "actors": [
+            "/Game/Levels/ra/ra_01/umap/ra_01_food_AreaA.ra_01_food_AreaA:PersistentLevel.g_ra_herb_003",
+            "/Game/Levels/ra/ra_01/umap/ra_01_food_AreaA.ra_01_food_AreaA:PersistentLevel.g_ra_herb_004",
+            "/Game/Levels/ra/ra_01/umap/ra_01_food_AreaC.ra_01_food_AreaC:PersistentLevel.g_ra_herb_009_6",
+            "/Game/Levels/ra/ra_01/umap/ra_01_food_AreaFa.ra_01_food_AreaFa:PersistentLevel.g_ra_herb_014_2",
+            "/Game/Levels/ra/ra_01/umap/ra_01_food_AreaM.ra_01_food_AreaM:PersistentLevel.g_ra_herb_029"
+          ]
+        },
+        {
+          "world": "Olympus",
+          "map": "Thebes",
+          "key": "FST_ITEM28:1",
+          "actors": [
+            "/Game/Levels/he/he_03/umap/he_03_food.he_03_food:PersistentLevel.g_he_herb_021",
+            "/Game/Levels/he/he_04/umap/he_04_food.he_04_food:PersistentLevel.g_he_herb_021"
+          ]
+        },
+        {
+          "world": "The Caribbean",
+          "map": "The High Seas",
+          "key": "FST_ITEM28:2",
+          "actors": [
+            "/Game/Levels/ca/ca_02/umap/ca_02_food.ca_02_food:PersistentLevel.g_ca_herb_01_003"
+          ]
+        },
+        {
+          "world": "Toy Box",
+          "map": "Andy's House",
+          "key": "FST_ITEM28:3",
+          "actors": [
+            "/Game/Levels/ts/ts_01/umap/ts_01_food.ts_01_food:PersistentLevel.g_ts_herb_010",
+            "/Game/Levels/ts/ts_01/umap/ts_01_food.ts_01_food:PersistentLevel.g_ts_herb_018"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "FST_ITEM29",
+      "name": "Basil",
+      "icon": "/Game/UI/Icon/Item/food004.food004",
+      "sources": [
+        {
+          "world": "Kingdom of Corona",
+          "map": "The Forest",
+          "key": "FST_ITEM29:0",
+          "actors": [
+            "/Game/Levels/ra/ra_01/umap/ra_01_food_AreaC.ra_01_food_AreaC:PersistentLevel.g_ra_herb_008_4",
+            "/Game/Levels/ra/ra_01/umap/ra_01_food_AreaC.ra_01_food_AreaC:PersistentLevel.g_ra_herb_010_8",
+            "/Game/Levels/ra/ra_01/umap/ra_01_food_AreaIb.ra_01_food_AreaIb:PersistentLevel.g_ra_herb_024",
+            "/Game/Levels/ra/ra_01/umap/ra_01_food_AreaIb.ra_01_food_AreaIb:PersistentLevel.g_ra_herb_025",
+            "/Game/Levels/ra/ra_01/umap/ra_01_food_AreaM.ra_01_food_AreaM:PersistentLevel.g_ra_herb_030"
+          ]
+        },
+        {
+          "world": "The Caribbean",
+          "map": "The High Seas",
+          "key": "FST_ITEM29:1",
+          "actors": [
+            "/Game/Levels/ca/ca_02/umap/ca_02_food.ca_02_food:PersistentLevel.g_ca_herb_01_003_66"
+          ]
+        },
+        {
+          "world": "Toy Box",
+          "map": "Andy's House",
+          "key": "FST_ITEM29:2",
+          "actors": [
+            "/Game/Levels/ts/ts_01/umap/ts_01_food.ts_01_food:PersistentLevel.g_ts_herb_004",
+            "/Game/Levels/ts/ts_01/umap/ts_01_food.ts_01_food:PersistentLevel.g_ts_herb_008",
+            "/Game/Levels/ts/ts_01/umap/ts_01_food.ts_01_food:PersistentLevel.g_ts_herb_009",
+            "/Game/Levels/ts/ts_01/umap/ts_01_food.ts_01_food:PersistentLevel.g_ts_herb_016"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "FST_ITEM30",
+      "name": "Dill",
+      "icon": "/Game/UI/Icon/Item/food004.food004",
+      "sources": [
+        {
+          "world": "Monstropolis",
+          "map": "Monsters, Inc.",
+          "key": "FST_ITEM30:0",
+          "actors": [
+            "/Game/Levels/mi/mi_01/umap/mi_01_food.mi_01_food:PersistentLevel.g_mi_jihanki_2"
+          ]
+        },
+        {
+          "world": "Monstropolis",
+          "map": "The Door Vault",
+          "key": "FST_ITEM30:1",
+          "actors": [
+            "/Game/Levels/mi/mi_04/umap/mi_04_food.mi_04_food:PersistentLevel.g_mi_jihanki_2"
+          ]
+        },
+        {
+          "world": "The Caribbean",
+          "map": "The High Seas",
+          "key": "FST_ITEM30:2",
+          "actors": [
+            "/Game/Levels/ca/ca_02/umap/ca_02_food.ca_02_food:PersistentLevel.g_ca_herb_01_001_44",
+            "/Game/Levels/ca/ca_02/umap/ca_02_food.ca_02_food:PersistentLevel.g_ca_herb_01_002_49",
+            "/Game/Levels/ca/ca_02/umap/ca_02_food.ca_02_food:PersistentLevel.g_ca_herb_01_004_69",
+            "/Game/Levels/ca/ca_02/umap/ca_02_food.ca_02_food:PersistentLevel.g_ca_herb_01_005"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "FST_ITEM31",
+      "name": "Parsley",
+      "icon": "/Game/UI/Icon/Item/food004.food004",
+      "sources": [
+        {
+          "world": "Olympus",
+          "map": "Thebes",
+          "key": "FST_ITEM31:0",
+          "actors": [
+            "/Game/Levels/he/he_03/umap/he_03_food.he_03_food:PersistentLevel.g_he_herb_016",
+            "/Game/Levels/he/he_04/umap/he_04_food.he_04_food:PersistentLevel.g_he_herb_016"
+          ]
+        },
+        {
+          "world": "The Caribbean",
+          "map": "The High Seas",
+          "key": "FST_ITEM31:1",
+          "actors": [
+            "/Game/Levels/ca/ca_02/umap/ca_02_food.ca_02_food:PersistentLevel.g_ca_herb_01_001"
+          ]
+        },
+        {
+          "world": "Toy Box",
+          "map": "Andy's House",
+          "key": "FST_ITEM31:2",
+          "actors": [
+            "/Game/Levels/ts/ts_01/umap/ts_01_food.ts_01_food:PersistentLevel.g_ts_herb_002",
+            "/Game/Levels/ts/ts_01/umap/ts_01_food.ts_01_food:PersistentLevel.g_ts_herb_003",
+            "/Game/Levels/ts/ts_01/umap/ts_01_food.ts_01_food:PersistentLevel.g_ts_herb_012"
+          ]
+        },
+        {
+          "world": "Twilight Town",
+          "map": "The Neighborhood",
+          "key": "FST_ITEM31:3",
+          "actors": [
+            "/Game/Levels/tt/tt_01/umap/tt_01_Food.tt_01_Food:PersistentLevel.g_tt_herb_001"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "FST_ITEM32",
+      "name": "Saffron",
+      "icon": "/Game/UI/Icon/Item/food004.food004",
+      "sources": [
+        {
+          "world": "Monstropolis",
+          "map": "Monsters, Inc.",
+          "key": "FST_ITEM32:0",
+          "actors": [
+            "/Game/Levels/mi/mi_01/umap/mi_01_food.mi_01_food:PersistentLevel.g_mi_jihanki_2"
+          ]
+        },
+        {
+          "world": "Monstropolis",
+          "map": "The Power Plant",
+          "key": "FST_ITEM32:1",
+          "actors": [
+            "/Game/Levels/mi/mi_03/umap/mi_03_food.mi_03_food:PersistentLevel.g_mi_jihanki_4"
+          ]
+        },
+        {
+          "world": "The Caribbean",
+          "map": "The High Seas",
+          "key": "FST_ITEM32:2",
+          "actors": [
+            "/Game/Levels/ca/ca_02/umap/ca_02_food.ca_02_food:PersistentLevel.g_ca_herb_01_002_28",
+            "/Game/Levels/ca/ca_02/umap/ca_02_food.ca_02_food:PersistentLevel.g_ca_herb_01_002_39"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "FST_ITEM33",
+      "name": "Apricot",
+      "icon": "/Game/UI/Icon/Item/food005.food005",
+      "sources": [
+        {
+          "world": "Olympus",
+          "map": "Mount Olympus",
+          "key": "FST_ITEM33:0",
+          "actors": [
+            "/Game/Levels/he/he_02/umap/he_02_food.he_02_food:PersistentLevel.g_he_apple_01_004",
+            "/Game/Levels/he/he_02/umap/he_02_food.he_02_food:PersistentLevel.g_he_apple_01_007"
+          ]
+        },
+        {
+          "world": "The Caribbean",
+          "map": "Port Royal",
+          "key": "FST_ITEM33:1",
+          "actors": [
+            "/Game/Levels/ca/ca_01/umap/ca_01_food.ca_01_food:PersistentLevel.g_ca_FoodPoint_002",
+            "/Game/Levels/ca/ca_01/umap/ca_01_food.ca_01_food:PersistentLevel.g_ca_FoodPoint_018"
+          ]
+        },
+        {
+          "world": "Twilight Town",
+          "map": "The Neighborhood",
+          "key": "FST_ITEM33:2",
+          "actors": [
+            "/Game/Levels/tt/tt_01/umap/tt_01_Food.tt_01_Food:PersistentLevel.g_tt_fuirtsbasket_001",
+            "/Game/Levels/tt/tt_01/umap/tt_01_Food.tt_01_Food:PersistentLevel.g_tt_fuirtsbasket_002"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "FST_ITEM34",
+      "name": "Gooseberry",
+      "icon": "/Game/UI/Icon/Item/food005.food005",
+      "sources": [
+        {
+          "world": "Arendelle",
+          "map": "The North Mountain",
+          "key": "FST_ITEM34:0",
+          "actors": [
+            "/Game/Levels/fz/fz_01/umap/fz_01_food.fz_01_food:PersistentLevel.g_fz_elderberry_004",
+            "/Game/Levels/fz/fz_01/umap/fz_01_food.fz_01_food:PersistentLevel.g_fz_elderberry_008"
+          ]
+        },
+        {
+          "world": "The Caribbean",
+          "map": "Port Royal",
+          "key": "FST_ITEM34:1",
+          "actors": [
+            "/Game/Levels/ca/ca_01/umap/ca_01_food.ca_01_food:PersistentLevel.g_ca_FoodPoint_002",
+            "/Game/Levels/ca/ca_01/umap/ca_01_food.ca_01_food:PersistentLevel.g_ca_FoodPoint_008",
+            "/Game/Levels/ca/ca_01/umap/ca_01_food.ca_01_food:PersistentLevel.g_ca_FoodPoint_019"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "FST_ITEM35",
+      "name": "Lemon",
+      "icon": "/Game/UI/Icon/Item/food005.food005",
+      "sources": [
+        {
+          "world": "Monstropolis",
+          "map": "Monsters, Inc.",
+          "key": "FST_ITEM35:0",
+          "actors": [
+            "/Game/Levels/mi/mi_01/umap/mi_01_food.mi_01_food:PersistentLevel.g_mi_jihanki_1"
+          ]
+        },
+        {
+          "world": "Monstropolis",
+          "map": "The Door Vault",
+          "key": "FST_ITEM35:1",
+          "actors": [
+            "/Game/Levels/mi/mi_04/umap/mi_04_food.mi_04_food:PersistentLevel.g_mi_jihanki_1"
+          ]
+        },
+        {
+          "world": "Olympus",
+          "map": "Thebes",
+          "key": "FST_ITEM35:2",
+          "actors": [
+            "/Game/Levels/he/he_03/umap/he_03_food.he_03_food:PersistentLevel.g_he_fuirtsbasket_004",
+            "/Game/Levels/he/he_03/umap/he_03_food.he_03_food:PersistentLevel.g_he_fuirtsbasket_015",
+            "/Game/Levels/he/he_03/umap/he_03_food.he_03_food:PersistentLevel.g_he_fuirtsbasket_025",
+            "/Game/Levels/he/he_04/umap/he_04_food.he_04_food:PersistentLevel.g_he_fuirtsbasket_004",
+            "/Game/Levels/he/he_04/umap/he_04_food.he_04_food:PersistentLevel.g_he_fuirtsbasket_015",
+            "/Game/Levels/he/he_04/umap/he_04_food.he_04_food:PersistentLevel.g_he_fuirtsbasket_025"
+          ]
+        },
+        {
+          "world": "The Caribbean",
+          "map": "Port Royal",
+          "key": "FST_ITEM35:3",
+          "actors": [
+            "/Game/Levels/ca/ca_01/umap/ca_01_food.ca_01_food:PersistentLevel.g_ca_FoodPoint_016",
+            "/Game/Levels/ca/ca_01/umap/ca_01_food.ca_01_food:PersistentLevel.g_ca_FoodPoint_019",
+            "/Game/Levels/ca/ca_01/umap/ca_01_food.ca_01_food:PersistentLevel.g_ca_FoodPoint_020"
+          ]
+        },
+        {
+          "world": "Twilight Town",
+          "map": "The Neighborhood",
+          "key": "FST_ITEM35:4",
+          "actors": [
+            "/Game/Levels/tt/tt_01/umap/tt_01_Food.tt_01_Food:PersistentLevel.g_tt_fuirtsbasket_002",
+            "/Game/Levels/tt/tt_01/umap/tt_01_Food.tt_01_Food:PersistentLevel.g_tt_fuirtsbasket_003",
+            "/Game/Levels/tt/tt_01/umap/tt_01_Food.tt_01_Food:PersistentLevel.g_tt_fuirtsbasket_004"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "FST_ITEM36",
+      "name": "Orange",
+      "icon": "/Game/UI/Icon/Item/food005.food005",
+      "sources": [
+        {
+          "world": "Monstropolis",
+          "map": "Monsters, Inc.",
+          "key": "FST_ITEM36:0",
+          "actors": [
+            "/Game/Levels/mi/mi_01/umap/mi_01_food.mi_01_food:PersistentLevel.g_mi_jihanki_1"
+          ]
+        },
+        {
+          "world": "Monstropolis",
+          "map": "The Door Vault",
+          "key": "FST_ITEM36:1",
+          "actors": [
+            "/Game/Levels/mi/mi_04/umap/mi_04_food.mi_04_food:PersistentLevel.g_mi_jihanki_1"
+          ]
+        },
+        {
+          "world": "Monstropolis",
+          "map": "The Power Plant",
+          "key": "FST_ITEM36:2",
+          "actors": [
+            "/Game/Levels/mi/mi_03/umap/mi_03_food.mi_03_food:PersistentLevel.g_mi_jihanki_3"
+          ]
+        },
+        {
+          "world": "The Caribbean",
+          "map": "Port Royal",
+          "key": "FST_ITEM36:3",
+          "actors": [
+            "/Game/Levels/ca/ca_01/umap/ca_01_food.ca_01_food:PersistentLevel.g_ca_FoodPoint_016",
+            "/Game/Levels/ca/ca_01/umap/ca_01_food.ca_01_food:PersistentLevel.g_ca_FoodPoint_018",
+            "/Game/Levels/ca/ca_01/umap/ca_01_food.ca_01_food:PersistentLevel.g_ca_FoodPoint_020"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "FST_ITEM37",
+      "name": "Raspberry",
+      "icon": "/Game/UI/Icon/Item/food005.food005",
+      "sources": [
+        {
+          "world": "Arendelle",
+          "map": "The North Mountain",
+          "key": "FST_ITEM37:0",
+          "actors": [
+            "/Game/Levels/fz/fz_01/umap/fz_01_food.fz_01_food:PersistentLevel.g_fz_elderberry_005",
+            "/Game/Levels/fz/fz_04/umap/fz_04_food.fz_04_food:PersistentLevel.g_fz_elderberry_002_21",
+            "/Game/Levels/fz/fz_04/umap/fz_04_food.fz_04_food:PersistentLevel.g_fz_elderberry_005"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "FST_ITEM38",
+      "name": "Pear",
+      "icon": "/Game/UI/Icon/Item/food005.food005",
+      "sources": [
+        {
+          "world": "Monstropolis",
+          "map": "The Door Vault",
+          "key": "FST_ITEM38:0",
+          "actors": [
+            "/Game/Levels/mi/mi_04/umap/mi_04_food.mi_04_food:PersistentLevel.g_mi_jihanki_4"
+          ]
+        },
+        {
+          "world": "Monstropolis",
+          "map": "The Power Plant",
+          "key": "FST_ITEM38:1",
+          "actors": [
+            "/Game/Levels/mi/mi_03/umap/mi_03_food.mi_03_food:PersistentLevel.g_mi_jihanki_3"
+          ]
+        },
+        {
+          "world": "Olympus",
+          "map": "Mount Olympus",
+          "key": "FST_ITEM38:2",
+          "actors": [
+            "/Game/Levels/he/he_02/umap/he_02_food.he_02_food:PersistentLevel.g_he_fuirtsbasket_003"
+          ]
+        },
+        {
+          "world": "The Caribbean",
+          "map": "Port Royal",
+          "key": "FST_ITEM38:3",
+          "actors": [
+            "/Game/Levels/ca/ca_01/umap/ca_01_food.ca_01_food:PersistentLevel.g_ca_FoodPoint_008"
+          ]
+        },
+        {
+          "world": "Twilight Town",
+          "map": "The Neighborhood",
+          "key": "FST_ITEM38:4",
+          "actors": [
+            "/Game/Levels/tt/tt_01/umap/tt_01_Food.tt_01_Food:PersistentLevel.g_tt_fuirtsbasket_001",
+            "/Game/Levels/tt/tt_01/umap/tt_01_Food.tt_01_Food:PersistentLevel.g_tt_fuirtsbasket_003",
+            "/Game/Levels/tt/tt_01/umap/tt_01_Food.tt_01_Food:PersistentLevel.g_tt_fuirtsbasket_006"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "FST_ITEM39",
+      "name": "Blackberry",
+      "icon": "/Game/UI/Icon/Item/food005.food005",
+      "sources": [
+        {
+          "world": "Arendelle",
+          "map": "The North Mountain",
+          "key": "FST_ITEM39:0",
+          "actors": [
+            "/Game/Levels/fz/fz_04/umap/fz_04_food.fz_04_food:PersistentLevel.g_fz_elderberry_004",
+            "/Game/Levels/fz/fz_05/umap/fz_05_food.fz_05_food:PersistentLevel.g_fz_elderberry_01"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "FST_ITEM40",
+      "name": "Apple",
+      "icon": "/Game/UI/Icon/Item/food005.food005",
+      "sources": [
+        {
+          "world": "Olympus",
+          "map": "Mount Olympus",
+          "key": "FST_ITEM40:0",
+          "actors": [
+            "/Game/Levels/he/he_02/umap/he_02_food.he_02_food:PersistentLevel.g_he_apple_01_002",
+            "/Game/Levels/he/he_02/umap/he_02_food.he_02_food:PersistentLevel.g_he_apple_01_005",
+            "/Game/Levels/he/he_02/umap/he_02_food.he_02_food:PersistentLevel.g_he_apple_01_006",
+            "/Game/Levels/he/he_02/umap/he_02_food.he_02_food:PersistentLevel.g_he_apple_01_008"
+          ]
+        },
+        {
+          "world": "Twilight Town",
+          "map": "The Neighborhood",
+          "key": "FST_ITEM40:1",
+          "actors": [
+            "/Game/Levels/tt/tt_01/umap/tt_01_Food.tt_01_Food:PersistentLevel.g_tt_fuirtsbasket_004",
+            "/Game/Levels/tt/tt_01/umap/tt_01_Food.tt_01_Food:PersistentLevel.g_tt_fuirtsbasket_006"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "FST_ITEM41",
+      "name": "Cheese",
+      "icon": "/Game/UI/Icon/Item/food006.food006",
+      "sources": [
+        {
+          "world": "Monstropolis",
+          "map": "The Factory",
+          "key": "FST_ITEM41:0",
+          "actors": [
+            "/Game/Levels/mi/mi_02/umap/mi_02_food.mi_02_food:PersistentLevel.g_mi_takeoutbox_1"
+          ]
+        },
+        {
+          "world": "San Fransokyo",
+          "map": "The City",
+          "key": "FST_ITEM41:1",
+          "actors": [
+            "/Game/Levels/bx/bx_02/umap/bx_02_food.bx_02_food:PersistentLevel.g_bx_takeoutbox_004",
+            "/Game/Levels/bx/bx_02/umap/bx_02_food.bx_02_food:PersistentLevel.g_bx_takeoutbox_010"
+          ]
+        },
+        {
+          "world": "Toy Box",
+          "map": "Galaxy Toys",
+          "key": "FST_ITEM41:2",
+          "actors": [
+            "/Game/Levels/ts/ts_02/umap/ts_02_food.ts_02_food:PersistentLevel.g_ts_takeoutbox_001",
+            "/Game/Levels/ts/ts_02/umap/ts_02_food.ts_02_food:PersistentLevel.g_ts_takeoutbox_005",
+            "/Game/Levels/ts/ts_02/umap/ts_02_food.ts_02_food:PersistentLevel.g_ts_takeoutbox_009"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "FST_ITEM42",
+      "name": "Chocolate",
+      "icon": "/Game/UI/Icon/Item/food006.food006",
+      "sources": [
+        {
+          "world": "Toy Box",
+          "map": "Galaxy Toys",
+          "key": "FST_ITEM42:0",
+          "actors": [
+            "/Game/Levels/ts/ts_02/umap/ts_02_food.ts_02_food:PersistentLevel.g_ts_takeoutbox_003",
+            "/Game/Levels/ts/ts_02/umap/ts_02_food.ts_02_food:PersistentLevel.g_ts_takeoutbox_010"
+          ]
+        },
+        {
+          "world": "Twilight Town",
+          "map": "The Neighborhood",
+          "key": "FST_ITEM42:1",
+          "actors": [
+            "/Game/Levels/tt/tt_01/umap/tt_01_Food.tt_01_Food:PersistentLevel.g_tt_takeoutbox_009",
+            "/Game/Levels/tt/tt_01/umap/tt_01_Food.tt_01_Food:PersistentLevel.g_tt_takeoutbox_011",
+            "/Game/Levels/tt/tt_01/umap/tt_01_Food.tt_01_Food:PersistentLevel.g_tt_takeoutbox_012"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "FST_ITEM43",
+      "name": "Caviar",
+      "icon": "/Game/UI/Icon/Item/food006.food006",
+      "sources": [
+        {
+          "world": "Toy Box",
+          "map": "Galaxy Toys",
+          "key": "FST_ITEM43:0",
+          "actors": [
+            "/Game/Levels/ts/ts_02/umap/ts_02_food.ts_02_food:PersistentLevel.g_ts_takeoutbox_001",
+            "/Game/Levels/ts/ts_02/umap/ts_02_food.ts_02_food:PersistentLevel.g_ts_takeoutbox_010"
+          ]
+        },
+        {
+          "world": "Twilight Town",
+          "map": "The Neighborhood",
+          "key": "FST_ITEM43:1",
+          "actors": [
+            "/Game/Levels/tt/tt_01/umap/tt_01_Food.tt_01_Food:PersistentLevel.g_tt_takeoutbox_008",
+            "/Game/Levels/tt/tt_01/umap/tt_01_Food.tt_01_Food:PersistentLevel.g_tt_takeoutbox_010",
+            "/Game/Levels/tt/tt_01/umap/tt_01_Food.tt_01_Food:PersistentLevel.g_tt_takeoutbox_011",
+            "/Game/Levels/tt/tt_01/umap/tt_01_Food.tt_01_Food:PersistentLevel.g_tt_takeoutbox_013"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "FST_ITEM44",
+      "name": "Butter",
+      "icon": "/Game/UI/Icon/Item/food006.food006",
+      "sources": [
+        {
+          "world": "San Fransokyo",
+          "map": "The City",
+          "key": "FST_ITEM44:0",
+          "actors": [
+            "/Game/Levels/bx/bx_02/umap/bx_02_food.bx_02_food:PersistentLevel.g_bx_takeoutbox_005",
+            "/Game/Levels/bx/bx_02/umap/bx_02_food.bx_02_food:PersistentLevel.g_bx_takeoutbox_011"
+          ]
+        },
+        {
+          "world": "Toy Box",
+          "map": "Galaxy Toys",
+          "key": "FST_ITEM44:1",
+          "actors": [
+            "/Game/Levels/ts/ts_02/umap/ts_02_food.ts_02_food:PersistentLevel.g_ts_takeoutbox_007",
+            "/Game/Levels/ts/ts_02/umap/ts_02_food.ts_02_food:PersistentLevel.g_ts_takeoutbox_011"
+          ]
+        },
+        {
+          "world": "Twilight Town",
+          "map": "The Neighborhood",
+          "key": "FST_ITEM44:2",
+          "actors": [
+            "/Game/Levels/tt/tt_01/umap/tt_01_Food.tt_01_Food:PersistentLevel.g_tt_takeoutbox_009",
+            "/Game/Levels/tt/tt_01/umap/tt_01_Food.tt_01_Food:PersistentLevel.g_tt_takeoutbox_010",
+            "/Game/Levels/tt/tt_01/umap/tt_01_Food.tt_01_Food:PersistentLevel.g_tt_takeoutbox_012",
+            "/Game/Levels/tt/tt_01/umap/tt_01_Food.tt_01_Food:PersistentLevel.g_tt_takeoutbox_013"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "FST_ITEM45",
+      "name": "Olive Oil",
+      "icon": "/Game/UI/Icon/Item/food006.food006",
+      "sources": [
+        {
+          "world": "Monstropolis",
+          "map": "The Door Vault",
+          "key": "FST_ITEM45:0",
+          "actors": [
+            "/Game/Levels/mi/mi_04/umap/mi_04_food.mi_04_food:PersistentLevel.g_mi_jihanki_3"
+          ]
+        },
+        {
+          "world": "Monstropolis",
+          "map": "The Power Plant",
+          "key": "FST_ITEM45:1",
+          "actors": [
+            "/Game/Levels/mi/mi_03/umap/mi_03_food.mi_03_food:PersistentLevel.g_mi_jihanki_1"
+          ]
+        },
+        {
+          "world": "San Fransokyo",
+          "map": "The City",
+          "key": "FST_ITEM45:2",
+          "actors": [
+            "/Game/Levels/bx/bx_02/umap/bx_02_food.bx_02_food:PersistentLevel.g_bx_takeoutbox_005",
+            "/Game/Levels/bx/bx_02/umap/bx_02_food.bx_02_food:PersistentLevel.g_bx_takeoutbox_006",
+            "/Game/Levels/bx/bx_02/umap/bx_02_food.bx_02_food:PersistentLevel.g_bx_takeoutbox_011",
+            "/Game/Levels/bx/bx_02/umap/bx_02_food.bx_02_food:PersistentLevel.g_bx_takeoutbox_012"
+          ]
+        },
+        {
+          "world": "Toy Box",
+          "map": "Galaxy Toys",
+          "key": "FST_ITEM45:3",
+          "actors": [
+            "/Game/Levels/ts/ts_02/umap/ts_02_food.ts_02_food:PersistentLevel.g_ts_takeoutbox_005",
+            "/Game/Levels/ts/ts_02/umap/ts_02_food.ts_02_food:PersistentLevel.g_ts_takeoutbox_009"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "FST_ITEM46",
+      "name": "Cornichon",
+      "icon": "/Game/UI/Icon/Item/food006.food006",
+      "sources": [
+        {
+          "world": "Toy Box",
+          "map": "Galaxy Toys",
+          "key": "FST_ITEM46:0",
+          "actors": [
+            "/Game/Levels/ts/ts_02/umap/ts_02_food.ts_02_food:PersistentLevel.g_ts_takeoutbox_003",
+            "/Game/Levels/ts/ts_02/umap/ts_02_food.ts_02_food:PersistentLevel.g_ts_takeoutbox_007",
+            "/Game/Levels/ts/ts_02/umap/ts_02_food.ts_02_food:PersistentLevel.g_ts_takeoutbox_011"
+          ]
+        },
+        {
+          "world": "Twilight Town",
+          "map": "The Neighborhood",
+          "key": "FST_ITEM46:1",
+          "actors": [
+            "/Game/Levels/tt/tt_01/umap/tt_01_Food.tt_01_Food:PersistentLevel.g_tt_takeoutbox_008"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "FST_ITEM47",
+      "name": "Rice",
+      "icon": "/Game/UI/Icon/Item/food006.food006",
+      "sources": [
+        {
+          "world": "Monstropolis",
+          "map": "Monsters, Inc.",
+          "key": "FST_ITEM47:0",
+          "actors": [
+            "/Game/Levels/mi/mi_01/umap/mi_01_food.mi_01_food:PersistentLevel.g_mi_takeoutbox_3"
+          ]
+        },
+        {
+          "world": "San Fransokyo",
+          "map": "The City",
+          "key": "FST_ITEM47:1",
+          "actors": [
+            "/Game/Levels/bx/bx_02/umap/bx_02_food.bx_02_food:PersistentLevel.g_bx_takeoutbox_001",
+            "/Game/Levels/bx/bx_02/umap/bx_02_food.bx_02_food:PersistentLevel.g_bx_takeoutbox_006",
+            "/Game/Levels/bx/bx_02/umap/bx_02_food.bx_02_food:PersistentLevel.g_bx_takeoutbox_009",
+            "/Game/Levels/bx/bx_02/umap/bx_02_food.bx_02_food:PersistentLevel.g_bx_takeoutbox_012"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "FST_ITEM56",
+      "name": "Veal",
+      "icon": "/Game/UI/Icon/Item/food008.food008",
+      "sources": [
+        {
+          "world": "Olympus",
+          "map": "Mount Olympus",
+          "key": "FST_ITEM56:0",
+          "actors": [
+            "/Game/Levels/he/he_02/umap/he_02_food.he_02_food:PersistentLevel.g_he_foodbox_02_003"
+          ]
+        },
+        {
+          "world": "Olympus",
+          "map": "Thebes",
+          "key": "FST_ITEM56:1",
+          "actors": [
+            "/Game/Levels/he/he_03/umap/he_03_food.he_03_food:PersistentLevel.g_he_foodbox_003",
+            "/Game/Levels/he/he_04/umap/he_04_food.he_04_food:PersistentLevel.g_he_foodbox_003"
+          ]
+        },
+        {
+          "world": "The Caribbean",
+          "map": "Port Royal",
+          "key": "FST_ITEM56:2",
+          "actors": [
+            "/Game/Levels/ca/ca_01/umap/ca_01_food.ca_01_food:PersistentLevel.g_ca_foodbox_001"
+          ]
+        },
+        {
+          "world": "Twilight Town",
+          "map": "The Neighborhood",
+          "key": "FST_ITEM56:3",
+          "actors": [
+            "/Game/Levels/tt/tt_01/umap/tt_01_Food.tt_01_Food:PersistentLevel.g_tt_takeoutbox_007"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "FST_ITEM57",
+      "name": "Beef",
+      "icon": "/Game/UI/Icon/Item/food008.food008",
+      "sources": [
+        {
+          "world": "Monstropolis",
+          "map": "The Door Vault",
+          "key": "FST_ITEM57:0",
+          "actors": [
+            "/Game/Levels/mi/mi_04/umap/mi_04_food.mi_04_food:PersistentLevel.g_mi_takeoutbox_5"
+          ]
+        },
+        {
+          "world": "Olympus",
+          "map": "Mount Olympus",
+          "key": "FST_ITEM57:1",
+          "actors": [
+            "/Game/Levels/he/he_02/umap/he_02_food.he_02_food:PersistentLevel.g_he_foodbox_01_001"
+          ]
+        },
+        {
+          "world": "Olympus",
+          "map": "Thebes",
+          "key": "FST_ITEM57:2",
+          "actors": [
+            "/Game/Levels/he/he_03/umap/he_03_food.he_03_food:PersistentLevel.g_he_foodbox_001",
+            "/Game/Levels/he/he_04/umap/he_04_food.he_04_food:PersistentLevel.g_he_foodbox_001"
+          ]
+        },
+        {
+          "world": "The Caribbean",
+          "map": "Port Royal",
+          "key": "FST_ITEM57:3",
+          "actors": [
+            "/Game/Levels/ca/ca_01/umap/ca_01_food.ca_01_food:PersistentLevel.g_ca_foodbox_003"
+          ]
+        },
+        {
+          "world": "Toy Box",
+          "map": "Galaxy Toys",
+          "key": "FST_ITEM57:4",
+          "actors": [
+            "/Game/Levels/ts/ts_02/umap/ts_02_food.ts_02_food:PersistentLevel.g_ts_takeoutbox_004",
+            "/Game/Levels/ts/ts_02/umap/ts_02_food.ts_02_food:PersistentLevel.g_ts_takeoutbox_008"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "FST_ITEM58",
+      "name": "Quail",
+      "icon": "/Game/UI/Icon/Item/food008.food008",
+      "sources": [
+        {
+          "world": "San Fransokyo",
+          "map": "The City",
+          "key": "FST_ITEM58:0",
+          "actors": [
+            "/Game/Levels/bx/bx_02/umap/bx_02_food.bx_02_food:PersistentLevel.g_bx_takeoutbox_004",
+            "/Game/Levels/bx/bx_02/umap/bx_02_food.bx_02_food:PersistentLevel.g_bx_takeoutbox_009",
+            "/Game/Levels/bx/bx_02/umap/bx_02_food.bx_02_food:PersistentLevel.g_bx_takeoutbox_010"
+          ]
+        },
+        {
+          "world": "The Caribbean",
+          "map": "Port Royal",
+          "key": "FST_ITEM58:1",
+          "actors": [
+            "/Game/Levels/ca/ca_01/umap/ca_01_food.ca_01_food:PersistentLevel.g_ca_foodbox_004",
+            "/Game/Levels/ca/ca_01/umap/ca_01_food.ca_01_food:PersistentLevel.g_ca_foodbox_015"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "FST_ITEM59",
+      "name": "Filet Mignon",
+      "icon": "/Game/UI/Icon/Item/food008.food008",
+      "sources": [
+        {
+          "world": "Monstropolis",
+          "map": "Monsters, Inc.",
+          "key": "FST_ITEM59:0",
+          "actors": [
+            "/Game/Levels/mi/mi_01/umap/mi_01_food.mi_01_food:PersistentLevel.g_mi_takeoutbox_4"
+          ]
+        },
+        {
+          "world": "The Caribbean",
+          "map": "Port Royal",
+          "key": "FST_ITEM59:1",
+          "actors": [
+            "/Game/Levels/ca/ca_01/umap/ca_01_food.ca_01_food:PersistentLevel.g_ca_foodbox_013_45",
+            "/Game/Levels/ca/ca_01/umap/ca_01_food.ca_01_food:PersistentLevel.g_ca_foodbox_014"
+          ]
+        }
+      ]
+    }
+  ]
+}

@@ -24,6 +24,7 @@ permissions:  # permissions required for attestation
 
 jobs:
   create-release:
+    if: github.repository == 'ArchipelagoMW/Archipelago'
     runs-on: ubuntu-latest
     steps:
       - name: Set env
@@ -41,7 +42,7 @@ jobs:
 
   build-release-win:
     runs-on: windows-latest
-    if: ${{ true }}  # change to false to skip if release is built by hand
+    if: ${{ github.repository == 'ArchipelagoMW/Archipelago' && (true) }}
     needs: create-release
     steps:
       - name: Set env
@@ -110,6 +111,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
   build-release-ubuntu2204:
+    if: github.repository == 'ArchipelagoMW/Archipelago'
     runs-on: ubuntu-22.04
     needs: create-release
     steps:

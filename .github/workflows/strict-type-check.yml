@@ -18,6 +18,7 @@ permissions: {}
 
 jobs:
   pyright:
+    if: github.repository == 'ArchipelagoMW/Archipelago'
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v6.0.2

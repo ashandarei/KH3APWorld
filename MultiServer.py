@@ -401,6 +401,7 @@ class Context:
         # init empty to satisfy linter, I suppose
         self.reduced_games_package = {}
         self.checksums = {}
+        self.item_name_aliases = {}
         self.item_name_groups = {}
         self.location_name_groups = {}
         self.all_item_and_group_names = {}
@@ -644,6 +645,10 @@ class Context:
 
     def _init_game_data(self) -> None:
         """Update internal values from previously loaded data packages"""
+        from worlds.AutoWorld import AutoWorldRegister
+
+        self.item_name_aliases = {game: dict(getattr(world, "item_name_aliases", {}))
+                                  for game, world in AutoWorldRegister.world_types.items()}
         for game_name, game_package in self.reduced_games_package.items():
             if game_name not in self.played_games:
                 continue
@@ -655,7 +660,8 @@ class Context:
             for location_name, location_id in game_package["location_name_to_id"].items():
                 self.location_names[game_name][location_id] = location_name
             self.all_item_and_group_names[game_name] = \
-                set(game_package["item_name_to_id"]) | set(self.item_name_groups[game_name])
+                set(game_package["item_name_to_id"]) | set(self.item_name_groups[game_name]) | set(
+                    valid_item_name_aliases(game_package["item_name_to_id"], self.item_name_aliases.get(game_name)))
             self.all_location_and_group_names[game_name] = \
                 set(game_package["location_name_to_id"]) | set(self.location_name_groups.get(game_name, []))
 
@@ -1487,6 +1493,56 @@ class CommandProcessor(metaclass=CommandMeta):
         self.output(traceback.format_exc())
 
 
+def valid_item_name_aliases(
+    item_names: typing.Mapping[str, int],
+    aliases: typing.Mapping[str, str] | None,
+) -> dict[str, str]:
+    """Return unambiguous aliases whose targets exist in the game's item table."""
+    candidates_by_alias: dict[str, set[str]] = {}
+    item_names_by_casefold = {item_name.casefold() for item_name in item_names}
+    for alias, item_name in (aliases or {}).items():
+        if alias.casefold() not in item_names_by_casefold and item_name in item_names:
+            candidates_by_alias.setdefault(alias.casefold(), set()).add(item_name)
+
+    return {
+        alias: item_name
+        for alias, item_name in (aliases or {}).items()
+        if alias.casefold() in candidates_by_alias
+        and len(candidates_by_alias[alias.casefold()]) == 1
+    }
+
+
+def resolve_item_name_alias(
+    item_name: str,
+    item_names: typing.Mapping[str, int],
+    aliases: typing.Mapping[str, str] | None,
+) -> str:
+    valid_aliases = valid_item_name_aliases(item_names, aliases)
+    return next(
+        (
+            target
+            for alias, target in valid_aliases.items()
+            if alias.casefold() == item_name.casefold()
+        ),
+        item_name,
+    )
+
+
+def get_intended_item_name(
+    input_text: str,
+    item_names: typing.Mapping[str, int],
+    aliases: typing.Mapping[str, str] | None,
+) -> tuple[str, bool, str]:
+    valid_aliases = valid_item_name_aliases(item_names, aliases)
+    item_name, usable, response = get_intended_text(
+        input_text,
+        [*item_names, *valid_aliases],
+    )
+    if usable:
+        item_name = resolve_item_name_alias(item_name, item_names, valid_aliases)
+    return item_name, usable, response
+
+
 class CommonCommandProcessor(CommandProcessor):
     ctx: Context
 
@@ -1751,9 +1807,10 @@ class ClientMessageProcessor(CommonCommandProcessor):
         """Cheat in an item, if it is enabled on this server"""
         if self.ctx.item_cheat:
             names = self.ctx.item_names_for_game(self.ctx.games[self.client.slot])
-            item_name, usable, response = get_intended_text(
+            item_name, usable, response = get_intended_item_name(
                 item_name,
-                names
+                names,
+                self.ctx.item_name_aliases.get(self.ctx.games[self.client.slot]),
             )
             if usable:
                 new_item = NetworkItem(names[item_name], -1, self.client.slot)
@@ -2486,7 +2543,7 @@ class ServerCommandProcessor(CommonCommandProcessor):
             team, slot = self.ctx.player_name_lookup[seeked_player]
             item_name = " ".join(item_name)
             names = self.ctx.item_names_for_game(self.ctx.games[slot])
-            item_name, usable, response = get_intended_text(item_name, names)
+            item_name, usable, response = get_intended_item_name(item_name, names, self.ctx.item_name_aliases.get(self.ctx.games[slot]))
             if usable:
                 amount: int = int(amount)
                 if amount > 100:
@@ -2558,6 +2615,9 @@ class ServerCommandProcessor(CommonCommandProcessor):
                 return False
 
             if usable:
+                if isinstance(item, str):
+                    item = resolve_item_name_alias(item, self.ctx.item_names_for_game(game),
+                                                   self.ctx.item_name_aliases.get(game))
                 if game in self.ctx.item_name_groups and item in self.ctx.item_name_groups[game]:
                     hints = []
                     for item_name_from_group in self.ctx.item_name_groups[game][item]:

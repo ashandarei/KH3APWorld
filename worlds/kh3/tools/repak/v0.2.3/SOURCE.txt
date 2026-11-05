@@ -1,0 +1,14 @@
+repak_cli 0.2.3
+Source: https://github.com/trumank/repak
+Release: https://github.com/trumank/repak/releases/tag/v0.2.3
+License: MIT OR Apache-2.0 (see LICENSE-MIT and LICENSE-APACHE)
+
+Bundled official release archives:
+
+repak_cli-x86_64-pc-windows-msvc.zip
+SHA-256: 6720d602144d75df477a99d5bedb6ea780997546afc335901d4937cafeaa73fa
+repak.exe SHA-256: fcd538e5994b9bb833622d425ae346f4e0692f02d4b0025114a559f9b6286022
+
+repak_cli-x86_64-unknown-linux-gnu.tar.xz
+SHA-256: 933bdb8e26f34e8fd70ea50201efca39df041de58aa83b1cd6eb83da124a2046
+repak SHA-256: fce30661c951ce56fd2507a44a1e03637e3ea06a1b7cc8035bd62c0b37dd9457

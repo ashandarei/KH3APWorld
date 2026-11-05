@@ -202,3 +202,14 @@ _speedups.html
 .LSOverride
 Thumbs.db
 [Dd]esktop.ini
+
+# KH3 local development settings and outputs
+/.env
+/.env.*
+!/.env.example
+/.local/
+/.pytest_cache/
+/artifacts/
+/kh3/
+# The reviewed player mod is an APWorld release input. Loader/proxy DLLs stay ignored.
+!/worlds/kh3/runtime/Mods/KH3APProbeCpp/dlls/main.dll

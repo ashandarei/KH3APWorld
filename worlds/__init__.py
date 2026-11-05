@@ -105,6 +105,92 @@ def add_apworld_spec(source: WorldSource, container: APWorldContainer):
     apworld_module_specs[f"worlds.{world_name}"] = spec
 
 
+WORLD_LOAD_PATHS_ENV = "AP_WORLD_LOAD_PATHS"
+
+
+def _normalized_source_path(path: str) -> str:
+    return os.path.normcase(os.path.abspath(path))
+
+
+def _select_world_sources(sources: List[WorldSource]) -> List[WorldSource]:
+    """Select an internal worker-requested source subset, falling back to the full catalog on invalid input."""
+    raw_filter = os.environ.get(WORLD_LOAD_PATHS_ENV)
+    if not raw_filter:
+        return sources.copy()
+
+    try:
+        requested_paths = json.loads(raw_filter)
+    except (TypeError, json.JSONDecodeError):
+        logging.warning("Ignoring invalid %s JSON; loading every world source.", WORLD_LOAD_PATHS_ENV)
+        return sources.copy()
+
+    if not isinstance(requested_paths, list) or not requested_paths or not all(
+            isinstance(path, str) and path for path in requested_paths):
+        logging.warning("Ignoring invalid %s value; loading every world source.", WORLD_LOAD_PATHS_ENV)
+        return sources.copy()
+
+    sources_by_path = {_normalized_source_path(source.resolved_path): source for source in sources}
+    normalized_requested_paths = {_normalized_source_path(path) for path in requested_paths}
+    unknown_paths = normalized_requested_paths - sources_by_path.keys()
+    if unknown_paths:
+        logging.warning(
+            "Ignoring %s because it contains unknown world sources; loading every world source: %s",
+            WORLD_LOAD_PATHS_ENV,
+            sorted(unknown_paths),
+        )
+        return sources.copy()
+
+    selected_paths = normalized_requested_paths
+    # The generic world supplies the built-in Archipelago spectator/data package entry needed by every room.
+    selected_paths.update(
+        normalized_path
+        for normalized_path, source in sources_by_path.items()
+        if source.relative and not source.is_zip and Path(source.path).name == "generic"
+    )
+    selected = [source for source in sources if _normalized_source_path(source.resolved_path) in selected_paths]
+    logging.info("Loading %d of %d discovered world sources.", len(selected), len(sources))
+    return selected
+
+
+def _world_source_for_module_file(module_file: str) -> WorldSource:
+    normalized_module_file = _normalized_source_path(module_file)
+    matching_sources: List[WorldSource] = []
+    for source in world_sources:
+        normalized_source_path = _normalized_source_path(source.resolved_path)
+        if source.is_zip:
+            if normalized_module_file == normalized_source_path or normalized_module_file.startswith(
+                    normalized_source_path + os.sep):
+                matching_sources.append(source)
+        else:
+            try:
+                if os.path.commonpath((normalized_module_file, normalized_source_path)) == normalized_source_path:
+                    matching_sources.append(source)
+            except ValueError:
+                continue
+
+    if len(matching_sources) != 1:
+        raise RuntimeError(
+            f"Expected one world source for module {module_file}, found "
+            f"{[source.resolved_path for source in matching_sources]}."
+        )
+    return matching_sources[0]
+
+
+def get_world_source_paths_for_games(game_names: Sequence[str]) -> List[str]:
+    """Resolve registered games to the source paths accepted by ``AP_WORLD_LOAD_PATHS``."""
+    requested_games = set(game_names)
+    requested_games.add("Archipelago")
+    missing_games = requested_games - AutoWorldRegister.world_types.keys()
+    if missing_games:
+        raise KeyError(f"Unknown games cannot be mapped to world sources: {sorted(missing_games)}")
+
+    source_paths = {
+        os.path.abspath(_world_source_for_module_file(AutoWorldRegister.world_types[game].__file__).resolved_path)
+        for game in requested_games
+    }
+    return sorted(source_paths, key=os.path.normcase)
+
+
 # find potential world containers, currently folders and zip-importable .apworld's
 logger.info("Indexing worlds")
 world_sources: List[WorldSource] = []
@@ -129,8 +215,9 @@ for folder in (folder for folder in (user_folder, local_folder) if folder):
 # import all submodules to trigger AutoWorldRegister
 logger.info("Processing found worlds")
 world_sources.sort()
+loaded_world_sources = _select_world_sources(world_sources)
 apworlds: list[WorldSource] = []
-for world_source in world_sources:
+for world_source in loaded_world_sources:
     # load all loose files first:
     if world_source.is_zip:
         apworlds.append(world_source)
@@ -140,7 +227,7 @@ for world_source in world_sources:
 
 from .AutoWorld import AutoWorldRegister
 
-for world_source in world_sources:
+for world_source in loaded_world_sources:
     if not world_source.is_zip:
         # look for manifest
         manifest = {}

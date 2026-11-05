@@ -33,6 +33,7 @@ permissions: {}
 
 jobs:
   unit:
+    if: github.repository == 'ArchipelagoMW/Archipelago'
     runs-on: ${{ matrix.os }}
     name: Test Python ${{ matrix.python.version }} ${{ matrix.os }}
 
@@ -69,6 +70,7 @@ jobs:
         pytest -n auto
 
   hosting:
+    if: github.repository == 'ArchipelagoMW/Archipelago'
     runs-on: ${{ matrix.os }}
     name: Test hosting with ${{ matrix.python.version }} on ${{ matrix.os }}
 

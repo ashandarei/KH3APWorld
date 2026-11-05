@@ -28,6 +28,7 @@ permissions: {}
 
 jobs:
   ctest:
+    if: github.repository == 'ArchipelagoMW/Archipelago'
     runs-on: ${{ matrix.os }}
     name: Test C++ ${{ matrix.os }}
 

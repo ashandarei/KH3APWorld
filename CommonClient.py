@@ -317,6 +317,8 @@ class CommonContext:
     """Slot Info from the server for the current connection"""
     server_address: str | None
     """Autoconnect address provided by the ctx constructor"""
+    connection_attempt_address: str | None = None
+    """Address of the current attempt, including connections that never open."""
     password: str | None
     """Password used for Connecting, expected by server_auth"""
     hint_cost: int | None
@@ -527,6 +529,10 @@ class CommonContext:
             logger.info('Enter the password required to join this game:')
             self.password = await self.console_input()
             return self.password
+
+    async def on_room_info_before_auth(self, args: dict) -> None:
+        """Let game clients validate and preserve seed state before authentication."""
+        return None
 
     async def get_username(self):
         if not self.auth:
@@ -880,6 +886,7 @@ async def server_loop(ctx: CommonContext, address: typing.Optional[str] = None) 
 
     address = f"ws://{address}" if "://" not in address \
         else address.replace("archipelago://", "ws://")
+    ctx.connection_attempt_address = address
 
     server_url = urllib.parse.urlparse(address)
     if server_url.username:
@@ -892,7 +899,10 @@ async def server_loop(ctx: CommonContext, address: typing.Optional[str] = None) 
 
     logger.info(f'Connecting to Archipelago server at {address}')
     try:
-        port = server_url.port or 38281  # raises ValueError if invalid
+        try:
+            port = server_url.port or 38281
+        except ValueError as exc:
+            raise websockets.InvalidURI(address, str(exc)) from exc
         socket = await websockets.connect(address, port=port, ping_timeout=None, ping_interval=None,
                                           ssl=get_ssl_context() if address.startswith("wss://") else None,
                                           max_size=ctx.max_size)
@@ -996,6 +1006,7 @@ async def process_server_cmd(ctx: CommonContext, args: dict):
             data_package_checksums = args.get("datapackage_checksums", {})
             await ctx.prepare_data_package(set(args["games"]), data_package_checksums)
 
+            await ctx.on_room_info_before_auth(args)
             await ctx.server_auth(args['password'])
 
     elif cmd == 'DataPackage':

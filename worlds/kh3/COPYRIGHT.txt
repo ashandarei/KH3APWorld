@@ -1,0 +1,38 @@
+Kingdom Hearts III Archipelago world
+===================================
+
+Copyright (c) 2026 Aesais and contributors.
+SPDX-License-Identifier: GPL-3.0-only
+
+The first-party KH3 Python world, client, bridge, and seed-generator code in
+this directory is free software: you may redistribute and modify it under
+the GNU General Public License, version 3 only. The complete license is in
+LICENSE. This software is provided without any warranty; see that license
+for details.
+
+Keep existing copyright, attribution, modification, and license notices.
+The GPL grant covers contributions this project has the right to license;
+it does not replace the original licenses of upstream material.
+
+Separate components
+-------------------
+
+Archipelago's framework remains MIT licensed. Its original license and
+copyright notices are preserved at the repository root and reproduced in
+LICENSE-Archipelago.txt for distributions of this world.
+
+Adapted KH3RandomizerClient code and data retain their Apache-2.0 notices.
+See LICENSE-KH3RandomizerClient.txt, THIRD_PARTY_NOTICES.txt, and
+UPSTREAM-KH3RandomizerClient-CREDITS.txt.
+
+The native KH3APProbeCpp DLL is a separate MIT-licensed program. Its license
+is in runtime/Mods/KH3APProbeCpp/LICENSE. The separately downloaded 02-GoA
+companion is also MIT licensed; its notices are in
+runtime/KH02/02-GoA-Licenses/. Their third-party components and any Unreal
+Engine technology retain their own applicable terms. This world's GPL
+license does not relicense either native runtime or Unreal Engine.
+
+Fonts, artist-supplied artwork, game content, and other separately licensed
+resources retain their own ownership and permission terms. This software
+license grants no additional rights to Square Enix, Disney, Epic, or other
+third-party content. See the applicable component notices and credits.

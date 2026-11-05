@@ -39,6 +39,7 @@ permissions:
 
 jobs:
   analyze:
+    if: github.repository == 'ArchipelagoMW/Archipelago'
     name: Analyze
     runs-on: ubuntu-latest
 

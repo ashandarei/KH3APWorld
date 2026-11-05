@@ -18,6 +18,7 @@ permissions: {}
 
 jobs:
   flake8-or-mypy:
+    if: github.repository == 'ArchipelagoMW/Archipelago'
     strategy:
       fail-fast: false
       matrix:

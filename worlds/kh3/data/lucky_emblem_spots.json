@@ -1,0 +1,832 @@
+{
+  "source": {
+    "name": "GameFAQs Kingdom Hearts III Guide and Walkthrough - Lucky Emblems",
+    "url": "https://gamefaqs.gamespot.com/ps4/718920-kingdom-hearts-iii/faqs/76812/lucky-emblems",
+    "notes": "global_id is the shipped TresLuckyMarkData row ID; its World and MarkIndex establish the native world/gallery order. Location text is normalized for Archipelago planning."
+  },
+  "total": 90,
+  "world_counts": {
+    "Olympus": 12,
+    "Twilight Town": 9,
+    "Toy Box": 11,
+    "Kingdom of Corona": 9,
+    "Monstropolis": 11,
+    "Arendelle": 11,
+    "The Caribbean": 13,
+    "San Fransokyo": 11,
+    "100 Acre Wood": 3
+  },
+  "spots": [
+    {
+      "global_id": 1,
+      "world": "Olympus",
+      "world_index": 1,
+      "area": "Thebes / Overlook",
+      "friendly_name": "Olympus Lucky Emblem 1 - Overlook Wall",
+      "location": "On a wall in Thebes Overlook.",
+      "logic_requirement_summary": "Wall Run OR Super Jump + Wall Kick + Air Dash x1"
+    },
+    {
+      "global_id": 2,
+      "world": "Olympus",
+      "world_index": 2,
+      "area": "Thebes / The Big Olive",
+      "friendly_name": "Olympus Lucky Emblem 2 - Big Olive Rubble",
+      "location": "On a wall among the rubble in The Big Olive.",
+      "logic_requirement_summary": "Wall Run OR Super Jump + Wall Kick + Air Dash x1"
+    },
+    {
+      "global_id": 3,
+      "world": "Olympus",
+      "world_index": 3,
+      "area": "Thebes / Agora",
+      "friendly_name": "Olympus Lucky Emblem 3 - Agora Steps",
+      "location": "On the Agora steps, viewed from far enough back to align the mark.",
+      "logic_requirement_summary": "Wall Run OR Super Jump + Wall Kick + Air Dash x1"
+    },
+    {
+      "global_id": 4,
+      "world": "Olympus",
+      "world_index": 4,
+      "area": "Thebes / Overlook",
+      "friendly_name": "Olympus Lucky Emblem 4 - Overlook Planters",
+      "location": "On the wall between planters in Thebes Overlook.",
+      "logic_requirement_summary": "Wall Run"
+    },
+    {
+      "global_id": 5,
+      "world": "Olympus",
+      "world_index": 5,
+      "area": "Mount Olympus / Cliff Ascent",
+      "friendly_name": "Olympus Lucky Emblem 5 - Cliff Pillar",
+      "location": "On the side of a pillar during Cliff Ascent.",
+      "logic_requirement_summary": "Wall Run OR Super Jump + Wall Kick + Air Dash x1 + Double Flight"
+    },
+    {
+      "global_id": 6,
+      "world": "Olympus",
+      "world_index": 6,
+      "area": "Mount Olympus / Cliff Ascent",
+      "friendly_name": "Olympus Lucky Emblem 6 - Drained Waterfall Wall",
+      "location": "On the wall revealed after the waterfall is drained.",
+      "logic_requirement_summary": "Wall Run OR Super Jump + Wall Kick + Air Dash x1 + Double Flight"
+    },
+    {
+      "global_id": 7,
+      "world": "Olympus",
+      "world_index": 7,
+      "area": "Mount Olympus / Cliff Ascent",
+      "friendly_name": "Olympus Lucky Emblem 7 - Rock Spire",
+      "location": "Rock formation on a high spire, photographed from the west-side high point.",
+      "logic_requirement_summary": "Wall Run OR Super Jump + Wall Kick + Air Dash x1 + Double Flight"
+    },
+    {
+      "global_id": 8,
+      "world": "Olympus",
+      "world_index": 8,
+      "area": "Mount Olympus / Mountainside",
+      "friendly_name": "Olympus Lucky Emblem 8 - Vines",
+      "location": "Vines hanging from a tree on the Mountainside.",
+      "logic_requirement_summary": "Wall Run"
+    },
+    {
+      "global_id": 9,
+      "world": "Olympus",
+      "world_index": 9,
+      "area": "Realm of the Gods / Corridors",
+      "friendly_name": "Olympus Lucky Emblem 9 - Corridor Steps",
+      "location": "On the wall beside the stairs in the Corridors.",
+      "logic_requirement_summary": "Wall Run"
+    },
+    {
+      "global_id": 10,
+      "world": "Olympus",
+      "world_index": 10,
+      "area": "Realm of the Gods / Corridors",
+      "friendly_name": "Olympus Lucky Emblem 10 - Corridor Wall",
+      "location": "On a wall in the Realm of the Gods Corridors.",
+      "logic_requirement_summary": "Wall Run"
+    },
+    {
+      "global_id": 11,
+      "world": "Olympus",
+      "world_index": 11,
+      "area": "Realm of the Gods / Secluded Forge",
+      "friendly_name": "Olympus Lucky Emblem 11 - Forge Anvil",
+      "location": "On the anvil in the Secluded Forge.",
+      "logic_requirement_summary": "Wall Run"
+    },
+    {
+      "global_id": 12,
+      "world": "Olympus",
+      "world_index": 12,
+      "area": "Realm of the Gods / Cloud Ridge",
+      "friendly_name": "Olympus Lucky Emblem 12 - Southeast Clouds",
+      "location": "Cloud shape visible in the southeast distance from Cloud Ridge.",
+      "logic_requirement_summary": "Wall Run"
+    },
+    {
+      "global_id": 79,
+      "world": "Twilight Town",
+      "world_index": 1,
+      "area": "The Neighborhood / Tram Common",
+      "friendly_name": "Twilight Town Lucky Emblem 1 - Tram Common Wall",
+      "location": "Tutorial emblem on a wall in Tram Common.",
+      "logic_requirement_summary": ""
+    },
+    {
+      "global_id": 80,
+      "world": "Twilight Town",
+      "world_index": 2,
+      "area": "The Neighborhood / Tram Common",
+      "friendly_name": "Twilight Town Lucky Emblem 2 - Tram Roof",
+      "location": "On the roof of the moving tram in Tram Common.",
+      "logic_requirement_summary": ""
+    },
+    {
+      "global_id": 81,
+      "world": "Twilight Town",
+      "world_index": 3,
+      "area": "The Neighborhood / Tram Common",
+      "friendly_name": "Twilight Town Lucky Emblem 3 - Moogle Shop Chimney",
+      "location": "On a chimney above the Moogle Shop.",
+      "logic_requirement_summary": "Wall Run OR Super Jump + High Jump + Wall Kick + Air Dash x1"
+    },
+    {
+      "global_id": 82,
+      "world": "Twilight Town",
+      "world_index": 4,
+      "area": "The Neighborhood / Tram Common",
+      "friendly_name": "Twilight Town Lucky Emblem 4 - Projector Screen",
+      "location": "On the outdoor movie screen between showings.",
+      "logic_requirement_summary": ""
+    },
+    {
+      "global_id": 83,
+      "world": "Twilight Town",
+      "world_index": 5,
+      "area": "The Neighborhood / Tram Common",
+      "friendly_name": "Twilight Town Lucky Emblem 5 - Rooftop Plates",
+      "location": "Dinner plates on a rooftop, photographed from the north building.",
+      "logic_requirement_summary": "Wall Run OR Super Jump + High Jump + Wall Kick + Air Dash x1"
+    },
+    {
+      "global_id": 84,
+      "world": "Twilight Town",
+      "world_index": 6,
+      "area": "The Neighborhood / The Woods",
+      "friendly_name": "Twilight Town Lucky Emblem 6 - Woods Door",
+      "location": "On the wooden door in The Woods.",
+      "logic_requirement_summary": ""
+    },
+    {
+      "global_id": 85,
+      "world": "Twilight Town",
+      "world_index": 7,
+      "area": "The Neighborhood / The Woods",
+      "friendly_name": "Twilight Town Lucky Emblem 7 - High Woods Wall",
+      "location": "High on a wall reached by free running in The Woods.",
+      "logic_requirement_summary": "Wall Run OR Super Jump + High Jump + Wall Kick + Air Dash x1"
+    },
+    {
+      "global_id": 86,
+      "world": "Twilight Town",
+      "world_index": 8,
+      "area": "The Neighborhood / The Woods",
+      "friendly_name": "Twilight Town Lucky Emblem 8 - Sunbeams",
+      "location": "Sunbeam pattern on the south-facing side of the hill.",
+      "logic_requirement_summary": ""
+    },
+    {
+      "global_id": 87,
+      "world": "Twilight Town",
+      "world_index": 9,
+      "area": "The Neighborhood / The Old Mansion",
+      "friendly_name": "Twilight Town Lucky Emblem 9 - Mansion Outer Wall",
+      "location": "On the south-facing side of the mansion's western outer wall.",
+      "logic_requirement_summary": ""
+    },
+    {
+      "global_id": 13,
+      "world": "Toy Box",
+      "world_index": 1,
+      "area": "Andy's House",
+      "friendly_name": "Toy Box Lucky Emblem 1 - Bedroom Shelves",
+      "location": "Halfway up the eastern wall shelves in Andy's room.",
+      "logic_requirement_summary": "Wall Run OR Super Jump + Wall Kick + Air Dash x1"
+    },
+    {
+      "global_id": 14,
+      "world": "Toy Box",
+      "world_index": 2,
+      "area": "Andy's House",
+      "friendly_name": "Toy Box Lucky Emblem 2 - Garage Roof",
+      "location": "On the corner of the garage roof.",
+      "logic_requirement_summary": ""
+    },
+    {
+      "global_id": 15,
+      "world": "Toy Box",
+      "world_index": 3,
+      "area": "Andy's House",
+      "friendly_name": "Toy Box Lucky Emblem 3 - Front Walkway Leaves",
+      "location": "Leaf pattern on the front walkway, aligned from the front steps.",
+      "logic_requirement_summary": ""
+    },
+    {
+      "global_id": 16,
+      "world": "Toy Box",
+      "world_index": 4,
+      "area": "Andy's House",
+      "friendly_name": "Toy Box Lucky Emblem 4 - Minivan",
+      "location": "On the back of the minivan outside Andy's house.",
+      "logic_requirement_summary": ""
+    },
+    {
+      "global_id": 17,
+      "world": "Toy Box",
+      "world_index": 5,
+      "area": "Galaxy Toys / Main Floor: 1F",
+      "friendly_name": "Toy Box Lucky Emblem 5 - Tape Rolls",
+      "location": "Tape rolls hanging on the 1F wall.",
+      "logic_requirement_summary": ""
+    },
+    {
+      "global_id": 18,
+      "world": "Toy Box",
+      "world_index": 6,
+      "area": "Galaxy Toys / Main Floor: 1F",
+      "friendly_name": "Toy Box Lucky Emblem 6 - Toy Display Platform",
+      "location": "On the round display platform after breaking the toy display with a Gigas.",
+      "logic_requirement_summary": "",
+      "notes": "giga locked?"
+    },
+    {
+      "global_id": 19,
+      "world": "Toy Box",
+      "world_index": 7,
+      "area": "Galaxy Toys / Lower Vents",
+      "friendly_name": "Toy Box Lucky Emblem 7 - Lower Vents Return Path",
+      "location": "On the lower vent path reached from the updraft; turn back after landing.",
+      "logic_requirement_summary": "Wall Run OR High Jump + Double Flight"
+    },
+    {
+      "global_id": 20,
+      "world": "Toy Box",
+      "world_index": 8,
+      "area": "Galaxy Toys / Main Floor: 3F",
+      "friendly_name": "Toy Box Lucky Emblem 8 - UFO Hatch",
+      "location": "On the UFO hatch below the 3F balcony.",
+      "logic_requirement_summary": ""
+    },
+    {
+      "global_id": 21,
+      "world": "Toy Box",
+      "world_index": 9,
+      "area": "Galaxy Toys / Babies & Toddlers: Dolls",
+      "friendly_name": "Toy Box Lucky Emblem 9 - Disco Balls",
+      "location": "Disco ball pattern aligned from the north Julia display.",
+      "logic_requirement_summary": "Wall Run OR High Jump + Double Flight"
+    },
+    {
+      "global_id": 22,
+      "world": "Toy Box",
+      "world_index": 10,
+      "area": "Galaxy Toys / Main Floor: 3F",
+      "friendly_name": "Toy Box Lucky Emblem 10 - Robot Display",
+      "location": "At the base of the robot display on 3F.",
+      "logic_requirement_summary": ""
+    },
+    {
+      "global_id": 23,
+      "world": "Toy Box",
+      "world_index": 11,
+      "area": "Galaxy Toys / Main Floor: 1F",
+      "friendly_name": "Toy Box Lucky Emblem 11 - Box Stickers",
+      "location": "Logo and sticker pattern on boxes on 1F.",
+      "logic_requirement_summary": ""
+    },
+    {
+      "global_id": 48,
+      "world": "Kingdom of Corona",
+      "world_index": 1,
+      "area": "The Forest / Tower",
+      "friendly_name": "Corona Lucky Emblem 1 - Tower Waterfall View",
+      "location": "Near the waterfall southeast of Rapunzel's tower, viewed from the tower top.",
+      "logic_requirement_summary": "Wall Run"
+    },
+    {
+      "global_id": 49,
+      "world": "Kingdom of Corona",
+      "world_index": 2,
+      "area": "The Forest / Marsh",
+      "friendly_name": "Corona Lucky Emblem 2 - Marsh Wall",
+      "location": "Wall discoloration in the Marsh.",
+      "logic_requirement_summary": ""
+    },
+    {
+      "global_id": 50,
+      "world": "Kingdom of Corona",
+      "world_index": 3,
+      "area": "The Forest / Wetlands",
+      "friendly_name": "Corona Lucky Emblem 3 - Mine Barrel",
+      "location": "On the side of a barrel in the Wetlands mine.",
+      "logic_requirement_summary": "Wall Run"
+    },
+    {
+      "global_id": 51,
+      "world": "Kingdom of Corona",
+      "world_index": 4,
+      "area": "The Forest / Shore",
+      "friendly_name": "Corona Lucky Emblem 4 - Kingdom Entrance Railing",
+      "location": "On the end of a stone railing near the Kingdom entrance.",
+      "logic_requirement_summary": "Wall Run"
+    },
+    {
+      "global_id": 52,
+      "world": "Kingdom of Corona",
+      "world_index": 5,
+      "area": "The Kingdom / Thoroughfare",
+      "friendly_name": "Corona Lucky Emblem 5 - Dance Archway",
+      "location": "On the side of the archway leading toward the dance area.",
+      "logic_requirement_summary": "Wall Run"
+    },
+    {
+      "global_id": 53,
+      "world": "Kingdom of Corona",
+      "world_index": 6,
+      "area": "The Kingdom / Thoroughfare",
+      "friendly_name": "Corona Lucky Emblem 6 - Large Wooden Door",
+      "location": "On the large wooden door in the Thoroughfare.",
+      "logic_requirement_summary": "Wall Run"
+    },
+    {
+      "global_id": 54,
+      "world": "Kingdom of Corona",
+      "world_index": 7,
+      "area": "The Kingdom / Wharf",
+      "friendly_name": "Corona Lucky Emblem 7 - Wharf Tower Door Frame",
+      "location": "On the stone door frame at the tower base.",
+      "logic_requirement_summary": "Wall Run"
+    },
+    {
+      "global_id": 55,
+      "world": "Kingdom of Corona",
+      "world_index": 8,
+      "area": "The Kingdom / Wharf",
+      "friendly_name": "Corona Lucky Emblem 8 - Barrel Pallet Pattern",
+      "location": "Barrels and pallet against the wharf wall, aligned from farther back.",
+      "logic_requirement_summary": "Wall Run"
+    },
+    {
+      "global_id": 56,
+      "world": "Kingdom of Corona",
+      "world_index": 9,
+      "area": "The Kingdom / Wharf",
+      "friendly_name": "Corona Lucky Emblem 9 - Lighthouse Brazier",
+      "location": "In the brazier ashes at the top of the lighthouse.",
+      "logic_requirement_summary": "Wall Run"
+    },
+    {
+      "global_id": 37,
+      "world": "Monstropolis",
+      "world_index": 1,
+      "area": "Monsters, Inc. / Laugh Floor",
+      "friendly_name": "Monstropolis Lucky Emblem 1 - Clipboard",
+      "location": "On a clipboard attached to one of the Laugh Floor desks.",
+      "logic_requirement_summary": ""
+    },
+    {
+      "global_id": 38,
+      "world": "Monstropolis",
+      "world_index": 2,
+      "area": "Monsters, Inc. / Laugh Floor",
+      "friendly_name": "Monstropolis Lucky Emblem 2 - Clown Floor Mark",
+      "location": "On the floor under the movable weighted clown.",
+      "logic_requirement_summary": ""
+    },
+    {
+      "global_id": 39,
+      "world": "Monstropolis",
+      "world_index": 3,
+      "area": "The Door Vault / Upper Level",
+      "friendly_name": "Monstropolis Lucky Emblem 3 - Upper Level Wall",
+      "location": "On a wall in the Door Vault upper level.",
+      "logic_requirement_summary": ""
+    },
+    {
+      "global_id": 40,
+      "world": "Monstropolis",
+      "world_index": 4,
+      "area": "The Door Vault / Upper Level",
+      "friendly_name": "Monstropolis Lucky Emblem 4 - Distant Yellow Doors",
+      "location": "Yellow doors in the far distance of the Door Vault.",
+      "logic_requirement_summary": ""
+    },
+    {
+      "global_id": 41,
+      "world": "Monstropolis",
+      "world_index": 5,
+      "area": "The Factory / Ground Floor",
+      "friendly_name": "Monstropolis Lucky Emblem 5 - Window Wall",
+      "location": "On the wall below a window on the Factory ground floor.",
+      "logic_requirement_summary": ""
+    },
+    {
+      "global_id": 42,
+      "world": "Monstropolis",
+      "world_index": 6,
+      "area": "The Factory / Ground Floor",
+      "friendly_name": "Monstropolis Lucky Emblem 6 - Pink Paint",
+      "location": "Pink paint marks on the floor near the west wall.",
+      "logic_requirement_summary": ""
+    },
+    {
+      "global_id": 43,
+      "world": "Monstropolis",
+      "world_index": 7,
+      "area": "The Factory / Second Floor",
+      "friendly_name": "Monstropolis Lucky Emblem 7 - Machinery Hall Wall",
+      "location": "On the south wall of a machinery-filled hallway.",
+      "logic_requirement_summary": ""
+    },
+    {
+      "global_id": 44,
+      "world": "Monstropolis",
+      "world_index": 8,
+      "area": "The Power Plant / Accessway",
+      "friendly_name": "Monstropolis Lucky Emblem 8 - Filing Cabinets",
+      "location": "On the side of the filing cabinets in the Accessway.",
+      "logic_requirement_summary": ""
+    },
+    {
+      "global_id": 45,
+      "world": "Monstropolis",
+      "world_index": 9,
+      "area": "The Power Plant / Accessway",
+      "friendly_name": "Monstropolis Lucky Emblem 9 - Maintenance Door Frame",
+      "location": "Above the door frame outside the maintenance room.",
+      "logic_requirement_summary": ""
+    },
+    {
+      "global_id": 46,
+      "world": "Monstropolis",
+      "world_index": 10,
+      "area": "The Power Plant / Tank Yard",
+      "friendly_name": "Monstropolis Lucky Emblem 10 - High Pipes",
+      "location": "Pipe ends high on the wall, aligned from the northeast platform.",
+      "logic_requirement_summary": "Wall Run OR Super Jump + Wall Kick + Air Dash x1 + Double Flight"
+    },
+    {
+      "global_id": 47,
+      "world": "Monstropolis",
+      "world_index": 11,
+      "area": "The Power Plant / Tank Yard",
+      "friendly_name": "Monstropolis Lucky Emblem 11 - Post-Fire Oil Stain",
+      "location": "Oil-stain pattern on the ground after the fires are cleared, photographed from the west balcony.",
+      "logic_requirement_summary": "Wall Run OR Super Jump + Wall Kick + Air Dash x1 + Double Flight"
+    },
+    {
+      "global_id": 57,
+      "world": "Arendelle",
+      "world_index": 1,
+      "area": "The North Mountain / Treescape",
+      "friendly_name": "Arendelle Lucky Emblem 1 - Treescape Tree",
+      "location": "On a tree south of the chest ledge reached from the Gorge.",
+      "logic_requirement_summary": "Pole Spin + Wall Run OR Pole Spin + Super Jump + Wall Kick + Air Dash x1 + Double Flight"
+    },
+    {
+      "global_id": 61,
+      "world": "Arendelle",
+      "world_index": 2,
+      "area": "The Labyrinth of Ice / Middle Tier",
+      "friendly_name": "Arendelle Lucky Emblem 2 - Middle Tier Bridge",
+      "location": "At the northeast end of a small bridge in the Middle Tier.",
+      "logic_requirement_summary": "Wall Run"
+    },
+    {
+      "global_id": 62,
+      "world": "Arendelle",
+      "world_index": 3,
+      "area": "The Labyrinth of Ice / Lower Tier",
+      "friendly_name": "Arendelle Lucky Emblem 3 - Lower Tier Side Path",
+      "location": "At the end of a side path in the Lower Tier.",
+      "logic_requirement_summary": "Pole Spin + Air Dash x1 + Wall Run"
+    },
+    {
+      "global_id": 63,
+      "world": "Arendelle",
+      "world_index": 4,
+      "area": "The Labyrinth of Ice / Middle Tier",
+      "friendly_name": "Arendelle Lucky Emblem 4 - Icy Wall Circles",
+      "location": "Icy circle pattern on the wall next to the Middle Tier bridge.",
+      "logic_requirement_summary": "Pole Spin + Air Dash x1 + Wall Run"
+    },
+    {
+      "global_id": 64,
+      "world": "Arendelle",
+      "world_index": 5,
+      "area": "The Labyrinth of Ice / Upper Tier",
+      "friendly_name": "Arendelle Lucky Emblem 5 - Upper Tier Rocks",
+      "location": "Rocks on the floor in the northwest room, aligned from the central high platform.",
+      "logic_requirement_summary": "Pole Spin + Air Dash x1 + Wall Run"
+    },
+    {
+      "global_id": 58,
+      "world": "Arendelle",
+      "world_index": 6,
+      "area": "The North Mountain / Mountain Ridge",
+      "friendly_name": "Arendelle Lucky Emblem 6 - Mountain Ridge Cliff",
+      "location": "On the cliff face while climbing up from the Gorge.",
+      "logic_requirement_summary": "Pole Spin + Air Dash x1 + Wall Run"
+    },
+    {
+      "global_id": 65,
+      "world": "Arendelle",
+      "world_index": 7,
+      "area": "The North Mountain / Frozen Wall",
+      "friendly_name": "Arendelle Lucky Emblem 7 - Frozen Wall Ledge",
+      "location": "On a packed-snow rock on a side ledge reached by running along the Frozen Wall.",
+      "logic_requirement_summary": "Pole Spin + Air Dash x1 + Wall Run"
+    },
+    {
+      "global_id": 66,
+      "world": "Arendelle",
+      "world_index": 8,
+      "area": "The North Mountain / Frozen Wall",
+      "friendly_name": "Arendelle Lucky Emblem 8 - Rime Ice Rock",
+      "location": "On the back side of the rock covered with spiky rime ice.",
+      "logic_requirement_summary": "Pole Spin + Air Dash x1 + Wall Run"
+    },
+    {
+      "global_id": 59,
+      "world": "Arendelle",
+      "world_index": 9,
+      "area": "The North Mountain / Snowfield",
+      "friendly_name": "Arendelle Lucky Emblem 9 - Snowfield Ledge",
+      "location": "On a small snowy ledge, photographed from the cliff to the south.",
+      "logic_requirement_summary": "Pole Spin + Air Dash x1 + Wall Run"
+    },
+    {
+      "global_id": 60,
+      "world": "Arendelle",
+      "world_index": 10,
+      "area": "The North Mountain / Snowfield",
+      "friendly_name": "Arendelle Lucky Emblem 10 - Log Stack",
+      "location": "Pattern made by the ends of stacked logs.",
+      "logic_requirement_summary": "Pole Spin + Air Dash x1 + Wall Run"
+    },
+    {
+      "global_id": 67,
+      "world": "Arendelle",
+      "world_index": 11,
+      "area": "The North Mountain / Foothills",
+      "friendly_name": "Arendelle Lucky Emblem 11 - Foothills Snow Rock",
+      "location": "Snow imprint on the back of a rock in the Foothills.",
+      "logic_requirement_summary": "High Jump + Pole Spin + Air Dash x1 + Wall Run"
+    },
+    {
+      "global_id": 31,
+      "world": "The Caribbean",
+      "world_index": 1,
+      "area": "Port Royal / Docks",
+      "friendly_name": "Caribbean Lucky Emblem 1 - Dock Rowboat",
+      "location": "On the rowboat near the Port Royal shore.",
+      "logic_requirement_summary": ""
+    },
+    {
+      "global_id": 32,
+      "world": "The Caribbean",
+      "world_index": 2,
+      "area": "Port Royal / Docks",
+      "friendly_name": "Caribbean Lucky Emblem 2 - Brick Archway",
+      "location": "Brick pattern on the archway under a Port Royal building.",
+      "logic_requirement_summary": ""
+    },
+    {
+      "global_id": 33,
+      "world": "The Caribbean",
+      "world_index": 3,
+      "area": "Port Royal / Seaport",
+      "friendly_name": "Caribbean Lucky Emblem 3 - Beach Hut Light",
+      "location": "Light pattern on crates in the Seaport beach hut.",
+      "logic_requirement_summary": ""
+    },
+    {
+      "global_id": 34,
+      "world": "The Caribbean",
+      "world_index": 4,
+      "area": "Port Royal / Seaport",
+      "friendly_name": "Caribbean Lucky Emblem 4 - Pier Sign",
+      "location": "On the back of the sign at the start of the pier.",
+      "logic_requirement_summary": ""
+    },
+    {
+      "global_id": 35,
+      "world": "The Caribbean",
+      "world_index": 5,
+      "area": "Port Royal / Fort",
+      "friendly_name": "Caribbean Lucky Emblem 5 - Fort Rope Piles",
+      "location": "Rope piles on top of the fort's inner wall.",
+      "logic_requirement_summary": ""
+    },
+    {
+      "global_id": 36,
+      "world": "The Caribbean",
+      "world_index": 6,
+      "area": "Port Royal / Fort",
+      "friendly_name": "Caribbean Lucky Emblem 6 - Prison Ball And Chain",
+      "location": "On the ball and chain inside the prison cell.",
+      "logic_requirement_summary": ""
+    },
+    {
+      "global_id": 24,
+      "world": "The Caribbean",
+      "world_index": 7,
+      "area": "The High Seas / Isla Verdemontana",
+      "friendly_name": "Caribbean Lucky Emblem 7 - Isla Verdemontana Underwater Rocks",
+      "location": "Large underwater rock pattern near the southeast cliffs of Isla Verdemontana.",
+      "logic_requirement_summary": "Wall Run"
+    },
+    {
+      "global_id": 25,
+      "world": "The Caribbean",
+      "world_index": 8,
+      "area": "The High Seas / Northern Waters (Isle of Luck)",
+      "friendly_name": "Caribbean Lucky Emblem 8 - Isle Of Luck Rocks",
+      "location": "Three rocks in the island's southeast corner, aligned from the tall northern spire.",
+      "logic_requirement_summary": "High Jump"
+    },
+    {
+      "global_id": 26,
+      "world": "The Caribbean",
+      "world_index": 9,
+      "area": "The High Seas / Northern Waters (Horseshoe Island)",
+      "friendly_name": "Caribbean Lucky Emblem 9 - Horseshoe Island Arch Rocks",
+      "location": "Round rocks near the large southern arch, photographed from the ship.",
+      "logic_requirement_summary": ""
+    },
+    {
+      "global_id": 27,
+      "world": "The Caribbean",
+      "world_index": 10,
+      "area": "The High Seas / Port Royal Waters (Isla de los Mastiles)",
+      "friendly_name": "Caribbean Lucky Emblem 10 - Small Island West Of Main Beach",
+      "location": "On a small sandy island west of the main island beach.",
+      "logic_requirement_summary": ""
+    },
+    {
+      "global_id": 28,
+      "world": "The Caribbean",
+      "world_index": 11,
+      "area": "The High Seas / Southern Waters (Ship's End)",
+      "friendly_name": "Caribbean Lucky Emblem 11 - Ship's End Wreck",
+      "location": "On the side of a wrecked ship protruding from the water.",
+      "logic_requirement_summary": ""
+    },
+    {
+      "global_id": 29,
+      "world": "The Caribbean",
+      "world_index": 12,
+      "area": "The High Seas / Sandbar Isle",
+      "friendly_name": "Caribbean Lucky Emblem 12 - Sandbar Isle Cave Entrance",
+      "location": "Underwater cave entrance at Sandbar Isle.",
+      "logic_requirement_summary": "High Jump + Glide + Wall Run OR High Jump + Air Dash x1 + Wall Run OR Super Jump + Aero"
+    },
+    {
+      "global_id": 30,
+      "world": "The Caribbean",
+      "world_index": 13,
+      "area": "The High Seas / Sandbar Isle",
+      "friendly_name": "Caribbean Lucky Emblem 13 - Underwater Spire Top",
+      "location": "On the rock at the top of the central underwater spire.",
+      "logic_requirement_summary": "High Jump + Glide + Wall Run OR High Jump + Air Dash x1 + Wall Run OR Super Jump + Aero"
+    },
+    {
+      "global_id": 78,
+      "world": "San Fransokyo",
+      "world_index": 1,
+      "area": "Hiro's Garage",
+      "friendly_name": "San Fransokyo Lucky Emblem 1 - Garage Wires",
+      "location": "Yellow wires hanging on the wall in Hiro's Garage.",
+      "logic_requirement_summary": ""
+    },
+    {
+      "global_id": 68,
+      "world": "San Fransokyo",
+      "world_index": 2,
+      "area": "City / South District",
+      "friendly_name": "San Fransokyo Lucky Emblem 2 - Chef Statue Bushes",
+      "location": "Dark red bush pattern viewed from the chef statue northwest of it.",
+      "logic_requirement_summary": ""
+    },
+    {
+      "global_id": 69,
+      "world": "San Fransokyo",
+      "world_index": 3,
+      "area": "City / South District",
+      "friendly_name": "San Fransokyo Lucky Emblem 3 - Night Spotlights",
+      "location": "Night-only spotlight pattern on an advertisement, photographed from the south building roof.",
+      "logic_requirement_summary": ""
+    },
+    {
+      "global_id": 70,
+      "world": "San Fransokyo",
+      "world_index": 4,
+      "area": "City / South District",
+      "friendly_name": "San Fransokyo Lucky Emblem 4 - Statue Fan",
+      "location": "On a statue fan, photographed from the building roof to the east.",
+      "logic_requirement_summary": ""
+    },
+    {
+      "global_id": 71,
+      "world": "San Fransokyo",
+      "world_index": 5,
+      "area": "City / Central District",
+      "friendly_name": "San Fransokyo Lucky Emblem 5 - Dome Roof",
+      "location": "On the eastern side of a dome rooftop.",
+      "logic_requirement_summary": ""
+    },
+    {
+      "global_id": 72,
+      "world": "San Fransokyo",
+      "world_index": 6,
+      "area": "City / Central District",
+      "friendly_name": "San Fransokyo Lucky Emblem 6 - Vent Roof",
+      "location": "On a roof beside vents that launch Sora upward.",
+      "logic_requirement_summary": ""
+    },
+    {
+      "global_id": 73,
+      "world": "San Fransokyo",
+      "world_index": 7,
+      "area": "City / Central District",
+      "friendly_name": "San Fransokyo Lucky Emblem 7 - Floating Object",
+      "location": "On top of the floating object above the city, near roof height.",
+      "logic_requirement_summary": ""
+    },
+    {
+      "global_id": 74,
+      "world": "San Fransokyo",
+      "world_index": 8,
+      "area": "City / North District",
+      "friendly_name": "San Fransokyo Lucky Emblem 8 - North District Stairs",
+      "location": "Stair discoloration in North District, aligned from the east.",
+      "logic_requirement_summary": ""
+    },
+    {
+      "global_id": 75,
+      "world": "San Fransokyo",
+      "world_index": 9,
+      "area": "City / North District",
+      "friendly_name": "San Fransokyo Lucky Emblem 9 - Train Tunnel Wall",
+      "location": "Stretch mark on the train tunnel wall, aligned from the west tunnel entrance barrier.",
+      "logic_requirement_summary": ""
+    },
+    {
+      "global_id": 76,
+      "world": "San Fransokyo",
+      "world_index": 10,
+      "area": "City / North District",
+      "friendly_name": "San Fransokyo Lucky Emblem 10 - Yellow Car",
+      "location": "On the side of a yellow parked car in North District.",
+      "logic_requirement_summary": ""
+    },
+    {
+      "global_id": 77,
+      "world": "San Fransokyo",
+      "world_index": 11,
+      "area": "City / North District",
+      "friendly_name": "San Fransokyo Lucky Emblem 11 - Train Tunnel Antenna",
+      "location": "At the top of the antenna on the building spanning the train tunnel.",
+      "logic_requirement_summary": ""
+    },
+    {
+      "global_id": 88,
+      "world": "100 Acre Wood",
+      "world_index": 1,
+      "area": "100 Acre Wood",
+      "friendly_name": "100 Acre Wood Lucky Emblem 1 - Clothesline Bucket",
+      "location": "Inside a bucket near the clothesline.",
+      "logic_requirement_summary": ""
+    },
+    {
+      "global_id": 89,
+      "world": "100 Acre Wood",
+      "world_index": 2,
+      "area": "100 Acre Wood",
+      "friendly_name": "100 Acre Wood Lucky Emblem 2 - Pumpkin",
+      "location": "On the side of the large pumpkin.",
+      "logic_requirement_summary": ""
+    },
+    {
+      "global_id": 90,
+      "world": "100 Acre Wood",
+      "world_index": 3,
+      "area": "100 Acre Wood",
+      "friendly_name": "100 Acre Wood Lucky Emblem 3 - Horizon Bushes",
+      "location": "Bush pattern on the horizon.",
+      "logic_requirement_summary": ""
+    }
+  ]
+}

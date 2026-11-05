@@ -1,0 +1,217 @@
+{
+  "schema": "kh3ap.poptracker.music_chests.v1",
+  "game": "Kingdom Hearts III",
+  "introduced_in": "0.14",
+  "options": {
+    "music_chest_count": {
+      "min": 0,
+      "max": 8,
+      "behavior": "Select this many distinct authored placements and assign unique randomized songs."
+    },
+    "music_chest_vanilla_conversion": {
+      "min": 0,
+      "max": 128,
+      "behavior": "Convert existing vanilla chests; preserve their location IDs. Both options share the 128-song pool."
+    }
+  },
+  "tracking": {
+    "active_locations": "slot_data.bridge.locations: music_chest_placement_version == 1",
+    "identity": "Match ap_location_id; the song is randomized per seed and is not the location identity.",
+    "completion": "Track Archipelago checked_locations. A song clear alone is not a location check; KH3 opens the chest and persists AP_LBOX_### in RandomizerChests.sav.",
+    "song_fields": [
+      "mom_song_id",
+      "mom_song_name",
+      "mom_series",
+      "mom_difficulty"
+    ],
+    "difficulty_values": {
+      "0": "Beginner",
+      "1": "Standard",
+      "2": "Proud"
+    },
+    "legacy": "Rows without music_chest_placement_version retain their existing song-based or vanilla chest identity."
+  },
+  "coordinates": {
+    "position": "Unreal world X/Y/Z in centimeters; final chest mesh position, not PopTracker map pixels.",
+    "rotation": "Pitch/Yaw/Roll in degrees. Includes the agreed facing correction; do not add another 180 degrees.",
+    "logic": "Each chest inherits access to its named world region; there are currently no additional per-spot traversal requirements."
+  },
+  "locations": [
+    {
+      "placement_id": "MOM_CHEST_001",
+      "name": "Olympus - Melody Chest",
+      "world": "Olympus",
+      "map_path": "/Game/Levels/he/he_04/he_04.HE_04",
+      "position": [
+        -40522.5,
+        -6839.78,
+        1175.45
+      ],
+      "rotation": [
+        0,
+        134.6347,
+        0
+      ],
+      "ap_location_id": 1263154177,
+      "treasure_id": "AP_LBOX_001",
+      "bridge_key": "MusicChest:AP_LBOX_001",
+      "source_table": "MusicChest",
+      "source_id": "AP_LBOX_001",
+      "music_chest_placement_version": 1
+    },
+    {
+      "placement_id": "MOM_CHEST_002",
+      "name": "Twilight Town - Melody Chest",
+      "world": "Twilight Town",
+      "map_path": "/Game/Levels/tt/tt_01/tt_01.tt_01",
+      "position": [
+        4071.12,
+        -1315.24,
+        570.997
+      ],
+      "rotation": [
+        0,
+        0.0,
+        0
+      ],
+      "ap_location_id": 1263154178,
+      "treasure_id": "AP_LBOX_002",
+      "bridge_key": "MusicChest:AP_LBOX_002",
+      "source_table": "MusicChest",
+      "source_id": "AP_LBOX_002",
+      "music_chest_placement_version": 1
+    },
+    {
+      "placement_id": "MOM_CHEST_003",
+      "name": "Monstropolis - Melody Chest",
+      "world": "Monstropolis",
+      "map_path": "/Game/Levels/mi/mi_02/mi_02.mi_02",
+      "position": [
+        8710.41,
+        -4975.33,
+        -3024
+      ],
+      "rotation": [
+        0,
+        -180,
+        0
+      ],
+      "ap_location_id": 1263154179,
+      "treasure_id": "AP_LBOX_003",
+      "bridge_key": "MusicChest:AP_LBOX_003",
+      "source_table": "MusicChest",
+      "source_id": "AP_LBOX_003",
+      "music_chest_placement_version": 1
+    },
+    {
+      "placement_id": "MOM_CHEST_004",
+      "name": "Kingdom of Corona - Melody Chest",
+      "world": "Kingdom of Corona",
+      "map_path": "/Game/Levels/ra/ra_01/ra_01.ra_01",
+      "position": [
+        -4264.55,
+        -3330.61,
+        1410.14
+      ],
+      "rotation": [
+        0,
+        -63.9,
+        0
+      ],
+      "ap_location_id": 1263154180,
+      "treasure_id": "AP_LBOX_004",
+      "bridge_key": "MusicChest:AP_LBOX_004",
+      "source_table": "MusicChest",
+      "source_id": "AP_LBOX_004",
+      "music_chest_placement_version": 1
+    },
+    {
+      "placement_id": "MOM_CHEST_005",
+      "name": "The Caribbean - Melody Chest",
+      "world": "The Caribbean",
+      "map_path": "/Game/Levels/ca/ca_02/ca_02.ca_02",
+      "position": [
+        -180511,
+        -105120,
+        1705.71
+      ],
+      "rotation": [
+        0,
+        44.826,
+        0
+      ],
+      "ap_location_id": 1263154181,
+      "treasure_id": "AP_LBOX_005",
+      "bridge_key": "MusicChest:AP_LBOX_005",
+      "source_table": "MusicChest",
+      "source_id": "AP_LBOX_005",
+      "music_chest_placement_version": 1
+    },
+    {
+      "placement_id": "MOM_CHEST_006",
+      "name": "Toy Box - Melody Chest",
+      "world": "Toy Box",
+      "map_path": "/Game/Levels/ts/ts_02/ts_02.ts_02",
+      "position": [
+        29.1615,
+        8864.43,
+        6501
+      ],
+      "rotation": [
+        0,
+        -86.0165,
+        0
+      ],
+      "ap_location_id": 1263154182,
+      "treasure_id": "AP_LBOX_006",
+      "bridge_key": "MusicChest:AP_LBOX_006",
+      "source_table": "MusicChest",
+      "source_id": "AP_LBOX_006",
+      "music_chest_placement_version": 1
+    },
+    {
+      "placement_id": "MOM_CHEST_007",
+      "name": "San Fransokyo - Melody Chest",
+      "world": "San Fransokyo",
+      "map_path": "/Game/Levels/bx/bx_02/bx_02.bx_02",
+      "position": [
+        -8426.99,
+        573.383,
+        8282.3
+      ],
+      "rotation": [
+        0,
+        0,
+        0
+      ],
+      "ap_location_id": 1263154183,
+      "treasure_id": "AP_LBOX_007",
+      "bridge_key": "MusicChest:AP_LBOX_007",
+      "source_table": "MusicChest",
+      "source_id": "AP_LBOX_007",
+      "music_chest_placement_version": 1
+    },
+    {
+      "placement_id": "MOM_CHEST_008",
+      "name": "Arendelle - Melody Chest",
+      "world": "Arendelle",
+      "map_path": "/Game/Levels/fz/fz_01/fz_01.fz_01",
+      "position": [
+        -1468.2,
+        38644.2,
+        -42896.4
+      ],
+      "rotation": [
+        0,
+        -83.5498,
+        0
+      ],
+      "ap_location_id": 1263154184,
+      "treasure_id": "AP_LBOX_008",
+      "bridge_key": "MusicChest:AP_LBOX_008",
+      "source_table": "MusicChest",
+      "source_id": "AP_LBOX_008",
+      "music_chest_placement_version": 1
+    }
+  ]
+}

@@ -1,0 +1,852 @@
+{
+    "format":  "kh3_runtime_map_ap_grant_classification",
+    "version":  1,
+    "entries":  [
+                    {
+                        "map":  "StationOfAwakening",
+                        "path":  "/Game/Maps/StationOfAwakening",
+                        "safe_for_ap_grants":  "yes",
+                        "notes":  "Possessed Sora before mirrors; normal loading, UI and battle guards apply."
+                    },
+                    {
+                        "map":  "bx_01",
+                        "path":  "/Game/Levels/bx/bx_01/bx_01",
+                        "safe_for_ap_grants":  "yes",
+                        "notes":  "San Fransokyo, The Bridge."
+                    },
+                    {
+                        "map":  "bx_02",
+                        "path":  "/Game/Levels/bx/bx_02/bx_02",
+                        "safe_for_ap_grants":  "yes",
+                        "notes":  "San Fransokyo, The City; boss/event fights should be blocked by battle state."
+                    },
+                    {
+                        "map":  "bx_03",
+                        "path":  "/Game/Levels/bx/bx_03/bx_03",
+                        "safe_for_ap_grants":  "yes",
+                        "notes":  "Hiro\u0027s Garage."
+                    },
+                    {
+                        "map":  "ca_01",
+                        "path":  "/Game/Levels/ca/ca_01/ca_01",
+                        "safe_for_ap_grants":  "yes",
+                        "notes":  "Port Royal."
+                    },
+                    {
+                        "map":  "ca_02",
+                        "path":  "/Game/Levels/ca/ca_02/ca_02",
+                        "safe_for_ap_grants":  "yes",
+                        "notes":  "High Seas; ship/special encounters should be blocked by state/battle checks."
+                    },
+                    {
+                        "map":  "dp_01",
+                        "path":  "/Game/Levels/dp/dp_01/dp_01",
+                        "safe_for_ap_grants":  "yes",
+                        "notes":  "Land of Departure, normal playable map once settled."
+                    },
+                    {
+                        "map":  "fz_01",
+                        "path":  "/Game/Levels/fz/fz_01/fz_01",
+                        "safe_for_ap_grants":  "yes",
+                        "notes":  "North Mountain."
+                    },
+                    {
+                        "map":  "fz_02",
+                        "path":  "/Game/Levels/fz/fz_02/fz_02",
+                        "safe_for_ap_grants":  "yes",
+                        "notes":  "Labyrinth of Ice."
+                    },
+                    {
+                        "map":  "fz_04",
+                        "path":  "/Game/Levels/fz/fz_04/fz_04",
+                        "safe_for_ap_grants":  "yes",
+                        "notes":  "Arendelle normal map candidate."
+                    },
+                    {
+                        "map":  "fz_05",
+                        "path":  "/Game/Levels/fz/fz_05/fz_05",
+                        "safe_for_ap_grants":  "yes",
+                        "notes":  "Arendelle normal map candidate."
+                    },
+                    {
+                        "map":  "he_01",
+                        "path":  "/Game/Levels/he/he_01/he_01",
+                        "safe_for_ap_grants":  "yes",
+                        "notes":  "Realm of the Gods."
+                    },
+                    {
+                        "map":  "he_02",
+                        "path":  "/Game/Levels/he/he_02/he_02",
+                        "safe_for_ap_grants":  "yes",
+                        "notes":  "Mount Olympus; boss/event fights should be blocked by battle state."
+                    },
+                    {
+                        "map":  "he_03",
+                        "path":  "/Game/Levels/he/he_03/he_03",
+                        "safe_for_ap_grants":  "yes",
+                        "notes":  "Thebes in flames."
+                    },
+                    {
+                        "map":  "he_04",
+                        "path":  "/Game/Levels/he/he_04/he_04",
+                        "safe_for_ap_grants":  "yes",
+                        "notes":  "Thebes."
+                    },
+                    {
+                        "map":  "mi_01",
+                        "path":  "/Game/Levels/mi/mi_01/mi_01",
+                        "safe_for_ap_grants":  "yes",
+                        "notes":  "Monsters, Inc."
+                    },
+                    {
+                        "map":  "mi_02",
+                        "path":  "/Game/Levels/mi/mi_02/mi_02",
+                        "safe_for_ap_grants":  "yes",
+                        "notes":  "The Factory."
+                    },
+                    {
+                        "map":  "mi_03",
+                        "path":  "/Game/Levels/mi/mi_03/mi_03",
+                        "safe_for_ap_grants":  "yes",
+                        "notes":  "The Powerplant."
+                    },
+                    {
+                        "map":  "mi_04",
+                        "path":  "/Game/Levels/mi/mi_04/mi_04",
+                        "safe_for_ap_grants":  "yes",
+                        "notes":  "The Door Vault."
+                    },
+                    {
+                        "map":  "mi_50",
+                        "path":  "/Game/Levels/mi/mi_50/mi_50",
+                        "safe_for_ap_grants":  "yes",
+                        "notes":  "Outside the factory."
+                    },
+                    {
+                        "map":  "ra_01",
+                        "path":  "/Game/Levels/ra/ra_01/ra_01",
+                        "safe_for_ap_grants":  "yes",
+                        "notes":  "The Forest; boss/event fights should be blocked by battle state."
+                    },
+                    {
+                        "map":  "ra_02",
+                        "path":  "/Game/Levels/ra/ra_02/ra_02",
+                        "safe_for_ap_grants":  "yes",
+                        "notes":  "The Kingdom."
+                    },
+                    {
+                        "map":  "rg_03",
+                        "path":  "/Game/Levels/rg_DLC/rg_03/rg_03",
+                        "safe_for_ap_grants":  "yes",
+                        "notes":  "Garden of Assemblage; current explicit safe exception."
+                    },
+                    {
+                        "map":  "goa_01",
+                        "path":  "/Game/Maps/GardenOfAssemblage/umap/GoA_01",
+                        "safe_for_ap_grants":  "yes",
+                        "notes":  "Garden of Assemblage mod map."
+                    },
+                    {
+                        "map":  "ts_01",
+                        "path":  "/Game/Levels/ts/ts_01/ts_01",
+                        "safe_for_ap_grants":  "yes",
+                        "notes":  "Andy\u0027s House."
+                    },
+                    {
+                        "map":  "ts_02",
+                        "path":  "/Game/Levels/ts/ts_02/ts_02",
+                        "safe_for_ap_grants":  "yes",
+                        "notes":  "Galaxy Toys; boss/event fights should be blocked by battle state."
+                    },
+                    {
+                        "map":  "tt_01",
+                        "path":  "/Game/Levels/tt/tt_01/tt_01",
+                        "safe_for_ap_grants":  "yes",
+                        "notes":  "The Neighborhood; do not blacklist whole map for event fights."
+                    },
+                    {
+                        "map":  "tt_50",
+                        "path":  "/Game/Levels/tt/tt_50/tt_50",
+                        "safe_for_ap_grants":  "yes",
+                        "notes":  "Computer laboratory."
+                    },
+                    {
+                        "map":  "bt_50",
+                        "path":  "/Game/Levels/bt/bt_50/bt_50",
+                        "safe_for_ap_grants":  "no",
+                        "notes":  "Chess map."
+                    },
+                    {
+                        "map":  "bt_51",
+                        "path":  "/Game/Levels/bt_DLC/bt_51/bt_51",
+                        "safe_for_ap_grants":  "no",
+                        "notes":  "Blank screen."
+                    },
+                    {
+                        "map":  "ca_03",
+                        "path":  "/Game/Levels/ca/ca_03/ca_03",
+                        "safe_for_ap_grants":  "no",
+                        "notes":  "Undersea/falling/no collision manual-load map."
+                    },
+                    {
+                        "map":  "ca_04",
+                        "path":  "/Game/Levels/ca/ca_04/ca_04",
+                        "safe_for_ap_grants":  "no",
+                        "notes":  "Davy Jones Locker/endless sand candidate."
+                    },
+                    {
+                        "map":  "ca_05",
+                        "path":  "/Game/Levels/ca/ca_05/ca_05",
+                        "safe_for_ap_grants":  "no",
+                        "notes":  "Over the Edge/endless sea candidate."
+                    },
+                    {
+                        "map":  "ca_50",
+                        "path":  "/Game/Levels/ca/ca_50/ca_50",
+                        "safe_for_ap_grants":  "no",
+                        "notes":  "Cutscene/endless sea at night candidate."
+                    },
+                    {
+                        "map":  "di_50",
+                        "path":  "/Game/Levels/di/di_50/di",
+                        "safe_for_ap_grants":  "no",
+                        "notes":  "Destiny Islands incomplete/manual path."
+                    },
+                    {
+                        "map":  "di_50",
+                        "path":  "/Game/Levels/di/di_50/di_50",
+                        "safe_for_ap_grants":  "no",
+                        "notes":  "Endless loading screen."
+                    },
+                    {
+                        "map":  "dp_50",
+                        "path":  "/Game/Levels/dp_DLC/dp_50/dp_50",
+                        "safe_for_ap_grants":  "no",
+                        "notes":  "Re:Mind/remembrance cutscene candidate."
+                    },
+                    {
+                        "map":  "dp_50",
+                        "path":  "/Game/Levels/dp_DLC/dp_50/dp",
+                        "safe_for_ap_grants":  "no",
+                        "notes":  "Incomplete/manual path."
+                    },
+                    {
+                        "map":  "dw_21",
+                        "path":  "/Game/Levels/dw/dw_21/dw_21",
+                        "safe_for_ap_grants":  "no",
+                        "notes":  "Dark Aqua immediate fight/retry risk."
+                    },
+                    {
+                        "map":  "dw_22",
+                        "path":  "/Game/Levels/dw_DLC/dw_22/dw_22",
+                        "safe_for_ap_grants":  "no",
+                        "notes":  "Re:Mind Dark Aqua arena/retry risk."
+                    },
+                    {
+                        "map":  "dw_22",
+                        "path":  "/Game/Levels/dw_DLC/dw_22/dw",
+                        "safe_for_ap_grants":  "no",
+                        "notes":  "Incomplete/manual path."
+                    },
+                    {
+                        "map":  "ex_21",
+                        "path":  "/Game/Levels/ex/ex_21/ex_21",
+                        "safe_for_ap_grants":  "no",
+                        "notes":  "Battlegate."
+                    },
+                    {
+                        "map":  "ex_22",
+                        "path":  "/Game/Levels/ex/ex_22/ex_22",
+                        "safe_for_ap_grants":  "no",
+                        "notes":  "Battlegate."
+                    },
+                    {
+                        "map":  "ex_23",
+                        "path":  "/Game/Levels/ex/ex_23/ex_23",
+                        "safe_for_ap_grants":  "no",
+                        "notes":  "Battlegate."
+                    },
+                    {
+                        "map":  "ex_24",
+                        "path":  "/Game/Levels/ex/ex_24/ex_24",
+                        "safe_for_ap_grants":  "no",
+                        "notes":  "Battlegate."
+                    },
+                    {
+                        "map":  "ex_25",
+                        "path":  "/Game/Levels/ex/ex_25/ex_25",
+                        "safe_for_ap_grants":  "no",
+                        "notes":  "Battlegate."
+                    },
+                    {
+                        "map":  "ex_26",
+                        "path":  "/Game/Levels/ex/ex_26/ex_26",
+                        "safe_for_ap_grants":  "no",
+                        "notes":  "Battlegate."
+                    },
+                    {
+                        "map":  "ex_27",
+                        "path":  "/Game/Levels/ex/ex_27/ex_27",
+                        "safe_for_ap_grants":  "no",
+                        "notes":  "Battlegate."
+                    },
+                    {
+                        "map":  "ex_28",
+                        "path":  "/Game/Levels/ex/ex_28/ex_28",
+                        "safe_for_ap_grants":  "no",
+                        "notes":  "Unused battlegate."
+                    },
+                    {
+                        "map":  "ex_29",
+                        "path":  "/Game/Levels/ex/ex_29/ex_29",
+                        "safe_for_ap_grants":  "no",
+                        "notes":  "Battlegate."
+                    },
+                    {
+                        "map":  "ex_30",
+                        "path":  "/Game/Levels/ex/ex_30/ex_30",
+                        "safe_for_ap_grants":  "no",
+                        "notes":  "Unused battlegate."
+                    },
+                    {
+                        "map":  "ex_31",
+                        "path":  "/Game/Levels/ex/ex_31/ex_31",
+                        "safe_for_ap_grants":  "no",
+                        "notes":  "Battlegate."
+                    },
+                    {
+                        "map":  "ex_32",
+                        "path":  "/Game/Levels/ex/ex_32/ex_32",
+                        "safe_for_ap_grants":  "no",
+                        "notes":  "Unused battlegate."
+                    },
+                    {
+                        "map":  "ex_33",
+                        "path":  "/Game/Levels/ex/ex_33/ex_33",
+                        "safe_for_ap_grants":  "no",
+                        "notes":  "Battlegate."
+                    },
+                    {
+                        "map":  "ex_34",
+                        "path":  "/Game/Levels/ex/ex_34/ex_34",
+                        "safe_for_ap_grants":  "no",
+                        "notes":  "Battlegate."
+                    },
+                    {
+                        "map":  "ex_35",
+                        "path":  "/Game/Levels/ex/ex_35/ex_35",
+                        "safe_for_ap_grants":  "no",
+                        "notes":  "Battlegate."
+                    },
+                    {
+                        "map":  "ex_36",
+                        "path":  "/Game/Levels/ex/ex_36/ex_36",
+                        "safe_for_ap_grants":  "no",
+                        "notes":  "Unused battlegate."
+                    },
+                    {
+                        "map":  "ex_37",
+                        "path":  "/Game/Levels/ex/ex_37/ex_37",
+                        "safe_for_ap_grants":  "no",
+                        "notes":  "Battlegate."
+                    },
+                    {
+                        "map":  "ex_38",
+                        "path":  "/Game/Levels/ex/ex_38/ex_38",
+                        "safe_for_ap_grants":  "no",
+                        "notes":  "Battlegate."
+                    },
+                    {
+                        "map":  "ex_39",
+                        "path":  "/Game/Levels/ex/ex_39/ex_39",
+                        "safe_for_ap_grants":  "no",
+                        "notes":  "Battlegate 0."
+                    },
+                    {
+                        "map":  "ex_40",
+                        "path":  "/Game/Levels/ex/ex_40/ex_40",
+                        "safe_for_ap_grants":  "no",
+                        "notes":  "Unused battlegate."
+                    },
+                    {
+                        "map":  "fz_03",
+                        "path":  "/Game/Levels/fz/fz_03/fz_03",
+                        "safe_for_ap_grants":  "no",
+                        "notes":  "Trinity Sled minigame."
+                    },
+                    {
+                        "map":  "fz_06",
+                        "path":  "/Game/Levels/fz/fz_06/fz_06",
+                        "safe_for_ap_grants":  "no",
+                        "notes":  "Skol fight arena."
+                    },
+                    {
+                        "map":  "gm_01",
+                        "path":  "/Game/Levels/gm/gm_01/gm_01",
+                        "safe_for_ap_grants":  "no",
+                        "notes":  "Gummiship."
+                    },
+                    {
+                        "map":  "gm_02",
+                        "path":  "/Game/Levels/gm/gm_02/gm_02",
+                        "safe_for_ap_grants":  "no",
+                        "notes":  "Gummiship."
+                    },
+                    {
+                        "map":  "gm_03",
+                        "path":  "/Game/Levels/gm/gm_03/gm_03",
+                        "safe_for_ap_grants":  "no",
+                        "notes":  "Gummiship."
+                    },
+                    {
+                        "map":  "gm_50",
+                        "path":  "/Game/Levels/gm/gm_50/gm_50",
+                        "safe_for_ap_grants":  "no",
+                        "notes":  "Cutscene."
+                    },
+                    {
+                        "map":  "gm_50",
+                        "path":  "/Game/Levels/gm/gm_50/gm",
+                        "safe_for_ap_grants":  "no",
+                        "notes":  "Incomplete/manual path."
+                    },
+                    {
+                        "map":  "he_05",
+                        "path":  "/Game/Levels/he/he_05/he_05",
+                        "safe_for_ap_grants":  "no",
+                        "notes":  "Titans battle arena."
+                    },
+                    {
+                        "map":  "he_06",
+                        "path":  "/Game/Levels/he/he_06/he_06",
+                        "safe_for_ap_grants":  "no",
+                        "notes":  "Titans battle tornado."
+                    },
+                    {
+                        "map":  "he_50",
+                        "path":  "/Game/Levels/he/he_50/he_50",
+                        "safe_for_ap_grants":  "no",
+                        "notes":  "First cutscene map."
+                    },
+                    {
+                        "map":  "he_52",
+                        "path":  "/Game/Levels/he_DLC/he_52/he",
+                        "safe_for_ap_grants":  "no",
+                        "notes":  "CGI/cutscene trigger."
+                    },
+                    {
+                        "map":  "po_01",
+                        "path":  "/Game/Levels/po/po_01/po_01",
+                        "safe_for_ap_grants":  "no",
+                        "notes":  "100 Acre Wood/minigame context."
+                    },
+                    {
+                        "map":  "po_02",
+                        "path":  "/Game/Levels/po/po_02/po_02",
+                        "safe_for_ap_grants":  "no",
+                        "notes":  "100 Acre Wood/minigame context."
+                    },
+                    {
+                        "map":  "po_03",
+                        "path":  "/Game/Levels/po/po_03/po_03",
+                        "safe_for_ap_grants":  "no",
+                        "notes":  "100 Acre Wood/minigame context."
+                    },
+                    {
+                        "map":  "po_04",
+                        "path":  "/Game/Levels/po/po_04/po_04",
+                        "safe_for_ap_grants":  "no",
+                        "notes":  "100 Acre Wood/minigame context."
+                    },
+                    {
+                        "map":  "ra_50",
+                        "path":  "/Game/Levels/ra/ra_50/ra_50",
+                        "safe_for_ap_grants":  "no",
+                        "notes":  "Cutscene map."
+                    },
+                    {
+                        "map":  "rg_01",
+                        "path":  "/Game/Levels/rg_DLC/rg_01/rg_01",
+                        "safe_for_ap_grants":  "no",
+                        "notes":  "Re:Mind rg_DLC map; current broad rule blocks all rg_DLC except rg_03."
+                    },
+                    {
+                        "map":  "rg_10",
+                        "path":  "/Game/Levels/rg_DLC/rg_10/rg_10",
+                        "safe_for_ap_grants":  "no",
+                        "notes":  "Data battle."
+                    },
+                    {
+                        "map":  "rg_11",
+                        "path":  "/Game/Levels/rg_DLC/rg_11/rg_11",
+                        "safe_for_ap_grants":  "no",
+                        "notes":  "Data battle."
+                    },
+                    {
+                        "map":  "rg_12",
+                        "path":  "/Game/Levels/rg_DLC/rg_12/rg_12",
+                        "safe_for_ap_grants":  "no",
+                        "notes":  "Data battle."
+                    },
+                    {
+                        "map":  "rg_13",
+                        "path":  "/Game/Levels/rg_DLC/rg_13/rg_13",
+                        "safe_for_ap_grants":  "no",
+                        "notes":  "Data battle."
+                    },
+                    {
+                        "map":  "rg_14",
+                        "path":  "/Game/Levels/rg_DLC/rg_14/rg_14",
+                        "safe_for_ap_grants":  "no",
+                        "notes":  "Data battle."
+                    },
+                    {
+                        "map":  "rg_15",
+                        "path":  "/Game/Levels/rg_DLC/rg_15/rg_15",
+                        "safe_for_ap_grants":  "no",
+                        "notes":  "Data battle."
+                    },
+                    {
+                        "map":  "rg_16",
+                        "path":  "/Game/Levels/rg_DLC/rg_16/rg_16",
+                        "safe_for_ap_grants":  "no",
+                        "notes":  "Data battle."
+                    },
+                    {
+                        "map":  "rg_17",
+                        "path":  "/Game/Levels/rg_DLC/rg_17/rg_17",
+                        "safe_for_ap_grants":  "no",
+                        "notes":  "Data battle."
+                    },
+                    {
+                        "map":  "rg_18",
+                        "path":  "/Game/Levels/rg_DLC/rg_18/rg_18",
+                        "safe_for_ap_grants":  "no",
+                        "notes":  "Data battle."
+                    },
+                    {
+                        "map":  "rg_19",
+                        "path":  "/Game/Levels/rg_DLC/rg_19/rg_19",
+                        "safe_for_ap_grants":  "no",
+                        "notes":  "Data battle."
+                    },
+                    {
+                        "map":  "rg_20",
+                        "path":  "/Game/Levels/rg_DLC/rg_20/rg_20",
+                        "safe_for_ap_grants":  "no",
+                        "notes":  "Data battle."
+                    },
+                    {
+                        "map":  "rg_21",
+                        "path":  "/Game/Levels/rg_DLC/rg_21/rg_21",
+                        "safe_for_ap_grants":  "no",
+                        "notes":  "Data battle."
+                    },
+                    {
+                        "map":  "rg_22",
+                        "path":  "/Game/Levels/rg_DLC/rg_22/rg_22",
+                        "safe_for_ap_grants":  "no",
+                        "notes":  "Data battle."
+                    },
+                    {
+                        "map":  "sf_50",
+                        "path":  "/Game/Levels/sf/sf_50/sf_50",
+                        "safe_for_ap_grants":  "no",
+                        "notes":  "Unknown SF/cutscene-like map."
+                    },
+                    {
+                        "map":  "sf_50",
+                        "path":  "/Game/Levels/sf/sf_50/sf",
+                        "safe_for_ap_grants":  "no",
+                        "notes":  "Incomplete/manual path."
+                    },
+                    {
+                        "map":  "ss_01",
+                        "path":  "/Game/Levels/ss_DLC/ss_01/ss_01",
+                        "safe_for_ap_grants":  "no",
+                        "notes":  "Yozora fight."
+                    },
+                    {
+                        "map":  "ss_50",
+                        "path":  "/Game/Levels/ss/ss",
+                        "safe_for_ap_grants":  "no",
+                        "notes":  "Incomplete/manual path."
+                    },
+                    {
+                        "map":  "ss_50",
+                        "path":  "/Game/Levels/ss/ss_50/ss_50",
+                        "safe_for_ap_grants":  "no",
+                        "notes":  "Ending/CGI trigger candidate."
+                    },
+                    {
+                        "map":  "ss_50",
+                        "path":  "/Game/Levels/ss/ss_50/ss",
+                        "safe_for_ap_grants":  "no",
+                        "notes":  "Ending/CGI trigger candidate."
+                    },
+                    {
+                        "map":  "ss_51",
+                        "path":  "/Game/Levels/ss_DLC/ss_51/ss",
+                        "safe_for_ap_grants":  "no",
+                        "notes":  "Final CGI cutscene trigger."
+                    },
+                    {
+                        "map":  "ts_03",
+                        "path":  "/Game/Levels/ts/ts_03/ts_03",
+                        "safe_for_ap_grants":  "no",
+                        "notes":  "Verum Rex minigame."
+                    },
+                    {
+                        "map":  "ts_04",
+                        "path":  "/Game/Levels/ts/ts_04/ts_04",
+                        "safe_for_ap_grants":  "no",
+                        "notes":  "UFO battle arena."
+                    },
+                    {
+                        "map":  "tt_40",
+                        "path":  "/Game/Levels/tt/tt_40/tt_40",
+                        "safe_for_ap_grants":  "no",
+                        "notes":  "Bistro; current runtime needs delayed/safe handling."
+                    },
+                    {
+                        "map":  "wm_01",
+                        "path":  "/Game/Levels/wm/wm_01/wm_01",
+                        "safe_for_ap_grants":  "no",
+                        "notes":  "World Map."
+                    },
+                    {
+                        "map":  "yt_50",
+                        "path":  "/Game/Levels/yt/yt_50/yt_50",
+                        "safe_for_ap_grants":  "no",
+                        "notes":  "Cutscene map."
+                    },
+                    {
+                        "map":  "bt_01",
+                        "path":  "/Game/Levels/bt/bt_01/bt_01",
+                        "safe_for_ap_grants":  "yes",
+                        "notes":  "Scala normal/fight sequence candidate."
+                    },
+                    {
+                        "map":  "bt_02",
+                        "path":  "/Game/Levels/bt/bt_02/bt_02",
+                        "safe_for_ap_grants":  "no",
+                        "notes":  "Scala deformed sequence candidate."
+                    },
+                    {
+                        "map":  "bt_03",
+                        "path":  "/Game/Levels/bt/bt_03/bt_03",
+                        "safe_for_ap_grants":  "no",
+                        "notes":  "Scala underwater sequence candidate."
+                    },
+                    {
+                        "map":  "bt_04",
+                        "path":  "/Game/Levels/bt/bt_04/bt_04",
+                        "safe_for_ap_grants":  "no",
+                        "notes":  "Scala destroyed sequence candidate."
+                    },
+                    {
+                        "map":  "bt_07",
+                        "path":  "/Game/Levels/bt_DLC/bt_07/bt_07",
+                        "safe_for_ap_grants":  "yes",
+                        "notes":  "Re:Mind Breezy Quarter; likely scripted combat."
+                    },
+                    {
+                        "map":  "bt_08",
+                        "path":  "/Game/Levels/bt_DLC/bt_08/bt_08",
+                        "safe_for_ap_grants":  "yes",
+                        "notes":  "Re:Mind Stairway to the Sky; tested playable with normal Sora pawn."
+                    },
+                    {
+                        "map":  "dw_71",
+                        "path":  "/Game/Levels/dw/dw_71/dw_71",
+                        "safe_for_ap_grants":  "no",
+                        "notes":  "Dark World entry needs test."
+                    },
+                    {
+                        "map":  "dw_71",
+                        "path":  "/Game/Levels/dw/dw_71/dw",
+                        "safe_for_ap_grants":  "no",
+                        "notes":  "Incomplete/manual path."
+                    },
+                    {
+                        "map":  "ew_01",
+                        "path":  "/Game/Levels/ew/ew_01/ew_01",
+                        "safe_for_ap_grants":  "no",
+                        "notes":  "Final World context needs test."
+                    },
+                    {
+                        "map":  "ew_02",
+                        "path":  "/Game/Levels/ew/ew_02/ew_02",
+                        "safe_for_ap_grants":  "no",
+                        "notes":  "Final World context needs test."
+                    },
+                    {
+                        "map":  "ew_03",
+                        "path":  "/Game/Levels/ew_DLC/ew_03/ew_03",
+                        "safe_for_ap_grants":  "no",
+                        "notes":  "Cutscene trigger candidate."
+                    },
+                    {
+                        "map":  "ew_04",
+                        "path":  "/Game/Levels/ew_DLC/ew_04/ew_04",
+                        "safe_for_ap_grants":  "no",
+                        "notes":  "Tutorial trigger candidate."
+                    },
+                    {
+                        "map":  "ew_21",
+                        "path":  "/Game/Levels/ew/ew_21/ew_21",
+                        "safe_for_ap_grants":  "yes",
+                        "notes":  "Final World/final sequence candidate."
+                    },
+                    {
+                        "map":  "ew_22",
+                        "path":  "/Game/Levels/ew/ew_22/ew_22",
+                        "safe_for_ap_grants":  "yes",
+                        "notes":  "Final World/final sequence candidate."
+                    },
+                    {
+                        "map":  "ew_23",
+                        "path":  "/Game/Levels/ew/ew_23/ew_23",
+                        "safe_for_ap_grants":  "yes",
+                        "notes":  "Final World/final sequence candidate."
+                    },
+                    {
+                        "map":  "ew_24",
+                        "path":  "/Game/Levels/ew/ew_24/ew_24",
+                        "safe_for_ap_grants":  "yes",
+                        "notes":  "Final World/final sequence candidate."
+                    },
+                    {
+                        "map":  "ew_25",
+                        "path":  "/Game/Levels/ew/ew_25/ew_25",
+                        "safe_for_ap_grants":  "yes",
+                        "notes":  "Final World/final sequence candidate."
+                    },
+                    {
+                        "map":  "ew_26",
+                        "path":  "/Game/Levels/ew/ew_26/ew_26",
+                        "safe_for_ap_grants":  "yes",
+                        "notes":  "Final World/final sequence candidate."
+                    },
+                    {
+                        "map":  "ew_27",
+                        "path":  "/Game/Levels/ew/ew_27/ew_27",
+                        "safe_for_ap_grants":  "yes",
+                        "notes":  "Final World/final sequence candidate."
+                    },
+                    {
+                        "map":  "ew_28",
+                        "path":  "/Game/Levels/ew/ew_28/ew_28",
+                        "safe_for_ap_grants":  "yes",
+                        "notes":  "Final World/final sequence candidate."
+                    },
+                    {
+                        "map":  "kg_01",
+                        "path":  "/Game/Levels/kg/kg_01/kg_01",
+                        "safe_for_ap_grants":  "yes",
+                        "notes":  "Keyblade Graveyard sequence; needs fight/retry testing."
+                    },
+                    {
+                        "map":  "kg_01_unioncross",
+                        "path":  "/Game/Levels/kg/kg_01/kg_01_unioncross",
+                        "safe_for_ap_grants":  "no",
+                        "notes":  "Keyblade Graveyard Union Cross sequence."
+                    },
+                    {
+                        "map":  "kg_01_unioncross",
+                        "path":  "/Game/Levels/kg/kg_01/umap/kg_01_unioncross",
+                        "safe_for_ap_grants":  "no",
+                        "notes":  "Keyblade Graveyard Union Cross sequence."
+                    },
+                    {
+                        "map":  "kg_02",
+                        "path":  "/Game/Levels/kg/kg_02/kg_02",
+                        "safe_for_ap_grants":  "yes",
+                        "notes":  "Keyblade Graveyard sequence; needs fight/retry testing."
+                    },
+                    {
+                        "map":  "kg_03",
+                        "path":  "/Game/Levels/kg/kg_03/kg_03",
+                        "safe_for_ap_grants":  "yes",
+                        "notes":  "Keyblade Graveyard sequence; needs fight/retry testing."
+                    },
+                    {
+                        "map":  "kg_04",
+                        "path":  "/Game/Levels/kg_DLC/kg_04/kg_04",
+                        "safe_for_ap_grants":  "yes",
+                        "notes":  "Re:Mind KG sequence; needs test."
+                    },
+                    {
+                        "map":  "kg_05",
+                        "path":  "/Game/Levels/kg_DLC/kg_04/kg_05",
+                        "safe_for_ap_grants":  "no",
+                        "notes":  "Re:Mind KG sequence; path mismatch in source list."
+                    },
+                    {
+                        "map":  "kg_06",
+                        "path":  "/Game/Levels/kg_DLC/kg_06/kg_06",
+                        "safe_for_ap_grants":  "yes",
+                        "notes":  "Re:Mind KG sequence; needs test."
+                    },
+                    {
+                        "map":  "kg_06",
+                        "path":  "/Game/Levels/kg_DLC/kg_07/kg_07",
+                        "safe_for_ap_grants":  "no",
+                        "notes":  "Re:Mind KG sequence; map/path mismatch in source list."
+                    },
+                    {
+                        "map":  "kg_08",
+                        "path":  "/Game/Levels/kg_DLC/kg_08/kg_08",
+                        "safe_for_ap_grants":  "yes",
+                        "notes":  "Re:Mind KG sequence; needs test."
+                    },
+                    {
+                        "map":  "kg_50",
+                        "path":  "/Game/Levels/kg/kg_50/kg_50",
+                        "safe_for_ap_grants":  "no",
+                        "notes":  "KG cutscene/story map candidate."
+                    },
+                    {
+                        "map":  "kg_51",
+                        "path":  "/Game/Levels/kg/kg_51/kg_51",
+                        "safe_for_ap_grants":  "no",
+                        "notes":  "KG cutscene/story map candidate."
+                    },
+                    {
+                        "map":  "kg_52",
+                        "path":  "/Game/Levels/kg_DLC/kg_52/kg_52",
+                        "safe_for_ap_grants":  "no",
+                        "notes":  "Re:Mind KG cutscene/story map candidate."
+                    },
+                    {
+                        "map":  "kg_52",
+                        "path":  "/Game/Levels/kg_DLC/kg_52/kg",
+                        "safe_for_ap_grants":  "no",
+                        "notes":  "Incomplete/manual path."
+                    },
+                    {
+                        "map":  "rg_50",
+                        "path":  "/Game/Levels/rg/rg_50/rg_50",
+                        "safe_for_ap_grants":  "no",
+                        "notes":  "Base RG map needs test."
+                    },
+                    {
+                        "map":  "rg_51",
+                        "path":  "/Game/Levels/rg/rg_51/rg_51",
+                        "safe_for_ap_grants":  "no",
+                        "notes":  "Base RG map needs test."
+                    },
+                    {
+                        "map":  "sp_01",
+                        "path":  "/Game/Levels/sp/sp_01/sp_01",
+                        "safe_for_ap_grants":  "no",
+                        "notes":  "SP map needs identification."
+                    },
+                    {
+                        "map":  "bt_01..bt_08",
+                        "path":  "/Game/Levels/bt*",
+                        "safe_for_ap_grants":  "unknown",
+                        "notes":  "Avoid broad Scala rule until tested; special battle hook may be enough."
+                    }
+                ]
+}

@@ -1,0 +1,9 @@
+{
+  "repository": "ashandarei/02-GoA",
+  "release_tag": "2.0.1",
+  "asset": "main.dll",
+  "asset_protocol": 3,
+  "sha256": "164c3a226a77629c8bff2e9d8cce7d45cca6eab2d9bea0269d58fb899c378366",
+  "size": 2139136,
+  "source": "release"
+}

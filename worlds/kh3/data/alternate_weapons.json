@@ -1,0 +1,37 @@
+[
+  {
+    "row": "I03061",
+    "token": "WEP_AQUA_00",
+    "key": "aqua_00",
+    "name": "Master's Defender",
+    "description": "Aqua's Keyblade, inherited from Master Eraqus."
+  },
+  {
+    "row": "I03079",
+    "token": "WEP_RIKU00",
+    "key": "riku_00",
+    "name": "Way to the Dawn",
+    "description": "Riku's Keyblade, embodying his path between light and darkness."
+  },
+  {
+    "row": "I03080",
+    "token": "WEP_RIKU01",
+    "key": "riku_01",
+    "name": "Braveheart",
+    "description": "Riku's new Keyblade, carried into the realm of darkness."
+  },
+  {
+    "row": "I03083",
+    "token": "WEP_KAIRI00",
+    "key": "kairi_00",
+    "name": "Destiny's Embrace",
+    "description": "Kairi's Keyblade, adorned with flowers and a paopu fruit charm."
+  },
+  {
+    "row": "I03087",
+    "token": "WEP_ROXAS00",
+    "key": "roxas_00",
+    "name": "Oathkeeper & Oblivion",
+    "description": "The pair of Keyblades wielded together by Roxas."
+  }
+]

@@ -11,6 +11,7 @@ env:
 
 jobs:
   labeler:
+    if: github.repository == 'ArchipelagoMW/Archipelago'
     name: 'Apply content-based labels'
     runs-on: ubuntu-latest
     steps:
@@ -20,9 +21,7 @@ jobs:
   peer_review:
     name: 'Apply peer review label'
     needs: labeler
-    if: >-
-      (github.event.action == 'opened' || github.event.action == 'reopened' || 
-      github.event.action == 'ready_for_review') && !github.event.pull_request.draft
+    if: ${{ github.repository == 'ArchipelagoMW/Archipelago' && ((github.event.action == 'opened' || github.event.action == 'reopened' ||  github.event.action == 'ready_for_review') && !github.event.pull_request.draft) }}
     runs-on: ubuntu-latest
     steps:
       - name: 'Add label'
@@ -33,7 +32,7 @@ jobs:
   unblock_draft_prs:
     name: 'Remove waiting-on labels'
     needs: labeler
-    if: github.event.action == 'converted_to_draft' || github.event.action == 'closed'
+    if: ${{ github.repository == 'ArchipelagoMW/Archipelago' && (github.event.action == 'converted_to_draft' || github.event.action == 'closed') }}
     runs-on: ubuntu-latest
     steps:
       - name: 'Remove labels'

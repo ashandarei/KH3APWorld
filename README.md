@@ -1,3 +1,52 @@
+# KH3 APWorld
+
+Kingdom Hearts III's Archipelago world, client, and seed generator.
+This repository includes the complete Archipelago 0.6.8 development framework.
+The official Archipelago repository is retained as the `upstream` Git remote;
+KH3 development uses `main` in this repository.
+
+Players can start with the [setup guide](worlds/kh3/docs/setup_en.md) and
+[game guide](worlds/kh3/docs/en_Kingdom%20Hearts%20III.md).
+
+## Development
+
+The world and client live in `worlds/kh3/`; `KH3Client.py` launches the client.
+World and catalog development utilities live in `tools/kh3/`.
+The native DLL source lives in the separate `KH3Runtime` checkout, normally
+beside this repository. Its source is needed for native contract tests and
+coordinated DLL builds.
+
+Prepare Python dependencies using `requirements.txt`. Copy `.env.example` to
+`.env` and set local game and source paths as needed. Local settings, bridge
+state, logs, and build outputs are ignored by Git.
+
+Run KH3 tests from this repository:
+
+```powershell
+.\scripts\test-kh3.ps1
+```
+
+With the adjacent native checkout and its toolchain prepared, build the player
+DLL and APWorld together:
+
+```powershell
+.\scripts\build-workspace-apworld.ps1 -RunSmokeTests
+```
+
+This command creates build artifacts without installing them or changing a seed.
+Catalog changes are exported explicitly with `tools/kh3/export_dll_inputs.py`;
+ordinary native builds use the runtime repository's own checked-in inputs.
+
+## Licenses
+
+Archipelago's framework retains its [MIT license](LICENSE). First-party code
+under `worlds/kh3/` is [GPL-3.0-only](worlds/kh3/LICENSE); its
+[copyright notice](worlds/kh3/COPYRIGHT.txt) explains component boundaries.
+The separate native runtimes are MIT licensed. Upstream code, artwork, fonts,
+and game/engine material retain their applicable notices and terms.
+
+## Upstream Archipelago documentation
+
 # [Archipelago](https://archipelago.gg) ![Discord Shield](https://discordapp.com/api/guilds/731205301247803413/widget.png?style=shield) | [Install](https://github.com/ArchipelagoMW/Archipelago/releases)
 
 Archipelago provides a generic framework for developing multiworld capability for game randomizers. In all cases,

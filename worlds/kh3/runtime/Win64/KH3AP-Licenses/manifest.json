@@ -1,0 +1,873 @@
+{
+  "schema": 1,
+  "release": "v3.0.4",
+  "release_url": "https://github.com/ashandarei/ue4ss-goa/releases/tag/v3.0.4",
+  "ue4ss_revision": "06dd053d3e537ec2b477ee76337661b15642d012",
+  "frozen_dll_sha256": {
+    "UE4SS.dll": "1175f06c4a4aa52a7187a6271b926f38624fb1e88011155f52794ee9fbf9c576",
+    "dwmapi.dll": "027d188d2bbdd77820644d679079c876c990285cefcc59f1feb5e4d64b2e0ce8",
+    "xinput1_3.dll": "756cad002e1553cfa1a91ebe8c1b9380ffabe0b4b1916c4a4db802396ddfbef8"
+  },
+  "embedded_font_evidence": [
+    {
+      "name": "Roboto",
+      "sha256": "4e147ab64b9fdf6d89d01f6b8c3ca0b3cddc59d608a8e2218f9a2504b5c98e14",
+      "offset": 15664192,
+      "size": 168260,
+      "metadata": {
+        "0": [
+          "Copyright 2011 Google Inc. All Rights Reserved."
+        ],
+        "1": [
+          "Roboto"
+        ],
+        "5": [
+          "Version 2.137; 2017"
+        ],
+        "13": [
+          "Licensed under the Apache License, Version 2.0"
+        ],
+        "14": [
+          "http://www.apache.org/licenses/LICENSE-2.0"
+        ]
+      }
+    },
+    {
+      "name": "FaSolid900",
+      "sha256": "f9d6933d04c59a42aca30bd88eec38bb9cbeb69b1547fd550ef73eba0bce7a1a",
+      "offset": 15460944,
+      "size": 202744,
+      "metadata": {
+        "0": [
+          "Copyright (c) Font Awesome"
+        ],
+        "1": [
+          "Font Awesome 5 Free Solid"
+        ],
+        "5": [
+          "331.524 (Font Awesome version: 5.15.4)"
+        ],
+        "13": [],
+        "14": []
+      }
+    },
+    {
+      "name": "ProggyClean base85",
+      "size": 11980,
+      "offset": 11710704,
+      "sha256": "23d10c09af5fbc228cd7e649f32b2c49e0430293992a1db6e67b05e38671f1c1"
+    }
+  ],
+  "scope": "Required notices for the frozen Windows binary runtime. Source-distribution notices remain with their original source files.",
+  "components": [
+    {
+      "name": "RE-UE4SS",
+      "version": "06dd053d3e537ec2b477ee76337661b15642d012",
+      "license": "MIT",
+      "source": "https://github.com/ashandarei/ue4ss-goa/blob/06dd053d3e537ec2b477ee76337661b15642d012/LICENSE",
+      "license_files": [
+        "THIRD_PARTY_NOTICES.txt"
+      ],
+      "evidence": "Pinned source/build dependency; runtime use established by binary markers or call sites.",
+      "selected_license": "MIT"
+    },
+    {
+      "name": "USMapGenerator",
+      "version": "06dd053d3e537ec2b477ee76337661b15642d012",
+      "license": "MIT",
+      "source": "https://github.com/ashandarei/ue4ss-goa/blob/06dd053d3e537ec2b477ee76337661b15642d012/UE4SS/src/USMapGenerator/LICENSE",
+      "license_files": [
+        "THIRD_PARTY_NOTICES.txt"
+      ],
+      "evidence": "Pinned source/build dependency; runtime use established by binary markers or call sites.",
+      "selected_license": "MIT"
+    },
+    {
+      "name": "Dear-ImGui",
+      "version": "81160fee56027226bc80b48e196d0332f5541a8c",
+      "license": "MIT",
+      "source": "https://github.com/ocornut/imgui/blob/81160fee56027226bc80b48e196d0332f5541a8c/LICENSE.txt",
+      "license_files": [
+        "THIRD_PARTY_NOTICES.txt"
+      ],
+      "evidence": "Pinned source/build dependency; runtime use established by binary markers or call sites.",
+      "selected_license": "MIT"
+    },
+    {
+      "name": "ImGuiColorTextEdit",
+      "version": "6d943aba9f7cef05da80b86dbb0253b63818f95c",
+      "license": "MIT",
+      "source": "https://github.com/UE4SS-RE/ImGuiColorTextEdit/blob/6d943aba9f7cef05da80b86dbb0253b63818f95c/LICENSE",
+      "license_files": [
+        "THIRD_PARTY_NOTICES.txt"
+      ],
+      "evidence": "Pinned source/build dependency; runtime use established by binary markers or call sites.",
+      "selected_license": "MIT"
+    },
+    {
+      "name": "PolyHook2",
+      "version": "fd2a88f09c8ae89440858fc52573656141013c7f",
+      "license": "MIT",
+      "source": "https://github.com/stevemk14ebr/PolyHook_2_0/blob/fd2a88f09c8ae89440858fc52573656141013c7f/LICENSE",
+      "license_files": [
+        "THIRD_PARTY_NOTICES.txt"
+      ],
+      "evidence": "Pinned source/build dependency; runtime use established by binary markers or call sites.",
+      "selected_license": "MIT"
+    },
+    {
+      "name": "Zydis",
+      "version": "569320ad3c4856da13b9dbf1f0d9e20bda63870e",
+      "license": "MIT",
+      "source": "https://github.com/zyantific/zydis/blob/569320ad3c4856da13b9dbf1f0d9e20bda63870e/LICENSE",
+      "license_files": [
+        "THIRD_PARTY_NOTICES.txt"
+      ],
+      "evidence": "Pinned source/build dependency; runtime use established by binary markers or call sites.",
+      "selected_license": "MIT"
+    },
+    {
+      "name": "Zycore",
+      "version": "74620eefd233bec20daeb66e78e744ff06e273b7",
+      "license": "MIT",
+      "source": "https://github.com/zyantific/zycore-c/blob/74620eefd233bec20daeb66e78e744ff06e273b7/LICENSE",
+      "license_files": [
+        "THIRD_PARTY_NOTICES.txt"
+      ],
+      "evidence": "Pinned source/build dependency; runtime use established by binary markers or call sites.",
+      "selected_license": "MIT"
+    },
+    {
+      "name": "Lua",
+      "version": "5.4.4",
+      "license": "MIT",
+      "source": "https://github.com/ashandarei/ue4ss-goa/blob/06dd053d3e537ec2b477ee76337661b15642d012/deps/first/LuaRaw/include/lua.h",
+      "license_files": [
+        "THIRD_PARTY_NOTICES.txt"
+      ],
+      "evidence": "Lua diagnostics and linked Lua sources in frozen runtime.",
+      "selected_license": "MIT"
+    },
+    {
+      "name": "anyhow",
+      "version": "1.0.79",
+      "license": "MIT OR Apache-2.0",
+      "source": "https://crates.io/crates/anyhow/1.0.79",
+      "license_files": [
+        "THIRD_PARTY_NOTICES.txt"
+      ],
+      "evidence": "Target runtime dependency of the pinned Windows patternsleuth binding.",
+      "selected_license": "MIT"
+    },
+    {
+      "name": "cfg-if",
+      "version": "1.0.0",
+      "license": "MIT/Apache-2.0",
+      "source": "https://crates.io/crates/cfg-if/1.0.0",
+      "license_files": [
+        "THIRD_PARTY_NOTICES.txt"
+      ],
+      "evidence": "Target runtime dependency of the pinned Windows patternsleuth binding.",
+      "selected_license": "MIT"
+    },
+    {
+      "name": "crc32fast",
+      "version": "1.3.2",
+      "license": "MIT OR Apache-2.0",
+      "source": "https://crates.io/crates/crc32fast/1.3.2",
+      "license_files": [
+        "THIRD_PARTY_NOTICES.txt"
+      ],
+      "evidence": "Target runtime dependency of the pinned Windows patternsleuth binding.",
+      "selected_license": "MIT"
+    },
+    {
+      "name": "crossbeam-channel",
+      "version": "0.5.9",
+      "license": "MIT OR Apache-2.0",
+      "source": "https://crates.io/crates/crossbeam-channel/0.5.9",
+      "license_files": [
+        "THIRD_PARTY_NOTICES.txt"
+      ],
+      "evidence": "Target runtime dependency of the pinned Windows patternsleuth binding.",
+      "selected_license": "MIT"
+    },
+    {
+      "name": "crossbeam-deque",
+      "version": "0.8.4",
+      "license": "MIT OR Apache-2.0",
+      "source": "https://crates.io/crates/crossbeam-deque/0.8.4",
+      "license_files": [
+        "THIRD_PARTY_NOTICES.txt"
+      ],
+      "evidence": "Target runtime dependency of the pinned Windows patternsleuth binding.",
+      "selected_license": "MIT"
+    },
+    {
+      "name": "crossbeam-epoch",
+      "version": "0.9.16",
+      "license": "MIT OR Apache-2.0",
+      "source": "https://crates.io/crates/crossbeam-epoch/0.9.16",
+      "license_files": [
+        "THIRD_PARTY_NOTICES.txt"
+      ],
+      "evidence": "Target runtime dependency of the pinned Windows patternsleuth binding.",
+      "selected_license": "MIT"
+    },
+    {
+      "name": "crossbeam-utils",
+      "version": "0.8.17",
+      "license": "MIT OR Apache-2.0",
+      "source": "https://crates.io/crates/crossbeam-utils/0.8.17",
+      "license_files": [
+        "THIRD_PARTY_NOTICES.txt"
+      ],
+      "evidence": "Target runtime dependency of the pinned Windows patternsleuth binding.",
+      "selected_license": "MIT"
+    },
+    {
+      "name": "dashmap",
+      "version": "5.5.3",
+      "license": "MIT",
+      "source": "https://crates.io/crates/dashmap/5.5.3",
+      "license_files": [
+        "THIRD_PARTY_NOTICES.txt"
+      ],
+      "evidence": "Target runtime dependency of the pinned Windows patternsleuth binding.",
+      "selected_license": "MIT"
+    },
+    {
+      "name": "derive_more",
+      "version": "0.99.17",
+      "license": "MIT",
+      "source": "https://crates.io/crates/derive_more/0.99.17",
+      "license_files": [
+        "THIRD_PARTY_NOTICES.txt"
+      ],
+      "evidence": "Macro-generated runtime implementation; preserve generator attribution.",
+      "selected_license": "MIT"
+    },
+    {
+      "name": "either",
+      "version": "1.9.0",
+      "license": "MIT OR Apache-2.0",
+      "source": "https://crates.io/crates/either/1.9.0",
+      "license_files": [
+        "THIRD_PARTY_NOTICES.txt"
+      ],
+      "evidence": "Target runtime dependency of the pinned Windows patternsleuth binding.",
+      "selected_license": "MIT"
+    },
+    {
+      "name": "flate2",
+      "version": "1.0.28",
+      "license": "MIT OR Apache-2.0",
+      "source": "https://crates.io/crates/flate2/1.0.28",
+      "license_files": [
+        "THIRD_PARTY_NOTICES.txt"
+      ],
+      "evidence": "Target runtime dependency of the pinned Windows patternsleuth binding.",
+      "selected_license": "MIT"
+    },
+    {
+      "name": "futures",
+      "version": "0.3.30",
+      "license": "MIT OR Apache-2.0",
+      "source": "https://crates.io/crates/futures/0.3.30",
+      "license_files": [
+        "THIRD_PARTY_NOTICES.txt"
+      ],
+      "evidence": "Target runtime dependency of the pinned Windows patternsleuth binding.",
+      "selected_license": "MIT"
+    },
+    {
+      "name": "futures-channel",
+      "version": "0.3.30",
+      "license": "MIT OR Apache-2.0",
+      "source": "https://crates.io/crates/futures-channel/0.3.30",
+      "license_files": [
+        "THIRD_PARTY_NOTICES.txt"
+      ],
+      "evidence": "Target runtime dependency of the pinned Windows patternsleuth binding.",
+      "selected_license": "MIT"
+    },
+    {
+      "name": "futures-core",
+      "version": "0.3.30",
+      "license": "MIT OR Apache-2.0",
+      "source": "https://crates.io/crates/futures-core/0.3.30",
+      "license_files": [
+        "THIRD_PARTY_NOTICES.txt"
+      ],
+      "evidence": "Target runtime dependency of the pinned Windows patternsleuth binding.",
+      "selected_license": "MIT"
+    },
+    {
+      "name": "futures-executor",
+      "version": "0.3.30",
+      "license": "MIT OR Apache-2.0",
+      "source": "https://crates.io/crates/futures-executor/0.3.30",
+      "license_files": [
+        "THIRD_PARTY_NOTICES.txt"
+      ],
+      "evidence": "Target runtime dependency of the pinned Windows patternsleuth binding.",
+      "selected_license": "MIT"
+    },
+    {
+      "name": "futures-io",
+      "version": "0.3.30",
+      "license": "MIT OR Apache-2.0",
+      "source": "https://crates.io/crates/futures-io/0.3.30",
+      "license_files": [
+        "THIRD_PARTY_NOTICES.txt"
+      ],
+      "evidence": "Target runtime dependency of the pinned Windows patternsleuth binding.",
+      "selected_license": "MIT"
+    },
+    {
+      "name": "futures-macro",
+      "version": "0.3.30",
+      "license": "MIT OR Apache-2.0",
+      "source": "https://crates.io/crates/futures-macro/0.3.30",
+      "license_files": [
+        "THIRD_PARTY_NOTICES.txt"
+      ],
+      "evidence": "Macro-generated runtime implementation; preserve generator attribution.",
+      "selected_license": "MIT"
+    },
+    {
+      "name": "futures-scopes",
+      "version": "0.2.0",
+      "license": "MIT",
+      "source": "https://crates.io/crates/futures-scopes/0.2.0",
+      "license_files": [
+        "THIRD_PARTY_NOTICES.txt"
+      ],
+      "evidence": "Target runtime dependency of the pinned Windows patternsleuth binding.",
+      "selected_license": "MIT"
+    },
+    {
+      "name": "futures-sink",
+      "version": "0.3.30",
+      "license": "MIT OR Apache-2.0",
+      "source": "https://crates.io/crates/futures-sink/0.3.30",
+      "license_files": [
+        "THIRD_PARTY_NOTICES.txt"
+      ],
+      "evidence": "Target runtime dependency of the pinned Windows patternsleuth binding.",
+      "selected_license": "MIT"
+    },
+    {
+      "name": "futures-task",
+      "version": "0.3.30",
+      "license": "MIT OR Apache-2.0",
+      "source": "https://crates.io/crates/futures-task/0.3.30",
+      "license_files": [
+        "THIRD_PARTY_NOTICES.txt"
+      ],
+      "evidence": "Target runtime dependency of the pinned Windows patternsleuth binding.",
+      "selected_license": "MIT"
+    },
+    {
+      "name": "futures-util",
+      "version": "0.3.30",
+      "license": "MIT OR Apache-2.0",
+      "source": "https://crates.io/crates/futures-util/0.3.30",
+      "license_files": [
+        "THIRD_PARTY_NOTICES.txt"
+      ],
+      "evidence": "Target runtime dependency of the pinned Windows patternsleuth binding.",
+      "selected_license": "MIT"
+    },
+    {
+      "name": "hashbrown",
+      "version": "0.14.3",
+      "license": "MIT OR Apache-2.0",
+      "source": "https://crates.io/crates/hashbrown/0.14.3",
+      "license_files": [
+        "THIRD_PARTY_NOTICES.txt"
+      ],
+      "evidence": "Target runtime dependency of the pinned Windows patternsleuth binding.",
+      "selected_license": "MIT"
+    },
+    {
+      "name": "iced-x86",
+      "version": "1.20.0",
+      "license": "MIT",
+      "source": "https://github.com/icedland/iced/blob/bad615026c310eba3e89aabcac67e1f9ad898d00/LICENSE.txt",
+      "license_files": [
+        "THIRD_PARTY_NOTICES.txt"
+      ],
+      "evidence": "Target runtime dependency of the pinned Windows patternsleuth binding.",
+      "selected_license": "MIT"
+    },
+    {
+      "name": "inventory",
+      "version": "0.3.14",
+      "license": "MIT OR Apache-2.0",
+      "source": "https://crates.io/crates/inventory/0.3.14",
+      "license_files": [
+        "THIRD_PARTY_NOTICES.txt"
+      ],
+      "evidence": "Target runtime dependency of the pinned Windows patternsleuth binding.",
+      "selected_license": "MIT"
+    },
+    {
+      "name": "itertools",
+      "version": "0.12.0",
+      "license": "MIT OR Apache-2.0",
+      "source": "https://crates.io/crates/itertools/0.12.0",
+      "license_files": [
+        "THIRD_PARTY_NOTICES.txt"
+      ],
+      "evidence": "Target runtime dependency of the pinned Windows patternsleuth binding.",
+      "selected_license": "MIT"
+    },
+    {
+      "name": "lazy_static",
+      "version": "1.4.0",
+      "license": "MIT/Apache-2.0",
+      "source": "https://crates.io/crates/lazy_static/1.4.0",
+      "license_files": [
+        "THIRD_PARTY_NOTICES.txt"
+      ],
+      "evidence": "Target runtime dependency of the pinned Windows patternsleuth binding.",
+      "selected_license": "MIT"
+    },
+    {
+      "name": "lock_api",
+      "version": "0.4.11",
+      "license": "MIT OR Apache-2.0",
+      "source": "https://crates.io/crates/lock_api/0.4.11",
+      "license_files": [
+        "THIRD_PARTY_NOTICES.txt"
+      ],
+      "evidence": "Target runtime dependency of the pinned Windows patternsleuth binding.",
+      "selected_license": "MIT"
+    },
+    {
+      "name": "memoffset",
+      "version": "0.9.0",
+      "license": "MIT",
+      "source": "https://crates.io/crates/memoffset/0.9.0",
+      "license_files": [
+        "THIRD_PARTY_NOTICES.txt"
+      ],
+      "evidence": "Target runtime dependency of the pinned Windows patternsleuth binding.",
+      "selected_license": "MIT"
+    },
+    {
+      "name": "miniz_oxide",
+      "version": "0.7.1",
+      "license": "MIT OR Zlib OR Apache-2.0",
+      "source": "https://crates.io/crates/miniz_oxide/0.7.1",
+      "license_files": [
+        "THIRD_PARTY_NOTICES.txt"
+      ],
+      "evidence": "Target runtime dependency of the pinned Windows patternsleuth binding.",
+      "selected_license": "MIT"
+    },
+    {
+      "name": "object",
+      "version": "0.32.2",
+      "license": "Apache-2.0 OR MIT",
+      "source": "https://crates.io/crates/object/0.32.2",
+      "license_files": [
+        "THIRD_PARTY_NOTICES.txt"
+      ],
+      "evidence": "Target runtime dependency of the pinned Windows patternsleuth binding.",
+      "selected_license": "MIT"
+    },
+    {
+      "name": "once_cell",
+      "version": "1.19.0",
+      "license": "MIT OR Apache-2.0",
+      "source": "https://crates.io/crates/once_cell/1.19.0",
+      "license_files": [
+        "THIRD_PARTY_NOTICES.txt"
+      ],
+      "evidence": "Target runtime dependency of the pinned Windows patternsleuth binding.",
+      "selected_license": "MIT"
+    },
+    {
+      "name": "parking_lot_core",
+      "version": "0.9.9",
+      "license": "MIT OR Apache-2.0",
+      "source": "https://crates.io/crates/parking_lot_core/0.9.9",
+      "license_files": [
+        "THIRD_PARTY_NOTICES.txt"
+      ],
+      "evidence": "Target runtime dependency of the pinned Windows patternsleuth binding.",
+      "selected_license": "MIT"
+    },
+    {
+      "name": "patternsleuth",
+      "version": "0.1.0",
+      "license": "MIT OR Apache-2.0",
+      "source": "https://github.com/trumank/patternsleuth/tree/349cf44df7d6f3cbb19322b88767a1558c7d4f6c",
+      "license_files": [
+        "THIRD_PARTY_NOTICES.txt"
+      ],
+      "evidence": "Target runtime dependency of the pinned Windows patternsleuth binding.",
+      "selected_license": "MIT"
+    },
+    {
+      "name": "patternsleuth_bind",
+      "version": "0.1.0",
+      "license": "MIT (UE4SS parent)",
+      "source": "https://github.com/ashandarei/ue4ss-goa/tree/06dd053d3e537ec2b477ee76337661b15642d012/deps/first/patternsleuth_bind",
+      "license_files": [
+        "THIRD_PARTY_NOTICES.txt"
+      ],
+      "evidence": "Target runtime dependency of the pinned Windows patternsleuth binding.",
+      "selected_license": "MIT"
+    },
+    {
+      "name": "patternsleuth_scanner",
+      "version": "0.1.0",
+      "license": "MIT OR Apache-2.0",
+      "source": "https://github.com/trumank/patternsleuth/tree/349cf44df7d6f3cbb19322b88767a1558c7d4f6c",
+      "license_files": [
+        "THIRD_PARTY_NOTICES.txt"
+      ],
+      "evidence": "Target runtime dependency of the pinned Windows patternsleuth binding.",
+      "selected_license": "MIT"
+    },
+    {
+      "name": "pin-project",
+      "version": "1.1.3",
+      "license": "Apache-2.0 OR MIT",
+      "source": "https://crates.io/crates/pin-project/1.1.3",
+      "license_files": [
+        "THIRD_PARTY_NOTICES.txt"
+      ],
+      "evidence": "Target runtime dependency of the pinned Windows patternsleuth binding.",
+      "selected_license": "MIT"
+    },
+    {
+      "name": "pin-project-internal",
+      "version": "1.1.3",
+      "license": "Apache-2.0 OR MIT",
+      "source": "https://crates.io/crates/pin-project-internal/1.1.3",
+      "license_files": [
+        "THIRD_PARTY_NOTICES.txt"
+      ],
+      "evidence": "Macro-generated runtime implementation; preserve generator attribution.",
+      "selected_license": "MIT"
+    },
+    {
+      "name": "pin-project-lite",
+      "version": "0.2.13",
+      "license": "Apache-2.0 OR MIT",
+      "source": "https://crates.io/crates/pin-project-lite/0.2.13",
+      "license_files": [
+        "THIRD_PARTY_NOTICES.txt"
+      ],
+      "evidence": "Target runtime dependency of the pinned Windows patternsleuth binding.",
+      "selected_license": "MIT"
+    },
+    {
+      "name": "pin-utils",
+      "version": "0.1.0",
+      "license": "MIT OR Apache-2.0",
+      "source": "https://crates.io/crates/pin-utils/0.1.0",
+      "license_files": [
+        "THIRD_PARTY_NOTICES.txt"
+      ],
+      "evidence": "Target runtime dependency of the pinned Windows patternsleuth binding.",
+      "selected_license": "MIT"
+    },
+    {
+      "name": "rayon",
+      "version": "1.8.0",
+      "license": "MIT OR Apache-2.0",
+      "source": "https://crates.io/crates/rayon/1.8.0",
+      "license_files": [
+        "THIRD_PARTY_NOTICES.txt"
+      ],
+      "evidence": "Target runtime dependency of the pinned Windows patternsleuth binding.",
+      "selected_license": "MIT"
+    },
+    {
+      "name": "rayon-core",
+      "version": "1.12.0",
+      "license": "MIT OR Apache-2.0",
+      "source": "https://crates.io/crates/rayon-core/1.12.0",
+      "license_files": [
+        "THIRD_PARTY_NOTICES.txt"
+      ],
+      "evidence": "Target runtime dependency of the pinned Windows patternsleuth binding.",
+      "selected_license": "MIT"
+    },
+    {
+      "name": "ruzstd",
+      "version": "0.5.0",
+      "license": "MIT",
+      "source": "https://crates.io/crates/ruzstd/0.5.0",
+      "license_files": [
+        "THIRD_PARTY_NOTICES.txt"
+      ],
+      "evidence": "Target runtime dependency of the pinned Windows patternsleuth binding.",
+      "selected_license": "MIT"
+    },
+    {
+      "name": "scopeguard",
+      "version": "1.2.0",
+      "license": "MIT OR Apache-2.0",
+      "source": "https://crates.io/crates/scopeguard/1.2.0",
+      "license_files": [
+        "THIRD_PARTY_NOTICES.txt"
+      ],
+      "evidence": "Target runtime dependency of the pinned Windows patternsleuth binding.",
+      "selected_license": "MIT"
+    },
+    {
+      "name": "slab",
+      "version": "0.4.9",
+      "license": "MIT",
+      "source": "https://crates.io/crates/slab/0.4.9",
+      "license_files": [
+        "THIRD_PARTY_NOTICES.txt"
+      ],
+      "evidence": "Target runtime dependency of the pinned Windows patternsleuth binding.",
+      "selected_license": "MIT"
+    },
+    {
+      "name": "smallvec",
+      "version": "1.11.2",
+      "license": "MIT OR Apache-2.0",
+      "source": "https://crates.io/crates/smallvec/1.11.2",
+      "license_files": [
+        "THIRD_PARTY_NOTICES.txt"
+      ],
+      "evidence": "Target runtime dependency of the pinned Windows patternsleuth binding.",
+      "selected_license": "MIT"
+    },
+    {
+      "name": "static_assertions",
+      "version": "1.1.0",
+      "license": "MIT OR Apache-2.0",
+      "source": "https://crates.io/crates/static_assertions/1.1.0",
+      "license_files": [
+        "THIRD_PARTY_NOTICES.txt"
+      ],
+      "evidence": "Target runtime dependency of the pinned Windows patternsleuth binding.",
+      "selected_license": "MIT"
+    },
+    {
+      "name": "strum",
+      "version": "0.25.0",
+      "license": "MIT",
+      "source": "https://crates.io/crates/strum/0.25.0",
+      "license_files": [
+        "THIRD_PARTY_NOTICES.txt"
+      ],
+      "evidence": "Target runtime dependency of the pinned Windows patternsleuth binding.",
+      "selected_license": "MIT"
+    },
+    {
+      "name": "strum_macros",
+      "version": "0.25.3",
+      "license": "MIT",
+      "source": "https://crates.io/crates/strum_macros/0.25.3",
+      "license_files": [
+        "THIRD_PARTY_NOTICES.txt"
+      ],
+      "evidence": "Macro-generated runtime implementation; preserve generator attribution.",
+      "selected_license": "MIT"
+    },
+    {
+      "name": "tracing",
+      "version": "0.1.44",
+      "license": "MIT",
+      "source": "https://crates.io/crates/tracing/0.1.44",
+      "license_files": [
+        "THIRD_PARTY_NOTICES.txt"
+      ],
+      "evidence": "Target runtime dependency of the pinned Windows patternsleuth binding.",
+      "selected_license": "MIT"
+    },
+    {
+      "name": "tracing-attributes",
+      "version": "0.1.31",
+      "license": "MIT",
+      "source": "https://crates.io/crates/tracing-attributes/0.1.31",
+      "license_files": [
+        "THIRD_PARTY_NOTICES.txt"
+      ],
+      "evidence": "Macro-generated runtime implementation; preserve generator attribution.",
+      "selected_license": "MIT"
+    },
+    {
+      "name": "tracing-core",
+      "version": "0.1.36",
+      "license": "MIT",
+      "source": "https://crates.io/crates/tracing-core/0.1.36",
+      "license_files": [
+        "THIRD_PARTY_NOTICES.txt"
+      ],
+      "evidence": "Target runtime dependency of the pinned Windows patternsleuth binding.",
+      "selected_license": "MIT"
+    },
+    {
+      "name": "twox-hash",
+      "version": "1.6.3",
+      "license": "MIT",
+      "source": "https://crates.io/crates/twox-hash/1.6.3",
+      "license_files": [
+        "THIRD_PARTY_NOTICES.txt"
+      ],
+      "evidence": "Target runtime dependency of the pinned Windows patternsleuth binding.",
+      "selected_license": "MIT"
+    },
+    {
+      "name": "windows",
+      "version": "0.52.0",
+      "license": "MIT OR Apache-2.0",
+      "source": "https://crates.io/crates/windows/0.52.0",
+      "license_files": [
+        "THIRD_PARTY_NOTICES.txt"
+      ],
+      "evidence": "Target runtime dependency of the pinned Windows patternsleuth binding.",
+      "selected_license": "MIT"
+    },
+    {
+      "name": "windows-core",
+      "version": "0.52.0",
+      "license": "MIT OR Apache-2.0",
+      "source": "https://crates.io/crates/windows-core/0.52.0",
+      "license_files": [
+        "THIRD_PARTY_NOTICES.txt"
+      ],
+      "evidence": "Target runtime dependency of the pinned Windows patternsleuth binding.",
+      "selected_license": "MIT"
+    },
+    {
+      "name": "windows-targets",
+      "version": "0.48.5",
+      "license": "MIT OR Apache-2.0",
+      "source": "https://crates.io/crates/windows-targets/0.48.5",
+      "license_files": [
+        "THIRD_PARTY_NOTICES.txt"
+      ],
+      "evidence": "Target runtime dependency of the pinned Windows patternsleuth binding.",
+      "selected_license": "MIT"
+    },
+    {
+      "name": "windows-targets",
+      "version": "0.52.0",
+      "license": "MIT OR Apache-2.0",
+      "source": "https://crates.io/crates/windows-targets/0.52.0",
+      "license_files": [
+        "THIRD_PARTY_NOTICES.txt"
+      ],
+      "evidence": "Target runtime dependency of the pinned Windows patternsleuth binding.",
+      "selected_license": "MIT"
+    },
+    {
+      "name": "windows_x86_64_msvc",
+      "version": "0.48.5",
+      "license": "MIT OR Apache-2.0",
+      "source": "https://crates.io/crates/windows_x86_64_msvc/0.48.5",
+      "license_files": [
+        "THIRD_PARTY_NOTICES.txt"
+      ],
+      "evidence": "Target runtime dependency of the pinned Windows patternsleuth binding.",
+      "selected_license": "MIT"
+    },
+    {
+      "name": "windows_x86_64_msvc",
+      "version": "0.52.0",
+      "license": "MIT OR Apache-2.0",
+      "source": "https://crates.io/crates/windows_x86_64_msvc/0.52.0",
+      "license_files": [
+        "THIRD_PARTY_NOTICES.txt"
+      ],
+      "evidence": "Target runtime dependency of the pinned Windows patternsleuth binding.",
+      "selected_license": "MIT"
+    },
+    {
+      "name": "Roboto Regular",
+      "version": "2.137; 2017",
+      "license": "Apache-2.0",
+      "source": "https://github.com/googlefonts/roboto-2",
+      "license_files": [
+        "THIRD_PARTY_NOTICES.txt"
+      ],
+      "evidence": "Complete embedded TTF matched frozen UE4SS.dll at byte offset 15664192.",
+      "selected_license": "Apache-2.0"
+    },
+    {
+      "name": "Font Awesome 5 Free Solid",
+      "version": "5.15.4",
+      "license": "OFL-1.1",
+      "source": "https://github.com/FortAwesome/Font-Awesome/tree/5.15.4",
+      "license_files": [
+        "THIRD_PARTY_NOTICES.txt"
+      ],
+      "evidence": "Complete embedded TTF SHA-256 f9d6933d04c59a42aca30bd88eec38bb9cbeb69b1547fd550ef73eba0bce7a1a matched frozen UE4SS.dll at byte offset 15460944. Font files use OFL, rather than the SVG/JS icon license.",
+      "selected_license": "OFL-1.1"
+    },
+    {
+      "name": "ProggyClean",
+      "version": "Dear ImGui v1.89 embedded default font",
+      "license": "MIT",
+      "source": "https://github.com/bluescan/proggyfonts",
+      "license_files": [
+        "THIRD_PARTY_NOTICES.txt"
+      ],
+      "evidence": "Exact 11980-byte base85 font string matched frozen UE4SS.dll at byte offset 11710704.",
+      "selected_license": "MIT"
+    },
+    {
+      "name": "Rust standard library and Windows dependencies",
+      "version": "59807616e1fa2540724bfbac14d7976d7e4a3860",
+      "license": "MIT; Unicode-3.0 for Unicode data; compiler_builtins uses the LLVM compilation exception for Apache-covered object portions.",
+      "source": "https://github.com/rust-lang/rust/tree/59807616e1fa2540724bfbac14d7976d7e4a3860/library",
+      "license_files": [
+        "THIRD_PARTY_NOTICES.txt"
+      ],
+      "evidence": "Frozen DLL includes Windows std/backtrace, mpmc and Unicode source-path strings; dependencies checked against pinned std/alloc manifests."
+    }
+  ],
+  "notice_free_binary_components": [
+    {
+      "name": "GLFW",
+      "selected_license": "Zlib",
+      "reason": "Zlib requires notice retention for source distributions; no notice file is required for this binary-only bundle."
+    },
+    {
+      "name": "AsmJit",
+      "selected_license": "Zlib",
+      "reason": "Zlib requires notice retention for source distributions; no notice file is required for this binary-only bundle."
+    },
+    {
+      "name": "AsmTK",
+      "selected_license": "Zlib",
+      "reason": "Zlib requires notice retention for source distributions; no notice file is required for this binary-only bundle."
+    },
+    {
+      "name": "STB headers bundled with Dear ImGui",
+      "selected_license": "Unlicense",
+      "reason": "Use the upstream public-domain alternative, which has no binary attribution condition."
+    },
+    {
+      "name": "adler",
+      "selected_license": "0BSD",
+      "reason": "Chosen upstream alternative does not require copying a license notice with binaries."
+    },
+    {
+      "name": "byteorder",
+      "selected_license": "Unlicense",
+      "reason": "Chosen upstream alternative does not require copying a license notice with binaries."
+    },
+    {
+      "name": "memchr",
+      "selected_license": "Unlicense",
+      "reason": "Chosen upstream alternative does not require copying a license notice with binaries."
+    }
+  ],
+  "files": {
+    "THIRD_PARTY_NOTICES.txt": "86b6647a2d05380ba167a5b45080585e6d7bcf334f915ca95bf8d64da2180b68"
+  }
+}

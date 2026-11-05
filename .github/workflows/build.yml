@@ -38,6 +38,7 @@ jobs:
   # build-release-macos: # LF volunteer
 
   build-win: # RCs and releases may still be built and signed by hand
+    if: github.repository == 'ArchipelagoMW/Archipelago'
     runs-on: windows-latest
     steps:
       # - copy code below to release.yml -
@@ -125,6 +126,7 @@ jobs:
           retention-days: 7  # keep for 7 days, should be enough
 
   build-ubuntu2204:
+    if: github.repository == 'ArchipelagoMW/Archipelago'
     runs-on: ubuntu-22.04
     steps:
       # - copy code below to release.yml -

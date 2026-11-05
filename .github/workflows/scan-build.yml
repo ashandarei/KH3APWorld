@@ -32,6 +32,7 @@ permissions: {}
 
 jobs:
   scan-build:
+    if: github.repository == 'ArchipelagoMW/Archipelago'
     runs-on: ubuntu-latest
 
     steps:

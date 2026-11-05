@@ -1,0 +1,33 @@
+KH3 Archipelago third-party notices
+==================================
+
+The first-party Python APWorld code is GPL-3.0-only; see LICENSE and
+COPYRIGHT.txt. Archipelago's framework remains MIT licensed, with its
+original notices in LICENSE-Archipelago.txt. Native runtimes, upstream code,
+fonts, artwork, and game content retain their separate applicable terms.
+
+WaterKH/KH3RandomizerClient
+-------------------------
+Project: https://github.com/WaterKH/KH3RandomizerClient
+License: Apache License, Version 2.0
+Upstream license and credits revision: e342d83d81cea1af6f228ee9da233db075b67054
+This identifies the license and credits source, not the revision from which
+every adapted source file or data record was originally imported.
+
+Portions of the game-specific seed generation rules and associated configuration
+data are adapted from KH3RandomizerClient and the former modified C# integration
+in this repository. The seed generator has been translated to Python and modified for
+Archipelago item placement, seed settings, runtime remaps, localization, and
+packaging. The applicable Python source files carry modification notices.
+
+The complete upstream license is included in LICENSE-KH3RandomizerClient.txt.
+The upstream README's complete credits section is preserved in
+UPSTREAM-KH3RandomizerClient-CREDITS.txt, including the main developers,
+CriticPerfect and WaterKH, and the other contributors acknowledged there.
+
+These notices apply to the adapted portions; they do not declare a license for
+the entire APWorld or for the game assets. Additional notices for the asset
+format references and runtime components are included in
+seedgen/THIRD_PARTY_NOTICES.txt, runtime/THIRD_PARTY_NOTICES.md, and
+runtime/MoM/THIRD_PARTY_NOTICES.md when those components are packaged.
+The bundled GUI fonts retain their license in gui/assets/fonts/LICENSE.txt.

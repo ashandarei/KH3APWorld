@@ -1,0 +1,8 @@
+{
+  "repository": "ashandarei/ue4ss-goa",
+  "release_tag": "v3.0.4",
+  "ue4ss_sha256": "1175f06c4a4aa52a7187a6271b926f38624fb1e88011155f52794ee9fbf9c576",
+  "proxy_sha256": {
+    "dwmapi.dll": "027d188d2bbdd77820644d679079c876c990285cefcc59f1feb5e4d64b2e0ce8"
+  }
+}

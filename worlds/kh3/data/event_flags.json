@@ -1,0 +1,308 @@
+{
+  "schema": "kh3ap.event_flags.v1",
+  "source": "randomizer/Content/Load/Tres/TresEventData",
+  "source_sha256": {
+    ".uasset": "67b060f8cc82266f59198fbbda0b5a2f391212c887482c7cba28c17389c08184",
+    ".uexp": "1b074a898deb4387e2ac13b36a1da2459cc58639c3f8fe3c11a7d7c0c7c43169"
+  },
+  "flags": {
+    "EVENT_001": {
+      "flag_name": "gameflow_HE_HEV_FACTORY",
+      "threshold": -1
+    },
+    "EVENT_002": {
+      "flag_name": "gameflow_HE_Sub_Got_GoldenHeracules_01",
+      "threshold": -1
+    },
+    "EVENT_003": {
+      "flag_name": "gameflow_HE_Sub_Got_GoldenHeracules_02",
+      "threshold": -1
+    },
+    "EVENT_004": {
+      "flag_name": "gameflow_HE_Sub_Got_GoldenHeracules_03",
+      "threshold": -1
+    },
+    "EVENT_005": {
+      "flag_name": "gameflow_HE_Sub_Got_GoldenHeracules_04",
+      "threshold": -1
+    },
+    "EVENT_006": {
+      "flag_name": "gameflow_HE_Sub_Got_GoldenHeracules_05",
+      "threshold": -1
+    },
+    "EVENT_007": {
+      "flag_name": "gameflow_HE_Sub_HeraculesBoy",
+      "threshold": 600
+    },
+    "EVENT_008": {
+      "flag_name": "gameflow_MI",
+      "threshold": 3210
+    },
+    "EVENT_009": {
+      "flag_name": "gameflow_BX",
+      "threshold": 640
+    },
+    "EVENT_KEYBLADE_001": {
+      "flag_name": "gameflow_HE",
+      "threshold": 2220
+    },
+    "EVENT_KEYBLADE_002": {
+      "flag_name": "gameflow_TT",
+      "threshold": 520,
+      "requires_tt_clear": true
+    },
+    "EVENT_KEYBLADE_003": {
+      "flag_name": "gameflow_TS",
+      "threshold": 4000
+    },
+    "EVENT_KEYBLADE_004": {
+      "flag_name": "gameflow_RA",
+      "threshold": 4210
+    },
+    "EVENT_KEYBLADE_005": {
+      "flag_name": "gameflow_MI",
+      "threshold": 7050
+    },
+    "EVENT_KEYBLADE_006": {
+      "flag_name": "gameflow_PO",
+      "threshold": 400
+    },
+    "EVENT_KEYBLADE_007": {
+      "flag_name": "gameflow_FZ",
+      "threshold": 8820
+    },
+    "EVENT_KEYBLADE_008": {
+      "flag_name": "gameflow_CA",
+      "threshold": 5400
+    },
+    "EVENT_KEYBLADE_009": {
+      "flag_name": "gameflow_BX",
+      "threshold": 820
+    },
+    "EVENT_KEYBLADE_010": {
+      "flag_name": "gameflow_EX_minigame_Remy",
+      "threshold": -1
+    },
+    "EVENT_KEYBLADE_011": {
+      "flag_name": "gameflow_VBONUS_070_kg_002",
+      "threshold": -1
+    },
+    "EVENT_KEYBLADE_012": {
+      "flag_name": "(Gameflag of Oathkeeper) - REPLACE WITH NONE FOR NOW",
+      "threshold": -1
+    },
+    "EVENT_KEYBLADE_013": {
+      "flag_name": "(Gameflag of Oblivion) - REPLACE WITH NONE FOR NOW",
+      "threshold": -1
+    },
+    "EVENT_HEARTBINDER_001": {
+      "flag_name": "gameflow_YT",
+      "threshold": 100
+    },
+    "EVENT_HEARTBINDER_002": {
+      "flag_name": "gameflow_VBONUS_022_ts_006",
+      "threshold": -1
+    },
+    "EVENT_HEARTBINDER_003": {
+      "flag_name": "gameflow_VBONUS_038_mi_007",
+      "threshold": -1
+    },
+    "EVENT_HEARTBINDER_004": {
+      "flag_name": "gameflow_BX",
+      "threshold": 220
+    },
+    "EVENT_REPORT_001a": {
+      "flag_name": "global_BATTLEPORTAL_ex_21_CLEARED",
+      "threshold": -1
+    },
+    "EVENT_REPORT_001b": {
+      "flag_name": "global_BATTLEPORTAL_ex_21_CLEARED",
+      "threshold": -1
+    },
+    "EVENT_REPORT_002a": {
+      "flag_name": "global_BATTLEPORTAL_ex_22_CLEARED",
+      "threshold": -1
+    },
+    "EVENT_REPORT_002b": {
+      "flag_name": "global_BATTLEPORTAL_ex_22_CLEARED",
+      "threshold": -1
+    },
+    "EVENT_REPORT_003a": {
+      "flag_name": "global_BATTLEPORTAL_ex_23_CLEARED",
+      "threshold": -1
+    },
+    "EVENT_REPORT_003b": {
+      "flag_name": "global_BATTLEPORTAL_ex_23_CLEARED",
+      "threshold": -1
+    },
+    "EVENT_REPORT_004a": {
+      "flag_name": "global_BATTLEPORTAL_ex_24_CLEARED",
+      "threshold": -1
+    },
+    "EVENT_REPORT_004b": {
+      "flag_name": "global_BATTLEPORTAL_ex_24_CLEARED",
+      "threshold": -1
+    },
+    "EVENT_REPORT_005a": {
+      "flag_name": "global_BATTLEPORTAL_ex_25_CLEARED",
+      "threshold": -1
+    },
+    "EVENT_REPORT_005b": {
+      "flag_name": "global_BATTLEPORTAL_ex_25_CLEARED",
+      "threshold": -1
+    },
+    "EVENT_REPORT_006a": {
+      "flag_name": "global_BATTLEPORTAL_ex_26_CLEARED",
+      "threshold": -1
+    },
+    "EVENT_REPORT_006b": {
+      "flag_name": "global_BATTLEPORTAL_ex_26_CLEARED",
+      "threshold": -1
+    },
+    "EVENT_REPORT_007a": {
+      "flag_name": "global_BATTLEPORTAL_ex_27_CLEARED",
+      "threshold": -1
+    },
+    "EVENT_REPORT_007b": {
+      "flag_name": "global_BATTLEPORTAL_ex_27_CLEARED",
+      "threshold": -1
+    },
+    "EVENT_REPORT_008a": {
+      "flag_name": "global_BATTLEPORTAL_ex_29_CLEARED",
+      "threshold": -1
+    },
+    "EVENT_REPORT_008b": {
+      "flag_name": "global_BATTLEPORTAL_ex_29_CLEARED",
+      "threshold": -1
+    },
+    "EVENT_REPORT_009a": {
+      "flag_name": "global_BATTLEPORTAL_ex_31_CLEARED",
+      "threshold": -1
+    },
+    "EVENT_REPORT_009b": {
+      "flag_name": "global_BATTLEPORTAL_ex_31_CLEARED",
+      "threshold": -1
+    },
+    "EVENT_REPORT_010a": {
+      "flag_name": "global_BATTLEPORTAL_ex_33_CLEARED",
+      "threshold": -1
+    },
+    "EVENT_REPORT_010b": {
+      "flag_name": "global_BATTLEPORTAL_ex_33_CLEARED",
+      "threshold": -1
+    },
+    "EVENT_REPORT_011a": {
+      "flag_name": "global_BATTLEPORTAL_ex_34_CLEARED",
+      "threshold": -1
+    },
+    "EVENT_REPORT_011b": {
+      "flag_name": "global_BATTLEPORTAL_ex_34_CLEARED",
+      "threshold": -1
+    },
+    "EVENT_REPORT_012a": {
+      "flag_name": "global_BATTLEPORTAL_ex_35_CLEARED",
+      "threshold": -1
+    },
+    "EVENT_REPORT_012b": {
+      "flag_name": "global_BATTLEPORTAL_ex_35_CLEARED",
+      "threshold": -1
+    },
+    "EVENT_REPORT_013a": {
+      "flag_name": "global_BATTLEPORTAL_ex_37_CLEARED",
+      "threshold": -1
+    },
+    "EVENT_REPORT_013b": {
+      "flag_name": "global_BATTLEPORTAL_ex_37_CLEARED",
+      "threshold": -1
+    },
+    "EVENT_REPORT_014": {
+      "flag_name": "global_BATTLEPORTAL_ex_38_CLEARED",
+      "threshold": -1
+    },
+    "EVENT_CKGAME_001": {
+      "flag_name": "gameflow_TT",
+      "threshold": 520,
+      "requires_tt_clear": true
+    },
+    "EVENT_KEYITEM_001": {
+      "flag_name": "gameflow_GM",
+      "threshold": 100
+    },
+    "EVENT_KEYITEM_002": {
+      "flag_name": "gameflow_BX",
+      "threshold": 100
+    },
+    "EVENT_KEYITEM_003": {
+      "flag_name": "None",
+      "threshold": -1
+    },
+    "EVENT_KEYITEM_004": {
+      "flag_name": "None",
+      "threshold": -1
+    },
+    "EVENT_KEYITEM_005": {
+      "flag_name": "gameflow_SS_DLC_Sub_TrueEnd",
+      "threshold": 100
+    },
+    "EVENT_DATAB_001": {
+      "flag_name": "gameflow_RG_DLC_SHU_BATTLE_10",
+      "threshold": -1
+    },
+    "EVENT_DATAB_002": {
+      "flag_name": "gameflow_RG_DLC_SHU_BATTLE_11",
+      "threshold": -1
+    },
+    "EVENT_DATAB_003": {
+      "flag_name": "gameflow_RG_DLC_SHU_BATTLE_12",
+      "threshold": -1
+    },
+    "EVENT_DATAB_004": {
+      "flag_name": "gameflow_RG_DLC_SHU_BATTLE_13",
+      "threshold": -1
+    },
+    "EVENT_DATAB_005": {
+      "flag_name": "gameflow_RG_DLC_SHU_BATTLE_14",
+      "threshold": -1
+    },
+    "EVENT_DATAB_006": {
+      "flag_name": "gameflow_RG_DLC_SHU_BATTLE_15",
+      "threshold": -1
+    },
+    "EVENT_DATAB_007": {
+      "flag_name": "gameflow_RG_DLC_SHU_BATTLE_16",
+      "threshold": -1
+    },
+    "EVENT_DATAB_008": {
+      "flag_name": "gameflow_RG_DLC_SHU_BATTLE_17",
+      "threshold": -1
+    },
+    "EVENT_DATAB_009": {
+      "flag_name": "gameflow_RG_DLC_SHU_BATTLE_18",
+      "threshold": -1
+    },
+    "EVENT_DATAB_010": {
+      "flag_name": "gameflow_RG_DLC_SHU_BATTLE_19",
+      "threshold": -1
+    },
+    "EVENT_DATAB_011": {
+      "flag_name": "gameflow_RG_DLC_SHU_BATTLE_20",
+      "threshold": -1
+    },
+    "EVENT_DATAB_012": {
+      "flag_name": "gameflow_RG_DLC_SHU_BATTLE_21",
+      "threshold": -1
+    },
+    "EVENT_DATAB_013": {
+      "flag_name": "gameflow_RG_DLC_SHU_BATTLE_22",
+      "threshold": -1
+    },
+    "EVENT_YOZORA_001": {
+      "flag_name": "gameflow_SS_DLC_Sub_TrueEnd",
+      "threshold": 100
+    },
+    "EVENT_REPORT_000": {
+      "flag_name": "global_BATTLEPORTAL_ex_39_CLEARED",
+      "threshold": -1
+    }
+  }
+}
