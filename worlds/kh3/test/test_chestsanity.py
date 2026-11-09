@@ -217,6 +217,76 @@ class TestCharacterDoorChestsanity(KH3TestBase):
         self.assertEqual(self.world.active_locations, tracker.active_locations)
 
 
+class TestRoxasChestsanity(KH3TestBase):
+    options = {"chestsanity": 1, "roxas_chestsanity": 1,
+               "portal_unlocks": "party_members", "ally_characters": 0,
+               "music_chest_vanilla_conversion": 8}
+
+    def test_only_playable_roxas_substitutes_for_his_two_chest_keys(self):
+        from ..CharacterUnlocks import CHARACTER_UNLOCK_ITEM_NAMES
+
+        for blade in ("Oathkeeper", "Oblivion", "Ever After"):
+            with self.subTest(keyblade=blade):
+                row = next(r for r in self.world.active_locations
+                           if r.get("keyblade_chest_keyblade") == blade)
+                location = self.multiworld.get_location(row["name"], self.player)
+                state = CollectionState(self.multiworld)
+                excluded = {blade, *CHARACTER_UNLOCK_ITEM_NAMES}
+                for item in self.multiworld.get_items():
+                    if item.name not in excluded:
+                        state.collect(item, True)
+                for name in excluded:
+                    while state.has(name, self.player):
+                        state.remove(self.world.create_item(name))
+                self.assertTrue(self.get_location_base_region(location).can_reach(state))
+                self.assertFalse(location.can_reach(state))
+                for character in CHARACTER_UNLOCK_ITEM_NAMES:
+                    item = self.world.create_item(character)
+                    state.collect(item, True)
+                    self.assertEqual(location.can_reach(state),
+                                     character == "Playable Character: Roxas"
+                                     and blade in {"Oathkeeper", "Oblivion"})
+                    state.remove(item)
+                state.collect(self.world.create_item(blade), True)
+                self.assertTrue(location.can_reach(state))
+
+    def test_runtime_and_tracker_preserve_roxas_option_and_melody_precedence(self):
+        from .test_universal_tracker import TestKH3UniversalTracker
+
+        slot = convert_to_base_types(self.world.build_runtime_slot_data())
+        self.assertEqual(slot["roxas_chestsanity"], 1)
+        tracker = TestKH3UniversalTracker.build_yamlless_tracker_multiworld(self, slot).worlds[1]
+        self.assertEqual(tracker.options.roxas_chestsanity.value, 1)
+        self.assertEqual(self.world.active_locations, tracker.active_locations)
+        for row in self.world.active_locations:
+            if "mom_song_id" in row:
+                self.assertNotIn("keyblade_chest_keyblade", row)
+
+
+class TestRoxasChestsanityDisabled(TestRoxasChestsanity):
+    options = {**TestRoxasChestsanity.options, "roxas_chestsanity": 0}
+
+    def test_only_playable_roxas_substitutes_for_his_two_chest_keys(self):
+        for blade in ("Oathkeeper", "Oblivion"):
+            row = next(r for r in self.world.active_locations
+                       if r.get("keyblade_chest_keyblade") == blade)
+            state = CollectionState(self.multiworld)
+            for item in self.multiworld.get_items():
+                if item.name != blade:
+                    state.collect(item, True)
+            while state.has(blade, self.player):
+                state.remove(self.world.create_item(blade))
+            state.collect(self.world.create_item("Playable Character: Roxas"), True)
+            location = self.multiworld.get_location(row["name"], self.player)
+            self.assertTrue(self.get_location_base_region(location).can_reach(state))
+            self.assertFalse(location.can_reach(state))
+
+    def test_runtime_and_tracker_preserve_roxas_option_and_melody_precedence(self):
+        from ..Options import RoxasChestsanity
+        self.assertEqual(RoxasChestsanity.default, 0)
+        self.assertEqual(self.world.build_runtime_slot_data()["roxas_chestsanity"], 0)
+
+
 class TestJunkChestRewards(KH3TestBase):
     options = {"junk_san_fransokyo_chests": 1, "junk_the_caribbean_chests": 1}
 

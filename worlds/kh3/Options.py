@@ -311,6 +311,14 @@ class Chestsanity(Toggle):
     display_name = "Chestsanity"
 
 
+class RoxasChestsanity(Toggle):
+    """With Chestsanity enabled, playing as Roxas can open Oathkeeper and
+    Oblivion locked chests without owning their required Keyblade. Off by default.
+    """
+
+    display_name = "Roxas Chestsanity"
+
+
 class JunkSanFransokyoChests(Toggle):
     """Allow only filler or traps in San Fransokyo (bx) chests, independently
     of its other rewards.
@@ -1665,6 +1673,7 @@ class KH3Options(PerGameCommonOptions):
     keyblade_levels: KeybladeLevels
     stylesanity: Stylesanity
     chestsanity: Chestsanity
+    roxas_chestsanity: RoxasChestsanity
     junk_san_fransokyo_chests: JunkSanFransokyoChests
     junk_the_caribbean_chests: JunkTheCaribbeanChests
     ultima_weapon_mode: UltimaWeaponMode
@@ -1887,6 +1896,7 @@ option_groups = [
         KeybladeLevels,
         Stylesanity,
         Chestsanity,
+        RoxasChestsanity,
         UltimaWeaponMode,
         UltimaWeaponShardCount,
         TrapPercentage,

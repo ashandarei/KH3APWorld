@@ -17,7 +17,7 @@ from rule_builder.rules import (
 from worlds.generic.Rules import add_item_rule
 
 from .Battlegates import BATTLEGATE_SOURCE_ID_REGION_LOCKS
-from .CharacterUnlocks import DATA_BATTLE_COMPLETION_SOURCE_KEYS
+from .CharacterUnlocks import DATA_BATTLE_COMPLETION_SOURCE_KEYS, ROXAS_REQUIRED_KEYBLADES
 from .ClassicKingdomLogic import HasClassicKingdomGames
 from .ColiseumLogic import (
     COLISEUM_CUP_REQUIRED_WORLDS,
@@ -194,7 +194,12 @@ def set_rules(world) -> None:
         if row.get("type") == "music_chest_bonus":
             rule &= CanReachLocation(row["music_chest_parent_location_name"])
         if include_chest_lock and row.get("keyblade_chest_keyblade") and not row.get("keyblade_chest_native"):
-            rule &= Has(row["keyblade_chest_keyblade"])
+            blade = row["keyblade_chest_keyblade"]
+            if (world.options.chestsanity.value and world.options.roxas_chestsanity.value
+                    and blade in ROXAS_REQUIRED_KEYBLADES):
+                rule &= HasAny(blade, "Playable Character: Roxas")
+            else:
+                rule &= Has(blade)
         if row["source_table"] == "Event":
             battlegate_region = BATTLEGATE_SOURCE_ID_REGION_LOCKS.get(row["source_id"])
             if battlegate_region is not None:

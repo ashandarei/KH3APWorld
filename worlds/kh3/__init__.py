@@ -1418,6 +1418,7 @@ class KH3World(World):
             "melody_of_memory_song_whitelist",
             "melody_of_memory_song_blacklist",
             "chestsanity",
+            "roxas_chestsanity",
             "junk_san_fransokyo_chests",
             "junk_the_caribbean_chests",
             "melody_of_memory_difficulty",
