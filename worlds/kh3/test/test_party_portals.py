@@ -52,9 +52,6 @@ class TestPartyPortals(KH3TestBase):
                 if region_name == "Keyblade Graveyard":
                     self.assertFalse(entrance.access_rule(state))
                     state.collect(self.world.create_item("Unlock: Attraction Flow"))
-                if region_name == "Dark World":
-                    self.assertFalse(entrance.access_rule(state))
-                    state.collect(self.world.create_item("Oblivion"))
                 self.assertTrue(entrance.access_rule(state))
 
     def test_starter_and_progression_and_export(self):

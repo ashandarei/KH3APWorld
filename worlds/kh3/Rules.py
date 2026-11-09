@@ -280,7 +280,8 @@ def set_rules(world) -> None:
                 ), count=required_worlds, label="Completed worlds")
         elif region_name == KH02_WORLD:
             # Aqua supplies the chapter's combat and movement abilities.
-            rule = Has("Oblivion")
+            rule = (HasAny(*PORTAL_PARTY_REGION_LOCKS["Dark World"])
+                    if party_portals else Has("Oblivion"))
         elif region_name == KEYBLADE_GRAVEYARD_REMIND_SHARED_REGION_NAME:
             rule = Or(*(CanReachRegion(name) for name in ("Keyblade Graveyard", "Re Mind")
                         if name in existing_region_names))
@@ -294,9 +295,6 @@ def set_rules(world) -> None:
                     if party_portals else HasAny(*LEVEL_UP_XP_SOURCE_KEYBLADE_ITEM_NAMES))
         # Story worlds rely on their check-level combat requirements.
         # Only Data Battles retains the three tier-one world access gate.
-        if region_name == "Dark World" and world.options.kh02_enabled.value:
-            # The Dark Aqua route follows the KH0.2 chapter through this portal.
-            rule &= Has("Oblivion")
         if region_name == "Data Battles":
             rule &= (CountRules(*(HasAny(*PORTAL_PARTY_REGION_LOCKS[name])
                                   for name in sorted(WORLD_DIFFICULTY_TIERS[1])

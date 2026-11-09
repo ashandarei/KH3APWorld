@@ -1,6 +1,6 @@
 """Checks supported by the local, in-KH3 0.2 integration.
 
-All checks require Oblivion; magic-dependent checks also require Unlock: Magic.
+All checks use the Dark World portal unlock; magic-dependent checks also require Unlock: Magic.
 Aqua supplies the chapter's combat and movement.
 Native progress supplies their completion; the standalone 0.2 bridge is unused.
 """

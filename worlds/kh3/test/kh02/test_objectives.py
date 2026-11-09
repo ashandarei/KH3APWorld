@@ -196,7 +196,13 @@ class TestKH02World(KH3TestBase):
                     gated = [self.get_location_by_source("KH02", source)
                              for source in KH02_MAGIC_REQUIRED_SOURCE_IDS]
                     self.assertTrue(all(not location.can_reach(state) for location in checks))
-                    state.collect(self.world.create_item("Oblivion"))
+                    wrong_unlock, required_unlock = (("Oblivion", "Party Member: Aqua") if mode
+                                                     else ("Party Member: Aqua", "Oblivion"))
+                    wrong_item = self.world.create_item(wrong_unlock)
+                    state.collect(wrong_item)
+                    self.assertTrue(all(not location.can_reach(state) for location in checks))
+                    state.remove(wrong_item)
+                    state.collect(self.world.create_item(required_unlock))
                     self.assertTrue(all(location.can_reach(state) for location in checks if location not in gated))
                     self.assertTrue(all(location.can_reach(state) == bool(starting_magic) for location in gated))
                     state.collect(self.world.create_item("Magic: Fire"))
@@ -207,6 +213,26 @@ class TestKH02World(KH3TestBase):
                     if not starting_magic:
                         state.remove(unlock)
                         self.assertTrue(all(not location.can_reach(state) for location in gated))
+
+    def test_dark_world_and_chapter_share_the_selected_portal_unlock(self):
+        from BaseClasses import CollectionState
+        for mode, enabled, challenges in product((0, 1), repeat=3):
+            with self.subTest(portal_unlocks=mode, kh02_enabled=enabled, kh02_challenges=challenges):
+                self.options = {"portal_unlocks": mode, "kh02_enabled": enabled,
+                                "kh02_challenges": challenges}
+                self.world_setup(seed=357)
+                regions = [self.multiworld.get_region("Dark World", self.player)]
+                if enabled:
+                    regions.append(self.multiworld.get_region("Kingdom Hearts 0.2", self.player))
+                for item_name in ("Oblivion", "Party Member: Aqua"):
+                    state = CollectionState(self.multiworld)
+                    self.assertTrue(all(not region.can_reach(state) for region in regions))
+                    item = self.world.create_item(item_name)
+                    state.collect(item)
+                    expected = item_name == ("Party Member: Aqua" if mode else "Oblivion")
+                    self.assertTrue(all(region.can_reach(state) == expected for region in regions))
+                    state.remove(item)
+                    self.assertTrue(all(not region.can_reach(state) for region in regions))
 
     def test_dark_aqua_keeps_its_check_and_combat_requirements(self):
         from BaseClasses import CollectionState
@@ -219,8 +245,7 @@ class TestKH02World(KH3TestBase):
             location = self.multiworld.get_location(row["name"], self.player)
             state = CollectionState(self.multiworld)
             state.collect(self.world.create_item("Party Member: Aqua"))
-            self.assertEqual(self.multiworld.get_region("Dark World", self.player).can_reach(state), not enabled)
-            state.collect(self.world.create_item("Oblivion"))
+            self.assertTrue(self.multiworld.get_region("Dark World", self.player).can_reach(state))
             self.assertFalse(location.can_reach(state))
             for item in ("Ability: Block", "Ability: Air Slide", "Ability: Dodge Roll", "Magic: Cure", "Unlock: Magic"):
                 state.collect(self.world.create_item(item))
