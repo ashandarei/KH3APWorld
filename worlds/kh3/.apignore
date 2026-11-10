@@ -11,7 +11,7 @@
 /randomizer/wwwroot/pak/UnrealPak-With-Compression.bat
 /randomizer/wwwroot/pak/UnrealPak-Unpack.bat
 /randomizer/wwwroot/pak/readme.txt
-/runtime/Mods/KH3APProbeCpp/dlls/main.dll.bak*
+/runtime/Mods/KH3APProbeCpp/dlls/main.dll*
 # Patch Game fetches UE4SS and its proxy from the pinned ue4ss-goa GitHub release.
 /runtime/Win64/UE4SS.dll
 /runtime/Win64/dwmapi.dll

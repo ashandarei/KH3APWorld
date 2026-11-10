@@ -2,6 +2,8 @@
 
 import hashlib
 import json
+import io
+import zipfile
 from contextlib import contextmanager
 from pathlib import Path
 from unittest.mock import patch
@@ -47,4 +49,48 @@ def runtime_release_fixture(bundle: Path):
         patch.object(RuntimeDownload, "_read_url", side_effect=read_url),
         patch.object(RuntimeDownload, "runtime_cache_path", return_value=bundle.parent / "runtime-status.json"),
     ):
+        yield
+
+
+def probe_release_payload(data=b"probe", *, metadata_overrides=None):
+    from ..installer_support import probe_release
+    output = io.BytesIO()
+    sha256 = hashlib.sha256(data).hexdigest()
+    metadata = {
+        "schema": 3, "sha256": sha256, "first_party_license": "MIT",
+        "performance_diagnostics": False, "automation_handlers": False,
+        "release_eligible": True, "ue4ss_dirty": False, "allow_unpinned_ue4ss": False,
+        "ue4ss_revision": "0" * 40,
+    }
+    metadata.update(metadata_overrides or {})
+    with zipfile.ZipFile(output, "w") as archive:
+        archive.writestr(probe_release.DLL_ENTRY, data)
+        archive.writestr(probe_release.DLL_ENTRY + ".build.json", json.dumps(metadata))
+        archive.writestr("manifest.json", json.dumps({**metadata, "schema": 1, "version": "2.0.0"}))
+    payload = output.getvalue()
+    sha256 = hashlib.sha256(data).hexdigest()
+    return {
+        "repository": probe_release.REPOSITORY, "release_tag": "2.0.0", "version": "2.0.0",
+        "asset": f"KH3Runtime-2.0.0-{sha256[:12]}.zip",
+        "sha256": sha256, "size": len(data),
+        "archive_sha256": hashlib.sha256(payload).hexdigest(), "archive_size": len(payload),
+    }, payload
+
+
+@contextmanager
+def probe_release_fixture(probe):
+    from ..installer_support import resources, probe_release
+    data = probe.read_bytes()
+    config, payload = probe_release_payload(data)
+    original = resources._runtime_resource
+
+    class Config:
+        def read_bytes(self):
+            return json.dumps(config).encode()
+
+    def resource(*parts):
+        return Config() if parts == probe_release.CONFIG_PATH else original(*parts)
+
+    with patch.object(resources, "_runtime_resource", side_effect=resource), \
+            patch.object(probe_release, "_download", return_value=payload):
         yield

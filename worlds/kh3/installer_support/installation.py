@@ -54,22 +54,23 @@ def _install_probe_layouts(
     timestamp: str,
     bridge_dir: Path | None,
     errors: list[str],
+    probe_source,
 ) -> dict[str, Any]:
-    probe_result = _copy_file(_runtime_probe_source(), probe_dll_path(kh3_root_dir), timestamp)
+    probe_result = _copy_file(probe_source, probe_dll_path(kh3_root_dir), timestamp)
     if probe_result["missing"]:
-        errors.append(f"Missing bundled KH3APProbeCpp DLL: {probe_result['missing']}")
+        errors.append(f"Missing released KH3APProbeCpp DLL: {probe_result['missing']}")
     if probe_result.get("error"):
-        errors.append(f"Could not install bundled KH3APProbeCpp DLL: {probe_result['error']}")
+        errors.append(f"Could not install released KH3APProbeCpp DLL: {probe_result['error']}")
 
     path_specific_probe_result: dict[str, Any] | None = None
     path_specific_probe_target = path_specific_probe_dll_path(kh3_root_dir)
     if path_specific_probe_target is not None:
-        path_specific_probe_result = _copy_file(_runtime_probe_source(), path_specific_probe_target, timestamp)
+        path_specific_probe_result = _copy_file(probe_source, path_specific_probe_target, timestamp)
         if path_specific_probe_result["missing"]:
-            errors.append(f"Missing bundled path-specific KH3APProbeCpp DLL: {path_specific_probe_result['missing']}")
+            errors.append(f"Missing released path-specific KH3APProbeCpp DLL: {path_specific_probe_result['missing']}")
         if path_specific_probe_result.get("error"):
             errors.append(
-                f"Could not install bundled path-specific KH3APProbeCpp DLL: {path_specific_probe_result['error']}"
+                f"Could not install released path-specific KH3APProbeCpp DLL: {path_specific_probe_result['error']}"
             )
 
     mods_txt_result = ensure_mod_enabled(
@@ -188,10 +189,17 @@ def install_kh3_runtime(kh3_root_dir: Path, bridge_dir: Path | None = None) -> d
                 raise ValueError("Missing UE4SS release configuration. Repair your KH3 client installation.")
             config = json.loads(release_config.read_bytes())
             remote_release = stage_runtime(config, win64, staging)
+            probe_source = _runtime_probe_source()
+            probe_source.use_installed(probe_dll_path(kh3_root_dir))
+            specific = path_specific_probe_dll_path(kh3_root_dir)
+            if specific is not None:
+                probe_source.use_installed(specific)
+            # Verify all probe bytes before prerequisites or any game-file writes.
+            probe_source.read_bytes()
         except Exception as exc:
             return {
                 "status": "error",
-                "errors": [f"Could not fetch/verify the UE4SS release; no runtime files changed: {exc}"],
+                "errors": [f"Could not fetch/verify the runtime releases; no runtime files changed: {exc}"],
                 "status_snapshot": before_status,
             }
         try:
@@ -219,7 +227,7 @@ def install_kh3_runtime(kh3_root_dir: Path, bridge_dir: Path | None = None) -> d
     errors.extend(f"Missing bundled UE4SS path: {path}" for path in ue4ss_result["missing"])
     errors.extend(f"Could not install UE4SS file {error}" for error in ue4ss_result.get("errors", []))
     configuration = _configure_runtime(kh3_root_dir, win64, timestamp, errors)
-    probe_results = _install_probe_layouts(kh3_root_dir, timestamp, bridge_dir, errors)
+    probe_results = _install_probe_layouts(kh3_root_dir, timestamp, bridge_dir, errors, probe_source)
 
     return {
         "status": "ok" if not errors else "partial",

@@ -11,6 +11,8 @@ from tempfile import TemporaryDirectory
 from unittest.mock import patch
 
 from worlds.kh3 import RuntimeDownload
+from .runtime_download_fixture import probe_release_fixture, probe_release_payload
+from ..installer_support import probe_release
 
 from ..installer_support import (
     installation as installer_installation,
@@ -217,7 +219,7 @@ class TestRuntimeDownload(unittest.TestCase):
             win64 = game / "Binaries" / "Win64"
             win64.mkdir(parents=True)
             with patch.object(installer_resources, "RUNTIME_WIN64_DIR", bundle), \
-                    patch.object(installer_resources, "RUNTIME_PROBE_DLL", probe), \
+                    probe_release_fixture(probe), \
                     patch.object(RuntimeDownload, "_read_url", side_effect=self.read_url):
                 result = installer_installation.install_kh3_runtime(game)
             self.assertEqual(result["status"], "ok", result.get("errors"))
@@ -295,7 +297,7 @@ class TestRuntimeDownload(unittest.TestCase):
             with zipfile.ZipFile(archive, "w") as output:
                 output.writestr("kh3/runtime/Win64/ue4ss-release.json", json.dumps(self.config))
                 output.writestr("kh3/runtime/Win64/UE4SS-settings.ini", "[General]\n")
-                output.writestr("kh3/runtime/Mods/KH3APProbeCpp/dlls/main.dll", b"probe")
+                output.writestr("kh3/runtime/Mods/KH3APProbeCpp/runtime-release.json", json.dumps(probe_release_payload()[0]))
                 for name, data in licenses.items():
                     output.writestr(f"kh3/runtime/Win64/KH3AP-Licenses/{name}", data)
             game = root / "game"
@@ -304,7 +306,7 @@ class TestRuntimeDownload(unittest.TestCase):
             (win64 / "UE4SS.dll").write_bytes(b"old-runtime")
             with patch.object(installer_resources, "__file__", str(archive / "kh3/installer_support/resources.py")), \
                     patch.object(installer_resources, "RUNTIME_WIN64_DIR", root / "absent"), \
-                    patch.object(installer_resources, "RUNTIME_PROBE_DLL", root / "absent-probe"), \
+                    patch.object(probe_release, "_download", return_value=probe_release_payload()[1]), \
                     patch.object(RuntimeDownload, "_read_url", side_effect=self.read_url) as fetch:
                 result = installer_installation.install_kh3_runtime(game)
                 self.assertEqual(result["status"], "ok", result.get("errors"))

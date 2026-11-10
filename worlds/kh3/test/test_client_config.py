@@ -81,7 +81,7 @@ from ..platform_support.steam_cloud import (
     steam_cloud_state_from_sharedconfig,
     steam_userdata_account_id,
 )
-from .runtime_download_fixture import runtime_release_fixture
+from .runtime_download_fixture import runtime_release_fixture, probe_release_fixture, probe_release_payload
 
 
 class TestKH3SettingsAndDiscovery(unittest.TestCase):
@@ -2883,7 +2883,9 @@ class TestKH3ItemConsumerPlan(unittest.TestCase):
                 (win64 / name).write_bytes(b"12345")
 
             with patch.object(installer_resources, "RUNTIME_WIN64_DIR", Path(temp_dir) / "missing-runtime"), \
-                    patch.object(installer_resources, "_runtime_resource", return_value=MetadataOnlyDir()):
+                    patch.object(installer_resources, "_runtime_resource", side_effect=lambda *parts: (
+                        installer_resources._MissingRuntimeResource("runtime-release.json")
+                        if parts[-1] == "runtime-release.json" else MetadataOnlyDir())):
                 status = installer_status.runtime_install_status(kh3_root)
 
         self.assertFalse(status["ue4ss_custom_conflict"])
@@ -2900,7 +2902,7 @@ class TestKH3ItemConsumerPlan(unittest.TestCase):
             with zipfile.ZipFile(apworld_path, "w") as archive:
                 for name in installer_ue4ss_config.UE4SS_MANAGED_FILES:
                     archive.writestr(f"kh3/runtime/Win64/{name}", b"12345")
-                archive.writestr("kh3/runtime/Mods/KH3APProbeCpp/dlls/main.dll", b"probe")
+                archive.writestr("kh3/runtime/Mods/KH3APProbeCpp/runtime-release.json", json.dumps(probe_release_payload()[0]))
 
             kh3_root = root / "KINGDOM HEARTS III"
             win64 = kh3_root / "Binaries" / "Win64"
@@ -2928,11 +2930,10 @@ class TestKH3ItemConsumerPlan(unittest.TestCase):
             module_file = str(apworld_path) + "\\kh3\\installer_support\\resources.py"
             with patch.object(installer_resources, "__file__", module_file), \
                     patch.object(installer_resources, "RUNTIME_WIN64_DIR", root / "missing-runtime"), \
-                    patch.object(installer_resources, "RUNTIME_PROBE_DLL", root / "missing-probe.dll"), \
                     patch.object(installer_resources.zipfile, "ZipFile", CountingZipFile):
                 status = installer_status.runtime_install_status(kh3_root)
 
-            self.assertEqual(open_count, 1)
+            self.assertEqual(open_count, 2)  # One ZIP index and one small release-config read.
             self.assertTrue(status["bundle_win64_exists"])
             self.assertTrue(status["bundle_probe_exists"])
             self.assertEqual(
@@ -2952,7 +2953,6 @@ class TestKH3ItemConsumerPlan(unittest.TestCase):
             module_file = str(apworld_path) + "\\kh3\\installer_support\\resources.py"
             with patch.object(installer_resources, "__file__", module_file), \
                     patch.object(installer_resources, "RUNTIME_WIN64_DIR", root / "missing-runtime"), \
-                    patch.object(installer_resources, "RUNTIME_PROBE_DLL", root / "missing-probe.dll"), \
                     patch.object(installer_resources.zipfile, "ZipFile", side_effect=TypeError("'ZipInfo' object is not iterable")):
                 status = installer_status.runtime_install_status(kh3_root)
 
@@ -2967,7 +2967,6 @@ class TestKH3ItemConsumerPlan(unittest.TestCase):
 
             with patch.object(installer_resources, "__file__", str(root / "resources.py")), \
                     patch.object(installer_resources, "RUNTIME_WIN64_DIR", root / "missing-runtime"), \
-                    patch.object(installer_resources, "RUNTIME_PROBE_DLL", root / "missing-probe.dll"), \
                     patch.object(installer_resources.resources, "files", side_effect=TypeError("zip path failure")):
                 status = installer_status.runtime_install_status(kh3_root)
 
@@ -3223,7 +3222,7 @@ class TestKH3ItemConsumerPlan(unittest.TestCase):
 
             with runtime_release_fixture(bundle_win64), \
                     patch.object(installer_resources, "RUNTIME_WIN64_DIR", bundle_win64), \
-                    patch.object(installer_resources, "RUNTIME_PROBE_DLL", bundle_probe):
+                    probe_release_fixture(bundle_probe):
                 result = installer_installation.install_kh3_runtime(kh3_root)
                 status = installer_status.runtime_install_status(kh3_root)
 
@@ -3313,7 +3312,7 @@ class TestKH3ItemConsumerPlan(unittest.TestCase):
 
             with runtime_release_fixture(bundle_win64), \
                     patch.object(installer_resources, "RUNTIME_WIN64_DIR", bundle_win64), \
-                    patch.object(installer_resources, "RUNTIME_PROBE_DLL", bundle_probe):
+                    probe_release_fixture(bundle_probe):
                 before = installer_status.runtime_install_status(kh3_root)
                 result = installer_installation.install_kh3_runtime(kh3_root)
                 after = installer_status.runtime_install_status(kh3_root)
@@ -3387,7 +3386,7 @@ class TestKH3ItemConsumerPlan(unittest.TestCase):
             legacy_mods_txt.write_text("KH3APProbeCpp : 1\n", encoding="utf-8")
 
             with patch.object(installer_resources, "RUNTIME_WIN64_DIR", bundle_win64), \
-                    patch.object(installer_resources, "RUNTIME_PROBE_DLL", bundle_probe):
+                    probe_release_fixture(bundle_probe):
                 status = installer_status.runtime_install_status(kh3_root)
 
             self.assertTrue(status["probe_dll_matches_bundle"])
@@ -3426,7 +3425,7 @@ class TestKH3ItemConsumerPlan(unittest.TestCase):
 
             with runtime_release_fixture(bundle_win64), \
                     patch.object(installer_resources, "RUNTIME_WIN64_DIR", bundle_win64), \
-                    patch.object(installer_resources, "RUNTIME_PROBE_DLL", bundle_probe):
+                    probe_release_fixture(bundle_probe):
                 result = installer_installation.install_kh3_runtime(kh3_root)
                 status = installer_status.runtime_install_status(kh3_root)
 
@@ -3476,7 +3475,7 @@ class TestKH3ItemConsumerPlan(unittest.TestCase):
             probe_dll.write_bytes(probe_bytes)
 
             with patch.object(installer_resources, "RUNTIME_WIN64_DIR", bundle_win64), \
-                    patch.object(installer_resources, "RUNTIME_PROBE_DLL", bundle_probe):
+                    probe_release_fixture(bundle_probe):
                 status = installer_status.runtime_install_status(kh3_root)
 
             self.assertEqual(status["probe_dll_version"], "0.3.61")
@@ -3506,7 +3505,7 @@ class TestKH3ItemConsumerPlan(unittest.TestCase):
 
             with runtime_release_fixture(bundle_win64), \
                     patch.object(installer_resources, "RUNTIME_WIN64_DIR", bundle_win64), \
-                    patch.object(installer_resources, "RUNTIME_PROBE_DLL", bundle_probe):
+                    probe_release_fixture(bundle_probe):
                 result = installer_installation.install_kh3_runtime(kh3_root)
 
             self.assertEqual(result["status"], "ok")
@@ -3586,7 +3585,7 @@ class TestKH3ItemConsumerPlan(unittest.TestCase):
 
             with runtime_release_fixture(bundle_win64), \
                     patch.object(installer_resources, "RUNTIME_WIN64_DIR", bundle_win64), \
-                    patch.object(installer_resources, "RUNTIME_PROBE_DLL", bundle_probe), \
+                    probe_release_fixture(bundle_probe), \
                     patch("worlds.kh3.installer_support.installation._copy_file", return_value={
                         "copied": False,
                         "skipped": False,
@@ -3626,7 +3625,7 @@ class TestKH3ItemConsumerPlan(unittest.TestCase):
 
             with runtime_release_fixture(bundle_win64), \
                     patch.object(installer_resources, "RUNTIME_WIN64_DIR", bundle_win64), \
-                    patch.object(installer_resources, "RUNTIME_PROBE_DLL", bundle_probe):
+                    probe_release_fixture(bundle_probe):
                 before = installer_status.runtime_install_status(kh3_root)
                 result = installer_installation.install_kh3_runtime(kh3_root)
 

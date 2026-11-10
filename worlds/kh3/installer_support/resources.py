@@ -18,13 +18,7 @@ RUNTIME_BUNDLE_DIR = Path(__file__).parents[1] / "runtime"
 RUNTIME_WIN64_DIR = RUNTIME_BUNDLE_DIR / "Win64"
 
 
-RUNTIME_PROBE_DLL = RUNTIME_BUNDLE_DIR / "Mods" / "KH3APProbeCpp" / "dlls" / "main.dll"
-
-
 RUNTIME_WIN64_RELATIVE = ("runtime", "Win64")
-
-
-RUNTIME_PROBE_DLL_RELATIVE = ("runtime", "Mods", "KH3APProbeCpp", "dlls", "main.dll")
 
 
 PROBE_DLL_VERSION_PATTERN = re.compile(r"\b\d+\.\d+\.\d+\b")
@@ -199,7 +193,8 @@ def _runtime_win64_source():
 
 
 def _runtime_probe_source():
-    return RUNTIME_PROBE_DLL if RUNTIME_PROBE_DLL.exists() else _runtime_resource(*RUNTIME_PROBE_DLL_RELATIVE)
+    from .probe_release import CONFIG_PATH, PinnedProbeResource
+    return PinnedProbeResource(_runtime_resource(*CONFIG_PATH))
 
 
 def _resource_is_file(resource) -> bool:

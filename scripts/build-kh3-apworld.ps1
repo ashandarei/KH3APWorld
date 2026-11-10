@@ -83,7 +83,7 @@ function Assert-ArchiveNotices {
             "kh02/host_runtime.py",
             "runtime/Mods/KH3APProbeCpp/LICENSE",
             "runtime/Mods/KH3APProbeCpp/THIRD_PARTY_NOTICES.md",
-            "runtime/Mods/KH3APProbeCpp/dlls/main.dll.build.json"
+            "runtime/Mods/KH3APProbeCpp/runtime-release.json"
         )
     }
     Add-Type -AssemblyName System.IO.Compression.FileSystem
@@ -138,21 +138,6 @@ if (-not (Test-Path -LiteralPath $ApignorePath)) {
 }
 
 if (-not $HostOnly) {
-    $PlayerDll = Join-Path $WorldDir 'runtime/Mods/KH3APProbeCpp/dlls/main.dll'
-    $PlayerInfo = Get-Content -LiteralPath "$PlayerDll.build.json" -Raw | ConvertFrom-Json
-    $PlayerHash = (Get-FileHash -LiteralPath $PlayerDll -Algorithm SHA256).Hash.ToLowerInvariant()
-    if ($PlayerInfo.schema -ne 3 -or $PlayerInfo.performance_diagnostics -isnot [bool] -or
-        $PlayerInfo.automation_handlers -isnot [bool] -or $PlayerInfo.performance_diagnostics -or
-        $PlayerInfo.automation_handlers -or $PlayerInfo.first_party_license -ne 'MIT' -or
-        $PlayerInfo.sha256 -ne $PlayerHash) {
-        throw 'APWorld release input must be a hash-verified MIT player DLL with diagnostics and automation off.'
-    }
-    if ($PlayerInfo.ue4ss_revision -cnotmatch '^[0-9a-f]{40}$' -or
-        $PlayerInfo.ue4ss_dirty -isnot [bool] -or $PlayerInfo.ue4ss_dirty -or
-        $PlayerInfo.allow_unpinned_ue4ss -isnot [bool] -or $PlayerInfo.allow_unpinned_ue4ss -or
-        $PlayerInfo.release_eligible -isnot [bool] -or -not $PlayerInfo.release_eligible) {
-        throw 'APWorld release input must have reviewed UE4SS provenance without research overrides.'
-    }
     if (-not (Test-Path -LiteralPath $LicenseManifestPath)) {
         throw "Missing frozen UE4SS runtime license manifest: $LicenseManifestPath"
     }
@@ -205,7 +190,7 @@ $RequiredIgnores = @(
     "/randomizer/wwwroot/pak/Seeds",
     "/randomizer/wwwroot/pak/UnrealPak.exe",
     "/tools/repak",
-    "/runtime/Mods/KH3APProbeCpp/dlls/main.dll.bak*"
+    "/runtime/Mods/KH3APProbeCpp/dlls/main.dll*"
 )
 
 $ApignoreText = Get-Content -LiteralPath $ApignorePath -Raw
@@ -245,11 +230,10 @@ try {
         Write-ArchiveChecksum -ArtifactPath $HostArtifact
         return
     }
-    # The client displays ModVersion from the actual DLL, not the log build stamp.
-    # Reject a release whose displayed probe version differs from its APWorld.
+    # Verify the exact published player DLL selected by the packaged release pin.
     Invoke-CheckedCommand -FilePath $Python -CommandArguments @(
         "-c",
-        "import json; from pathlib import Path; from worlds.kh3.installer_support.resources import probe_dll_version_info; root=Path('worlds/kh3'); expected=json.loads((root/'archipelago.json').read_text())['world_version']; actual=probe_dll_version_info(root/'runtime/Mods/KH3APProbeCpp/dlls/main.dll').get('version'); assert actual == expected, f'Probe ModVersion {actual} does not match APWorld {expected}; rebuild the probe before packaging.'"
+        "import json; from pathlib import Path; from worlds.kh3.installer_support.resources import _runtime_probe_source, _decode_probe_dll_text, _find_probe_dll_version; source=_runtime_probe_source(); expected=json.loads(Path('worlds/kh3/archipelago.json').read_text())['world_version']; assert source.config['version'] == expected; actual=_find_probe_dll_version(_decode_probe_dll_text(source.read_bytes())); assert actual == expected, f'Released probe ModVersion {actual} does not match APWorld {expected}'; print('Verified published KH3Runtime release', expected)"
     )
     if ($RunSmokeTests) {
         Invoke-CheckedCommand -FilePath $Python -CommandArguments @(
@@ -258,6 +242,7 @@ try {
             "worlds\kh3\test\test_world_generation.py::TestKH3WorldIntegrity::test_bridge_world_version_matches_manifest",
             "worlds\kh3\test\test_client_config.py::TestKH3ItemConsumerPlan::test_runtime_installer_reads_runtime_resources_from_apworld_without_zipfile_path",
             "worlds\kh3\test\test_runtime_download.py::TestRuntimeDownload::test_apworld_without_dlls_downloads_and_backs_up_then_skips",
+            "worlds\kh3\test\test_probe_release.py",
             "worlds\kh3\test\test_pak.py",
             "worlds\kh3\test\test_python_seedgen.py",
             "worlds\kh3\test\test_pak_generation_preflight.py",
@@ -297,7 +282,7 @@ try {
             $_.FullName -like "kh3/randomizer/wwwroot/pak/Seeds/*"
         })
         $BackupDllEntries = @($Entries | Where-Object {
-            $_.FullName -like "kh3/runtime/Mods/KH3APProbeCpp/dlls/main.dll.bak*"
+            $_.FullName -like "kh3/runtime/Mods/KH3APProbeCpp/dlls/main.dll*"
         })
         $ManifestEntry = $Zip.GetEntry("kh3/archipelago.json")
         $DllEntry = $Zip.GetEntry("kh3/runtime/Mods/KH3APProbeCpp/dlls/main.dll")
@@ -307,25 +292,15 @@ try {
             throw "Built APWorld contains generated seed files. First entry: $($SeedEntries[0].FullName)"
         }
         if ($BackupDllEntries.Count -ne 0) {
-            throw "Built APWorld contains backup DLL files. First entry: $($BackupDllEntries[0].FullName)"
+            throw "Built APWorld contains bundled DLL files. First entry: $($BackupDllEntries[0].FullName)"
         }
         if ($null -eq $ManifestEntry) {
             throw "Built APWorld is missing kh3/archipelago.json."
         }
-        if ($null -eq $DllEntry) {
-            throw "Built APWorld is missing KH3 runtime DLL."
-        }
-        $DllStream = $DllEntry.Open()
-        $DllHasher = [Security.Cryptography.SHA256]::Create()
-        try {
-            $ArchiveDllHash = [BitConverter]::ToString($DllHasher.ComputeHash($DllStream)).Replace('-', '').ToLowerInvariant()
-            if ($ArchiveDllHash -ne $PlayerHash) {
-                throw 'The archived DLL differs from the verified player release input.'
-            }
-        }
-        finally {
-            $DllStream.Dispose()
-            $DllHasher.Dispose()
+        if ($null -ne $DllEntry -or
+            $null -eq $Zip.GetEntry("kh3/runtime/Mods/KH3APProbeCpp/runtime-release.json") -or
+            $null -eq $Zip.GetEntry("kh3/installer_support/probe_release.py")) {
+            throw "Built APWorld must contain the pinned KH3Runtime downloader/configuration without a DLL."
         }
         foreach ($DocumentationFile in @(
             "en_Kingdom Hearts III.md",

@@ -134,11 +134,9 @@ def runtime_install_status(kh3_root_dir: Path) -> dict[str, Any]:
     probe_info = probe_dll_version_info(probe_dll_path(kh3_root_dir))
     specific_probe_info = probe_dll_version_info(layout.specific_probe) if layout.specific_probe is not None else {}
     legacy_probe_info = probe_dll_version_info(legacy_probe_dll_path(kh3_root_dir))
-    probe_matches_bundle = _resource_metadata_equal(runtime_probe_source, probe_dll_path(kh3_root_dir))
-    path_specific_probe_matches_bundle = layout.specific_probe is not None and _resource_metadata_equal(
-        runtime_probe_source, layout.specific_probe
-    )
-    legacy_probe_matches_bundle = _resource_metadata_equal(runtime_probe_source, legacy_probe_dll_path(kh3_root_dir))
+    probe_matches_bundle = runtime_probe_source.matches(probe_info)
+    path_specific_probe_matches_bundle = layout.specific_probe is not None and runtime_probe_source.matches(specific_probe_info)
+    legacy_probe_matches_bundle = runtime_probe_source.matches(legacy_probe_info)
     probe_mod_enabled = "KH3APProbeCpp : 1" in layout.mods_txt_text
     path_specific_probe_mod_enabled = (
         layout.specific_mods_txt is not None and "KH3APProbeCpp : 1" in layout.specific_mods_txt_text
@@ -161,7 +159,7 @@ def runtime_install_status(kh3_root_dir: Path) -> dict[str, Any]:
         "win64_dir": str(win64),
         "win64_exists": win64.is_dir(),
         "bundle_win64_exists": _resource_is_dir(_runtime_win64_source()),
-        "bundle_probe_exists": _resource_is_file(_runtime_probe_source()),
+        "bundle_probe_exists": runtime_probe_source.is_file(),
         "ue4ss_files": {name: (win64 / name).is_file() for name in UE4SS_REQUIRED_FILES},
         "ue4ss_proxy_installed": any((win64 / name).is_file() for name in UE4SS_PROXY_FILES),
         "xinput_runtime": xinput_status,

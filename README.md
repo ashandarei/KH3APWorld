@@ -14,7 +14,7 @@ The world and client live in `worlds/kh3/`; `KH3Client.py` launches the client.
 World and catalog development utilities live in `tools/kh3/`.
 The native DLL source lives in the separate `KH3Runtime` checkout, normally
 beside this repository. Its source is needed for native contract tests and
-coordinated DLL builds.
+local DLL development.
 
 Prepare Python dependencies using `requirements.txt`. Copy `.env.example` to
 `.env` and set local game and source paths as needed. Local settings, bridge
@@ -26,14 +26,14 @@ Run KH3 tests from this repository:
 .\scripts\test-kh3.ps1
 ```
 
-With the adjacent native checkout and its toolchain prepared, build the player
-DLL and APWorld together:
+Build the APWorld using its pinned, published KH3Runtime release:
 
 ```powershell
 .\scripts\build-workspace-apworld.ps1 -RunSmokeTests
 ```
 
-This command creates build artifacts without installing them or changing a seed.
+This command verifies the release download and creates APWorld artifacts without
+installing them or changing a seed. It does not build or bundle the native DLL.
 Catalog changes are exported explicitly with `tools/kh3/export_dll_inputs.py`;
 ordinary native builds use the runtime repository's own checked-in inputs.
 

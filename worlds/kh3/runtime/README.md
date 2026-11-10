@@ -27,7 +27,11 @@ uncached first install needs internet; a matching cached installation works offl
 `Win64/ue4ss-release.json` pins the release tag and both `UE4SS.dll` and
 `dwmapi.dll` hashes, matching `Win64/KH3AP-Licenses/manifest.json`.
 Upgrade these pins deliberately alongside the license manifest after runtime testing.
-The probe remains bundled and versioned with the APWorld.
+`Mods/KH3APProbeCpp/runtime-release.json` pins the KH3Runtime release ZIP and
+its `main.dll` by version, size and SHA-256. Patch Game verifies both before
+changing the game, reuses an installed DLL only when its hash matches, and
+installs the same verified bytes into each active mod layout. The APWorld
+contains the release configuration and notices, without the native DLL.
 
 XInput 1.3 is a separate platform prerequisite, not a UE4SS proxy:
 

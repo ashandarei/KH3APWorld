@@ -225,7 +225,7 @@ def patch_game_tooltip(runtime: Payload, goa: Payload) -> str:
         for field, message in (
             ("win64_exists", "Find KH3 Binaries\\Win64"),
             ("bundle_win64_exists", "Find bundled UE4SS runtime files"),
-            ("bundle_probe_exists", "Find bundled KH3 AP runtime DLL"),
+            ("bundle_probe_exists", "Find KH3 runtime release configuration"),
         )
         if not runtime.get(field, True)
     )
