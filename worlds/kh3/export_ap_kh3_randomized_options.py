@@ -48,6 +48,8 @@ try:
         DEFAULT_BASE_ABILITY_CHRINIT_FIELDS,
         FILLER_ITEM_RUNTIME_TOKENS,
         FIXED_SORA_CHRINIT_ABILITY_FIELDS,
+        GATE_OPENER_ITEM_NAME,
+        GATE_OPENER_RUNTIME_TOKEN,
         KEYBLADE_STYLE_RUNTIME_TOKEN_BY_ITEM_NAME,
         LIVE_BONUS_STAT_RUNTIME_TOKENS,
         MUNNY_POUCH_RUNTIME_TOKEN_BY_NAME,
@@ -68,6 +70,8 @@ except ImportError:
         DEFAULT_BASE_ABILITY_CHRINIT_FIELDS,
         FILLER_ITEM_RUNTIME_TOKENS,
         FIXED_SORA_CHRINIT_ABILITY_FIELDS,
+        GATE_OPENER_ITEM_NAME,
+        GATE_OPENER_RUNTIME_TOKEN,
         KEYBLADE_STYLE_RUNTIME_TOKEN_BY_ITEM_NAME,
         LIVE_BONUS_STAT_RUNTIME_TOKENS,
         MUNNY_POUCH_RUNTIME_TOKEN_BY_NAME,
@@ -386,6 +390,8 @@ def build_item_name_to_token(extracted_data: dict[str, Any]) -> dict[str, str]:
             mapping[display_name] = token
 
     mapping.setdefault(FOREIGN_ITEM_PLACEHOLDER_NAME, FOREIGN_ITEM_PLACEHOLDER_RUNTIME_TOKEN)
+    # Gate Openers are seed-authored inventory items, absent from vanilla data.
+    mapping[GATE_OPENER_ITEM_NAME] = GATE_OPENER_RUNTIME_TOKEN
     for item_name, runtime_token in MUNNY_POUCH_RUNTIME_TOKEN_BY_NAME.items():
         mapping.setdefault(item_name, runtime_token)
     mapping.update(CLASSIC_KINGDOM_NATIVE_ITEM_RUNTIME_TOKEN_BY_NAME)
