@@ -4,11 +4,33 @@ import asyncio
 import re
 import tkinter as tk
 from tkinter import font, ttk
+from typing import NamedTuple
 
 from NetUtils import HintStatus
 
 from .theme import ACCENT, MESSAGE_COLORS, PANEL, SUBTLE, SURFACE, TEXT
 from .widgets import ContextMenu, Tooltip
+
+
+STATUS_NAMES = {HintStatus.HINT_UNSPECIFIED: "Unspecified", HintStatus.HINT_NO_PRIORITY: "No Priority",
+                HintStatus.HINT_PRIORITY: "Priority", HintStatus.HINT_AVOID: "Avoid", HintStatus.HINT_FOUND: "Found"}
+STATUS_COLORS = {HintStatus.HINT_UNSPECIFIED: "white", HintStatus.HINT_NO_PRIORITY: "cyan",
+                 HintStatus.HINT_PRIORITY: "plum", HintStatus.HINT_AVOID: "salmon", HintStatus.HINT_FOUND: "green"}
+EDITABLE_STATUSES = tuple(status for status in STATUS_NAMES if status != HintStatus.HINT_FOUND)
+
+
+def hint_status(hint):
+    return HintStatus.HINT_FOUND if hint["found"] else hint.get("status", HintStatus.HINT_UNSPECIFIED)
+
+
+class HintRow(NamedTuple):
+    values: tuple
+    colors: tuple
+    hint: dict
+
+    @property
+    def key(self):
+        return self.hint["receiving_player"], self.hint["finding_player"], self.hint["location"]
 
 
 class HintTable(ttk.Frame):
@@ -25,6 +47,7 @@ class HintTable(ttk.Frame):
         self.sort_reverse = False
         self.filters = {}
         self.selected = None
+        self.session = None
         self.text_font = font.nametofont("TkDefaultFont")
         self.header = tk.Canvas(self, background=PANEL, highlightthickness=0,
                                 height=self.text_font.metrics("linespace") + 20)
@@ -36,7 +59,10 @@ class HintTable(ttk.Frame):
         self.canvas.grid(row=1, column=0, sticky="nsew")
         scrollbar = ttk.Scrollbar(self, command=self.canvas.yview)
         scrollbar.grid(row=0, column=1, rowspan=2, sticky="ns")
-        self.canvas.configure(yscrollcommand=scrollbar.set)
+        def scrolled(first, last):
+            self.context_menu.unpost()
+            scrollbar.set(first, last)
+        self.canvas.configure(yscrollcommand=scrolled)
         self.columnconfigure(0, weight=1)
         self.rowconfigure(1, weight=1)
         self.filter_bar = ttk.Frame(self)
@@ -51,11 +77,15 @@ class HintTable(ttk.Frame):
         self.bind("<Destroy>", lambda event: self.context_menu.destroy() if event.widget is self else None, add="+")
         self.canvas.bind("<Configure>", lambda _: self.redraw())
         self.canvas.bind("<Button-1>", self.select_row)
+        self.canvas.bind("<Motion>", self.hover_status)
+        self.canvas.bind("<Return>", self.open_status_menu)
+        self.canvas.bind("<space>", self.open_status_menu)
         self.canvas.bind("<MouseWheel>", self.wheel)
         self.canvas.bind("<Button-4>", lambda _: self.scroll(-3))
         self.canvas.bind("<Button-5>", lambda _: self.scroll(3))
-        for key, amount, units in (("Up", -1, "units"), ("Down", 1, "units"),
-                                   ("Prior", -1, "pages"), ("Next", 1, "pages")):
+        for key, amount in (("Up", -1), ("Down", 1)):
+            self.canvas.bind(f"<{key}>", lambda _, n=amount: self.move_selection(n))
+        for key, amount, units in (("Prior", -1, "pages"), ("Next", 1, "pages")):
             self.canvas.bind(f"<{key}>", lambda _, n=amount, u=units: self.scroll(n, u))
 
     def scroll(self, amount, units="units"):
@@ -65,8 +95,13 @@ class HintTable(ttk.Frame):
     def wheel(self, event):
         return self.scroll(-max(1, abs(event.delta) // 120) * (1 if event.delta > 0 else -1))
 
-    def set_rows(self, rows):
-        if rows != self.rows:
+    def current_session(self):
+        ctx = self.app.ctx
+        return ctx.server, ctx.team, ctx.slot, bool(ctx.server and ctx.server.socket.open and not ctx.server.socket.closed)
+
+    def set_rows(self, rows, *, session=None):
+        if rows != self.rows or session != self.session:
+            self.session = session
             self.rows = rows
             self.apply_view()
 
@@ -82,7 +117,8 @@ class HintTable(ttk.Frame):
         self.visible_rows = [row for row in self.rows if matches(row)]
         if self.sort_column is not None:
             self.visible_rows.sort(key=lambda row: self.sort_key(row[0][self.sort_column]), reverse=self.sort_reverse)
-        self.selected = self.visible_rows.index(selected) if selected in self.visible_rows else None
+        self.selected = next((index for index, row in enumerate(self.visible_rows)
+                              if selected is not None and row.key == selected.key), None)
         if reset_scroll:
             self.canvas.yview_moveto(0)
         if self.filters:
@@ -189,6 +225,8 @@ class HintTable(ttk.Frame):
         return "break"
 
     def redraw(self):
+        self.context_menu.unpost()
+        self.canvas.configure(cursor="")
         width = self.canvas.winfo_width()
         if width <= 1:
             return
@@ -208,16 +246,28 @@ class HintTable(ttk.Frame):
                                     text=label, fill=ACCENT, font=self.text_font)
             x += column_width
         y = 0
-        for index, (values, colors) in enumerate(self.visible_rows):
+        for index, row in enumerate(self.visible_rows):
+            values, colors = row.values, row.colors
             background = self.canvas.create_rectangle(0, y, width, y, outline="",
                           fill=SUBTLE if self.selected == index else PANEL if index % 2 else SURFACE,
                           tags=(f"row_{index}", f"background_{index}"))
             x, bottom = 0, y + self.text_font.metrics("linespace") + 16
-            for value, color, column_width in zip(values, colors, widths):
+            for column, (value, color, column_width) in enumerate(zip(values, colors, widths)):
+                editable = column == 4 and self.can_edit(row)
+                if editable:
+                    control = self.canvas.create_rectangle(x + 3, y + 3, x + column_width - 3, y + 3,
+                              outline=SUBTLE, fill=PANEL, tags=(f"row_{index}", f"status_control_{index}"))
                 cell = self.canvas.create_text(x + 8, y + 8, anchor="nw", text=value,
-                       fill=MESSAGE_COLORS[color], font=self.text_font, width=max(1, column_width - 16),
+                       fill=MESSAGE_COLORS[color], font=self.text_font,
+                       width=max(1, column_width - (34 if editable else 16)),
                        tags=(f"row_{index}",))
                 bottom = max(bottom, self.canvas.bbox(cell)[3] + 8)
+                if editable:
+                    control_bottom = self.canvas.bbox(cell)[3] + 5
+                    self.canvas.coords(control, x + 3, y + 3, x + column_width - 3, control_bottom)
+                    self.canvas.create_text(x + column_width - 13, (y + 3 + control_bottom) / 2,
+                                            text="▾", fill=MESSAGE_COLORS[color], font=self.text_font,
+                                            tags=(f"row_{index}",))
                 x += column_width
             self.canvas.coords(background, 0, y, width, bottom)
             y = bottom
@@ -244,6 +294,63 @@ class HintTable(ttk.Frame):
                 self.canvas.itemconfigure(f"background_{self.selected}", fill=PANEL if self.selected % 2 else SURFACE)
             self.selected = index
             self.canvas.itemconfigure(f"background_{self.selected}", fill=SUBTLE)
+            if self.column_at(event.x) == 4:
+                self.open_status_menu()
+
+    def can_edit(self, row):
+        return (self.session is not None and self.session == self.current_session() and self.session[3]
+                and self.app.ctx.slot is not None and hint_status(row.hint) != HintStatus.HINT_FOUND
+                and self.app.ctx.slot_concerns_self(row.hint["receiving_player"]))
+
+    def hover_status(self, event):
+        index = self.row_at(event)
+        editable = index is not None and self.column_at(event.x) == 4 and self.can_edit(self.visible_rows[index])
+        self.canvas.configure(cursor="hand2" if editable else "")
+
+    def move_selection(self, amount):
+        if self.visible_rows:
+            self.selected = (max(0, min(len(self.visible_rows) - 1, self.selected + amount))
+                             if self.selected is not None else (0 if amount > 0 else len(self.visible_rows) - 1))
+            self.redraw()
+            _, top, _, bottom = self.canvas.coords(f"background_{self.selected}")
+            viewport_top = self.canvas.canvasy(0)
+            height = self.canvas.winfo_height()
+            total_height = float(self.canvas.cget("scrollregion").split()[3])
+            if top < viewport_top or bottom > viewport_top + height:
+                target = top if top < viewport_top else bottom - height
+                self.canvas.yview_moveto(max(0, target) / max(1, total_height))
+        return "break"
+
+    def open_status_menu(self, *_):
+        if self.selected is None:
+            return "break"
+        row = self.visible_rows[self.selected]
+        if not self.can_edit(row):
+            return "break"
+        session = self.session
+        menu = self.context_menu
+        menu.clear()
+        for index, status in enumerate(EDITABLE_STATUSES):
+            selected = status == hint_status(row.hint)
+            menu.add_command(label=("✓  " if selected else "    ") + STATUS_NAMES[status],
+                             command=lambda value=status: self.update_status(row.key, value, session))
+            menu.entryconfigure(index, foreground=MESSAGE_COLORS[STATUS_COLORS[status]],
+                                activeforeground=MESSAGE_COLORS[STATUS_COLORS[status]],
+                                font=self.text_font, pady=6)
+        left, _, _, bottom = self.canvas.coords(f"status_control_{self.selected}")
+        menu.show(round(self.canvas.winfo_rootx() + left),
+                  round(self.canvas.winfo_rooty() + bottom + 1 - self.canvas.canvasy(0)))
+        current = hint_status(row.hint)
+        menu.buttons[EDITABLE_STATUSES.index(current) if current in EDITABLE_STATUSES else 0].focus_set()
+        return "break"
+
+    def update_status(self, key, status, session):
+        # Recheck the live row/session: a hint may be found or the client may disconnect while the menu is open.
+        row = next((row for row in self.rows if row.key == key), None)
+        if (row is not None and session == self.session and self.can_edit(row)
+                and status in EDITABLE_STATUSES and status != hint_status(row.hint)):
+            self.app.ctx.update_hint(row.hint["location"], row.hint["finding_player"], status)
+        # The normal server hint notification supplies the authoritative status and reapplies filters/sorting.
 
 
 class HintsView:
@@ -281,31 +388,25 @@ class HintsView:
 
     def refresh(self, hints):
         ctx = self.app.ctx
-        status_names = {HintStatus.HINT_FOUND: "Found", HintStatus.HINT_UNSPECIFIED: "Unspecified",
-                        HintStatus.HINT_NO_PRIORITY: "No Priority", HintStatus.HINT_AVOID: "Avoid",
-                        HintStatus.HINT_PRIORITY: "Priority"}
-        status_colors = {HintStatus.HINT_FOUND: "green", HintStatus.HINT_UNSPECIFIED: "white",
-                         HintStatus.HINT_NO_PRIORITY: "cyan", HintStatus.HINT_AVOID: "salmon",
-                         HintStatus.HINT_PRIORITY: "plum"}
         rows = []
         for hint in hints:
-            status = hint.get("status") or (HintStatus.HINT_FOUND if hint["found"] else HintStatus.HINT_UNSPECIFIED)
+            status = hint_status(hint)
             values = (
                 ctx.player_names.get(hint["receiving_player"], "?"),
                 ctx.item_names.lookup_in_slot(hint["item"], hint["receiving_player"]),
                 ctx.player_names.get(hint["finding_player"], "?"),
                 ctx.location_names.lookup_in_slot(hint["location"], hint["finding_player"]),
-                status_names.get(status, "Unknown"),
+                STATUS_NAMES.get(status, "Unknown"),
             )
             flags = hint.get("item_flags", 0)
             colors = (
                 "magenta" if ctx.slot_concerns_self(hint["receiving_player"]) else "yellow",
                 "plum" if flags & 1 else "slateblue" if flags & 2 else "salmon" if flags & 4 else "cyan",
                 "magenta" if ctx.slot_concerns_self(hint["finding_player"]) else "yellow",
-                "green", status_colors.get(status, "red"),
+                "green", STATUS_COLORS.get(status, "red"),
             )
-            rows.append((values, colors))
-        self.table.set_rows(rows)
+            rows.append(HintRow(values, colors, dict(hint)))
+        self.table.set_rows(rows, session=self.table.current_session())
 
     def suggest(self, *_):
         query = self.query.get().strip().casefold()

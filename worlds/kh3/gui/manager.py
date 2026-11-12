@@ -294,7 +294,7 @@ class KH3Manager:
         name = self.tabs.tab(self.tabs.select(), "text")
         if name in self.views:
             await self.views[name].refresh()
-        if name == "Hints" and self.pending_hints:
+        if name == "Hints" and (self.pending_hints or self.hints.session != self.hints.current_session()):
             self.pending_hints = False
             self.hint_view.refresh(self.ctx.stored_data.get(f"_read_hints_{self.ctx.team}_{self.ctx.slot}", ()))
 

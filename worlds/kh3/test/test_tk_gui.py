@@ -199,10 +199,12 @@ def test_native_window_tabs_dialogs_and_shutdown():
                         ctx.item_names.update_game(ctx.game, {"Progressive High Jump": 1, "Progressive Glide": 2})
                         hint_view = app.hint_view
                         from worlds.kh3.gui.theme import MESSAGE_COLORS
+                        from worlds.kh3.gui.hints import HintRow
                         table = hint_view.table
                         values = ("Sora", "Progressive High Jump " * 4, "Riku", "Cliffside Chest", "Priority")
                         colors = ("magenta", "plum", "yellow", "green", "plum")
-                        table.set_rows([(values, colors)] * 30)
+                        hint_data = dict(receiving_player=1, finding_player=2, location=123, found=False)
+                        table.set_rows([HintRow(values, colors, {**hint_data, "location": index}) for index in range(30)])
                         app.root.update()
                         cells = [item for item in table.canvas.find_withtag("row_0") if table.canvas.type(item) == "text"]
                         assert [table.canvas.itemcget(item, "fill") for item in cells] == [MESSAGE_COLORS[color] for color in colors]
@@ -210,7 +212,9 @@ def test_native_window_tabs_dialogs_and_shutdown():
                         assert table.canvas.yview()[1] < 1
                         table.scroll(3)
                         assert table.canvas.yview()[0] > 0
-                        sample = [(values, colors), (("Aqua", "Fire", "Riku", "Chest 2", "Found"), colors)]
+                        sample = [HintRow(values, colors, hint_data),
+                                  HintRow(("Aqua", "Fire", "Riku", "Chest 2", "Found"), colors,
+                                          {**hint_data, "location": 124, "found": True})]
                         table.set_rows(sample)
                         app.root.update()
                         table.header.event_generate("<Button-1>", x=10, y=10)
@@ -738,7 +742,7 @@ def test_native_hint_columns_preserve_players_and_status_without_entrance(status
         hint["status"] = status
     view.refresh([hint, {**hint, "entrance": "Olympus"}])
     rows = view.table.set_rows.call_args.args[0]
-    assert [values for values, _ in rows] == [
+    assert [row.values for row in rows] == [
         ("Sora", "High Jump", "Riku", "Cliffside Chest", expected),
         ("Sora", "High Jump", "Riku", "Cliffside Chest", expected),
     ]
@@ -747,6 +751,105 @@ def test_native_hint_columns_preserve_players_and_status_without_entrance(status
                            "Avoid": "salmon", "Priority": "plum", "Unknown": "red"}[expected]
     ctx.item_names.lookup_in_slot.assert_called_with(123, 1)
     ctx.location_names.lookup_in_slot.assert_called_with(456, 2)
+
+
+@pytest.mark.skipif(sys.platform != "win32", reason="Native window smoke test requires a Windows desktop")
+def test_inline_hint_status_menu_and_lifecycle():
+    from .test_client_gui import run_isolated_python
+
+    result = run_isolated_python('''
+        import tkinter as tk
+        from types import SimpleNamespace
+        from unittest.mock import Mock
+        from NetUtils import HintStatus
+        from worlds.kh3.gui.hints import HintsView
+        from worlds.kh3.gui.theme import Theme
+
+        root = tk.Tk()
+        root.geometry("980x420")
+        theme = Theme(root)
+        errors = []
+        root.report_callback_exception = lambda *error: errors.append(error)
+        ctx = SimpleNamespace(server=SimpleNamespace(socket=SimpleNamespace(open=True, closed=False)),
+                              team=0, slot=1, slot_concerns_self=lambda slot: slot == 1,
+                              player_names={1: "Sora", 2: "Riku"}, update_hint=Mock(),
+                              item_names=SimpleNamespace(lookup_in_slot=lambda item, slot: "Progressive High Jump"),
+                              location_names=SimpleNamespace(lookup_in_slot=lambda location, slot: "Cliffside Chest " * 4))
+        app = SimpleNamespace(root=root, theme=theme, ctx=ctx)
+        view = HintsView(app, root)
+        table = view.table
+        hints = [dict(receiving_player=1, finding_player=2, item=10, location=100, found=False, status=0),
+                 dict(receiving_player=2, finding_player=1, item=11, location=101, found=False, status=30),
+                 dict(receiving_player=1, finding_player=2, item=12, location=102, found=True, status=40)]
+        try:
+            view.refresh(hints)
+            root.update()
+            # Only an owned, unfound hint gets a dropdown affordance.
+            arrows = [item for item in table.canvas.find_all() if table.canvas.type(item) == "text"
+                      and table.canvas.itemcget(item, "text") == "▾"]
+            assert len(arrows) == 1
+            table.canvas.event_generate("<Button-1>", x=table.canvas.winfo_width() - 20, y=12)
+            root.update()
+            menu = table.context_menu
+            assert menu.winfo_ismapped() and root.grab_current() == menu
+            control_bottom = table.canvas.coords("status_control_0")[3]
+            row_bottom = table.canvas.coords("background_0")[3]
+            assert row_bottom > control_bottom + table.text_font.metrics("linespace")
+            assert menu.winfo_rooty() == round(table.canvas.winfo_rooty() + control_bottom + 1 - table.canvas.canvasy(0))
+            assert [button.cget("text").strip("✓ ") for button in menu.buttons] == [
+                "Unspecified", "No Priority", "Priority", "Avoid"]
+            menu.buttons[2].invoke()
+            root.update()
+            ctx.update_hint.assert_called_once_with(100, 2, HintStatus.HINT_PRIORITY)
+            assert not menu.winfo_ismapped() and root.grab_current() is None
+            assert table.rows[0].values[4] == "Unspecified"  # Wait for server confirmation.
+            hints[0]["status"] = HintStatus.HINT_PRIORITY
+            view.refresh(hints)
+            root.update()
+            assert table.selected == 0 and table.rows[0].values[4] == "Priority"
+            table.canvas.focus_force()
+            table.canvas.event_generate("<Return>")
+            root.update()
+            assert menu.winfo_ismapped()
+            menu.buttons[2].event_generate("<Escape>")
+            root.update()
+            assert not menu.winfo_ismapped()
+            ctx.update_hint.assert_called_once()
+            # Keyboard row navigation skips no data, but read-only rows cannot open the menu.
+            table.canvas.event_generate("<Down>")
+            root.update()
+            assert table.selected == 1
+            table.canvas.event_generate("<Return>")
+            root.update()
+            assert not menu.winfo_ismapped()
+            table.move_selection(-1)
+            root.update()
+            table.open_status_menu()
+            root.update()
+            root.geometry("1100x420")
+            root.update()
+            assert not menu.winfo_ismapped() and root.grab_current() is None
+            table.open_status_menu()
+            root.update()
+            hints[0]["found"] = True
+            view.refresh(hints)
+            root.update()
+            assert not menu.winfo_ismapped() and table.rows[0].values[4] == "Found"
+            hints[0]["found"] = False
+            view.refresh(hints)
+            root.update()
+            table.open_status_menu()
+            root.update()
+            assert menu.winfo_ismapped()
+            table.pack_forget()
+            root.update()
+            assert not menu.winfo_ismapped() and root.grab_current() is None
+            assert not errors, errors
+        finally:
+            root.destroy()
+            theme.close()
+    ''')
+    assert result.returncode == 0, f"stdout:\n{result.stdout}\nstderr:\n{result.stderr}"
 
 
 @pytest.mark.parametrize("args", [(), ("--experimental-native-ui",)])

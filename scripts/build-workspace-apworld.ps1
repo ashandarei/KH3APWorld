@@ -5,7 +5,9 @@ Build the KH3 APWorld using its pinned native release.
 Run from any directory. Defaults to this APWorld checkout and writes
 archives under build/apworlds. Verifies the published native release without
 building or bundling a DLL. Does not install packages, modify the game, or
-publish releases. -HostOnly packages generation support without downloads.
+publish releases. Normal builds produce only the player archive. Use -HostOnly
+only for an explicitly requested host build; it packages generation support
+without downloads.
 Project paths may be overridden by parameters or KH3_APWORLD_PROJECT and
 KH3_RUNTIME_DIR in the environment or .env. Relative project paths resolve
 against this checkout. Output paths resolve against the parent workspace.

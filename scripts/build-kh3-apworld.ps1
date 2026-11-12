@@ -246,7 +246,6 @@ try {
             "worlds\kh3\test\test_pak.py",
             "worlds\kh3\test\test_python_seedgen.py",
             "worlds\kh3\test\test_pak_generation_preflight.py",
-            "test\programs\test_kh3_host_apworld.py",
             "-q"
         )
     }
@@ -395,19 +394,6 @@ try {
     Write-Host "Size: $Size bytes"
     Write-Host "SHA256: $($Hash.Hash)"
     Write-ArchiveChecksum -ArtifactPath $TargetArtifact
-    Invoke-CheckedCommand -FilePath $Python -CommandArguments @(
-        "-c",
-        "import sys; from pathlib import Path; from scripts.kh3_apworld_archive import build_world_apworld; build_world_apworld(Path('worlds/kh3'), 'Kingdom Hearts III', Path(sys.argv[1]), variant='host')",
-        $HostArtifact
-    )
-    Assert-ArchiveNotices -ArtifactPath $HostArtifact
-    if ($KeepBaseArtifact) {
-        Copy-Item -LiteralPath $HostArtifact -Destination $HostDownloadArtifact -Force
-    }
-    Write-Host "Built host APWorld $HostArtifact"
-    Write-Host "Size: $((Get-Item -LiteralPath $HostArtifact).Length) bytes"
-    Write-Host "SHA256: $((Get-FileHash -LiteralPath $HostArtifact -Algorithm SHA256).Hash)"
-    Write-ArchiveChecksum -ArtifactPath $HostArtifact
 }
 finally {
     Pop-Location
