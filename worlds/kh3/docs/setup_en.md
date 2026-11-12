@@ -24,6 +24,15 @@ KH3 client open and connected while you play.
 
 ## 2. Prepare the game
 
+To create a player YAML, open **KH3 YAML Creator** from the launcher or the
+client's **YAML Creator** button. Use **Save as…** to name a settings preset,
+**Save** (Ctrl+S) to update it, and the **Saved settings** dropdown to load one
+again. Presets stay on this computer and keep your current player name when
+loaded. **Delete** removes the selected preset and leaves your current settings
+in the editor. **Export YAML** writes the player file to share with your host;
+an empty player name defaults to **Player**. The **− Zoom +** controls at the
+bottom left adjust the text size one point at a time.
+
 1. Close Kingdom Hearts III.
 2. Open **KH3 Client** from the Archipelago Launcher.
 3. Open **KH3 Config**.

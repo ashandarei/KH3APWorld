@@ -193,7 +193,7 @@ def _runtime_patch_actions(runtime: Payload) -> list[str]:
     if not runtime.get("probe_dll_installed"):
         actions.append("Install KH3 AP runtime DLL")
     elif not runtime.get("probe_dll_matches_bundle"):
-        actions.append("Replace KH3 AP runtime DLL with the bundled build")
+        actions.append("Update KH3 AP runtime DLL to the required release")
     if not runtime.get("probe_mod_enabled"):
         actions.append("Enable KH3 AP probe mod in Mods\\mods.txt")
     if runtime.get("legacy_probe_mod_enabled"):
@@ -224,7 +224,7 @@ def patch_game_tooltip(runtime: Payload, goa: Payload) -> str:
         message
         for field, message in (
             ("win64_exists", "Find KH3 Binaries\\Win64"),
-            ("bundle_win64_exists", "Find bundled UE4SS runtime files"),
+            ("bundle_win64_exists", "Find UE4SS runtime configuration"),
             ("bundle_probe_exists", "Find KH3 runtime release configuration"),
         )
         if not runtime.get(field, True)
@@ -262,7 +262,7 @@ def build_installed_runtime_summary(runtime: Payload, goa: Payload) -> Installed
     compatibility = (
         "Different UE4SS detected; install will back it up and replace it"
         if conflict
-        else "KH3 AP bundled runtime active"
+        else "KH3 AP runtime active"
         if existing
         else "No UE4SS detected"
     )

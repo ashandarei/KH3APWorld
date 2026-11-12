@@ -179,7 +179,7 @@ class TestKH3WorldGeneration(KH3TestBase):
         )
         self.assertEqual(Stylesanity.display_name, "Stylesanity")
         self.assertEqual(Stylesanity.default, 1)
-        self.assertEqual(Stylesanity.name_lookup, {0: "off", 1: "on"})
+        self.assertEqual(Stylesanity.name_lookup, {0: "false", 1: "true"})
         self.assertEqual(Stylesanity.from_text("on").value, 1)
         self.assertEqual(Stylesanity.from_text("off").value, 0)
         self.assertEqual(KeybladeLevels.name_lookup, {

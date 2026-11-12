@@ -255,7 +255,7 @@ class KeybladeLevels(Choice):
         return cls.display_names.get(value, super().get_option_name(value))
 
 
-class Stylesanity(Choice):
+class Stylesanity(DefaultOnToggle):
     """
     On: each Keyblade requires its own style unlock item.
     Off: Sora starts with Style Change owned and equipped, enabling styles for
@@ -263,9 +263,6 @@ class Stylesanity(Choice):
     """
 
     display_name = "Stylesanity"
-    option_off = 0
-    option_on = 1
-    default = option_on
 
 
 class UltimaWeaponMode(Choice):
@@ -299,13 +296,11 @@ class UltimaWeaponShardCount(Range):
 
 
 class Chestsanity(Toggle):
-    """Assign a random Keyblade requirement to every chest in randomized worlds.
-    Melody chests take priority and never require a Keyblade. Junk world pools
-    are excluded. Chests use the required blade's colors.
+    """Assign a random Keyblade requirement to every chest.
+    Melody chests do not require a Keyblade.
     With Keyblade portal unlocks, chest keys are Classic Tone, Grand Chef, and
     Hunny Spout. With character portal unlocks, chest keys are the Keyblades
-    normally used for world doors. Pandora's Power and Ultima Weapon are excluded.
-    Ownership is sufficient; map icons appear only for owned chest keys.
+    normally used for world doors.
     """
 
     display_name = "Chestsanity"
@@ -479,8 +474,7 @@ class EquipmentAbilitiesPool(KH3LocationPoolMode):
     """
     Vanilla keeps the original abilities attached to each piece of equipment.
     Randomize shuffles existing abilities between equipment ability slots.
-    Junk replaces them with utility abilities. Abilities remain attached to
-    equipment; this does not add AP checks or change stats or upgrade rewards.
+    Junk replaces them with utility abilities.
     """
 
     display_name = "Equipment Abilities Pool"
@@ -501,8 +495,7 @@ class DataBattleRewardsPool(KH3LocationPoolMode):
 class SynthesisPool(KH3LocationPoolMode):
     """Vanilla keeps normal synthesis. Randomize adds a one-time AP reward for
     the first successful craft of each ordinary recipe. Crafted items remain
-    available normally. Junk allows only filler or traps, never progression or
-    useful items, even when other pools need extra placement slots.
+    available normally.
     """
 
     display_name = "Synthesis Pool"
@@ -514,9 +507,7 @@ class PhotoMissionsPool(SynthesisPool):
     """Vanilla keeps normal photo missions. Randomize adds one AP reward when
     each included photo mission is completed. Photos requiring a world set to
     Junk are omitted, including the teammate photo if any of its required worlds
-    is Junk. Junk allows only filler or traps,
-    never progression or useful items, even
-    when other pools need extra placement slots.
+    is Junk.
     """
 
     display_name = "Photo Missions Pool"
@@ -525,7 +516,7 @@ class PhotoMissionsPool(SynthesisPool):
 class KeybladeUpgradeRewardsPool(SynthesisPool):
     """Vanilla keeps Keyblade upgrade abilities. Randomize replaces each
     upgrade ability with an AP check requiring that Keyblade and its level.
-    Junk allows only filler or traps.
+    
     """
 
     display_name = "Keyblade Upgrade Rewards Pool"
@@ -534,7 +525,7 @@ class KeybladeUpgradeRewardsPool(SynthesisPool):
 class FullcourseAbilitiesPool(KH3LocationPoolMode):
     """Vanilla keeps the original full-course meal abilities. Randomize shuffles
     them between full-course entries. Junk replaces them with utility abilities.
-    These remain meal bonuses; this does not add AP checks or change food stats.
+    These remain meal bonuses.
     """
 
     display_name = "Fullcourse Abilities Pool"
@@ -548,9 +539,7 @@ class FullcourseAbilitiesPool(KH3LocationPoolMode):
 
 
 class LuckyEmblemsPool(KH3LocationPoolMode):
-    """Randomize allows normal Lucky Emblem rewards. Junk allows only filler
-    or traps, never progression or useful items, even when other pools need
-    extra placement slots.
+    """Randomize allows normal Lucky Emblem rewards.
     """
 
     display_name = "Lucky Emblems Pool"
@@ -563,7 +552,7 @@ class LuckyEmblemsPool(KH3LocationPoolMode):
 
 class FlantasticFlansPool(KH3LocationPoolMode):
     """Seven AP checks for the Flantastic Seven's one-time high-score rewards.
-    Fruit rewards remain native. Junk allows only filler or traps.
+    Fruit rewards remain native. 
     """
 
     display_name = "Flantastic Flans Pool"
@@ -572,7 +561,7 @@ class FlantasticFlansPool(KH3LocationPoolMode):
 
 class VerumRexPool(KH3LocationPoolMode):
     """Controls the one-time AP ability and item rewards from Verum Rex.
-    Randomize allows normal placements; junk allows only filler or traps.
+    Randomize allows normal placements; 
     The maximum AP rank is set separately.
     """
 
@@ -582,7 +571,7 @@ class VerumRexPool(KH3LocationPoolMode):
 
 class FestivalDancePool(KH3LocationPoolMode):
     """Controls the one-time AP ability and item rewards from Festival Dance.
-    Randomize allows normal placements; junk allows only filler or traps.
+    Randomize allows normal placements; 
     The maximum AP rank is set separately.
     """
 
@@ -592,7 +581,7 @@ class FestivalDancePool(KH3LocationPoolMode):
 
 class FrozenSliderPool(KH3LocationPoolMode):
     """Controls the one-time AP ability and item rewards from Frozen Slider.
-    Randomize allows normal placements; junk allows only filler or traps.
+    Randomize allows normal placements; 
     The maximum AP rank is set separately.
     Also controls both all-treasures rewards, which have no rank cap.
     """
@@ -603,7 +592,7 @@ class FrozenSliderPool(KH3LocationPoolMode):
 
 class FlashTracerCourseAPool(KH3LocationPoolMode):
     """Controls the one-time AP ability and item rewards from Flash Tracer Course A.
-    Randomize allows normal placements; junk allows only filler or traps.
+    Randomize allows normal placements; 
     The maximum AP rank is set separately.
     """
 
@@ -613,7 +602,7 @@ class FlashTracerCourseAPool(KH3LocationPoolMode):
 
 class FlashTracerCourseBPool(KH3LocationPoolMode):
     """Controls the one-time AP ability and item rewards from Flash Tracer Course B.
-    Randomize allows normal placements; junk allows only filler or traps.
+    Randomize allows normal placements; 
     The maximum AP rank is set separately.
     """
 
@@ -624,9 +613,9 @@ class FlashTracerCourseBPool(KH3LocationPoolMode):
 class FestivalDanceMaxRank(Choice):
     """Highest Festival Dance rank eligible for normal AP rewards.
     Ranks above this are restricted to filler or traps, including the A-rank
-    ability and first-A bonus. Junk restricts every dance reward. Ranks at or
+    ability and first-A bonus. Ranks at or
     below the limit still follow Festival Dance Pool. Higher scores also clear all
-    lower tiers. Festival Dance has no S rank.
+    lower tiers.
     """
 
     display_name = "Festival Dance Maximum AP Rank"
@@ -645,9 +634,9 @@ class FestivalDanceMaxRank(Choice):
 class VerumRexMaxRank(FestivalDanceMaxRank):
     """Highest Verum Rex rank eligible for normal AP rewards.
     Ranks above this are restricted to filler or traps, including the A-rank
-    ability and first-A bonus. Junk restricts every Verum Rex reward. Ranks at
+    ability and first-A bonus. Ranks at
     or below the limit still follow Verum Rex Pool. Higher scores also clear
-    all lower tiers. Verum Rex has no S rank.
+    all lower tiers.
     """
 
     display_name = "Verum Rex Maximum AP Rank"
@@ -656,9 +645,9 @@ class VerumRexMaxRank(FestivalDanceMaxRank):
 class FrozenSliderMaxRank(FestivalDanceMaxRank):
     """Highest Frozen Slider rank eligible for normal AP rewards.
     Higher ranks are restricted to filler or traps, including the A-rank
-    ability and first-A bonus. Junk restricts all ranked rewards. Ranks at or
+    ability and first-A bonus. Ranks at or
     below the limit follow Frozen Slider Pool. Higher scores clear all lower tiers.
-    Treasure collection rewards are unaffected. There is no S-rank prize.
+    Treasure collection rewards are unaffected.
     """
 
     display_name = "Frozen Slider Maximum AP Rank"
@@ -667,9 +656,9 @@ class FrozenSliderMaxRank(FestivalDanceMaxRank):
 class FlashTracerCourseAMaxRank(FestivalDanceMaxRank):
     """Highest Flash Tracer Course A rank eligible for normal AP rewards.
     Higher ranks are restricted to filler or traps, including the A-rank
-    ability and first-A bonus. Junk restricts all ranked rewards. Ranks at or
+    ability and first-A bonus. Ranks at or
     below the limit follow Flash Tracer Course A Pool. Higher scores clear all lower tiers.
-    Course B is configured separately. There is no S-rank prize.
+    Course B is configured separately.
     """
 
     display_name = "Flash Tracer Course A Maximum AP Rank"
@@ -678,9 +667,9 @@ class FlashTracerCourseAMaxRank(FestivalDanceMaxRank):
 class FlashTracerCourseBMaxRank(FestivalDanceMaxRank):
     """Highest Flash Tracer Course B rank eligible for normal AP rewards.
     Higher ranks are restricted to filler or traps, including the A-rank
-    ability and first-A bonus. Junk restricts all ranked rewards. Ranks at or
+    ability and first-A bonus. Ranks at or
     below the limit follow Flash Tracer Course B Pool. Higher scores clear all lower tiers.
-    Course A is configured separately. There is no S-rank prize.
+    Course A is configured separately.
     """
 
     display_name = "Flash Tracer Course B Maximum AP Rank"
@@ -690,9 +679,7 @@ class AllyCharacters(DefaultOnToggle):
     """Award playable Roxas after Keyblade Graveyard with Oblivion and Oathkeeper
     owned, Kairi after Re Mind,
     Riku after all Data battles, and Aqua after 0.2 (when enabled).
-    These allies provide Doubleflight and
-    Air Slide for logic. Off removes only their completion rewards; starting
-    inventory and granted allies remain usable and count for movement logic.
+    These allies provide Doubleflight for logic. Off removes only their completion rewards.
     """
     display_name = "Ally Characters"
 
@@ -718,7 +705,7 @@ class AdversaryChecks(Toggle):
     Only filler and useful items can be placed here, including foreign items.
     Boss-only enemies and unverified Sniper are excluded. Journal variants share
     a check. Counts follow the actual defeated enemy under enemy randomization;
-    randomized encounters may make some optional checks unavailable.
+    randomized encounters may make some optional checks unavailable. (Only junk atm)
     """
     display_name = "Adversary Checks"
 
@@ -748,8 +735,7 @@ class ClassicKingdomChecks(Choice):
     """
     High Score adds one check per Classic Kingdom game (23 total). Record a
     score during this seed to earn each check; no minimum score is required.
-    Quitting before a result is recorded does not count. The Classic Tone
-    reward remains a separate randomized check in every mode.
+    Quitting before a result is recorded does not count.
     """
 
     display_name = "Classic Kingdom Checks"
@@ -763,8 +749,7 @@ class OlympusColiseumPool(KH3LocationPoolMode):
     Controls Archipelago integration for the third-party Olympus Coliseum mod.
     Off disables this integration: the mod is optional. If installed, it keeps its native cup rewards.
     Randomize and Junk require the supported Coliseum mod. 
-    These modes replace each cup's native reward with one AP check; Junk
-    allows only filler or traps.
+    These modes replace each cup's native reward with one AP check.
     Set the mod's Settings > Unlock Features to Series.
     """
 
@@ -788,8 +773,7 @@ class OlympusColiseumPool(KH3LocationPoolMode):
 
 
 class BattlegatesPool(KH3LocationPoolMode):
-    """Choose how the reports and rewards from Battlegates 1–14 are randomized.
-    Each Battlegate requires completing its world's story in logic.
+    """Choose how the rewards from Battlegates 1–14 are randomized.
     """
 
     display_name = "Battlegates Pool"
@@ -842,7 +826,7 @@ class EnemiesPool(KH3EnemyPoolMode):
     """
     Experimental: controls whether the enemy randomization starts
     enabled. Every AP seed includes the remap, which can also be toggled from
-    the Garden of Assemblage settings menu.
+    the in-game settings menu.
     This can cause softlocks or unusual fight behavior.
     """
 
@@ -850,11 +834,11 @@ class EnemiesPool(KH3EnemyPoolMode):
     choice_descriptions = {
         "vanilla": (
             "Start Enemy Randomization disabled. "
-            "It can be enabled later from the Garden of Assemblage settings menu."
+            "It can be enabled later from the in-game settings menu."
         ),
         "randomize": (
             "Start Enemy Randomization enabled. "
-            "It can be disabled later from the Garden of Assemblage settings menu."
+            "It can be disabled later from the in-game settings menu."
         ),
     }
 
@@ -862,8 +846,8 @@ class EnemiesPool(KH3EnemyPoolMode):
 class BossesPool(KH3EnemyPoolMode):
     """
     Experimental: controls whether the boss randomization starts enabled.
-    Every AP seed includes the remap, which can also be toggled from the Garden
-    of Assemblage settings menu. Victory bonus checks should remain tied to the
+    Every AP seed includes the remap, which can also be toggled from the in-game
+    settings menu. Victory bonus checks should remain tied to the
     original fight scripts, but boss swaps can still crash or break scripted
     fight completion.
     """
@@ -872,19 +856,19 @@ class BossesPool(KH3EnemyPoolMode):
     choice_descriptions = {
         "vanilla": (
             "Start Boss Randomization disabled. "
-            "It can be enabled later from the Garden of Assemblage settings menu."
+            "It can be enabled later from the in-game settings menu."
         ),
         "randomize": (
             "Start Boss Randomization enabled. "
-            "It can be disabled later from the Garden of Assemblage settings menu."
+            "It can be disabled later from the in-game settings menu."
         ),
     }
 
 
 class PartyMembersPool(KH3EnemyPoolMode):
     """
-    Sets the initial state of Randomize Party Members in the Garden of
-    Assemblage runtime settings menu. Vanilla starts Friend 1 and Friend 2
+    Sets the initial state of Randomize Party Members in the in-game
+    settings menu. Vanilla starts Friend 1 and Friend 2
     on Vanilla, using the game's party choices. These can be changed in-game.
     """
 
@@ -893,11 +877,11 @@ class PartyMembersPool(KH3EnemyPoolMode):
         "vanilla": (
             "Start party randomization disabled with Friend 1 and Friend 2 "
             "set to Vanilla, using the game's party choices. You can select "
-            "received Party Member items or None later in GoA Options."
+            "received Party Member items or None later in the in-game settings menu."
         ),
         "randomize": (
             "Start party randomization enabled. The runtime chooses from "
-            "received Party Member items; it can be disabled in GoA Options."
+            "received Party Member items; it can be disabled in the in-game settings menu."
         ),
     }
 
@@ -1074,15 +1058,15 @@ class LuckyEmblemLimit(KH3NumericChoice):
     """
 
     display_name = "Lucky Emblem Limit"
-    option_emblems_10 = 10
-    option_emblems_20 = 20
-    option_emblems_30 = 30
-    option_emblems_40 = 40
-    option_emblems_50 = 50
-    option_emblems_60 = 60
-    option_emblems_70 = 70
-    option_emblems_80 = 80
-    option_emblems_90 = 90
+    option_10 = 10
+    option_20 = 20
+    option_30 = 30
+    option_40 = 40
+    option_50 = 50
+    option_60 = 60
+    option_70 = 70
+    option_80 = 80
+    option_90 = 90
     default = 50
 
 
@@ -1595,21 +1579,11 @@ class DeathLinkAmnesty(Range):
 
 
 class IncludeSpace(Toggle):
-    """Randomize Gummi missions, battles, and treasure spheres. Boss clears award
-    three checks. Adds Gummi parts, blueprints, and special weapons to the pool.
-    Grindy missions and space superbosses have separate include options.
-    Excludes the native starter Highwind from the pool and zone unlocks.
+    """Randomize Gummi missions, battles, and treasure spheres.
     Each space zone has one blueprint that unlocks that zone:
     Starlight Way: Bomb and one completed main world.
     Misty Stream: Galleon and two completed main worlds.
     The Eclipse: Submarine and three completed main worlds.
-    Any of Olympus, Twilight Town, Toy Box, Kingdom of Corona, Monstropolis,
-    Arendelle, The Caribbean, and San Fransokyo counts, including Junk worlds.
-    Other ship blueprints remain useful rewards and do not unlock zones.
-    Endymion is progression when space superbosses are enabled, for Schwarzgeist.
-    Ship blueprints and other Gummi items use normal placement.
-    When disabled, space rewards remain vanilla.
-    Requires a new seed.
     """
     display_name = "Include Space"
 
@@ -1619,16 +1593,13 @@ class IncludeGrindySpaceMissions(Toggle):
     and Special Weapon Authority (13 special weapons) as randomized checks.
     Requires Include Space. Gummi Ship Completionist is included only when
     both this option and Include Space Superbosses are enabled.
-    Requires a new seed.
     """
     display_name = "Include Grindy Space Missions"
 
 
 class IncludeSpaceSuperbosses(Toggle):
     """Include all three randomized rewards from each of Schwarzgeist and
-    Omega Machina. Requires Include Space. Gummi Ship Completionist is included
-    only when both this option and Include Grindy Space Missions are enabled.
-    Requires a new seed.
+    Omega Machina. Requires Include Space.
     """
     display_name = "Include Space Superbosses"
 
@@ -1646,8 +1617,6 @@ class GateOpenerCount(Range):
 
 class PortalUnlocks(Choice):
     """Open worlds with their Keyblade, or with their designated party-member item.
-    Party-member mode shows dimmed character portraits on locked portals.
-    Open portals retain their normal world icons. Characters do not need to be equipped.
     """
     display_name = "Portal Unlocks"
     option_keyblades = 0

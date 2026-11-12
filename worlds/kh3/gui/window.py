@@ -2,6 +2,7 @@
 
 import os
 import tkinter as tk
+from contextlib import contextmanager
 from pkgutil import get_data
 
 from .theme import SURFACE, TEXT
@@ -41,3 +42,32 @@ def apply_dark_titlebar(root):
     except (AttributeError, OSError):
         # Desktop decoration support must never prevent the client from opening.
         pass
+
+
+@contextmanager
+def suspend_redraw(widget):
+    """Keep the old Windows panel visible until its new layout is complete."""
+    if os.name != "nt" or not widget.winfo_ismapped():
+        yield False
+        return
+    import ctypes
+    from ctypes import wintypes
+
+    try:
+        user32 = ctypes.WinDLL("user32", use_last_error=True)
+        user32.SendMessageW.argtypes = (wintypes.HWND, wintypes.UINT, wintypes.WPARAM, wintypes.LPARAM)
+        user32.SendMessageW.restype = ctypes.c_ssize_t
+        user32.RedrawWindow.argtypes = (wintypes.HWND, ctypes.c_void_p, wintypes.HRGN, wintypes.UINT)
+        user32.RedrawWindow.restype = wintypes.BOOL
+        hwnd = widget.winfo_id()
+    except (AttributeError, OSError):
+        yield False
+        return
+    user32.SendMessageW(hwnd, 0x000B, 0, 0)  # WM_SETREDRAW
+    try:
+        yield True
+    finally:
+        user32.SendMessageW(hwnd, 0x000B, 1, 0)
+        # Invalidate and paint this panel and its children together, including
+        # native borders; never lock or suspend unrelated desktop windows.
+        user32.RedrawWindow(hwnd, None, None, 0x0001 | 0x0004 | 0x0080 | 0x0100 | 0x0400)

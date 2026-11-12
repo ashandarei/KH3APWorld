@@ -75,6 +75,8 @@ class Theme:
         self._buttons("Alert.TButton", filled=True, alert=True)
         self._buttons("Compact.TButton", filled=False, radius=2)
         self._buttons("Compact.Primary.TButton", filled=True, radius=2)
+        self._buttons("Compact.Launch.TButton", filled=True, radius=2,
+                      colors=("#6b5228", "#806333", "#584320"))
         style.configure("Icon.TButton", padding=(8, 6))
         for name in ("TButton", "Primary.TButton", "Alert.TButton", "Icon.TButton"):
             style.configure("Card." + name, background=PANEL)
@@ -111,11 +113,13 @@ class Theme:
         self.images.append(image)
         return image
 
-    def _buttons(self, name, *, filled, alert=False, radius=15):
+    def _buttons(self, name, *, filled, alert=False, radius=15, colors=None):
         foreground = ON_ACCENT if filled else TEXT
         base = ERROR if alert else PRIMARY if filled else "#293342"
         over = "#872b39" if alert else "#264b65" if filled else "#202936"
         down = "#702431" if alert else "#1e3c51" if filled else "#19212c"
+        if colors is not None:
+            base, over, down = colors
         normal = self._pill(base, base, radius)
         hover = self._pill(over, over, radius)
         pressed = self._pill(down, down, radius)
@@ -133,6 +137,10 @@ class Theme:
 
     def icon(self, name):
         if name in self.icons:
+            return self.icons[name]
+        if name in ("reset", "help"):
+            from pkgutil import get_data
+            self.icons[name] = tk.PhotoImage(master=self.root, data=get_data(__package__, f"assets/yaml-{name}.png"))
             return self.icons[name]
         icon = tk.PhotoImage(master=self.root, width=22, height=22)
         def rect(x1, y1, x2, y2):

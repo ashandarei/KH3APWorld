@@ -68,8 +68,10 @@ class KH3Manager:
         self.address_entry.bind("<Return>", lambda _: self.spawn(self.connect()))
         self.connect_button = ttk.Button(toolbar, text="Connect", style="Compact.Primary.TButton", command=lambda: self.spawn(self.connect()))
         self.connect_button.pack(side="left", padx=4)
-        self.launch_button = ttk.Button(toolbar, text="Launch KH3", style="Compact.TButton", command=self.launch_game)
-        self.launch_button.pack(side="left", padx=(4, 0))
+        ttk.Button(toolbar, text="YAML Creator", style="Compact.Primary.TButton",
+                   command=self.open_yaml_creator).pack(side="left", padx=(4, 0))
+        self.launch_button = ttk.Button(toolbar, text="Launch KH3", style="Compact.Launch.TButton", command=self.launch_game)
+        self.launch_button.pack(side="left", padx=(6, 0))
         self.tabs = Tabs(self.root)
         self.tabs.pack(fill="both", expand=True, pady=(1, 0))
         self.pages = {}
@@ -148,6 +150,10 @@ class KH3Manager:
     def launch_game(self):
         if not self.action_running and not self.ctx.kh3_run_action_running:
             self.ctx.launch_kh3_game()
+
+    def open_yaml_creator(self):
+        from .. import launch_yaml_creator
+        launch_yaml_creator()
 
     def submit_command(self, *_):
         text = self.command.get().strip()

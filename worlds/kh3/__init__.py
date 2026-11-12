@@ -264,6 +264,27 @@ def generate_player_paks(*args: str) -> None:
     Utils.open_file(output_dir)
 
 
+def launch_yaml_creator(*args: str) -> None:
+    """Use a separate Tk process so the creator cannot block a connected client."""
+    import subprocess
+    import Utils
+    from worlds.LauncherComponents import launch_subprocess
+    from .gui.yaml_creator import launch
+
+    previous = os.environ.get(KH3_WORLD_LOAD_PATHS_ENV)
+    os.environ[KH3_WORLD_LOAD_PATHS_ENV] = _kh3_world_load_paths_value()
+    try:
+        if Utils.is_kivy_running() and os.environ.get("APPIMAGE"):
+            subprocess.Popen([os.environ.get("ARGV0") or os.environ["APPIMAGE"], "KH3 YAML Creator", *args])
+        else:
+            launch_subprocess(launch, name="KH3YamlCreator", args=args)
+    finally:
+        if previous is None:
+            os.environ.pop(KH3_WORLD_LOAD_PATHS_ENV, None)
+        else:
+            os.environ[KH3_WORLD_LOAD_PATHS_ENV] = previous
+
+
 KH3_CONTAINER_PAYLOAD = "kh3_seed.json"
 
 
@@ -291,6 +312,8 @@ KH3_HOST_ONLY = json.loads(read_package_text("archipelago.json", module_file=__f
 if not KH3_HOST_ONLY:
     icon_paths["kh3"] = f"ap:{__name__}/gui/assets/kh3-icon.png"
     components.append(Component("KH3 Client", func=launch_client, component_type=ComponentType.CLIENT, icon="kh3"))
+    components.append(Component("KH3 YAML Creator", func=launch_yaml_creator, component_type=ComponentType.TOOL,
+                                icon="kh3", description="Create, import and export KH3 player options with a native editor."))
     components.append(Component("KH3 Pak Generator", func=generate_player_paks, component_type=ComponentType.TOOL,
                                 file_identifier=SuffixIdentifier(KH3Container.patch_file_ending),
                                 description="Generate KH3 player .pak files from a KH3 seed file or generated AP zip."))

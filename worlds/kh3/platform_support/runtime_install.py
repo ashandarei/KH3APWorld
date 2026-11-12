@@ -34,7 +34,7 @@ def write_probe_config(config_path: Path, bridge_dir: Path) -> None:
 
 
 def install_kh3_runtime_files(kh3_dir: Path, bridge_dir: Path | None) -> dict[str, Any]:
-    """Install release/bundled runtime files and preserve the result contract."""
+    """Install runtime releases and packaged configuration, preserving the result contract."""
 
     try:
         result = install_kh3_runtime(kh3_dir, bridge_dir)
@@ -58,7 +58,7 @@ def install_kh3_runtime_files(kh3_dir: Path, bridge_dir: Path | None) -> dict[st
         logger.info("KH3 runtime installed/updated under: %s", kh3_win64_dir_from_root(kh3_dir))
     if result.get("existing_ue4ss_custom_conflict"):
         logger.warning(
-            "Existing UE4SS files differed from KH3 AP's bundled runtime. They were backed up before replacement."
+            "Existing UE4SS files differed from KH3 AP's required runtime release. They were backed up before replacement."
         )
     if result.get("replaced_existing_ue4ss"):
         logger.info(
