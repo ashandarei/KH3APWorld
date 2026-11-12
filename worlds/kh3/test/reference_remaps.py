@@ -173,10 +173,6 @@ def enemy_remap(root, seed, exceptions):
 
 
 def boss_compatible(boss, pawn):
-    # TT Tide / Corona Guardianess: Data Xemnas idles, then moves Sora to an unset
-    # destination and leaves the fight without a possessed player pawn.
-    if boss in ("BOSS_005", "BOSS_009") and pawn == "e_ex353_Pawn":
-        return False
     if boss == "BOSS_0106" and pawn in ("e_ex305_Pawn", "e_ex305_Pawn_s10", "e_ex354_Pawn"):
         return False
     if pawn == "e_ex711_Pawn" and boss in {

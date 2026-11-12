@@ -482,14 +482,14 @@ def test_monstropolis_excludes_only_reviewed_data_boss_pairs(pawn):
     assert boss_compatible("BOSS_010", "e_ex308_Pawn_s10")  # ReMind Marluxia
 
 
-def test_twilight_town_and_corona_exclude_only_data_xemnas():
-    assert not boss_compatible("BOSS_005", "e_ex353_Pawn")
+def test_twilight_town_and_corona_accept_data_xemnas():
+    assert boss_compatible("BOSS_005", "e_ex353_Pawn")
     assert boss_compatible("BOSS_005", "e_ex309_Pawn")  # Story Larxene
     assert boss_compatible("BOSS_005", "e_ex309_Pawn_s10")
     assert boss_compatible("BOSS_021", "e_ex353_Pawn")
     assert boss_compatible("BOSS_006", "e_ex353_Pawn")
     assert boss_compatible("BOSS_024", "e_ex353_Pawn")
-    assert not boss_compatible("BOSS_009", "e_ex353_Pawn")
+    assert boss_compatible("BOSS_009", "e_ex353_Pawn")
     assert boss_compatible("BOSS_009", "e_ex309_Pawn")
     assert boss_compatible("BOSS_009", "e_ex309_Pawn_s10")
 
@@ -511,8 +511,6 @@ def test_boss_arena_bans_preserve_generated_boss_pool(templates):
             boss, _, replacement = entry.split("|")
             replacements[boss] = result["boss_runtime_classes"][int(replacement)].split("/")[-1].split(".")[0]
         assert replacements["BOSS_010"] not in ("e_ex352_Pawn", "e_ex357_Pawn")
-        assert replacements["BOSS_005"] != "e_ex353_Pawn"
-        assert replacements["BOSS_009"] != "e_ex353_Pawn"
         data_pawns = {pawn for boss, pawn in originals.items() if 93 <= int(boss[5:]) <= 105}
         assert replacements["BOSS_011"] not in data_pawns
         assert sorted(replacements.values()) == sorted(originals.values())
