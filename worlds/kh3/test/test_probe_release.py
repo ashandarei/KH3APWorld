@@ -18,8 +18,10 @@ def source_for(tmp_path, config):
     return probe_release.PinnedProbeResource(path)
 
 
-def test_download_checks_archive_and_dll_then_reuses_verified_bytes(tmp_path):
+@pytest.mark.parametrize("release_tag", ["2.0.0", "2.0.0-beta.2", "v2.0.0-beta.2"])
+def test_download_checks_archive_and_dll_then_reuses_verified_bytes(tmp_path, release_tag):
     config, payload = probe_release_payload()
+    config["release_tag"] = release_tag
     source = source_for(tmp_path, config)
     with patch.object(probe_release, "_download", return_value=payload) as download:
         assert source.is_file()
@@ -27,11 +29,14 @@ def test_download_checks_archive_and_dll_then_reuses_verified_bytes(tmp_path):
         assert source.read_bytes() == b"probe"
         assert source.read_bytes() == b"probe"
         download.assert_called_once_with(
-            f"https://github.com/ashandarei/KH3Runtime/releases/download/2.0.0/{config['asset']}", len(payload))
+            f"https://github.com/ashandarei/KH3Runtime/releases/download/{release_tag}/{config['asset']}", len(payload))
 
 
 @pytest.mark.parametrize("field,value", [
     ("repository", "other/repository"), ("release_tag", "latest"), ("version", "2.0.1"),
+    ("release_tag", "2.0.1-beta.2"), ("release_tag", "2.0.0-beta.0"),
+    ("release_tag", "2.0.0-beta.02"), ("release_tag", "2.0.0-beta.2/other"),
+    ("release_tag", None), ("version", "2.0.0-beta.2"),
     ("asset", "../main.dll"), ("sha256", "bad"), ("archive_sha256", "bad"),
     ("size", True), ("archive_size", 0), ("size", probe_release.MAX_SIZE + 1),
 ])

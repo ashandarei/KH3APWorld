@@ -22,11 +22,14 @@ MAX_SIZE = 128 * 1024 * 1024
 def validate_config(config: dict) -> dict:
     if not isinstance(config, dict) or config.get("repository") != REPOSITORY:
         raise ValueError("Unexpected KH3Runtime release repository")
-    for field in ("release_tag", "version"):
-        if not isinstance(config.get(field), str) or not re.fullmatch(r"\d+\.\d+\.\d+", config[field]):
-            raise ValueError(f"Invalid KH3Runtime {field}")
-    if config["release_tag"] != config["version"]:
-        raise ValueError("KH3Runtime release tag and version differ")
+    version = config.get("version")
+    if not isinstance(version, str) or not re.fullmatch(r"\d+\.\d+\.\d+", version):
+        raise ValueError("Invalid KH3Runtime version")
+    release_tag = config.get("release_tag")
+    if not isinstance(release_tag, str) or not re.fullmatch(
+        rf"v?{re.escape(version)}(?:-beta\.[1-9][0-9]*)?", release_tag
+    ):
+        raise ValueError("KH3Runtime release tag must match the version or a numbered beta")
     for field in ("sha256", "archive_sha256"):
         if not isinstance(config.get(field), str) or not re.fullmatch(r"[0-9a-f]{64}", config[field]):
             raise ValueError(f"Invalid KH3Runtime {field}")
