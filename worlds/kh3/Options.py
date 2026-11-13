@@ -886,13 +886,14 @@ class PartyMembersPool(KH3EnemyPoolMode):
     }
 
 
-class AutoEquipMovementAbilities(DefaultOnToggle):
+class AutoEquipEssentialAbilities(DefaultOnToggle):
     """Automatically equip Glide, Air Slide, High Jump, Doubleflight,
-    Superjump, Superslide, Dodge Roll, Pole Spin, and Pole Swing abilities when
-    enough AP is available.
+    Superjump, Superslide, Dodge Roll, Pole Spin, Pole Swing, Block, Aerial Recovery,
+    Scan, Second Chance, Withstand Combo, and Leaf Bracer when received, if enough
+    AP is available.
     """
 
-    display_name = "Auto Equip Movement Abilities"
+    display_name = "Auto Equip Essential Abilities"
 
 
 class DefaultBaseAbilities(Toggle):
@@ -1705,7 +1706,7 @@ class KH3Options(PerGameCommonOptions):
     boss_blacklist: BossBlacklist
     party_members_pool: PartyMembersPool
     default_base_abilities: DefaultBaseAbilities
-    auto_equip_movement_abilities: AutoEquipMovementAbilities
+    auto_equip_essential_abilities: AutoEquipEssentialAbilities
     start_with_wall_run: StartWithWallRun
     start_with_magic: StartWithMagic
     start_with_links: StartWithLinks
@@ -1875,7 +1876,7 @@ option_groups = [
         AllyCharacters,
         GateOpenerCount,
         DefaultBaseAbilities,
-        AutoEquipMovementAbilities,
+        AutoEquipEssentialAbilities,
         StartWithWallRun,
         StartWithMagic,
         StartWithLinks,

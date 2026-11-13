@@ -732,19 +732,19 @@ class TestKH3WorldIntegrity(KH3WorldIntegrityMixin, KH3TestBase):
                 self.assertEqual(slot["song_display"], enabled)
                 self.assertEqual(runtime_documents({"slot_data": slot})["runtime_seed_settings.json"]["slot_data"]["song_display"], enabled)
 
-    def test_movement_auto_equip_yaml_reaches_runtime_settings(self) -> None:
+    def test_essential_auto_equip_yaml_reaches_runtime_settings(self) -> None:
         from ..RuntimeSeed import runtime_documents
-        option_type = KH3Options.type_hints["auto_equip_movement_abilities"]
+        option_type = KH3Options.type_hints["auto_equip_essential_abilities"]
         self.assertEqual(option_type.default, 1)
         group = next(group for group in option_groups if group.name == "KH3 Randomizer Rules")
         self.assertIn(option_type, group.options)
         for enabled in (0, 1):
             with self.subTest(enabled=enabled):
-                self.world.options.auto_equip_movement_abilities = option_type.from_any(enabled)
+                self.world.options.auto_equip_essential_abilities = option_type.from_any(enabled)
                 slot = self.world.build_runtime_slot_data()
-                self.assertEqual(slot["auto_equip_movement_abilities"], enabled)
+                self.assertEqual(slot["auto_equip_essential_abilities"], enabled)
                 self.assertEqual(runtime_documents({"slot_data": slot})["runtime_seed_settings.json"]
-                                 ["slot_data"]["auto_equip_movement_abilities"], enabled)
+                                 ["slot_data"]["auto_equip_essential_abilities"], enabled)
 
     def test_fast_minigame_options_can_be_disabled_independently(self) -> None:
         self.world.options.fast_union_cross.value = 0

@@ -242,8 +242,8 @@ class TestGoaRuntimeSettingsMenuSourceContract(unittest.TestCase):
                 self.assertIn(required, " ".join(source.split()))
 
         self.assertEqual(source.count("page.toggle("), 10)
-        self.assertIn('STR("auto_equip_movement_abilities")', source)
-        self.assertIn("goa_settings.set_auto_equip_movement_abilities(enabled)", source)
+        self.assertIn('STR("auto_equip_essential_abilities")', source)
+        self.assertIn("goa_settings.set_auto_equip_essential_abilities(enabled)", source)
         self.assertEqual(source.count("page.choice("), 7)
         option_order = (
             'STR("battle_sync")',

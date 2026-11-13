@@ -1455,7 +1455,7 @@ class KH3World(World):
             "moogle_shop_price",
             "trap_percentage",
             "auto_skip_cutscenes",
-            "auto_equip_movement_abilities",
+            "auto_equip_essential_abilities",
             "color_randomization",
             "music_shuffle",
             "include_custom_music",
