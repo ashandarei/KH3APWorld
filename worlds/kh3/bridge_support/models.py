@@ -15,27 +15,6 @@ class PayloadValidationError(ValueError):
     """Raised when a bridge file contains an invalid JSON payload shape."""
 
 
-
-
-
-
-class SlotKind(str, Enum):
-    """Kinds of KH3 save slots used by bridge decisions."""
-
-    AUTO = "auto"
-    MANUAL = "manual"
-    UNKNOWN = "unknown"
-
-
-class GrantResult(str, Enum):
-    """High-level outcomes of an internal runtime grant decision."""
-
-    APPLIED = "applied"
-    PENDING = "pending"
-    SKIPPED = "skipped"
-    FAILED = "failed"
-
-
 class ReconciliationOutcome(str, Enum):
     """Whether reconciliation changed persisted bridge state."""
 
@@ -59,35 +38,6 @@ class GameStatePayload(TypedDict, total=False):
     last_goal_complete_runtime_context: dict[str, Any]
 
 
-
-
-
-
-class RuntimeCurrentSaveSlotPayload(TypedDict, total=False):
-    """Persisted runtime current-save-slot observation shape."""
-
-    protocol_name: str
-    protocol_version: int
-    status: str
-    event: str
-    save_slot: int | str
-    slot_file: str
-    observed_at_utc: str
-    source: str
-
-
-class RuntimeGrantResultPayload(TypedDict, total=False):
-    """Persisted acknowledgement fields shared by runtime grant results."""
-
-    protocol_name: str
-    protocol_version: int
-    request_id: str
-    status: str
-    processed_at: str
-    applied_indices: list[int]
-    failed_indices: list[int]
-
-
 class ReconciliationPayload(TypedDict):
     """Public compatibility result returned by snapshot reconciliation."""
 
@@ -96,28 +46,6 @@ class ReconciliationPayload(TypedDict):
     reported_check_count: int
     observed_check_count: int
     goal_complete: bool
-
-
-
-
-
-
-@dataclass(frozen=True)
-class SlotDecision:
-    """Internal save-slot classification decision."""
-
-    kind: SlotKind
-    slot_number: int | None = None
-    reason: str | None = None
-
-
-@dataclass(frozen=True)
-class GrantDecision:
-    """Internal runtime grant outcome."""
-
-    result: GrantResult
-    request_id: str | None = None
-    reason: str | None = None
 
 
 @dataclass(frozen=True)

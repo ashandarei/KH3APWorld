@@ -2,7 +2,6 @@ import os
 import shutil
 from pathlib import Path
 import subprocess
-import sys
 
 import pytest
 

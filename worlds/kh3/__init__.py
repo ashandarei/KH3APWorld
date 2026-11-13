@@ -28,7 +28,7 @@ from worlds.LauncherComponents import (
 )
 
 from .Bridge import BRIDGE_PROTOCOL_NAME, BRIDGE_PROTOCOL_VERSION, KH3_WORLD_VERSION, build_bridge_slot_data
-from .CharacterUnlocks import CHARACTER_UNLOCK_ITEM_ALIASES, CHARACTER_UNLOCK_ITEM_NAMES
+from .CharacterUnlocks import CHARACTER_UNLOCK_ITEM_ALIASES
 from .ClassicKingdomLogic import record_useful_game
 from .Data import (
     TRAP_ITEM_NAMES,

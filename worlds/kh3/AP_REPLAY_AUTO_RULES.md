@@ -45,8 +45,8 @@ when finished or cancelled; do not add an idle discovery timer.
 
 Inspect the native receipt and retry projections through the registered live
 bridge. Export the client's diagnostic bundle before closing it when event
-history is needed. Test saves use the authorized native slot helper described
-in [SAVE_SLOT.md](../../tools/kh3/SAVE_SLOT.md).
+history is needed. For authorized test saves, use native save operations and
+verify their completion through runtime events.
 
 Do not poll, stat, hash, diff, parse or copy vanilla KH3 slot/system files for
 ordinary replay debugging. Use runtime save-completion events and

@@ -14,13 +14,9 @@ from ..bridge_support.files import load_optional_json_file
 from ..bridge_support.game_state import GameStateService
 from ..bridge_support.location_index import LocationIndex
 from ..bridge_support.models import (
-    GrantDecision,
-    GrantResult,
     PayloadValidationError,
     ReconciliationDecision,
     ReconciliationOutcome,
-    SlotDecision,
-    SlotKind,
     parse_game_state_payload,
     serialize_game_state_payload,
 )
@@ -303,11 +299,7 @@ class TestBridgeFoundations(unittest.TestCase):
                 with self.assertRaises(PayloadValidationError):
                     parse_game_state_payload(payload)
 
-
-    def test_enums_and_internal_decisions_use_protocol_values(self) -> None:
-        self.assertEqual(SlotDecision(SlotKind.AUTO, slot_number=0).kind.value, "auto")
-        self.assertEqual(GrantDecision(GrantResult.PENDING, request_id="grant:1").result.value, "pending")
-
+    def test_unchanged_reconciliation_decision_reports_no_change(self) -> None:
         unchanged = ReconciliationDecision(
             outcome=ReconciliationOutcome.UNCHANGED,
             newly_reported_keys=(),

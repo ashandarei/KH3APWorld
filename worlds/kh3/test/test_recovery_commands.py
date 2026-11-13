@@ -341,7 +341,7 @@ def test_kh02_capability_required_without_disabling_ordinary_recovery(recovery):
     service, transport, messages = recovery
     transport.accept([(SET, "runtime_context.json", 5, b'{"process_id":123,"recovery_protocol":1}')])
     assert not service.gameflow("kh02")
-    assert "updated diagnostic probe" in messages[-1]
+    assert "updated KH3 probe" in messages[-1]
     assert transport.read(GAMEFLOW) is None
     assert service.gameflow("DW")
     assert "flag_bank" not in transport.read(GAMEFLOW)

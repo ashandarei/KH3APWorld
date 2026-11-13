@@ -10,7 +10,5 @@ These are candidates, not commitments or release blockers.
   pack maintainers. The current reference is `data/minimap_reference.json`;
   canonical pickup identities must stay available for ingredient checks.
 
-Release validation belongs in the
-[production checklist](../../../tools/kh3/PRODUCTION_CHECKLIST.md), including live
-race-mode, reconnect/replay, and multiworld checks. Completed investigations are
-kept in Git history rather than appended to this list.
+Completed investigations are kept in Git history rather than appended to this
+list.

@@ -27,7 +27,7 @@ Launch through the client/storefront, never the game executable directly.
 From this checkout in PowerShell:
 
 ```powershell
-python -m pip install -r tools/kh3/requirements-dev.txt
+python -m pip install -r requirements-kh3-dev.txt
 .\scripts\test-kh3.ps1
 
 # With the native checkout and its documented C++ toolchain configured:
@@ -93,6 +93,20 @@ The KH3 workflow runs tests and focused lint checks. Upstream release/container
 workflows are restricted to the upstream repository, so enabling Actions here
 does not publish Archipelago artifacts. GitHub Actions must still be enabled in
 repository settings before the workflow can run remotely.
+
+For generation changes, validate newly generated single-player, mixed-game, and
+multiple-KH3 seeds. Cover the affected options, reachability, starting inventory,
+junk restrictions and item classifications. Check seed paks for the selected
+seed/slot, source identities, native reward tokens and runtime settings. Race
+outputs must omit protected placements and remote-hint data; full debug manifests
+are not required in player artifacts.
+
+For an explicitly requested release, exercise the packaged client from the
+Archipelago Launcher using the [player setup guide](setup_en.md). Verify path
+detection, patching, storefront launch, connection and seed selection. The
+[runtime bundle documentation](../runtime/README.md) describes pinned downloads
+and installation guarantees. Record the tested source revision, artifact hashes
+and scope, distinguishing offline checks from live gameplay validation.
 
 Review local diffs before committing. APWorld builds, installation, publishing,
 and release replacement are explicit steps; test runs do not perform them.
