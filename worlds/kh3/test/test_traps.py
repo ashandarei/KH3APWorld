@@ -8,6 +8,8 @@ from ..Data import (
     BAD_STATUS_TRAP_ITEM_NAMES,
     TRAP_ITEM_NAMES,
     KING_MICKEY_TRAP_ITEM_NAME,
+    BETRAYAL_TRAP_ITEM_NAME,
+    BETRAYAL_TRAP_RUNTIME_TOKEN,
     SPELLWEAVER_UNLOCK_ITEM,
     KING_MICKEY_TRAP_RUNTIME_TOKEN,
     local_seeded_reward_requires_bridge_delivery,
@@ -37,13 +39,21 @@ class TestKH3TrapItems(TestCase):
 
 
     def test_mickey_trap_uses_native_swap_and_bridge_delivery(self) -> None:
-        self.assertEqual(set(TRAP_ITEM_NAMES), {"Sneeze Trap", "Burn Trap", "King Mickey Trap"})
+        self.assertEqual(set(TRAP_ITEM_NAMES), {"Sneeze Trap", "Burn Trap", "King Mickey Trap", "Betrayal Trap"})
         self.assertEqual(classify_item(KING_MICKEY_TRAP_ITEM_NAME), ItemClassification.trap)
         self.assertEqual(resolve_item_runtime_token(KING_MICKEY_TRAP_ITEM_NAME), KING_MICKEY_TRAP_RUNTIME_TOKEN)
         self.assertEqual(classify_runtime_grant_method(KING_MICKEY_TRAP_RUNTIME_TOKEN), "king_mickey_trap")
         self.assertGreater(item_name_to_id[KING_MICKEY_TRAP_ITEM_NAME], item_name_to_id[SPELLWEAVER_UNLOCK_ITEM])
         self.assertTrue(local_seeded_reward_requires_bridge_delivery(
             "Treasure:TEST", "treasure", KING_MICKEY_TRAP_RUNTIME_TOKEN, persistent_chests=False))
+
+    def test_betrayal_trap_uses_party_hostility_and_bridge_delivery(self) -> None:
+        self.assertEqual(classify_item(BETRAYAL_TRAP_ITEM_NAME), ItemClassification.trap)
+        self.assertEqual(resolve_item_runtime_token(BETRAYAL_TRAP_ITEM_NAME), BETRAYAL_TRAP_RUNTIME_TOKEN)
+        self.assertEqual(classify_runtime_grant_method(BETRAYAL_TRAP_RUNTIME_TOKEN), "betrayal_trap")
+        self.assertGreater(item_name_to_id[BETRAYAL_TRAP_ITEM_NAME], item_name_to_id["Playable Character: Riku"])
+        self.assertTrue(local_seeded_reward_requires_bridge_delivery(
+            "Treasure:TEST", "treasure", BETRAYAL_TRAP_RUNTIME_TOKEN, persistent_chests=False))
 
     def test_only_sneeze_and_burn_are_bad_status_traps(self) -> None:
         self.assertEqual(set(BAD_STATUS_TRAP_ITEM_NAMES), {"Sneeze Trap", "Burn Trap"})
@@ -109,6 +119,7 @@ class TestKH3TrapGenerationFull(KH3TestBase):
             "Re Mind - Unlock Kairi": "Playable Character: Kairi",
             "Keyblade Graveyard - Unlock Roxas": "Playable Character: Roxas",
             "0.2 - Unlock Aqua": "Playable Character: Aqua",
+            "Data Battles - Unlock Riku": "Playable Character: Riku",
         })
         randomized_locations = [location for location in active_locations if location.item is None]
         self.assertEqual(len(active_locations), len(randomized_locations) + len(locked_rewards))

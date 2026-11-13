@@ -181,11 +181,14 @@ BAD_STATUS_TRAP_RUNTIME_TOKEN_BY_ITEM_NAME = {
 }
 BAD_STATUS_TRAP_ITEM_NAMES = tuple(BAD_STATUS_TRAP_RUNTIME_TOKEN_BY_ITEM_NAME)
 BAD_STATUS_TRAP_RUNTIME_TOKENS = frozenset(BAD_STATUS_TRAP_RUNTIME_TOKEN_BY_ITEM_NAME.values())
+BETRAYAL_TRAP_ITEM_NAME = "Betrayal Trap"
+BETRAYAL_TRAP_RUNTIME_TOKEN = "KH3AP_TRAP::BETRAYAL"
 KING_MICKEY_TRAP_ITEM_NAME = "King Mickey Trap"
 KING_MICKEY_TRAP_RUNTIME_TOKEN = "KH3AP_TRAP::KING_MICKEY"
 TRAP_RUNTIME_TOKEN_BY_ITEM_NAME = {
     **BAD_STATUS_TRAP_RUNTIME_TOKEN_BY_ITEM_NAME,
     KING_MICKEY_TRAP_ITEM_NAME: KING_MICKEY_TRAP_RUNTIME_TOKEN,
+    BETRAYAL_TRAP_ITEM_NAME: BETRAYAL_TRAP_RUNTIME_TOKEN,
 }
 TRAP_ITEM_NAMES = tuple(TRAP_RUNTIME_TOKEN_BY_ITEM_NAME)
 TRAP_RUNTIME_TOKENS = frozenset(TRAP_RUNTIME_TOKEN_BY_ITEM_NAME.values())
@@ -1323,6 +1326,8 @@ def classify_runtime_grant_method(runtime_token: str | None) -> str | None:
         ULTIMA_WEAPON_SHARD_RUNTIME_TOKEN_PREFIX
     ):
         return "ultima_weapon_shard"
+    if runtime_token == BETRAYAL_TRAP_RUNTIME_TOKEN:
+        return "betrayal_trap"
     if runtime_token == KING_MICKEY_TRAP_RUNTIME_TOKEN:
         return "king_mickey_trap"
     if runtime_token in BAD_STATUS_TRAP_RUNTIME_TOKENS:
@@ -1597,6 +1602,8 @@ def build_item_name_to_id(data: dict) -> dict[str, int]:
     item_name_to_id[KING_MICKEY_TRAP_ITEM_NAME] = base_id + next_index
     next_index += 1
     item_name_to_id["Playable Character: Riku"] = base_id + next_index
+    next_index += 1
+    item_name_to_id[BETRAYAL_TRAP_ITEM_NAME] = base_id + next_index
     next_index += 1
     from .Space import SPACE_ITEM_IDS
     item_name_to_id.update(SPACE_ITEM_IDS)

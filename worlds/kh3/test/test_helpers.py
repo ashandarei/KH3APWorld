@@ -411,7 +411,7 @@ class KH3RuntimeGrantTestCase(KH3BridgeTestCase):
 def mock_native_description(item):
     """Explicit native envelope fixture; this does not decode item names or IDs."""
     method = item.get("kh3_grant_method", "bp_tres_get_item")
-    kind = {"controller_unlock": "grant_controller_unlock", "direct_player_bad_status": "trigger_trap", "king_mickey_trap": "trigger_trap"}.get(method, "add_inventory_item")
+    kind = {"controller_unlock": "grant_controller_unlock", "direct_player_bad_status": "trigger_trap", "king_mickey_trap": "trigger_trap", "betrayal_trap": "trigger_trap"}.get(method, "add_inventory_item")
     action = {"kind": kind, "item_name": item.get("item_name")}
     if kind == "grant_controller_unlock":
         action["unlock_display_name"] = item["item_name"].removeprefix("Unlock: ")
