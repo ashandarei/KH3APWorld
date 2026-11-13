@@ -178,6 +178,7 @@ PROGRESSIVE_KEYBLADE_LEVEL_BASE_RUNTIME_TOKENS = frozenset(
 BAD_STATUS_TRAP_RUNTIME_TOKEN_BY_ITEM_NAME = {
     "Sneeze Trap": "ETresBadStatusType::TRES_BADSTAT_SNEEZE",
     "Burn Trap": "ETresBadStatusType::TRES_BADSTAT_BURN",
+    "Stun Trap": "ETresBadStatusType::TRES_BADSTAT_STUN",
 }
 BAD_STATUS_TRAP_ITEM_NAMES = tuple(BAD_STATUS_TRAP_RUNTIME_TOKEN_BY_ITEM_NAME)
 BAD_STATUS_TRAP_RUNTIME_TOKENS = frozenset(BAD_STATUS_TRAP_RUNTIME_TOKEN_BY_ITEM_NAME.values())
@@ -836,7 +837,8 @@ APPENDED_ITEM_ID_NAMES = frozenset({
 AP_ONLY_ITEM_ID_NAMES = (
     PROGRESSIVE_KEYBLADE_LEVEL_ITEM_NAME,
     *PROGRESSIVE_KEYBLADE_LEVEL_INDIVIDUAL_ITEM_NAMES,
-    *BAD_STATUS_TRAP_ITEM_NAMES,
+    "Sneeze Trap",
+    "Burn Trap",
     MUNNY_POUCH_ITEM_NAME,
     LARGE_MUNNY_POUCH_ITEM_NAME,
     ULTIMA_WEAPON_SHARD_ITEM_NAME,
@@ -1604,6 +1606,8 @@ def build_item_name_to_id(data: dict) -> dict[str, int]:
     item_name_to_id["Playable Character: Riku"] = base_id + next_index
     next_index += 1
     item_name_to_id[BETRAYAL_TRAP_ITEM_NAME] = base_id + next_index
+    next_index += 1
+    item_name_to_id["Stun Trap"] = base_id + next_index
     next_index += 1
     from .Space import SPACE_ITEM_IDS
     item_name_to_id.update(SPACE_ITEM_IDS)

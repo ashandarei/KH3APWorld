@@ -333,7 +333,7 @@ class JunkTheCaribbeanChests(Toggle):
 class TrapPercentage(Range):
     """
     Percentage of remaining filler items replaced by KH3 traps. Trap types are
-    selected with equal probability between Sneeze Trap, Burn Trap, King Mickey Trap, and Betrayal Trap.
+    selected with equal probability between Sneeze Trap, Burn Trap, Stun Trap, King Mickey Trap, and Betrayal Trap.
     """
 
     display_name = "Trap Percentage"

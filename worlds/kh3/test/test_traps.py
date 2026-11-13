@@ -39,7 +39,7 @@ class TestKH3TrapItems(TestCase):
 
 
     def test_mickey_trap_uses_native_swap_and_bridge_delivery(self) -> None:
-        self.assertEqual(set(TRAP_ITEM_NAMES), {"Sneeze Trap", "Burn Trap", "King Mickey Trap", "Betrayal Trap"})
+        self.assertEqual(set(TRAP_ITEM_NAMES), {"Sneeze Trap", "Burn Trap", "Stun Trap", "King Mickey Trap", "Betrayal Trap"})
         self.assertEqual(classify_item(KING_MICKEY_TRAP_ITEM_NAME), ItemClassification.trap)
         self.assertEqual(resolve_item_runtime_token(KING_MICKEY_TRAP_ITEM_NAME), KING_MICKEY_TRAP_RUNTIME_TOKEN)
         self.assertEqual(classify_runtime_grant_method(KING_MICKEY_TRAP_RUNTIME_TOKEN), "king_mickey_trap")
@@ -55,19 +55,31 @@ class TestKH3TrapItems(TestCase):
         self.assertTrue(local_seeded_reward_requires_bridge_delivery(
             "Treasure:TEST", "treasure", BETRAYAL_TRAP_RUNTIME_TOKEN, persistent_chests=False))
 
-    def test_only_sneeze_and_burn_are_bad_status_traps(self) -> None:
-        self.assertEqual(set(BAD_STATUS_TRAP_ITEM_NAMES), {"Sneeze Trap", "Burn Trap"})
+    def test_supported_bad_status_traps(self) -> None:
+        self.assertEqual(set(BAD_STATUS_TRAP_ITEM_NAMES), {"Sneeze Trap", "Burn Trap", "Stun Trap"})
         self.assertEqual(
             set(BAD_STATUS_TRAP_RUNTIME_TOKEN_BY_ITEM_NAME.values()),
             {
                 "ETresBadStatusType::TRES_BADSTAT_SNEEZE",
                 "ETresBadStatusType::TRES_BADSTAT_BURN",
+                "ETresBadStatusType::TRES_BADSTAT_STUN",
             },
         )
         self.assertEqual(
             classify_runtime_grant_method("ETresBadStatusType::TRES_BADSTAT_STUN"),
+            "direct_player_bad_status",
+        )
+        self.assertEqual(
+            classify_runtime_grant_method("ETresBadStatusType::TRES_BADSTAT_FREEZE"),
             "bp_tres_get_item",
         )
+
+    def test_stun_is_appended_and_uses_bridge_delivery(self) -> None:
+        self.assertEqual(item_name_to_id["Betrayal Trap"], 1263022660)
+        self.assertEqual(item_name_to_id["Stun Trap"], item_name_to_id["Betrayal Trap"] + 1)
+        self.assertTrue(local_seeded_reward_requires_bridge_delivery(
+            "Treasure:TEST", "treasure", BAD_STATUS_TRAP_RUNTIME_TOKEN_BY_ITEM_NAME["Stun Trap"],
+            persistent_chests=False))
 
 
 class TestKH3TrapGenerationDisabled(KH3TestBase):
