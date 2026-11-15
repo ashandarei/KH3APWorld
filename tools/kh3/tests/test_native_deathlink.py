@@ -306,41 +306,43 @@ def test_manual_gameover_can_repeat_after_special_battle_retry(tmp_path):
 
 @NATIVE
 @pytest.mark.parametrize("apply_before_death", [False, True])
-def test_manual_gameover_owned_alternate_recovery_requires_death_and_new_ready_pawn(tmp_path, apply_before_death):
+@pytest.mark.parametrize("manual", [False, True])
+def test_gameover_owned_alternate_recovery_requires_death_and_new_ready_pawn(tmp_path, apply_before_death, manual):
     host = DeathLinkHost(tmp_path)
     try:
         host.bootstrap()
         host.state(unavailable=True)
         for episode in range(2):
-            intent = dict(request_id=f"manual-ally-{episode}", source="Kairi", cause="Manual", manual=True)
-            host.bind(enabled=False, online=False, incoming=[intent])
+            intent = dict(request_id=f"manual-ally-{episode}", source="Kairi", cause="Death", manual=manual)
+            host.bind(enabled=not manual, online=not manual, incoming=[intent])
             host.until(lambda s: s.get("priority") is not None)
             if apply_before_death:
                 host.inspect("runtime_item_apply_event.json", {"request_id": intent["request_id"], "status": "applied"})
                 host.until(lambda s: s.get("recovery_pending"))
-            host.inspect("manual_player", dict(player_key="new", dead=False, ready=True))
+            host.inspect("alternate_player", dict(player_key="new", dead=False, ready=True))
             assert host.inspect()["fenced"]
-            host.inspect("manual_player", dict(player_key="dead", dead=True, ready=False))
+            host.inspect("alternate_player", dict(player_key="dead", dead=True, ready=False))
             if not apply_before_death:
                 host.state(safe=False)
                 host.inspect("runtime_item_apply_event.json", {"request_id": intent["request_id"], "status": "applied"})
                 host.until(lambda s: s.get("recovery_pending"))
-            host.inspect("manual_player", dict(player_key="dead", dead=False, ready=True))
+            host.inspect("alternate_player", dict(player_key="dead", dead=False, ready=True))
             assert host.inspect()["fenced"]
-            host.inspect("manual_player", dict(player_key="new", dead=False, ready=False))
+            host.inspect("alternate_player", dict(player_key="new", dead=False, ready=False))
             assert host.inspect()["fenced"]
-            host.inspect("manual_player", dict(player_key="new", dead=False, ready=True))
+            host.inspect("alternate_player", dict(player_key="new", dead=False, ready=True))
             state = host.until(lambda s: not s.get("fenced"))
             assert state["status"] == "recovered" and state["priority"] is None
             assert state["outgoing"] == []
-        network = dict(request_id="network-sora-only", source="Riku", cause="Death")
+        network = dict(request_id="network-alternate", source="Riku", cause="Death")
         host.bind(enabled=True, online=True, incoming=[network])
         host.until(lambda s: s.get("priority") is not None)
         host.inspect("runtime_item_apply_event.json", {"request_id": network["request_id"], "status": "applied"})
         host.until(lambda s: s.get("recovery_pending"))
-        host.inspect("manual_player", dict(player_key="dead", dead=True, ready=False))
-        host.inspect("manual_player", dict(player_key="new", dead=False, ready=True))
-        assert host.inspect()["fenced"]
+        host.inspect("alternate_player", dict(player_key="dead", dead=True, ready=False))
+        host.inspect("alternate_player", dict(player_key="new", dead=False, ready=True))
+        state = host.until(lambda s: not s.get("fenced"))
+        assert state["status"] == "recovered" and state["outgoing"] == []
     finally:
         host.close()
 
