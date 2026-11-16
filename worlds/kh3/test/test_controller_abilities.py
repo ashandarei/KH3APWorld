@@ -101,6 +101,7 @@ class TestControllerAbilities(unittest.TestCase):
                 "Unlock: Airstep": None,
                 "Unlock: Links": 134,
                 "Style Change: Spellweaver": None,
+                "Style Change: Seven Wishes": None,
             },
         )
 

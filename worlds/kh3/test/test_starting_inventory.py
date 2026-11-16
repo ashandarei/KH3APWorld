@@ -16,6 +16,21 @@ from ..StartingInventory import precollect_overflow, precollect_restrictive_star
 
 
 class TestStartingInventoryOverflow(TestCase):
+    def test_character_styles_stay_shuffled_when_other_items_overflow(self):
+        mw = self.build(1)
+        style = mw.worlds[1].create_item('Style Change: Seven Wishes')
+        mw.itempool[1] = style
+        precollect_overflow(mw)
+        self.assertIn(style, mw.itempool)
+        self.assertNotIn(style, mw.precollected_items[1])
+
+    def test_character_style_without_a_check_is_not_automatically_granted(self):
+        from Fill import FillError
+        mw = self.build(0)
+        mw.itempool[1] = mw.worlds[1].create_item('Style Change: Spellweaver')
+        with self.assertRaisesRegex(FillError, 'shuffle Combat Ally styles'):
+            precollect_overflow(mw)
+
     def build(self, normal_count, foreign=False):
         mw = setup_multiworld([KH3World, ForeignWorld] if foreign else [KH3World], steps=(), seed=731)
         menu = Region('Menu', 1, mw)

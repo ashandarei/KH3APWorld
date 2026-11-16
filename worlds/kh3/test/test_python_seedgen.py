@@ -494,6 +494,13 @@ def test_twilight_town_and_corona_accept_data_xemnas():
     assert boss_compatible("BOSS_009", "e_ex309_Pawn_s10")
 
 
+@pytest.mark.parametrize("pawn", ["e_he902_Pawn", "e_he904_Pawn"])
+def test_king_of_toys_accepts_titans(pawn):
+    from ..seedgen.remaps import boss_compatible as runtime_boss_compatible
+
+    assert runtime_boss_compatible("BOSS_008", pawn)
+
+
 @pytest.mark.parametrize("data_id", [*range(351, 363), 367])
 def test_marshmallow_excludes_all_data_bosses(data_id):
     pawn = f"e_ex{data_id}_Pawn"

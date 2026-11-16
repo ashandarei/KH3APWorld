@@ -4,6 +4,7 @@ from collections import Counter, defaultdict
 
 from BaseClasses import LocationProgressType
 from Fill import FillError
+from .Data import CHARACTER_STYLE_ITEM_NAMES
 
 
 def register_post_fill_classifications(multiworld):
@@ -54,6 +55,9 @@ def precollect_overflow(multiworld):
         if location.progress_type == LocationProgressType.EXCLUDED:
             item = location.item
             if item is not None and (item.advancement or item.useful):
+                if item.name in CHARACTER_STYLE_ITEM_NAMES:
+                    raise FillError(f'Cannot automatically grant {item.name} from a junk check; '
+                                    'use an eligible check or explicit starting inventory.', multiworld=multiworld)
                 if item.player != location.player:
                     raise FillError(f'KH3 junk check {location.name} contains a fixed foreign '
                                     'non-filler item; adjust the planned placement.', multiworld=multiworld)
@@ -82,6 +86,15 @@ def precollect_overflow(multiworld):
             else:
                 early_filler[item.player][item.name] += 1
     report = {}
+    def grant_candidates(indices, count):
+        eligible = [index for index in indices
+                    if multiworld.itempool[index].name not in CHARACTER_STYLE_ITEM_NAMES]
+        if len(eligible) < count:
+            raise FillError('Not enough eligible checks to shuffle Combat Ally styles. '
+                            'Enable more normal checks, disable Ally Characters or stylesanity, '
+                            'or explicitly put its style in starting inventory.', multiworld=multiworld)
+        return eligible[:count]
+
     for player, world in worlds.items():
         prog = progression[player]
         utility = useful[player]
@@ -93,7 +106,7 @@ def precollect_overflow(multiworld):
         forbidden = getattr(world, 'level_up_forbidden_item_names', ())
         restricted = [index for index in utility + prog if multiworld.itempool[index].name in forbidden]
         restricted_excess = max(0, len(restricted) - max(0, budget - level_capacity[player]))
-        selected = restricted[:restricted_excess]
+        selected = grant_candidates(restricted, restricted_excess)
         selected_set = set(selected)
         # Optional adversaries/0.2 and escape chests can hold useful rewards,
         # but cannot provide progression capacity. Level restrictions further
@@ -102,15 +115,15 @@ def precollect_overflow(multiworld):
         restricted_prog = [index for index in prog if index not in selected_set
                            and multiworld.itempool[index].name in forbidden]
         restricted_prog_excess = max(0, len(restricted_prog) - max(0, prog_budget - level_capacity[player]))
-        selected += restricted_prog[:restricted_prog_excess]
+        selected += grant_candidates(restricted_prog, restricted_prog_excess)
         selected_set = set(selected)
         remaining_prog = [index for index in prog if index not in selected_set]
         prog_excess = max(0, len(remaining_prog) - prog_budget)
-        selected += remaining_prog[:prog_excess]
+        selected += grant_candidates(remaining_prog, prog_excess)
         selected_set = set(selected)
         remaining = [index for index in utility + prog if index not in selected_set]
         excess = max(0, len(remaining) - budget)
-        selected += remaining[:excess]
+        selected += grant_candidates(remaining, excess)
         selected.sort(key=lambda index: (multiworld.itempool[index].advancement, index))
         granted = Counter()
         progression_granted = useful_granted = 0

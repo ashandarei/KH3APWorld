@@ -69,6 +69,7 @@ def test_runtime_projection_retains_gameplay_and_separates_optional_hints():
     ("fast_dance_minigame", 1), ("fast_beat_of_lead", 1), ("fast_union_cross", 1),
     ("dark_baymax_phase_1_skip", 1), ("max_level_ship", 1), ("fun_10k_heartless", 1),
     ("stylesanity", 0), ("keyblade_levels", 0), ("map_overlay_keybinds", 0),
+    ("ally_characters", 0),
     ("melody_of_memory_difficulty", 2), ("melody_of_memory_party", 3),
     ("moogle_shop_checks", 80), ("ultima_weapon_mode", 1),
     ("ultima_weapon_shop_required_keyblades", ["EX030"]),

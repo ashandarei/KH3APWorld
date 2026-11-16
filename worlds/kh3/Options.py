@@ -257,9 +257,10 @@ class KeybladeLevels(Choice):
 
 class Stylesanity(DefaultOnToggle):
     """
-    On: each Keyblade requires its own style unlock item.
+    On: each Keyblade requires its own style unlock item. Available KH3 Combat
+    Allies also shuffle Spellweaver for Aqua and Seven Wishes for Kairi.
     Off: Sora starts with Style Change owned and equipped, enabling styles for
-    every Keyblade.
+    every Keyblade and both Combat Allies.
     """
 
     display_name = "Stylesanity"
@@ -679,7 +680,8 @@ class AllyCharacters(DefaultOnToggle):
     """Award playable Roxas after Keyblade Graveyard with Oblivion and Oathkeeper
     owned, Kairi after Re Mind,
     Riku after all Data battles, and Aqua after 0.2 (when enabled).
-    These allies provide Doubleflight for logic. Off removes only their completion rewards.
+    These allies provide Doubleflight for logic. Off disables Combat Allies and
+    removes their completion rewards and dedicated style items.
     """
     display_name = "Ally Characters"
 

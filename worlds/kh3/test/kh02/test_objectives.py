@@ -88,27 +88,27 @@ class TestKH02Catalog(TestCase):
 
 
 class TestKH02World(KH3TestBase):
-    def test_spellweaver_is_precollected_when_kh02_is_enabled(self):
+    def test_spellweaver_is_shuffled_for_kh3_aqua_not_precollected_for_kh02(self):
         token = resolve_item_runtime_token(SPELLWEAVER_UNLOCK_ITEM)
         self.assertEqual(token, "KH3AP_CONTROLLER_UNLOCK::spellweaver")
         self.assertEqual(classify_runtime_grant_method(token), "controller_unlock")
         for stylesanity in (0, 1):
             for choices in product((0, 1), repeat=len(ENABLED)):
                 settings = dict(zip(ENABLED, choices))
-                expected = settings["kh02_enabled"]
+                expected = settings["kh02_enabled"] * stylesanity
                 with self.subTest(stylesanity=stylesanity, **settings):
                     self.options = {"stylesanity": stylesanity, **settings}
                     self.world_setup(seed=357)
                     starting = [item.name for item in self.multiworld.precollected_items[self.player]]
-                    self.assertEqual(starting.count(SPELLWEAVER_UNLOCK_ITEM), expected)
-                    self.assertEqual(self.world.kh3_starting_inventory_items.count(SPELLWEAVER_UNLOCK_ITEM), expected)
-                    self.assertNotIn(SPELLWEAVER_UNLOCK_ITEM, [item.name for item in self.multiworld.itempool])
+                    self.assertNotIn(SPELLWEAVER_UNLOCK_ITEM, starting)
+                    self.assertNotIn(SPELLWEAVER_UNLOCK_ITEM, self.world.kh3_starting_inventory_items)
+                    self.assertEqual([item.name for item in self.multiworld.itempool].count(SPELLWEAVER_UNLOCK_ITEM), expected)
                     self.assertEqual(self.world.create_item(SPELLWEAVER_UNLOCK_ITEM).classification,
                                      ItemClassification.useful)
                     self.assertEqual(len(self.multiworld.itempool),
                                      len(self.multiworld.get_unfilled_locations(self.player)))
 
-    def test_starting_playable_aqua_also_grants_spellweaver_once(self):
+    def test_starting_playable_aqua_shuffles_spellweaver_without_granting_it(self):
         cases = (
             ({"Playable Character: Aqua": 1}, {"kh02_enabled": 0}, 1),
             ({"Playable Character: Aqua": 1}, {"kh02_enabled": 1}, 1),
@@ -122,10 +122,10 @@ class TestKH02World(KH3TestBase):
                         self.options = {option: inventory, "stylesanity": stylesanity, **kh02}
                         self.world_setup(seed=358)
                         starting = [item.name for item in self.multiworld.precollected_items[self.player]]
-                        self.assertEqual(starting.count(SPELLWEAVER_UNLOCK_ITEM), expected)
-                        self.assertEqual(self.world.kh3_starting_inventory_items.count(SPELLWEAVER_UNLOCK_ITEM),
-                                         expected)
-                        self.assertNotIn(SPELLWEAVER_UNLOCK_ITEM, [item.name for item in self.multiworld.itempool])
+                        self.assertNotIn(SPELLWEAVER_UNLOCK_ITEM, starting)
+                        self.assertNotIn(SPELLWEAVER_UNLOCK_ITEM, self.world.kh3_starting_inventory_items)
+                        self.assertEqual([item.name for item in self.multiworld.itempool].count(SPELLWEAVER_UNLOCK_ITEM),
+                                         expected * stylesanity)
                         self.assertEqual(len(self.multiworld.itempool),
                                          len(self.multiworld.get_unfilled_locations(self.player)))
 

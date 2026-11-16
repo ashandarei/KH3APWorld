@@ -13,6 +13,7 @@ from .. import KH3World
 from ..Data import (
     CLASSIC_KINGDOM_UNLOCK_ITEM_NAMES,
     KEYBLADE_STYLE_ITEM_NAMES,
+    CHARACTER_STYLE_ITEM_NAMES,
     SECRET_REPORT_ITEM_NAMES,
     STYLE_CHANGE_UNLOCK_ITEM,
 )
@@ -54,7 +55,7 @@ class TestKH3CollectionAndConstantRules(TestCase):
         mw = setup_multiworld(KH3World, steps=(), seed=731)
         world = mw.worlds[1]
         state = CollectionState(mw)
-        for name in (*KEYBLADE_STYLE_ITEM_NAMES, STYLE_CHANGE_UNLOCK_ITEM, *SECRET_REPORT_ITEM_NAMES):
+        for name in (*KEYBLADE_STYLE_ITEM_NAMES, *CHARACTER_STYLE_ITEM_NAMES, STYLE_CHANGE_UNLOCK_ITEM, *SECRET_REPORT_ITEM_NAMES):
             with self.subTest(item=name):
                 item = world.create_item(name)
                 self.assertEqual(item.classification, ItemClassification.useful)
@@ -64,7 +65,7 @@ class TestKH3CollectionAndConstantRules(TestCase):
     def test_extra_pool_rewards_preserve_styles_and_reports_without_filler(self):
         mw = setup_multiworld(KH3World, steps=(), seed=731)
         world = mw.worlds[1]
-        protected = (*KEYBLADE_STYLE_ITEM_NAMES, *SECRET_REPORT_ITEM_NAMES)
+        protected = (*KEYBLADE_STYLE_ITEM_NAMES, *CHARACTER_STYLE_ITEM_NAMES, *SECRET_REPORT_ITEM_NAMES)
         pool = [world.create_item(name) for name in (*protected, 'Ability: HP Prize Plus')]
         world._replace_removable_item_pool_items(pool, ['Ability: Fire Boost'], 'extra test reward')
         self.assertEqual(Counter(item.name for item in pool), Counter((*protected, 'Ability: Fire Boost')))

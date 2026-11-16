@@ -56,6 +56,8 @@ HEART_PIECE_ITEM_NAME = "Heart Piece"
 HEART_PIECE_GOAL_COUNT = 7
 STYLE_CHANGE_UNLOCK_ITEM = "Unlock: Style Change"
 SPELLWEAVER_UNLOCK_ITEM = "Style Change: Spellweaver"
+SEVEN_WISHES_UNLOCK_ITEM = "Style Change: Seven Wishes"
+CHARACTER_STYLE_ITEM_NAMES = (SPELLWEAVER_UNLOCK_ITEM, SEVEN_WISHES_UNLOCK_ITEM)
 ALL_GOAL_KEY_ITEM_NAMES = frozenset({HEART_PIECE_ITEM_NAME, *PROOF_ITEMS})
 
 
@@ -856,6 +858,12 @@ RANDOMIZED_KEYBLADE_ITEM_NAMES = KEYBLADE_DISPLAY_NAMES.difference(
 )
 
 CONTROLLER_UNLOCK_ITEMS = {
+    SEVEN_WISHES_UNLOCK_ITEM: {
+        "key": "seven_wishes",
+        "ability_id": None,
+        "option_name": None,
+        "display_name": "Seven Wishes",
+    },
     SPELLWEAVER_UNLOCK_ITEM: {
         "key": "spellweaver",
         "ability_id": None,
@@ -1556,7 +1564,7 @@ def build_item_name_to_id(data: dict) -> dict[str, int]:
     next_index = len(reserved_item_name_to_id)
     for item_name in CONTROLLER_UNLOCK_ITEM_NAMES:
         # Links was published after the existing item tails; do not shift IDs.
-        if item_name in {"Unlock: Links", SPELLWEAVER_UNLOCK_ITEM}:
+        if item_name in {"Unlock: Links", *CHARACTER_STYLE_ITEM_NAMES}:
             continue
         if item_name not in item_name_to_id:
             item_name_to_id[item_name] = base_id + next_index
@@ -1608,6 +1616,8 @@ def build_item_name_to_id(data: dict) -> dict[str, int]:
     item_name_to_id[BETRAYAL_TRAP_ITEM_NAME] = base_id + next_index
     next_index += 1
     item_name_to_id["Stun Trap"] = base_id + next_index
+    next_index += 1
+    item_name_to_id[SEVEN_WISHES_UNLOCK_ITEM] = base_id + next_index
     next_index += 1
     from .Space import SPACE_ITEM_IDS
     item_name_to_id.update(SPACE_ITEM_IDS)

@@ -205,28 +205,12 @@ class TestAllyCharactersDisabled(TestAllyMovement):
         self.assertFalse(tracker.worlds[1].options.ally_characters)
         self.assertFalse(any(row["type"] == "character_unlock" for row in tracker.worlds[1].active_locations))
 
-    def test_disabled_accepts_starting_character_rewards(self):
-        from test.general import gen_steps, setup_multiworld
-        from worlds.AutoWorld import call_all
+    def test_disabled_rejects_conflicting_starting_character_rewards(self):
+        from test.general import setup_multiworld
 
         starting_allies = {name: 1 for name in CHARACTER_UNLOCK_RUNTIME_TOKEN_BY_ITEM_NAME}
         for option in ("start_inventory", "start_inventory_from_pool"):
             with self.subTest(option=option):
-                multiworld = setup_multiworld(type(self.world), steps=("generate_early",), seed=357,
-                                             options={**self.options, option: starting_allies})
-                world = multiworld.worlds[self.player]
-                # Main precollects both starting-inventory options after generate_early.
-                for name in getattr(world.options, option).value:
-                    multiworld.push_precollected(world.create_item(name))
-                for step in gen_steps[1:]:
-                    call_all(multiworld, step)
-                state = CollectionState(multiworld)
-                self.assertTrue(state.has_all(starting_allies, self.player))
-                self.assertFalse(any(row["type"] == "character_unlock" for row in world.active_locations))
-                self.assertFalse(any(item.name in starting_allies for item in multiworld.itempool))
-                self.assertEqual(len(multiworld.itempool), len(multiworld.get_unfilled_locations(self.player)))
-                for name, token in CHARACTER_UNLOCK_RUNTIME_TOKEN_BY_ITEM_NAME.items():
-                    self.assertEqual(resolve_item_runtime_token(name), token)
-                    self.assertEqual(classify_runtime_grant_method(token), "character_unlock")
-                movement = ((frozenset({"Ability: Doubleflight"}), frozenset({"Ability: Air Slide"})),)
-                self.assertTrue(requirement_rule(movement).resolve(world)(state))
+                with self.assertRaisesRegex(ValueError, "disabled Combat Ally items"):
+                    setup_multiworld(type(self.world), steps=("generate_early",), seed=357,
+                                     options={**self.options, option: starting_allies})

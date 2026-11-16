@@ -1351,14 +1351,14 @@ battle_level_mode: "{battle}"
         precollected_item_names = [
             item.name for item in self.multiworld.precollected_items[self.player]
         ]
-        self.assertEqual(len(precollected_item_names), len(always_on_source_locations) + 3)
+        self.assertEqual(len(precollected_item_names), len(always_on_source_locations) + 2)
         self.assertIn("Unlock: Airstep", precollected_item_names)
-        self.assertIn(SPELLWEAVER_UNLOCK_ITEM, precollected_item_names)
+        self.assertNotIn(SPELLWEAVER_UNLOCK_ITEM, precollected_item_names)
         self.assertNotIn("Party Member: Donald", precollected_item_names)
         self.assertNotIn("Party Member: Goofy", precollected_item_names)
         self.assertEqual(
             len(self.multiworld.itempool) + len(self.multiworld.precollected_items[self.player]),
-            len(self.multiworld.get_unfilled_locations(self.player)) + len(always_on_source_locations) + 3,
+            len(self.multiworld.get_unfilled_locations(self.player)) + len(always_on_source_locations) + 2,
         )
         self.assertEqual(
             sorted(self.world.kh3_starting_inventory_items),
@@ -1400,7 +1400,7 @@ battle_level_mode: "{battle}"
             self.world.item_name_to_id[ULTIMA_WEAPON_ITEM_NAME],
         )
         for item_name in CONTROLLER_UNLOCK_ITEM_NAMES:
-            if item_name in {"Unlock: Airstep", "Unlock: Style Change", "Style Change: Spellweaver"}:
+            if item_name in {"Unlock: Airstep", "Unlock: Style Change"}:
                 self.assertNotIn(item_name, item_pool_names)
             else:
                 self.assertIn(item_name, item_pool_names)
@@ -1410,7 +1410,7 @@ battle_level_mode: "{battle}"
         )
         self.assertEqual(len(starting_portal_keyblades), 1)
         self.assertIn("Unlock: Airstep", self.world.kh3_starting_inventory_items)
-        self.assertIn(SPELLWEAVER_UNLOCK_ITEM, self.world.kh3_starting_inventory_items)
+        self.assertNotIn(SPELLWEAVER_UNLOCK_ITEM, self.world.kh3_starting_inventory_items)
         self.assertTrue(
             (set(CONTROLLER_UNLOCK_ITEM_NAMES) - {"Unlock: Airstep", SPELLWEAVER_UNLOCK_ITEM}).isdisjoint(
                 self.world.kh3_starting_inventory_items

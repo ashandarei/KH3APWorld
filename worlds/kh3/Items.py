@@ -12,7 +12,7 @@ from .Data import (
     PROGRESSIVE_KEYBLADE_LEVEL_ITEM_NAMES,
     PROOF_ITEMS,
     STYLE_CHANGE_UNLOCK_ITEM,
-    SPELLWEAVER_UNLOCK_ITEM,
+    CHARACTER_STYLE_ITEM_NAMES,
     ULTIMA_WEAPON_SHARD_ITEM_NAME,
     build_item_name_to_id,
     is_keyblade_item_name,
@@ -62,7 +62,7 @@ def classify_item(name: str) -> ItemClassification:
         return ItemClassification.useful
     if name.startswith("Magic: "):
         return ItemClassification.progression
-    if name in KEYBLADE_STYLE_ITEM_NAMES or name in {STYLE_CHANGE_UNLOCK_ITEM, SPELLWEAVER_UNLOCK_ITEM}:
+    if name in KEYBLADE_STYLE_ITEM_NAMES or name in {STYLE_CHANGE_UNLOCK_ITEM, *CHARACTER_STYLE_ITEM_NAMES}:
         return ItemClassification.useful
     if name in CONTROLLER_UNLOCK_ITEM_NAMES:
         return ItemClassification.progression

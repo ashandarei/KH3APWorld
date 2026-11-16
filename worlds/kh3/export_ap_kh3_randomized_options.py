@@ -134,6 +134,7 @@ RAW_ITEM_DISPLAY_NAMES = {
 
 CONTROLLER_UNLOCK_ITEMS = {
     "Style Change: Spellweaver": "spellweaver",
+    "Style Change: Seven Wishes": "seven_wishes",
     "Unlock: Wall Run": "wall_run",
     "Unlock: Style Change": "style_change",
     "Unlock: Magic": "magic",

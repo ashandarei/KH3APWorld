@@ -28,7 +28,7 @@ from worlds.LauncherComponents import (
 )
 
 from .Bridge import BRIDGE_PROTOCOL_NAME, BRIDGE_PROTOCOL_VERSION, KH3_WORLD_VERSION, build_bridge_slot_data
-from .CharacterUnlocks import CHARACTER_UNLOCK_ITEM_ALIASES
+from .CharacterUnlocks import CHARACTER_UNLOCK_ITEM_ALIASES, CHARACTER_UNLOCK_ITEM_NAMES
 from .ClassicKingdomLogic import record_useful_game
 from .Data import (
     TRAP_ITEM_NAMES,
@@ -69,6 +69,8 @@ from .Data import (
     STATIC_KEYBLADE_UPGRADE_SANITY_KEYBLADE_NAMES,
     STYLE_CHANGE_UNLOCK_ITEM,
     SPELLWEAVER_UNLOCK_ITEM,
+    SEVEN_WISHES_UNLOCK_ITEM,
+    CHARACTER_STYLE_ITEM_NAMES,
     ULTIMA_WEAPON_ITEM_NAME,
     ULTIMA_WEAPON_SHARD_ITEM_NAME,
     VICTORY_BONUS_LOGIC_REQUIREMENTS,
@@ -410,6 +412,7 @@ class KH3World(World):
 
     def generate_early(self) -> None:
         self._restore_universal_tracker_options()
+        self._validate_combat_ally_starting_inventory()
         self.extracted_data = load_extracted_data()
         normalized_locations = normalize_locations(self.extracted_data)
         self.starting_inventory_locations = [
@@ -912,7 +915,7 @@ class KH3World(World):
         controller_unlock_items = [
             item_name
             for item_name in CONTROLLER_UNLOCK_EXTRA_ITEM_POOL_ITEMS
-            if item_name not in {STYLE_CHANGE_UNLOCK_ITEM, SPELLWEAVER_UNLOCK_ITEM}
+            if item_name not in {STYLE_CHANGE_UNLOCK_ITEM, *CHARACTER_STYLE_ITEM_NAMES}
             if item_name not in starting_unlock_items and item_name not in existing_item_names
         ]
         if not controller_unlock_items:
@@ -932,7 +935,7 @@ class KH3World(World):
         }
         style_items = [
             item_name
-            for item_name in KEYBLADE_STYLE_EXTRA_ITEM_POOL_ITEMS
+            for item_name in (*KEYBLADE_STYLE_EXTRA_ITEM_POOL_ITEMS, *self._character_style_pool_items())
             if item_name not in existing_item_names
         ]
         if not style_items:
@@ -1000,6 +1003,31 @@ class KH3World(World):
             protected_item_names,
         )
 
+    def _validate_combat_ally_starting_inventory(self) -> None:
+        if self.options.ally_characters.value:
+            return
+        disabled_items = {*CHARACTER_UNLOCK_ITEM_NAMES, *CHARACTER_STYLE_ITEM_NAMES}
+        for option in ("start_inventory", "start_inventory_from_pool"):
+            conflicts = sorted(name for name, count in getattr(self.options, option).value.items()
+                               if count > 0 and name in disabled_items)
+            if conflicts:
+                raise ValueError(f"{option} includes disabled Combat Ally items: {', '.join(conflicts)}. "
+                                 "Enable ally_characters, "
+                                 "or remove these starting items.")
+
+    def _character_style_pool_items(self) -> tuple[str, ...]:
+        if not self.options.ally_characters.value:
+            return ()
+        # Aqua's normal unlock is the 0.2 completion reward. A KH3-only player
+        # can instead explicitly start with her; do not shuffle an unusable style.
+        starting_aqua = any(
+            getattr(self.options, option).value.get("Playable Character: Aqua", 0) > 0
+            for option in ("start_inventory", "start_inventory_from_pool")
+        )
+        if self.options.kh02_enabled.value or starting_aqua:
+            return (SPELLWEAVER_UNLOCK_ITEM, SEVEN_WISHES_UNLOCK_ITEM)
+        return (SEVEN_WISHES_UNLOCK_ITEM,)
+
     def _starting_controller_unlock_item_names(self) -> set[str]:
         item_names = {
             item_name
@@ -1007,12 +1035,6 @@ class KH3World(World):
             if bool(getattr(self.options, option_name).value)
         }
         item_names.add("Unlock: Airstep")
-        starting_aqua = any(
-            getattr(self.options, option).value.get("Playable Character: Aqua", 0) > 0
-            for option in ("start_inventory", "start_inventory_from_pool")
-        )
-        if starting_aqua or self.options.kh02_enabled.value:
-            item_names.add(SPELLWEAVER_UNLOCK_ITEM)
         if not self.options.stylesanity.value:
             # Mirror the equipped CharInit ability in AP's starting state.
             item_names.add(STYLE_CHANGE_UNLOCK_ITEM)
@@ -1045,6 +1067,7 @@ class KH3World(World):
         # replace useful items after the pool has run out of filler.
         protected_item_names.update(SECRET_REPORT_ITEM_NAMES)
         protected_item_names.update(KEYBLADE_STYLE_ITEM_NAMES)
+        protected_item_names.update(CHARACTER_STYLE_ITEM_NAMES)
         # Extra rewards must not consume upgrade items or the keyblades those
         # upgrades were generated for, even when a small pool runs out of filler.
         protected_item_names.update(PROGRESSIVE_KEYBLADE_LEVEL_ITEM_NAMES)
