@@ -7641,9 +7641,9 @@
     },
     "I04050": {
       "AP": "0",
-      "AttackPlus": "0",
+      "AttackPlus": "3",
       "MagicPlus": "0",
-      "DefensePlus": "3",
+      "DefensePlus": "0",
       "AttrResistPhysical": "0",
       "AttrResistFire": "0",
       "AttrResistBlizzard": "0",
@@ -7656,8 +7656,8 @@
     "I04051": {
       "AP": "0",
       "AttackPlus": "0",
-      "MagicPlus": "0",
-      "DefensePlus": "3",
+      "MagicPlus": "3",
+      "DefensePlus": "0",
       "AttrResistPhysical": "0",
       "AttrResistFire": "0",
       "AttrResistBlizzard": "0",
