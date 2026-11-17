@@ -1201,6 +1201,16 @@ class SkipGuardiansAndMickeyWalk(DefaultOnToggle):
     display_name = "Skip Guardians and Mickey Walk"
 
 
+class SkipCollectingKairiHeartPieces(Toggle):
+    """
+    Skip collecting Kairi's heart pieces in Re:Mind Scala ad Caelum.
+    Start with the four pre-Darkside fragments collected and the Darkside
+    encounter available.
+    """
+
+    display_name = "Skip Collecting Kairi Heart Pieces"
+
+
 class FastUnionCross(DefaultOnToggle):
     """End the mandatory Union Cross sequence as soon as its ride begins."""
 
@@ -1738,6 +1748,7 @@ class KH3Options(PerGameCommonOptions):
     guardians_of_light_skip: GuardiansOfLightSkip
     fun_10k_heartless: Fun10kHeartless
     skip_guardians_and_mickey_walk: SkipGuardiansAndMickeyWalk
+    skip_collecting_kairi_heart_pieces: SkipCollectingKairiHeartPieces
     fast_union_cross: FastUnionCross
     fast_dance_minigame: FastDanceMinigame
     fast_beat_of_lead: FastBeatOfLead
@@ -1815,6 +1826,7 @@ def build_randomizer_runtime_config(options: KH3Options) -> dict[str, bool]:
     return {
         "auto_skip_cutscenes": bool(options.auto_skip_cutscenes.value),
         "skip_guardians_and_mickey_walk": bool(options.skip_guardians_and_mickey_walk.value),
+        "skip_collecting_kairi_heart_pieces": bool(options.skip_collecting_kairi_heart_pieces.value),
         "fast_union_cross": bool(options.fast_union_cross.value),
         "fast_dance_minigame": bool(options.fast_dance_minigame.value),
         "fast_beat_of_lead": bool(options.fast_beat_of_lead.value),
@@ -1993,6 +2005,7 @@ option_groups = [
         GuardiansOfLightSkip,
         Fun10kHeartless,
         SkipGuardiansAndMickeyWalk,
+        SkipCollectingKairiHeartPieces,
         FastUnionCross,
         FastBeatOfLead,
         FastDanceMinigame,

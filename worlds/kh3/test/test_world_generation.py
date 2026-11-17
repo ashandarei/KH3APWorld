@@ -642,6 +642,18 @@ class TestKH3WorldIntegrity(KH3WorldIntegrityMixin, KH3TestBase):
         self.assertEqual(config["clear_condition"]["type"], "Heart Pieces")
         self.assertEqual(config["clear_condition"]["conditions"]["KEY_ITEM17\u0000"], 7)
 
+    def test_kairi_collection_skip_defaults_off_and_reaches_runtime(self) -> None:
+        self.world_setup()
+        for enabled in (0, 1):
+            self.world.options.skip_collecting_kairi_heart_pieces.value = enabled
+            slot_data = self.world.build_runtime_slot_data()
+            self.assertEqual(slot_data["skip_collecting_kairi_heart_pieces"], enabled)
+            self.assertEqual(
+                slot_data["kh3_randomizer"]["runtime"]["skip_collecting_kairi_heart_pieces"],
+                bool(enabled),
+            )
+        self.assertEqual(KH3Options.type_hints["skip_collecting_kairi_heart_pieces"].default, 0)
+
     def test_guardians_and_mickey_walk_skip_can_be_disabled(self) -> None:
         self.world.options.skip_guardians_and_mickey_walk.value = 0
 

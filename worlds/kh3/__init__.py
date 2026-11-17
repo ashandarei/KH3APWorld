@@ -1493,6 +1493,7 @@ class KH3World(World):
             "minimap_icons",
             "large_map_icons",
             "skip_guardians_and_mickey_walk",
+            "skip_collecting_kairi_heart_pieces",
             "fast_union_cross",
             "fast_dance_minigame",
             "fast_beat_of_lead",

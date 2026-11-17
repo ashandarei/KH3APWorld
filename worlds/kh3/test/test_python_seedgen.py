@@ -263,6 +263,34 @@ def test_generated_heart_piece_capacity_supports_goal(templates, tmp_path, heart
     assert prefix(conditions[0], "Amount").value == heart_count
 
 
+@pytest.mark.parametrize("stat_mode", ["Vanilla", "Balanced", "Boosted"])
+def test_weight_armor_keeps_strength_and_magic_in_generated_pak(templates, tmp_path, stat_mode):
+    config, items, metadata = inputs(templates)
+    config["pools"]["Equipment Stats"] = stat_mode
+    config["exceptions"]["Allow All Stats"] = False
+    original = Asset.load(templates / (PATHS["EquipItem"] + ".uasset"))
+    bonuses = {"I04050": "AttackPlus", "I04051": "MagicPlus"}
+    for row_name, bonus in bonuses.items():
+        for field in ("AttackPlus", "MagicPlus", "DefensePlus"):
+            expected = 3 if field == bonus else 0
+            assert get(original.rows[row_name], "m_" + field).value == expected
+            assert int(items["EquipItemStat"][row_name][field]) == expected
+
+    generated, _ = generate_seed(templates, tmp_path, metadata["seed"], config, items, metadata)
+    reader = PakReader(generated)
+    path = "KINGDOM HEARTS III/" + PATHS["EquipItem"]
+    equipment = Asset(reader.read(path + ".uasset"), reader.read(path + ".uexp"))
+    for row_name, bonus in bonuses.items():
+        for field in ("AttackPlus", "MagicPlus", "DefensePlus"):
+            value = get(equipment.rows[row_name], "m_" + field).value
+            if field != bonus:
+                assert value == 0
+            elif stat_mode == "Vanilla":
+                assert value == 3
+            else:
+                assert 3 <= value < (7 if stat_mode == "Balanced" else 9)
+
+
 def test_equipment_edits_preserve_numbered_weapon_keys_and_unselected_resistances(templates, tmp_path):
     config, items, metadata = inputs(templates)
     config["pools"]["Equipment Abilities"] = "Replace"
