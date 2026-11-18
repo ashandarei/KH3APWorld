@@ -5,17 +5,21 @@ from unittest import TestCase
 from unittest.mock import patch
 
 from ..client_support.deathlink_settings import initialize_settings, read_settings, write_settings
+from ..RuntimeSeed import runtime_documents
 from ..transport.pipe_transport import register, unregister
 from . import KH3TestBase
 
 
-class TestDeathLinkAmnestySlotData(KH3TestBase):
-    options: ClassVar[dict] = {"death_link": 1, "death_link_amnesty": 3}
+class TestDeathLinkSlotData(KH3TestBase):
+    options: ClassVar[dict] = {"death_link": 1, "death_link_amnesty": 3, "fast_death_link": 1}
 
-    def test_exports_amnesty(self):
+    def test_exports_deathlink_settings(self):
         slot_data = self.world.build_runtime_slot_data()
         self.assertEqual(slot_data["death_link"], 1)
         self.assertEqual(slot_data["death_link_amnesty"], 3)
+        self.assertEqual(slot_data["fast_death_link"], 1)
+        settings = runtime_documents({"slot_data": slot_data})["runtime_seed_settings.json"]["slot_data"]
+        self.assertEqual(settings["fast_death_link"], 1)
 
 
 class TestDeathLinkPreferences(TestCase):

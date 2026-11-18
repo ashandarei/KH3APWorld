@@ -9,7 +9,7 @@ You need the **Epic Games Store version of Melody of Memory**.
 
 1. Close Melody of Memory.
 2. Open **KH3 Config** in the KH3 client.
-3. Choose your Melody of Memory installation folder on the **MoM Dir** row.
+3. Use **Detect** on the **MoM Dir** row or select your Melody of Memory installation folder.
 4. Click **Install Mod** beside it and wait for installation to finish.
 5. Keep the KH3 client open and connected while playing your seed.
 
@@ -66,5 +66,8 @@ Clearing the song on your chosen difficulty and play style counts, including
 an easier difficulty than the seed's starting choice. Summoning Star also
 adds King Mickey to the party for that song.
 
-If a song will not launch, check **MoM Dir** and **Install Mod** in KH3 Config,
-then follow the client's error message.
+If a song will not launch, check **MoM Dir** in KH3 Config and follow the
+client's error message. You can retry from the chest even if a previous request
+is still pending. If it fails again, export a KH3 debug bundle before the next
+attempt. It includes the client's launch history, the latest MoM startup log
+and the song request and status files when available.

@@ -1,6 +1,7 @@
 """Connect an explicitly armed KH3 prototype barrier to this seed's MoM checks."""
 from __future__ import annotations
 
+import logging
 import time
 from pathlib import Path
 from uuid import UUID
@@ -9,6 +10,7 @@ from ..bridge_support.files import atomic_write_json, file_signature, load_optio
 
 SCHEMA = "kh3ap.mom_barrier.v1"
 IDENTITY = ("barrier_id", "process_id", "seed_name", "slot", "ap_location_id")
+logger = logging.getLogger("Client")
 
 
 def read_record(path: Path) -> dict:
@@ -56,6 +58,8 @@ def consume_interaction(service, bridge_dir: Path) -> int | None:
     # A single Examine must never restart MoM repeatedly as the client polls.
     ledger[key] = sequence
     service.save()
+    logger.info("Received MoM chest interaction %s for location %s from KH3 process %s",
+                sequence, state["ap_location_id"], state["process_id"])
     return state["ap_location_id"]
 
 

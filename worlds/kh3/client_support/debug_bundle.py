@@ -450,6 +450,42 @@ def _client_log_files() -> list[Path]:
     return _unique_existing_files(active + recent)
 
 
+def _write_mom_startup_files(zip_file: DebugBundleArchive) -> dict[str, Any]:
+    from .mom_installation import SONG_REQUEST, discover_installs, safe_path, validate_game
+
+    selected = Utils.persistent_load().get("kh3_client", {}).get("mom_dir")
+    files = {}
+    try:
+        if selected:
+            root = validate_game(Path(selected))
+        else:
+            installs = discover_installs()
+            if len(installs) != 1:
+                return {}
+            root = installs[0][0]
+        for name in (SONG_REQUEST, "UserData/MoMSongLaunch-result.json",
+                     "UserData/MoMInstallReady.json", "MelonLoader/Latest.log"):
+            path = safe_path(root, name)
+            try:
+                with path.open("rb") as stream:
+                    size = stream.seek(0, os.SEEK_END)
+                    start = max(0, size - 512 * 1024)
+                    stream.seek(start)
+                    data = stream.read(size - start)
+                if start:
+                    data = data.partition(b"\n")[2]  # Drop the partial first line before redaction.
+                archive_path = f"mom/{name}"
+                if zip_file.writestr(archive_path, data):
+                    files[name] = {"archive": archive_path, "size": size, "truncated": bool(start)}
+            except FileNotFoundError:
+                continue
+            except OSError as exc:
+                logger.info("Could not capture MoM startup file %s: %s", path, exc)
+    except (OSError, ValueError) as exc:
+        return {"selected_dir": selected, "error": str(exc), "files": files}
+    return {"game_dir": str(root), "files": files}
+
+
 def _write_randomizer_save_files(
     zip_file: DebugBundleArchive,
     save_files: list[Path],
@@ -638,6 +674,7 @@ def export_kh3_debug_bundle(
         _write_bridge_files(zip_file, bridge_dir, included, captured_raw)
         _write_runtime_files(zip_file, kh3_dir, win64_dir, ue4ss_log, sidecars, included)
         _write_randomizer_save_files(zip_file, randomizer_save_files, included)
+        summary["mom_startup"] = _write_mom_startup_files(zip_file)
         _write_crash_artifacts(zip_file, artifacts, included)
         summary["privacy"]["omitted_files"] = zip_file.omitted
         zip_file.writestr("debug_summary.json", json.dumps(summary, indent=2, sort_keys=True))

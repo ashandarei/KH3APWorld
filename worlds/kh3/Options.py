@@ -1581,6 +1581,14 @@ class DeathLinkAmnesty(Range):
     default = 0
 
 
+class FastDeathLink(Toggle):
+    """Shorten the animation before Game Over when you receive a DeathLink on
+    Epic Games Store. Can be changed during play under AP Options > DeathLink.
+    """
+
+    display_name = "Fast DeathLink"
+
+
 class IncludeSpace(Toggle):
     """Randomize Gummi missions, battles, and treasure spheres.
     Each space zone has one blueprint that unlocks that zone:
@@ -1637,6 +1645,7 @@ class KH3Options(PerGameCommonOptions):
     start_inventory_from_pool: StartInventoryPool
     death_link: DeathLink
     death_link_amnesty: DeathLinkAmnesty
+    fast_death_link: FastDeathLink
     battle_level_mode: BattleLevelMode
     battle_level_offset: BattleLevelOffset
     heart_piece_count: HeartPieceCount
@@ -1863,6 +1872,7 @@ option_groups = [
         WorldsRequired,
         DeathLink,
         DeathLinkAmnesty,
+        FastDeathLink,
         BattleLevelMode,
         BattleLevelOffset,
         KeybladeLevels,

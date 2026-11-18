@@ -3,6 +3,7 @@ from __future__ import annotations
 
 import hashlib
 import json
+import logging
 import os
 import sys
 import tempfile
@@ -17,11 +18,13 @@ from ..bridge_support.files import atomic_write_json
 from .mom_release import MANAGED_FILES, download_mod
 
 MOM_EXE = "KINGDOM HEARTS Melody of Memory.exe"
+SONG_REQUEST = "UserData/MoMSongLaunch-request.json"
 LOADER_VERSION = "0.7.3"
 LOADER_URL = f"https://github.com/LavaGang/MelonLoader/releases/download/v{LOADER_VERSION}/MelonLoader.x64.zip"
 LOADER_SHA256 = "5b2b2f3d1cd42b59ec886c5bdc2663edae87a0097a4f4a8f58c0965a99dda416"
 MOD_PATH = "Mods/MoMController.dll"
 STATE_DIR = ".kh3ap-mom"
+logger = logging.getLogger("Client")
 
 
 def digest(data: bytes) -> str:
@@ -42,7 +45,8 @@ def safe_path(root: Path, name: str) -> Path:
 def validate_game(path: Path) -> Path:
     root = Path(os.path.abspath(path.expanduser()))
     if not safe_path(root, MOM_EXE).is_file() or not safe_path(root, "GameAssembly.dll").is_file():
-        raise ValueError("Select the MoM folder containing KINGDOM HEARTS Melody of Memory.exe and GameAssembly.dll.")
+        raise ValueError(f"MoM folder '{root}' must contain {MOM_EXE} and GameAssembly.dll. "
+                         "Use Detect beside MoM Dir in KH3 Config.")
     return root
 
 
@@ -52,28 +56,41 @@ def discover_installs(manifest_root: Path | None = None) -> list[tuple[Path, str
         return [(Path(row["game_dir"]), "kh3ap-linux-mom") for row in discover()]
     root = manifest_root or Path(os.environ.get("PROGRAMDATA", r"C:\ProgramData")) / "Epic/EpicGamesLauncher/Data/Manifests"
     found = {}
+    rejected = []
     for path in sorted(root.glob("*.item")):
         try:
             item = json.loads(path.read_text(encoding="utf-8-sig"))
+        except (OSError, ValueError) as exc:
+            logger.debug("Could not read Epic manifest %s: %s", path, exc)
+            continue
+        try:
             if not isinstance(item, dict):
                 continue
             launch = item.get("LaunchExecutable")
+            if not isinstance(launch, str) or Path(launch.strip().replace("\\", "/")).name.casefold() != MOM_EXE.casefold():
+                if "melody of memory" not in str(item.get("DisplayName", "")).casefold():
+                    continue
+                raise ValueError(f"invalid LaunchExecutable {launch!r}")
             location = item.get("InstallLocation")
             app_name = item.get("AppName")
-            if not all(isinstance(value, str) and value.strip() for value in (launch, location, app_name)):
-                continue
-            executable = Path(launch.replace("\\", "/"))
-            install_root = Path(location)
-            if executable.name.casefold() != MOM_EXE.casefold() or not install_root.is_absolute():
-                continue
+            executable = Path(launch.strip().replace("\\", "/"))
+            if not isinstance(location, str) or not Path(location.strip()).is_absolute():
+                raise ValueError(f"invalid InstallLocation {location!r}")
+            if not isinstance(app_name, str) or not app_name.strip():
+                raise ValueError("AppName is missing")
+            install_root = Path(location.strip())
             # Epic records a launch path, not necessarily a bare filename. Use
             # its executable's folder so nested installations match the user's
             # MoM Dir and the same folder used by the mod installer.
             game = validate_game((install_root / executable).parent)
             app = urllib.parse.quote(app_name.strip(), safe="")
             found[str(game).casefold()] = (game, f"com.epicgames.launcher://apps/{app}?action=launch&silent=true")
-        except (OSError, ValueError, KeyError, TypeError):
-            continue
+        except (OSError, ValueError) as exc:
+            rejected.append((path.name, str(exc)))
+    for name, reason in rejected:
+        logger.warning("Skipped MoM Epic manifest %s: %s", root / name, reason)
+    if not found:
+        logger.info("No launchable MoM registration found in %s", root)
     return list(found.values())
 
 
@@ -97,7 +114,8 @@ def selected_install() -> tuple[Path, str]:
         game = validate_game(Path(selected))
         return _registered_install(game, installs)
     if len(installs) != 1:
-        raise RuntimeError("Select your MoM installation in the KH3 Config tab.")
+        detected = "; ".join(str(root) for root, _ in installs) or "none"
+        raise RuntimeError(f"Select MoM Dir in KH3 Config and use Detect. Detected MoM folders: {detected}.")
     return installs[0]
 
 
@@ -192,10 +210,13 @@ def install_lock(root: Path):
             try:
                 msvcrt.locking(stream.fileno(), msvcrt.LK_NBLCK, 1)
             except OSError as exc:
-                raise RuntimeError("Another client is changing this MoM installation.") from exc
+                raise RuntimeError("Another client is preparing a MoM launch or changing its installation. Retry shortly.") from exc
         else:
             import fcntl
-            fcntl.flock(stream, fcntl.LOCK_EX | fcntl.LOCK_NB)
+            try:
+                fcntl.flock(stream, fcntl.LOCK_EX | fcntl.LOCK_NB)
+            except BlockingIOError as exc:
+                raise RuntimeError("Another client is preparing a MoM launch or changing its installation. Retry shortly.") from exc
         try:
             yield
         finally:
@@ -227,6 +248,7 @@ def install_integration(root: Path, kh3_root: Path, progress=lambda message: Non
     if sys.platform == "linux":
         from .mom_linux_setup import setup
         return setup(root, kh3_root, progress)
+    root, _ = _registered_install(validate_game(root), discover_installs())
     return install(root, progress)
 
 
@@ -365,11 +387,14 @@ def test_launch(root: Path, progress=lambda message: None, timeout: float = 180)
     _, match = _registered_install(root, discover_installs())
     if not safe_path(root, MOD_PATH).is_file():
         raise RuntimeError("Install the integration first.")
-    pending = safe_path(root, "UserData/MoMSongLaunch-request.json")
-    if pending.exists():
-        raise RuntimeError("A song launch is pending. Finish that launch before testing installation.")
-    started = time.time()
-    os.startfile(match)
+    with install_lock(root):
+        require_closed(root)
+        pending = safe_path(root, SONG_REQUEST)
+        if pending.exists():
+            pending.unlink(missing_ok=True)
+            logger.info("Cleared pending MoM song request before installation test at %s", pending)
+        started = time.time()
+        os.startfile(match)
     progress("MoM is starting through Epic. First-launch setup can take a few minutes…")
     ready = safe_path(root, "UserData/MoMInstallReady.json")
     while time.time() - started < timeout:

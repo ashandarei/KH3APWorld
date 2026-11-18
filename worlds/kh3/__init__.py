@@ -1502,6 +1502,7 @@ class KH3World(World):
             "max_level_ship",
             "death_link",
             "death_link_amnesty",
+            "fast_death_link",
             "start_with_wall_run",
             "stylesanity",
             "start_with_magic",

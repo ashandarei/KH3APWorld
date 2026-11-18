@@ -19,6 +19,7 @@ from pathlib import Path
 
 _lock = threading.Lock()
 _active = None
+logger = logging.getLogger("Client")
 
 
 def configuration() -> tuple[Path, list[str], int]:
@@ -110,12 +111,14 @@ def launch() -> None:
             process = subprocess.Popen(command, cwd=cwd, env=environment, stdin=subprocess.DEVNULL,
                                        close_fds=True)
             _active = process
+            logger.info("Started MoM Linux runner process %s in %s", process.pid, cwd)
 
             def reap_child():
                 # A blocking wait for our owned child works even in bundled
                 # Python builds without os.pidfd_open. EOF wakes the selector.
                 try:
-                    process.wait()
+                    code = process.wait()
+                    logger.info("MoM Linux runner process %s exited with code %s", process.pid, code)
                 finally:
                     exit_sender.close()
 

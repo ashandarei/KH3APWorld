@@ -92,7 +92,7 @@ class MoMClientService:
                     return
                 await asyncio.to_thread(service.launch, location_id)
         except Exception:
-            logger.exception("Could not launch the MoM challenge.")
+            logger.exception("Could not launch MoM for location %s.", location_id)
         finally:
             self.launch_running = False
 

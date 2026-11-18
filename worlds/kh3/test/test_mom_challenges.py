@@ -106,15 +106,55 @@ class TestMoMChallenges(unittest.TestCase):
                 patch.object(mom, "stop_mom"), patch.object(mom.os, "startfile", side_effect=dispatch, create=True):
             self.service.launch(MOM_LOCATION_ID_BASE)
 
-    def test_launcher_does_not_replace_another_clients_request(self):
+    def test_fresh_launch_replaces_foreign_or_invalid_pending_requests(self):
         path = self.game / "UserData/MoMSongLaunch-request.json"
-        payload = json.dumps({"RequestId": str(uuid4())})
-        path.write_text(payload)
-        with patch.object(mom, "discover_mom_install", return_value=(self.game, "epic")), patch.object(mom, "stop_mom") as stop:
-            with self.assertRaises(RuntimeError):
+        for payload in (json.dumps({"RequestId": str(uuid4())}), "{invalid", "[]"):
+            with self.subTest(payload=payload):
+                path.write_text(payload)
+                with patch.object(mom, "discover_mom_install", return_value=(self.game, "epic")), \
+                        patch.object(mom, "stop_mom") as stop, patch.object(mom.os, "startfile", create=True):
+                    self.service.launch(MOM_LOCATION_ID_BASE)
+                stop.assert_called_once_with(self.game)
+                request = json.loads(path.read_text())
+                self.assertEqual(0, request["SongId"])
+                self.assertIn(request["RequestId"], json.loads(self.service.path.read_text())["requests"])
+                self.assertIn(self.request, self.service.state["requests"])
+
+    def test_launch_failure_preserves_process_error_and_does_not_leave_request_pending(self):
+        path = self.game / mom.SONG_REQUEST
+        with patch.object(mom, "discover_mom_install", return_value=(self.game, "epic")), \
+                patch.object(mom, "stop_mom"), \
+                patch.object(mom.os, "startfile", side_effect=OSError("Epic dispatch failed"), create=True):
+            with self.assertRaisesRegex(OSError, "Epic dispatch failed"):
                 self.service.launch(MOM_LOCATION_ID_BASE)
-            stop.assert_not_called()
-        self.assertEqual(payload, path.read_text())
+        self.assertFalse(path.exists())
+
+    def test_launch_observation_matches_request_identity_and_logs_progress(self):
+        observation = mom.LaunchObservation(self.request, self.game, 100, (None, None))
+        result_path = self.game / "UserData/MoMSongLaunch-result.json"
+        result_path.write_text(json.dumps({"RequestId": str(uuid4()), "status": "ready"}))
+        with patch.object(mom.time, "monotonic", return_value=101):
+            self.assertFalse(observation.update())
+        result_path.write_text(json.dumps({"RequestId": self.request, "status": "pending", "step": "loading"}))
+        with patch.object(mom.time, "monotonic", return_value=102), self.assertLogs("Client", level="INFO") as logs:
+            self.assertFalse(observation.update())
+        self.assertIn(self.request, logs.output[0])
+        self.assertIn("startup step loading", logs.output[1])
+        result_path.write_text(json.dumps({"RequestId": self.request, "status": "ready"}))
+        with patch.object(mom.time, "monotonic", return_value=103), self.assertLogs("Client", level="INFO") as logs:
+            self.assertTrue(observation.update())
+        self.assertIn("verified playback", logs.output[0])
+
+    def test_launch_observation_reports_missing_startup_confirmation_once(self):
+        self.service._launch_observation = mom.LaunchObservation(self.request, self.game, 100, (None, None))
+        (self.game / mom.SONG_REQUEST).write_text(json.dumps({"RequestId": self.request}))
+        with patch.object(mom.time, "monotonic", return_value=100 + mom.STARTUP_TIMEOUT), \
+                patch.object(mom, "_mom_processes", return_value=[]), self.assertLogs("Client", level="WARNING") as logs:
+            self.service.poll()
+            self.service.poll()
+        self.assertEqual(1, len(logs.output))
+        self.assertIn(f"Pending request: {self.request}", logs.output[0])
+        self.assertIn("Loader log changed: False", logs.output[0])
 
     def test_menu_preferences_reach_launch_and_survive_settings_change(self):
         settings_path = self.root / "bridge/mom_settings.json"

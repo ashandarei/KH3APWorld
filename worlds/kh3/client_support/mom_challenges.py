@@ -4,18 +4,90 @@ from __future__ import annotations
 
 import hashlib
 import json
+import logging
 import os
+import time
+from dataclasses import dataclass
 from pathlib import Path
 from uuid import uuid4
 
-from ..bridge_support.files import atomic_write_json
+from ..bridge_support.files import atomic_write_json, file_signature
 from ..bridge_support.paths import RUNTIME_MOM_CLEAR_STATE_FILE, bridge_sidecar_path
 from ..MelodyOfMemory import MOM_LOCATION_ID_BASE, MOM_SONG_BY_ID
 from .json_snapshot import freeze_json
+from .mom_installation import MOM_EXE, SONG_REQUEST, install_lock
 from .mom_results import SongResultScan, read_song_results
 from .mom_settings import read_launch_settings
 
-MOM_EXE = "KINGDOM HEARTS Melody of Memory.exe"
+logger = logging.getLogger("Client")
+STARTUP_TIMEOUT = 180
+PLAYBACK_TIMEOUT = 190
+
+
+def _read_launch_record(path: Path) -> dict:
+    try:
+        record = json.loads(path.read_text(encoding="utf-8-sig"))
+        return record if isinstance(record, dict) else {}
+    except (OSError, ValueError):
+        return {}
+
+
+def _log_signature(path: Path) -> tuple[int | None, int | None]:
+    try:
+        return file_signature(path)
+    except OSError:
+        return None, None
+
+
+@dataclass
+class LaunchObservation:
+    request_id: str
+    game_dir: Path
+    dispatched: float
+    log_before: tuple[int | None, int | None]
+    step: str | None = None
+    accepted: float | None = None
+    next_read: float = 0
+
+    def update(self) -> bool:
+        """Read launch status only while a dispatched request needs confirmation."""
+        now = time.monotonic()
+        if now < self.next_read:
+            return False
+        self.next_read = now + 1
+        user_data = self.game_dir / "UserData"
+        result = _read_launch_record(user_data / "MoMSongLaunch-result.json")
+        if result.get("RequestId") == self.request_id:
+            status, step, message = result.get("status"), result.get("step"), result.get("message")
+            if status == "ready":
+                logger.info("MoM request %s reached verified playback after %.1fs: %s",
+                            self.request_id, now - self.dispatched, message)
+                return True
+            if status == "failed":
+                logger.error("MoM request %s failed in the mod at %s: %s", self.request_id, step, message)
+                return True
+            if status == "pending":
+                if self.accepted is None:
+                    self.accepted = now
+                    logger.info("MoM mod accepted request %s after %.1fs", self.request_id, now - self.dispatched)
+                if step != self.step:
+                    self.step = step
+                    logger.info("MoM request %s startup step %s: %s", self.request_id, step, message)
+        deadline = self.dispatched + STARTUP_TIMEOUT if self.accepted is None else self.accepted + PLAYBACK_TIMEOUT
+        if now < deadline:
+            return False
+        loader_log = self.game_dir / "MelonLoader/Latest.log"
+        pending = _read_launch_record(self.game_dir / SONG_REQUEST)
+        claimed = (user_data / f"MoMSongLaunch-active-{self.request_id}.json").is_file()
+        processes = [(process.pid, process.info.get("exe")) for process in _mom_processes()] if os.name == "nt" else []
+        logger.warning(
+            "MoM request %s did not report %s after %.1fs. Last step: %s. "
+            "Pending request: %s. Claim file exists: %s. MoM processes: %s. Loader log changed: %s (%s).",
+            self.request_id, "startup" if self.accepted is None else "playback", now - self.dispatched,
+            self.step, pending.get("RequestId"), claimed, processes, _log_signature(loader_log) != self.log_before,
+            loader_log,
+        )
+        return True
 
 
 def challenge_scope(slot_data: dict) -> dict:
@@ -37,6 +109,13 @@ def discover_mom_install() -> tuple[Path, str]:
     return game_dir, uri
 
 
+def _mom_processes():
+    import psutil
+
+    return (process for process in psutil.process_iter(["exe", "name"])
+            if (process.info.get("name") or "").casefold() == MOM_EXE.casefold())
+
+
 def stop_mom(game_dir: Path) -> None:
     if os.name != "nt":
         from .mom_linux import require_closed
@@ -44,17 +123,18 @@ def stop_mom(game_dir: Path) -> None:
         return
     import psutil
 
-    target = os.path.normcase(str((game_dir / MOM_EXE).resolve()))
-    for process in psutil.process_iter(["exe", "name"]):
-        if process.info.get("name", "").casefold() != MOM_EXE.casefold():
-            continue
-        if os.path.normcase(process.info.get("exe") or "") != target:
+    target = (game_dir / MOM_EXE).resolve()
+    for process in _mom_processes():
+        executable = process.info.get("exe")
+        if not executable or Path(executable).resolve() != target:
             raise RuntimeError("Cannot verify the running MoM installation. Close MoM before launching this song.")
         try:
+            logger.info("Stopping prior MoM process %s at %s", process.pid, executable)
             process.terminate()
             process.wait(timeout=10)
         except psutil.NoSuchProcess:
             pass
+        logger.info("Prior MoM process %s exited", process.pid)
 
 
 class MoMChallengeService:
@@ -102,6 +182,7 @@ class MoMChallengeService:
         self.path = Path(bridge_dir) / "mom_challenges" / f"{digest}.json"
         self.state = {"schema_version": 1, "identity": identity, "requests": {}, "cleared": []}
         self._dirty = False
+        self._launch_observation: LaunchObservation | None = None
         if self.path.exists():
             saved = json.loads(self.path.read_text(encoding="utf-8"))
             if (saved.get("schema_version") != 1 or saved.get("identity") != identity
@@ -121,47 +202,64 @@ class MoMChallengeService:
         settings = read_launch_settings(self.path.parent.parent, seed_difficulty=challenge["mom_difficulty"],
                                         seed_options=self.seed_launch_options)
         game_dir, uri = discover_mom_install()
-        request_path = game_dir / "UserData/MoMSongLaunch-request.json"
-        if request_path.exists():
-            pending = json.loads(request_path.read_text(encoding="utf-8-sig"))
-            if pending.get("RequestId") not in self.state["requests"]:
-                raise RuntimeError("MoM has an unconsumed launch request from another session. Close it and resolve that request first.")
-        stop_mom(game_dir)
-        if request_path.exists():
-            pending = json.loads(request_path.read_text(encoding="utf-8-sig"))
-            if pending.get("RequestId") not in self.state["requests"]:
-                raise RuntimeError("Another session requested MoM. Retry after that launch finishes.")
-            request_path.unlink()
+        request_path = game_dir / SONG_REQUEST
         request_id = str(uuid4())
         record = {
             "location_id": location_id, "game_dir": str(game_dir), "seen": [],
             "play_style": settings["PlayStyle"], "starting_item": settings["StartingItem"],
             "party": settings["Party"], "difficulty": settings["Difficulty"],
         }
-        self.state["requests"][request_id] = record
-        self.save()  # Persist the binding before the game can emit a result.
         request = {"RequestId": request_id, "SongId": challenge["mom_song_id"],
                    "FastBoot": True, **settings}
-        temporary = request_path.with_suffix(f".{request_id}.tmp")
-        try:
-            temporary.parent.mkdir(parents=True, exist_ok=True)
-            temporary.write_text(json.dumps(request), encoding="utf-8")
-            # Windows rename fails if another client owns the destination.
-            temporary.rename(request_path)
-            if os.name == "nt":
-                os.startfile(uri)
-            else:
-                from .mom_linux import launch
-                launch()
-        except Exception:
-            temporary.unlink(missing_ok=True)
+        logger.info("Preparing MoM request %s for location %s, song %s, options %s at %s",
+                    request_id, location_id, request["SongId"], settings, game_dir)
+        with install_lock(game_dir):
+            stop_mom(game_dir)
+            self.state["requests"][request_id] = record
+            try:
+                self.save()  # Persist the binding before the game can emit a result.
+            except Exception:
+                del self.state["requests"][request_id]
+                raise
+
+            # A fresh chest interaction replaces the mailbox in one operation.
+            # The previous request's durable binding can still validate results.
             if request_path.exists():
-                pending = json.loads(request_path.read_text(encoding="utf-8-sig"))
-                if pending.get("RequestId") == request_id:
-                    request_path.unlink()
-            raise
+                logger.info("MoM request %s supersedes pending request %s at %s", request_id,
+                            _read_launch_record(request_path).get("RequestId") or "(unreadable or incomplete)",
+                            request_path)
+            atomic_write_json(request_path, request)
+            self._launch_observation = None
+            logger.info("Published MoM request %s to %s", request_id, request_path)
+            observation = LaunchObservation(request_id, game_dir, time.monotonic(),
+                                            _log_signature(game_dir / "MelonLoader/Latest.log"))
+            try:
+                if os.name == "nt":
+                    logger.info("Dispatching MoM request %s through Epic (%s)", request_id, uri)
+                    try:
+                        os.startfile(uri)
+                    except FileNotFoundError as exc:
+                        raise RuntimeError("Windows could not open the Epic Games Launcher link for MoM. "
+                                           "Open Epic Games Launcher and verify that Melody of Memory launches "
+                                           "from your library.") from exc
+                else:
+                    from .mom_linux import launch
+                    logger.info("Dispatching MoM request %s through the Linux runner", request_id)
+                    launch()
+            except Exception:
+                if _read_launch_record(request_path).get("RequestId") == request_id:
+                    try:
+                        request_path.unlink(missing_ok=True)
+                    except OSError:
+                        logger.warning("Could not remove failed MoM request %s at %s", request_id, request_path,
+                                       exc_info=True)
+                raise
+            self._launch_observation = observation
+            logger.info("MoM request %s dispatched. Waiting for the mod to confirm startup.", request_id)
 
     def poll(self) -> set[int]:
+        if self._launch_observation is not None and self._launch_observation.update():
+            self._launch_observation = None
         cleared = set(self.state["cleared"])
         seen_by_directory: dict[Path, set[str]] = {}
         for record in self.state["requests"].values():
@@ -186,6 +284,8 @@ class MoMChallengeService:
             for event in events:
                 self._dirty = True
                 record["seen"].append(event["eventId"])
+                logger.info("MoM result %s for request %s, location %s: %s, eligible=%s",
+                            event["eventId"], request_id, location_id, event["outcome"], event["eligibleForChallenge"])
                 if event["eligibleForChallenge"]:
                     self.state["cleared"].append(location_id)
                     cleared.add(location_id)

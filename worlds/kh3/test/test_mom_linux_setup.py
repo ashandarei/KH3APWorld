@@ -256,6 +256,7 @@ class TestMoMLinuxSetup(TestCase):
     def test_windows_install_keeps_existing_installer(self):
         progress = Mock()
         with patch.object(installer, 'sys', SimpleNamespace(platform='win32')), \
+                patch.object(installer, 'discover_installs', return_value=[(self.game, 'epic-uri')]), \
                 patch.object(installer, 'install', return_value='Installed.') as install, \
                 patch.object(setup, 'setup') as linux_setup:
             self.assertEqual(installer.install_integration(self.game, self.home, progress), 'Installed.')

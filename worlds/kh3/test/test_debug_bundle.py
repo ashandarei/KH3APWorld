@@ -24,6 +24,8 @@ def export(tmp_path, monkeypatch):
     monkeypatch.setattr(bundle, "_kh3_process_summary", lambda: {"running": False})
     monkeypatch.setattr(bundle, "snapshot_uobject_pool", lambda *a: {"status": "not_running"})
     monkeypatch.setattr(bundle.Utils, "user_path", lambda *parts: str(tmp_path.joinpath(*parts)))
+    monkeypatch.setattr(bundle.Utils, "persistent_load", lambda: {})
+    monkeypatch.setattr("worlds.kh3.client_support.mom_installation.discover_installs", lambda: [])
     monkeypatch.setattr(bundle, "_client_log_files", lambda: [])
 
     def run(bridge, **options):
@@ -34,6 +36,26 @@ def export(tmp_path, monkeypatch):
         with ZipFile(result["bundle_path"]) as archive:
             return {name: archive.read(name) for name in archive.namelist()}
     return run
+
+
+def test_exports_only_allowlisted_mom_startup_evidence_with_redaction(tmp_path, monkeypatch, export):
+    from ..client_support.mom_installation import MOM_EXE, SONG_REQUEST
+
+    root = tmp_path / "mom"
+    (root / "UserData").mkdir(parents=True)
+    (root / "MelonLoader").mkdir()
+    (root / MOM_EXE).touch()
+    (root / "GameAssembly.dll").touch()
+    (root / SONG_REQUEST).write_text('{"RequestId": "request-for-diagnosis"}')
+    (root / "MelonLoader/Latest.log").write_text("password=never-export-this\nObserved startup")
+    (root / "UserData/unrelated.json").write_text('{"private": "unrelated"}')
+    monkeypatch.setattr(bundle.Utils, "persistent_load", lambda: {"kh3_client": {"mom_dir": str(root)}})
+
+    archive = export(None)
+    assert json.loads(archive[f"mom/{SONG_REQUEST}"])["RequestId"] == "request-for-diagnosis"
+    assert b"Observed startup" in archive["mom/MelonLoader/Latest.log"]
+    assert b"never-export-this" not in archive["mom/MelonLoader/Latest.log"]
+    assert "mom/UserData/unrelated.json" not in archive
 
 
 def ledger_with_journal(root):

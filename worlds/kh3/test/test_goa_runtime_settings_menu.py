@@ -244,6 +244,11 @@ class TestGoaRuntimeSettingsMenuSourceContract(unittest.TestCase):
         self.assertEqual(source.count("page.toggle("), 10)
         self.assertIn('STR("auto_equip_essential_abilities")', source)
         self.assertIn("goa_settings.set_auto_equip_essential_abilities(enabled)", source)
+        deathlink_submenu = source.split('STR("deathlink_options"), STR("DeathLink")', 1)[1]
+        deathlink_submenu = deathlink_submenu.split('STR("auto_skip_cutscenes")', 1)[0]
+        self.assertIn("add_deathlink_options(deathlink, bridge_dir)", deathlink_submenu)
+        self.assertIn('STR("fast_death_link"), STR("Fast DeathLink")', deathlink_submenu)
+        self.assertIn("goa_settings.set_fast_death_link(enabled)", deathlink_submenu)
         self.assertEqual(source.count("page.choice("), 7)
         option_order = (
             'STR("battle_sync")',
