@@ -19,12 +19,12 @@ class TestMoMRelease(TestCase):
         self.temp = tempfile.TemporaryDirectory()
         self.addCleanup(self.temp.cleanup)
         self.cache = Path(self.temp.name)
-        self.prefix = f"https://github.com/{mod.REPOSITORY}/releases/download/v0.1.4/"
+        self.prefix = f"https://github.com/{mod.REPOSITORY}/releases/download/{mod.RELEASE_TAG}/"
         self.source = {"url": self.prefix + mod.SOURCE_ASSET, "sha256": sha(b"matching sources")}
         self.files = {name: b"required attribution" for name in mod.LEGAL_FILES}
         self.files["SOURCE.txt"] = (self.source["url"] + "\n" + self.source["sha256"]).encode()
         self.files["MoMController.dll"] = b"MZ our mod"
-        self.manifest = {"schema_version": 1, "version": "0.1.4", "loader_version": "0.7.3",
+        self.manifest = {"schema_version": 1, "version": mod.RELEASE_TAG.removeprefix("v"), "loader_version": "0.7.3",
                          "sha256": sha(self.files["MoMController.dll"]), "source": self.source}
 
     def fixture(self, *, extra=None, duplicate=None, manifest_change=None, corrupt_file=None):
@@ -40,7 +40,7 @@ class TestMoMRelease(TestCase):
             if duplicate:
                 archive.writestr(duplicate, b"duplicate")
         runtime = stream.getvalue()
-        release = {"tag_name": "v0.1.4", "draft": False, "prerelease": False, "assets": [
+        release = {"tag_name": mod.RELEASE_TAG, "draft": False, "prerelease": False, "assets": [
             {"name": mod.RUNTIME_ASSET, "size": len(runtime), "digest": "sha256:" + sha(runtime),
              "browser_download_url": self.prefix + mod.RUNTIME_ASSET},
             {"name": mod.SOURCE_ASSET, "size": len(b"matching sources"), "digest": "sha256:" + self.source["sha256"],
@@ -61,7 +61,7 @@ class TestMoMRelease(TestCase):
             files, metadata = mod.download_mod(cache=self.cache)
             self.assertEqual(set(files), set(mod.MANAGED_FILES))
             self.assertEqual(files["Mods/MoMController.dll"], self.files["MoMController.dll"])
-            self.assertEqual(metadata["release_tag"], "v0.1.4")
+            self.assertEqual(metadata["release_tag"], mod.RELEASE_TAG)
             self.assertEqual(mod.download_mod(cache=self.cache), (files, metadata))
         self.assertEqual([call.args[0] for call in read.call_args_list],
                          [mod.RELEASE_URL, self.prefix + mod.RUNTIME_ASSET, mod.RELEASE_URL])
@@ -78,7 +78,7 @@ class TestMoMRelease(TestCase):
 
     def test_invalid_release_metadata_never_downloads_assets(self):
         mutations = [lambda r: r.update(draft=True), lambda r: r.update(prerelease=True),
-                     lambda r: r.update(tag_name="../bad"), lambda r: r.update(tag_name="v0.1.5"), lambda r: r["assets"].pop(),
+                     lambda r: r.update(tag_name="../bad"), lambda r: r.update(tag_name="v9.9.9"), lambda r: r["assets"].pop(),
                      lambda r: r["assets"][0].update(digest=None),
                      lambda r: r["assets"][0].update(digest="sha256:" + "0" * 64),
                      lambda r: r["assets"][1].update(digest="sha256:" + "0" * 64),
@@ -100,7 +100,7 @@ class TestMoMRelease(TestCase):
     def test_bad_payloads_and_manifest_are_not_cached(self):
         fixtures = [self.fixture(extra={"../escape.dll": b"bad"}),
                     self.fixture(manifest_change={"loader_version": "other"}),
-                    self.fixture(manifest_change={"version": "0.1.5"}),
+                    self.fixture(manifest_change={"version": "9.9.9"}),
                     self.fixture(manifest_change={"source": {"url": "https://example.org"}}),
                     self.fixture(manifest_change={"files": {}}),
                     self.fixture(corrupt_file="THIRD_PARTY_NOTICES.md")]
@@ -169,4 +169,4 @@ class TestMoMRelease(TestCase):
 
     def test_release_endpoint_is_the_fixed_tag(self):
         self.assertEqual(mod.RELEASE_URL,
-                         "https://api.github.com/repos/ashandarei/MoM-GoA-AP/releases/tags/v0.1.4")
+                         "https://api.github.com/repos/ashandarei/MoM-GoA-AP/releases/tags/v0.1.5")

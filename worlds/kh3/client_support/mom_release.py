@@ -10,15 +10,15 @@ import zipfile
 from pathlib import Path
 
 REPOSITORY = "ashandarei/MoM-GoA-AP"
-RELEASE_TAG = "v0.1.4"
+RELEASE_TAG = "v0.1.5"
 RELEASE_URL = f"https://api.github.com/repos/{REPOSITORY}/releases/tags/{RELEASE_TAG}"
 RUNTIME_ASSET = "MoM-GoA-AP-runtime.zip"
 SOURCE_ASSET = "MoM-GoA-AP-source.zip"
 # Pin the complete runtime (DLL, manifest and notices) and its matching source.
 # Update together only after checking compatibility with this client's loader.
 ASSET_SHA256 = {
-    RUNTIME_ASSET: "7fb88ebc832f872dfb6e35cfde86b7bc36cd6082fce2e55c0b8c8419f4a28bf1",
-    SOURCE_ASSET: "3e5d736e11b4b74f5fc9cf7b92c679f321d6cf026f885a4ec73c16db481a7200",
+    RUNTIME_ASSET: "8b1f09afc3db38797f6710619877121cfd50cb7578913f1a723550af43f0d0d9",
+    SOURCE_ASSET: "c3a266bd4538011e1854677019ce94f5630503c1e7c7f9b7f179123275f5624e",
 }
 NOTICE_DIR = "UserData/MoMController"
 LEGAL_FILES = ("LICENSE", "THIRD_PARTY_NOTICES.md", "THIRD_PARTY_LICENSES.txt", "SOURCE.txt")
