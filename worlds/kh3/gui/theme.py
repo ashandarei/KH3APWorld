@@ -2,7 +2,6 @@
 
 import os
 import tkinter as tk
-from pathlib import Path
 from tkinter import font, ttk
 
 SURFACE = "#101319"
@@ -30,18 +29,7 @@ class Theme:
         self.root = root
         self.images = []  # Tcl image elements do not retain Python references.
         self.icons = {}
-        self.private_fonts = []
         self.family = "Segoe UI" if os.name == "nt" else "sans-serif"
-        if os.name == "nt":
-            import ctypes
-            self.gdi = ctypes.WinDLL("gdi32", use_last_error=True)
-            self.gdi.AddFontResourceExW.argtypes = (ctypes.c_wchar_p, ctypes.c_uint, ctypes.c_void_p)
-            self.gdi.RemoveFontResourceExW.argtypes = (ctypes.c_wchar_p, ctypes.c_uint, ctypes.c_void_p)
-            for path in Path(__file__).with_name("assets").joinpath("fonts").glob("Roboto-*.ttf"):
-                if self.gdi.AddFontResourceExW(str(path), 0x10, None):
-                    self.private_fonts.append(str(path))
-            if any(Path(path).name == "Roboto-Regular.ttf" for path in self.private_fonts):
-                self.family = "Roboto"
         for name in ("TkDefaultFont", "TkTextFont", "TkMenuFont", "TkHeadingFont"):
             font.nametofont(name, root=root).configure(family=self.family, size=font_size)
         root.configure(background=SURFACE)
@@ -187,8 +175,3 @@ class Theme:
             ("KH3.Switch", {"side": "left"}), ("Checkbutton.label", {"side": "left", "sticky": "w"}),
         ]})])
         self.style.configure("Switch.TCheckbutton", padding=(0, 6), space=10)
-
-    def close(self):
-        for path in self.private_fonts:
-            self.gdi.RemoveFontResourceExW(path, 0x10, None)
-        self.private_fonts.clear()

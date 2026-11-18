@@ -84,7 +84,7 @@ def audit(pak_path: Path, work: Path, expected_slot: int = 1) -> dict:
     from worlds.kh3.seedgen.generator import METADATA_PATH, FINGERPRINT_PATH, backend_fingerprint
     from worlds.kh3.seedgen.localization import Locres, text_ids
     from worlds.kh3.BossCatalog import resolve_boss_blacklist
-    from worlds.kh3.seedgen.tables import PATHS, QOL_ASSETS, mode, prefix
+    from worlds.kh3.seedgen.tables import PATHS, QOL_ASSETS, QOL_IDS, mode, prefix
 
     reader = PakReader(pak_path)
     assert reader.mount_point == "../../../"
@@ -130,16 +130,18 @@ def audit(pak_path: Path, work: Path, expected_slot: int = 1) -> dict:
         token = items["LuckyMark"][milestone]["Reward"].rstrip("\0")
         assert get(row, "RewardTreasureName").value == ("AP_ITEM_000" if token == "ARCHIPELAGO_ITEM" else token)
         assert get(row, "CompleteRewardFlag").value == (int(milestone) == 90)
-    conditions = prefix(tables["Completion"].rows["CompletionItems_001"], "CompletionItems").value
-    assert {prefix(row, "Name").value: prefix(row, "Amount").value for row in conditions} == {
-        key.rstrip("\0"): count for key, count in config["clear_condition"]["conditions"].items()}
+    assert {"cutscene_bx02_bx562", "QualityOfLifeTable", "TresCompletionData"}.isdisjoint(
+        Path(name).stem for name in payload
+    )
+    settings = json.loads(payload["KINGDOM HEARTS III/Content/Archipelago/runtime_seed_settings.json"])
+    assert settings["slot_data"]["heart_piece_count"] == config["clear_condition"]["conditions"]["KEY_ITEM17\0"]
     flags = {prefix(row, "FlagName").value: prefix(row, "FlagValue").value for row in tables["WorldFlags"].rows.values()}
     assert flags["Gameflow_HE"] == 0 and flags["Gameflow_EW"] == 2000
 
-    qol = {name: bool(prefix(row, "Active").value) for name, row in tables["QoL"].rows.items()}
+    qol = {QOL_IDS[name]: active for category in config["qol"].values() for name, active in category.items()}
     for key, path in QOL_ASSETS.items():
-        assert ("KINGDOM HEARTS III/" + path in payload) == qol[key]
-        if qol[key]:
+        assert ("KINGDOM HEARTS III/" + path in payload) == qol.get(key, False)
+        if qol.get(key, False):
             for extension in (Path(path).suffix, ".uexp"):
                 source = Path(path).with_suffix(extension)
                 assert payload["KINGDOM HEARTS III/" + source.as_posix()] == (templates / source).read_bytes()
@@ -178,7 +180,9 @@ def audit(pak_path: Path, work: Path, expected_slot: int = 1) -> dict:
 
     hint_placements = full["placement_summary"].get("hint_locations", placements)
     targets = {(int(p["location_player_slot"]), int(p["ap_location_id"])): p for p in hint_placements}
-    reports = runtime["secret_report_hints"]["reports"]
+    from worlds.kh3.RuntimeSeed import hint_reports
+    assert runtime["secret_report_hints"]["reports"] == hint_reports(full)
+    reports = full["secret_report_hints"]["reports"]
     assert set(reports) == {str(n) for n in range(1, 14)}
     hinted = set()
     remote_hints = 0
@@ -254,7 +258,7 @@ def run_case(arguments: tuple) -> dict:
             logging.getLogger().handlers.clear()
             logging.basicConfig(stream=log, level=logging.WARNING)
             rolled, seed = Generate.main(Generate.mystery_argparse([
-                "--nogui", "--multi", str(result["players"]), "--player_files_path", str(players),
+                "--multi", str(result["players"]), "--player_files_path", str(players),
                 "--weights_file_path", "unused-weights.yaml", "--meta_file_path", "unused-meta.yaml",
                 "--outputpath", str(case / "ap"), "--spoiler", "0", "--seed", str(1713130000 + index)]))
             world = generate(rolled, seed)

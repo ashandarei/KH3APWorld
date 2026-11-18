@@ -27,8 +27,6 @@ PATHS = {
     "SynthesisItem": "Content/Load/Tres/ItemSynthesis/TresItemSynthesisData",
     "BaseCharStat": "Content/DataTable/Player/Base/p_ex001_BaseParamData",
     "FoodItemEffectStat": "Content/Load/Tres/TresFoodItemEffectData",
-    "QoL": "Content/Load/Tres/QualityOfLifeTable",
-    "Completion": "Content/Load/Tres/TresCompletionData",
     "Hints": "Content/Load/Tres/SecretReportInfoTable",
     "WorldFlags": "Content/Blueprints/GoA/Data/InitialWorldFlags_DT",
     "Items": "Content/Load/Tres/TresItemData",
@@ -45,13 +43,8 @@ QOL_IDS = {
     "Easier Mini-UFO": "BOSS_001",
     "Faster Raging Vulture": "BOSS_002",
     "Dark Baymax Phase 1 Skip": "BOSS_003",
-    "Faster Lich Sequence": "BOSS_004",
     "Frozen Chase Skip": "EVENT_001",
     "Faster Crab Collection": "EVENT_002",
-    "Big Hero 6 Rescue Skip": "EVENT_003",
-    "Faster Sora Collection": "EVENT_004",
-    "Union χ Skip": "EVENT_005",
-    "Union X Skip": "EVENT_005",
     "Guardians of Light Skip": "EVENT_006",
     "Slow Mickey Skip": "EVENT_007",
     "Max Level Ship": "ITEM_002",
@@ -61,13 +54,8 @@ QOL_IDS = {
 QOL_ASSETS = {
     "BOSS_001": "Content/Blueprints/Gimmick/ts/g_ts_UFO/g_ts_UFO.uasset",
     "BOSS_002": "Content/DataTable/Enemy/Base/e_ex021_BaseDataTable.uasset",
-    "BOSS_003": "Content/Cutscene/Localization/ja/bx/cutscene_bx02_bx562.umap",
-    "BOSS_004": "Content/Maps/ew/umap/ew_28/ew_28_ENV.umap",
     "EVENT_001": "Content/Levels/fz/fz_03/umap/fz_03_gimmick_Avalanche.umap",
     "EVENT_002": "Content/DataTable/Gimmick/Prize/g_ca_KaniDiveGim_PrizeData.uasset",
-    "EVENT_003": "Content/Maps/ew/umap/ew_01/QoL_BigSix.umap",
-    "EVENT_004": "Content/Maps/ew/umap/ew_02/QoL_SoraCollection.umap",
-    "EVENT_005": "Content/Cutscene/Localization/ja/kg/cutscene_kg01_kg852b.umap",
     "EVENT_006": "Content/Cutscene/Localization/ja/kg_DLC/cutscene_kg_06_kg974.umap",
     "ITEM_003": "Content/Maps/ew/umap/ew_01/QoL_Maps.umap",
 }
@@ -301,15 +289,13 @@ class Tables:
                     get(row, f"m_MatNum{index}").set(0)
 
     def settings(self, config, seed, hint_values):
-        qol = {name: bool(prefix(row, "Active").value) for name, row in self.load("QoL").rows.items()}
-        qol.update(EVENT_005=False, EVENT_006=False, ITEM_004=False)
+        # Defaults for copied assets when a partial generator config omits a toggle.
+        qol = dict.fromkeys(("BOSS_001", "BOSS_002", "EVENT_001"), True)
         for values in config.get("qol", {}).values():
             for name, active in values.items():
                 if name not in QOL_IDS:
                     raise ValueError(f"Unknown quality-of-life setting: {name}")
                 qol[QOL_IDS[name]] = bool(active)
-        for row_name, row in self.load("QoL").rows.items():
-            prefix(row, "Active").set(qol[row_name])
         for row_name, relative in QOL_ASSETS.items():
             if qol.get(row_name):
                 self.copy(relative)
@@ -317,18 +303,6 @@ class Tables:
         for row in self.load("WorldFlags").rows.values():
             name = prefix(row, "FlagName").value.casefold()
             prefix(row, "FlagValue").set(2000 if name == "gameflow_ew" else 0)
-        conditions = config.get("clear_condition", {}).get(
-            "conditions", {"KEY_ITEM17": 7}
-        )
-        prop = prefix(self.load("Completion").rows["CompletionItems_001"], "CompletionItems")
-        template = prop.value[0]
-        values = []
-        for name, amount in conditions.items():
-            row = copy.deepcopy(template)
-            prefix(row, "Name").set(name.rstrip("\0"))
-            prefix(row, "Amount").set(int(amount))
-            values.append(row)
-        prop.set(values)
         for row_name, row in self.load("Hints").rows.items():
             prefix(row, "ReportText").set("  -  ".join(hint_values.get(row_name, [])))
         path = "Content/Character/wep/w_so120/mdl/mat0/w_so120_mat2_Inst"

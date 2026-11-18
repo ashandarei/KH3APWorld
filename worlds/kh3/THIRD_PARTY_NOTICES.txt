@@ -30,4 +30,3 @@ the entire APWorld or for the game assets. Additional notices for the asset
 format references and runtime components are included in
 seedgen/THIRD_PARTY_NOTICES.txt, runtime/THIRD_PARTY_NOTICES.md, and
 runtime/MoM/THIRD_PARTY_NOTICES.md when those components are packaged.
-The bundled GUI fonts retain their license in gui/assets/fonts/LICENSE.txt.

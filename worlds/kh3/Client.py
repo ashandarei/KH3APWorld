@@ -363,7 +363,7 @@ class KH3CommandProcessor(ClientCommandProcessor):
         self.output("KH3 launch requested.")
 
     def _cmd_gameflow(self, name: str = "", value: str = "") -> bool:
-        """Read/set /gameflow <name> [integer]."""
+        """Read/set /gameflow <name> [integer]. /gameflow kg 0 also resets the Organization XIII, Final World and Lich story flags."""
         return self.ctx._get_recovery_command_service().gameflow(name, value)
 
     def _cmd_mapjump(self, mapname: str = "", playerstart: str = "") -> bool:

@@ -133,11 +133,9 @@ RANDOMIZER_LIMITER_NAMES = {
 RANDOMIZER_QOL_NAMES = {
     "easier_mini_ufo": ("Bosses", "Easier Mini-UFO"),
     "faster_raging_vulture": ("Bosses", "Faster Raging Vulture"),
-    "faster_lich_sequence": ("Bosses", "Faster Lich Sequence"),
     "dark_baymax_phase_1_skip": ("Bosses", "Dark Baymax Phase 1 Skip"),
     "frozen_chase_skip": ("Events", "Frozen Chase Skip"),
     "faster_crab_collection": ("Events", "Faster Crab Collection"),
-    "faster_sora_collection": ("Events", "Faster Sora Collection"),
     "guardians_of_light_skip": ("Events", "Guardians of Light Skip"),
     "max_level_ship": ("Items", "Max Level Ship"),
 }
@@ -1825,6 +1823,8 @@ def build_randomizer_runtime_config(options: KH3Options) -> dict[str, bool]:
         "auto_skip_cutscenes": bool(options.auto_skip_cutscenes.value),
         "skip_guardians_and_mickey_walk": bool(options.skip_guardians_and_mickey_walk.value),
         "skip_collecting_kairi_heart_pieces": bool(options.skip_collecting_kairi_heart_pieces.value),
+        "faster_sora_collection": bool(options.faster_sora_collection.value),
+        "faster_lich_sequence": bool(options.faster_lich_sequence.value),
         "fast_union_cross": bool(options.fast_union_cross.value),
         "fast_dance_minigame": bool(options.fast_dance_minigame.value),
         "fast_beat_of_lead": bool(options.fast_beat_of_lead.value),

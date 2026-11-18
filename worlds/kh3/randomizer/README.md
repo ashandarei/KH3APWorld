@@ -12,8 +12,11 @@ and installed-pak metadata reads use the bundled Python implementation.
 Only templates consumed by the Python generator remain in `Content/`. Retired
 enemy maps, enemy stat tables, boss/party tables, and GoA battle-level templates
 are removed. Native encounter randomization uses the `wwwroot/Default*.json`
-catalogs; EXP uses the native award hook. The Avalanche and Raging Vulture QoL
-templates remain because the generator still edits them.
+catalogs; EXP uses the native award hook. The seed generator copies the Avalanche
+and Raging Vulture overrides when their QoL options are enabled.
+
+Dark Baymax phase 1 and the Final Door use the DLL's seed settings. Seed paks
+omit the bx562 cutscene override, QualityOfLifeTable and TresCompletionData.
 
 The AP option names and modes remain the same. Rewards are exported from the
 current AP placements, with chests and native grants controlled by the existing
@@ -163,7 +166,7 @@ python tools/kh3/stress_python_seedgen.py --count 1000 --workers 4 --output buil
 ```
 
 Use an empty output directory. The test varies supported settings, exercises both
-AP zip and player-container generation, checks every pak entry and all 19 edited
+AP zip and player-container generation, checks every pak entry and all edited
 assets, and repeats a sample for byte-identical output. It blocks subprocesses
 and downloads inside generation workers. Paks, input YAMLs, logs, hash manifests
 and reports are retained. These are offline checks; they do not establish

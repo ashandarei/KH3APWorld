@@ -76,6 +76,65 @@ def test_result_does_not_advance_until_native_consumes_request(recovery):
     assert transport.read(GAMEFLOW)["command"] == "set_game_flag"
 
 
+@pytest.mark.parametrize("argument,initial", [("kg", 0), ("GameFlow_KG", 99999)])
+def test_kg_zero_verifies_related_story_flags_before_kg(recovery, argument, initial):
+    service, transport, messages = recovery
+    expected = {
+        "gameflow_KG_13_A": 0, "gameflow_KG_13_B": 0, "gameflow_KG_13_C": 0, "gameflow_KG_13_D": 0,
+        "gameflow_EW_MISSION_RA": 0, "gameflow_EW_MISSION_MI": 0, "gameflow_EW_MISSION_TS": 0,
+        "gameflow_EW_MISSION_CA": 0, "gameflow_EW_MISSION_FZ": 0, "gameflow_EW_MISSION": 0,
+        "gameflow_EW": 2300, "gameflow_KG": 0,
+    }
+    KH3CommandProcessor(service.ctx)(f"/gameflow {argument} 0")
+    while expected:
+        read = transport.read(GAMEFLOW)
+        assert read["command"] == "get_game_flag" and "flag_bank" not in read
+        name = read["flag_name"]
+        target = expected.pop(name)
+        if name == "gameflow_KG":
+            assert not expected
+        old = initial if name == "gameflow_KG" else 9999
+        reply(transport, flag_value=old)
+        service.poll()
+        if old != target:
+            write = transport.read(GAMEFLOW)
+            assert (write["command"], write["flag_name"], write["flag_value"]) == ("set_game_flag", name, target)
+            reply(transport, game_flag_set=True)
+            service.poll()
+            verify = transport.read(GAMEFLOW)
+            assert (verify["command"], verify["flag_name"]) == ("get_game_flag", name)
+            reply(transport, flag_value=target)
+            service.poll()
+    assert service.active is None and "story reset verified" in messages[-1]
+
+
+def test_kg_reset_stops_on_mismatch_and_can_retry(recovery):
+    service, transport, messages = recovery
+    service.gameflow("kg", "0")
+    reply(transport, flag_value=0)
+    service.poll()
+    reply(transport, flag_value=9999)
+    service.poll()
+    reply(transport, game_flag_set=True)
+    service.poll()
+    reply(transport, flag_value=9999)
+    service.poll()
+    assert service.active is None and transport.read(GAMEFLOW) is None
+    assert any("gameflow_KG_13_B after verifying 1 of" in message for message in messages)
+    assert service.gameflow("kg", "0")
+    assert transport.read(GAMEFLOW)["flag_name"] == "gameflow_KG_13_A"
+
+
+@pytest.mark.parametrize("argument,value", [("KG", ""), ("KG", "200"), ("KG_13_A", "0"), ("KG_DLC", "0")])
+def test_other_kg_commands_target_one_flag(recovery, argument, value):
+    service, transport, _ = recovery
+    assert service.gameflow(argument, value)
+    assert transport.read(GAMEFLOW)["flag_name"] == f"gameflow_{argument}"
+    reply(transport, flag_value=int(value or "0"))
+    service.poll()
+    assert service.active is None
+
+
 @pytest.mark.parametrize("value", ["x", "1.0", "2147483648", "-2147483649"])
 def test_invalid_value_never_dispatches(recovery, value):
     service, transport, _ = recovery

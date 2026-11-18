@@ -14,7 +14,7 @@ import pytest
 
 from .. import PakGenerator
 from ..Pak import PakReader
-from ..seedgen.assets import Asset, AssetError, Reader, fstring, get, name_hash
+from ..seedgen.assets import Asset, Reader, fstring, get, name_hash
 from ..seedgen.generator import FINGERPRINT_PATH, METADATA_PATH, generate_seed
 from ..seedgen.localization import Locres, make_hints
 from ..seedgen.presentation import text_ids
@@ -164,24 +164,6 @@ def test_cooked_templates_roundtrip_without_losing_opaque_properties(templates, 
     assert sidecar == path.with_suffix(".uexp").read_bytes()
 
 
-def test_asset_rejects_truncation_and_rebases_new_names_and_nested_rows(templates):
-    path = templates / (PATHS["Completion"] + ".uasset")
-    primary, sidecar = path.read_bytes(), path.with_suffix(".uexp").read_bytes()
-    with pytest.raises(AssetError):
-        Asset(primary[:32], sidecar)
-    asset = Asset(primary, sidecar)
-    original = copy.deepcopy(asset.rows["CompletionItems_001"])
-    row = copy.deepcopy(original)
-    values = prefix(row, "CompletionItems").value
-    prefix(values[0], "Name").set("世界 🗝")
-    prefix(values[0], "Amount").set(42)
-    asset.rows["NewCompletionRow"] = row
-    rebuilt = Asset(*asset.encode())
-    assert len(rebuilt.names) > len(Asset(primary, sidecar).names)
-    assert prefix(prefix(rebuilt.rows["NewCompletionRow"], "CompletionItems").value[0], "Name").value == "世界 🗝"
-    assert prefix(prefix(rebuilt.rows["CompletionItems_001"], "CompletionItems").value[0], "Amount").value == 1
-
-
 def test_new_name_hashes_match_existing_unreal_name_map(templates):
     asset = Asset.load(templates / (PATHS["Items"] + ".uasset"))
     # Validate both packed CRC halves against the independent cooked name map.
@@ -247,6 +229,8 @@ def test_generated_heart_piece_capacity_supports_goal(templates, tmp_path, heart
     config, items, metadata = inputs(templates)
     config["clear_condition"]["conditions"] = {"KEY_ITEM17\0": heart_count}
     metadata["slot_data"]["heart_piece_count"] = heart_count
+    config["qol"] = {"Bosses": {"Dark Baymax Phase 1 Skip": True}}
+    metadata["slot_data"]["dark_baymax_phase_1_skip"] = 1
     pak, _ = generate_seed(templates, tmp_path, metadata["seed"], config, items, metadata)
     archive = PakReader(pak)
     base = "KINGDOM HEARTS III/" + PATHS["Items"]
@@ -254,12 +238,12 @@ def test_generated_heart_piece_capacity_supports_goal(templates, tmp_path, heart
     hearts = [row for row in inventory.rows.values() if get(row, "m_KeyName").value == "KEY_ITEM17"]
     assert len(hearts) == 1
     assert get(hearts[0], "m_MaxNum").value >= heart_count
-    base = "KINGDOM HEARTS III/" + PATHS["Completion"]
-    completion = Asset(archive.read(base + ".uasset"), archive.read(base + ".uexp"))
-    conditions = prefix(completion.rows["CompletionItems_001"], "CompletionItems").value
-    assert len(conditions) == 1
-    assert prefix(conditions[0], "Name").value == "KEY_ITEM17"
-    assert prefix(conditions[0], "Amount").value == heart_count
+    settings = json.loads(archive.read("KINGDOM HEARTS III/Content/Archipelago/runtime_seed_settings.json"))
+    assert settings["slot_data"]["heart_piece_count"] == heart_count
+    assert settings["slot_data"]["dark_baymax_phase_1_skip"] == 1
+    assert {"cutscene_bx02_bx562", "QualityOfLifeTable", "TresCompletionData"}.isdisjoint(
+        Path(name).stem for name in archive.entries
+    )
 
 
 @pytest.mark.parametrize("stat_mode", ["Vanilla", "Balanced", "Boosted"])
@@ -389,11 +373,6 @@ def test_complete_generation_runs_in_frozen_client_without_processes_or_download
             elif table == "LuckyMark":
                 assert list(asset.rows) == ["1", "90"]
                 assert get(asset.rows["90"], "CompleteRewardFlag").value is True
-            elif table == "Completion":
-                conditions = prefix(asset.rows["CompletionItems_001"], "CompletionItems").value
-                assert len(conditions) == 1
-                assert prefix(conditions[0], "Name").value == "KEY_ITEM17"
-                assert prefix(conditions[0], "Amount").value == 7
             elif table == "WorldFlags":
                 flags = {prefix(row, "FlagName").value: prefix(row, "FlagValue").value for row in asset.rows.values()}
                 assert flags.pop("Gameflow_EW") == 2000

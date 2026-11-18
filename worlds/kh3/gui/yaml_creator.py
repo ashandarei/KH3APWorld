@@ -912,7 +912,6 @@ class YamlCreator:
     def close(self):
         if self.pending_search is not None:
             self.root.after_cancel(self.pending_search)
-        self.theme.close()
         self.root.destroy()
 
 

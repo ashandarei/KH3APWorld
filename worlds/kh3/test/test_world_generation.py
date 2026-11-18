@@ -642,6 +642,19 @@ class TestKH3WorldIntegrity(KH3WorldIntegrityMixin, KH3TestBase):
         self.assertEqual(config["clear_condition"]["type"], "Heart Pieces")
         self.assertEqual(config["clear_condition"]["conditions"]["KEY_ITEM17\u0000"], 7)
 
+    def test_final_world_qol_options_reach_the_dll_independently(self) -> None:
+        self.world_setup()
+        for sora, lich in ((0, 0), (1, 0), (0, 1), (1, 1)):
+            self.world.options.faster_sora_collection.value = sora
+            self.world.options.faster_lich_sequence.value = lich
+            slot = self.world.build_runtime_slot_data()
+            config = slot["kh3_randomizer"]
+            for key, expected in (("faster_sora_collection", sora), ("faster_lich_sequence", lich)):
+                self.assertEqual(slot[key], expected)
+                self.assertEqual(config["runtime"][key], bool(expected))
+            self.assertNotIn("Faster Sora Collection", config["qol"]["Events"])
+            self.assertNotIn("Faster Lich Sequence", config["qol"]["Bosses"])
+
     def test_kairi_collection_skip_defaults_off_and_reaches_runtime(self) -> None:
         self.world_setup()
         for enabled in (0, 1):

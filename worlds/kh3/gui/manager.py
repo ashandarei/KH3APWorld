@@ -347,4 +347,3 @@ class KH3Manager:
         self.ctx.input_requests = 0
         self.ctx.exit_event.set()
         self.root.destroy()
-        self.theme.close()

@@ -25,6 +25,13 @@
 /data/source_descriptions.json
 /extract_data.py
 
+# Developer catalog generation and source tests use these inputs.
+/data/event_flags.json
+/data/vbonus_flags.json
+/randomizer/wwwroot/DefaultEnemies.json
+/randomizer/wwwroot/DefaultEnemyRuntimeTargets.json
+/randomizer/wwwroot/DefaultPartyMembers.json
+
 # Native catalog export input; not used by the installed APWorld.
 /data/alternate_weapons.json
 

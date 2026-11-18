@@ -847,7 +847,6 @@ def test_inline_hint_status_menu_and_lifecycle():
             assert not errors, errors
         finally:
             root.destroy()
-            theme.close()
     ''')
     assert result.returncode == 0, f"stdout:\n{result.stdout}\nstderr:\n{result.stderr}"
 

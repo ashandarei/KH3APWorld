@@ -13,11 +13,23 @@ GAMEFLOW = "runtime_gameflow_command.json"
 WARP = "runtime_warp_command.json"
 RESULTS = {GAMEFLOW: "runtime_gameflow_result.json", WARP: "runtime_warp_result.json"}
 
+# From the base game's TresGameFlags and TresGameLabels. Fight E advances KG
+# itself. Reset the parent checkpoints after their individual missions.
+KG_STORY_RESET = (
+    *((f"gameflow_KG_13_{area}", 0) for area in "ABCD"),
+    *((f"gameflow_EW_MISSION_{world}", 0) for world in ("RA", "MI", "TS", "CA", "FZ")),
+    ("gameflow_EW_MISSION", 0),
+    ("gameflow_EW", 2300),  # EW_FIRST_EVENT5
+    ("gameflow_KG", 0),
+)
+
 
 def gameflow_name(name: str) -> str:
     if not re.fullmatch(r"[A-Za-z0-9_]+", name):
         raise ValueError("Usage: /gameflow <gameflow_name> [integer value]")
-    return name if name.startswith("gameflow_") else f"gameflow_{name}"
+    prefix = "gameflow_"
+    suffix = name[len(prefix):] if name.casefold().startswith(prefix) else name
+    return prefix + suffix
 
 
 def gameflow_target(name: str) -> tuple[str, str]:
@@ -51,6 +63,10 @@ class RecoveryCommandService:
                 raise ValueError("Gameflow values must fit a signed 32-bit integer.")
             if bank == "kh02" and name.casefold() == "gameflow_dw" and number == 0:
                 return self._start(GAMEFLOW, dict(flag_name="gameflow_DW", bank=bank, target=None), "reset")
+            if bank == "kh3" and name.casefold() == "gameflow_kg" and number == 0:
+                first_name, first_value = KG_STORY_RESET[0]
+                return self._start(GAMEFLOW, dict(flag_name=first_name, target=first_value,
+                                                  bank=bank, kg_reset_index=0), "read")
             return self._start(GAMEFLOW, dict(flag_name=name, bank=bank, target=number), "read")
         except ValueError as exc:
             self.output(str(exc))
@@ -128,8 +144,24 @@ class RecoveryCommandService:
             if request.get("request_id") == op["request_id"]:
                 transport.delete(op["channel"])
         self.active = None
+        if "kg_reset_index" in op:
+            self.output(f"KG story reset stopped at {op['flag_name']} after verifying "
+                        f"{op['kg_reset_index']} of {len(KG_STORY_RESET)} flags. "
+                        "Run /gameflow kg 0 again to finish.")
         self.output(f"KH3 recovery stopped: {reason}. It will not be retried automatically; "
                     "a dispatched action may already have taken effect.")
+
+    def _finish_flag(self, op):
+        if "kg_reset_index" in op:
+            index = op["kg_reset_index"] + 1
+            if index < len(KG_STORY_RESET):
+                name, target = KG_STORY_RESET[index]
+                op.update(kg_reset_index=index, flag_name=name, target=target)
+                self._send("read")
+                return
+            self.output("Keyblade Graveyard story reset verified. Organization XIII and Lich fights "
+                        "are reset, and the Final World is at 2300.")
+        self.active = None
 
     def poll(self):
         op = self.active
@@ -200,15 +232,16 @@ class RecoveryCommandService:
                         or result.get("flag_name") != op["flag_name"]):
                     self.cancel("Game did not return a valid gameflow value")
                 elif phase == "verify":
-                    self.output(f"{label}: {op['original']} -> {value} "
-                                + ("(verified)." if value == op["target"]
-                                   else f"(requested {op['target']}; readback does not match)."))
-                    self.active = None
+                    if value != op["target"]:
+                        self.cancel(f"{label} readback {value} does not match requested {op['target']}")
+                    else:
+                        self.output(f"{label}: {op['original']} -> {value} (verified).")
+                        self._finish_flag(op)
                 elif op["target"] is None or (op["target"] == value and not (
                         op["bank"] == "kh02" and op["flag_name"].casefold() == "gameflow_dw")):
                     self.output(f"{label} = {value}"
                                 + (" (already set)." if op["target"] is not None else "."))
-                    self.active = None
+                    self._finish_flag(op)
                 else:
                     # Reapplying a 0.2 checkpoint repairs its earlier story
                     # flags, even when the main checkpoint is already equal.

@@ -1494,6 +1494,8 @@ class KH3World(World):
             "large_map_icons",
             "skip_guardians_and_mickey_walk",
             "skip_collecting_kairi_heart_pieces",
+            "faster_sora_collection",
+            "faster_lich_sequence",
             "fast_union_cross",
             "fast_dance_minigame",
             "fast_beat_of_lead",
