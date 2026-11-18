@@ -69,7 +69,7 @@ def settings_for(index: int, player: int = 1) -> dict:
                  "faster_raging_vulture", "faster_lich_sequence", "dark_baymax_phase_1_skip", "frozen_chase_skip",
                  "faster_crab_collection", "faster_sora_collection", "guardians_of_light_skip", "fun_10k_heartless",
                  "skip_guardians_and_mickey_walk", "fast_union_cross", "fast_dance_minigame", "fast_beat_of_lead",
-                 "max_level_ship", "skip_world_intro_cutscenes", "auto_skip_cutscenes"):
+                 "max_level_ship", "auto_skip_cutscenes"):
         options[name] = choose([False, True])
     return options
 

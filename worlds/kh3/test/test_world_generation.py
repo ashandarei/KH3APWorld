@@ -664,11 +664,6 @@ class TestKH3WorldIntegrity(KH3WorldIntegrityMixin, KH3TestBase):
             slot_data["kh3_randomizer"]["runtime"]["skip_guardians_and_mickey_walk"]
         )
 
-    def test_world_intro_skip_defaults_off_in_seed_config(self) -> None:
-        self.world_setup()
-        config = self.world.build_runtime_slot_data()["kh3_randomizer"]
-        self.assertFalse(config["skip_world_intro_cutscenes"])
-
     def test_fun_10k_heartless_defaults_off_and_reaches_seed_config(self) -> None:
         self.world_setup()
         self.assertFalse(self.world.build_runtime_slot_data()["fun_10k_heartless"])
@@ -677,12 +672,12 @@ class TestKH3WorldIntegrity(KH3WorldIntegrityMixin, KH3TestBase):
         self.assertTrue(self.world.build_runtime_slot_data()["fun_10k_heartless"])
         self.assertTrue(self.world.build_runtime_slot_data()["kh3_randomizer"]["runtime"]["fun_10k_heartless"])
 
-    def test_world_intro_skip_is_independent_of_runtime_cutscene_skip(self) -> None:
+    def test_auto_skip_cutscenes_reaches_runtime_settings(self) -> None:
         self.world_setup()
-        self.world.options.skip_world_intro_cutscenes.value = 1
-        config = self.world.build_runtime_slot_data()["kh3_randomizer"]
-        self.assertTrue(config["skip_world_intro_cutscenes"])
-        self.assertFalse(config["runtime"]["auto_skip_cutscenes"])
+        self.world.options.auto_skip_cutscenes.value = 1
+        slot_data = self.world.build_runtime_slot_data()
+        self.assertTrue(slot_data["auto_skip_cutscenes"])
+        self.assertTrue(slot_data["kh3_randomizer"]["runtime"]["auto_skip_cutscenes"])
 
     def test_boss_blacklist_yaml_reaches_generation_config(self) -> None:
         from ..Options import BossBlacklist, build_randomizer_generation_config

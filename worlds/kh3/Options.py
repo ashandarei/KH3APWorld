@@ -1235,19 +1235,9 @@ class MaxLevelShip(DefaultOnToggle):
     display_name = "Max Level Ship"
 
 
-class SkipWorldIntroCutscenes(Toggle):
-    """
-    Start supported worlds after their opening cutscenes.
-    Disabled starts world intros normally, retaining required Olympus/End of World setup.
-    This is separate from the experimental automatic cutscene skipper.
-    """
-
-    display_name = "Skip World Intro Cutscenes"
-
-
 class AutoSkipCutscenes(Toggle):
     """
-    Enables the experimental automatic cutscene skipper. Doesn't work on 99% of cutscenes.
+    Automatically selects Skip when the game offers it, including during world openings.
     """
 
     display_name = "Auto Skip Cutscenes (Experimental)"
@@ -1754,7 +1744,6 @@ class KH3Options(PerGameCommonOptions):
     fast_beat_of_lead: FastBeatOfLead
     max_level_ship: MaxLevelShip
     auto_skip_cutscenes: AutoSkipCutscenes
-    skip_world_intro_cutscenes: SkipWorldIntroCutscenes
     color_randomization: ColorRandomization
     music_shuffle: MusicShuffle
     include_custom_music: IncludeCustomMusic
@@ -1860,7 +1849,6 @@ def build_randomizer_generation_config(options: KH3Options) -> dict[str, object]
         "limiters": build_randomizer_limiter_config(options),
         "lucky_emblems_per_check": int(options.lucky_emblems_per_check.value),
         "battle_level_sync": int(options.battle_level_mode.value) != BattleLevelMode.option_off,
-        "skip_world_intro_cutscenes": bool(options.skip_world_intro_cutscenes.value),
         "exp_multiplier": int(options.exp_multiplier.value) / 2,
         "qol": build_randomizer_qol_config(options),
         "runtime": build_randomizer_runtime_config(options),
@@ -2011,7 +1999,6 @@ option_groups = [
         FastDanceMinigame,
         MaxLevelShip,
         AutoSkipCutscenes,
-        SkipWorldIntroCutscenes,
     ], start_collapsed=True),
     OptionGroup("Map Options", [
         MapOverlayEnabled, MapOverlayKeybinds, HideLockedChestIcons, SongDisplay,

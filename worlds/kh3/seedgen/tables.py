@@ -315,10 +315,8 @@ class Tables:
                 self.copy(relative)
                 self.copy(str(Path(relative).with_suffix(".uexp")).replace("\\", "/"))
         for row in self.load("WorldFlags").rows.values():
-            name = prefix(row, "FlagName").value
-            value = prefix(row, "FlagValue")
-            if name.casefold() == "gameflow_he" or not config.get("skip_world_intro_cutscenes", False):
-                value.set(2000 if name.casefold() == "gameflow_ew" else 0)
+            name = prefix(row, "FlagName").value.casefold()
+            prefix(row, "FlagValue").set(2000 if name == "gameflow_ew" else 0)
         conditions = config.get("clear_condition", {}).get(
             "conditions", {"KEY_ITEM17": 7}
         )

@@ -99,7 +99,6 @@ def inputs(root, *, stylesanity=0, keyblade_levels=0, hint="Verbose", ultima=0):
         placement_summary=dict(kh3_slot=1, locations=locations),
     )
     config = dict(
-        skip_world_intro_cutscenes=False,
         pools={
             "Enemies": "Randomize",
             "Bosses": "Randomize",
@@ -397,8 +396,9 @@ def test_complete_generation_runs_in_frozen_client_without_processes_or_download
                 assert prefix(conditions[0], "Amount").value == 7
             elif table == "WorldFlags":
                 flags = {prefix(row, "FlagName").value: prefix(row, "FlagValue").value for row in asset.rows.values()}
-                assert flags["Gameflow_HE"] == 0 and flags["Gameflow_EW"] == 2000
-                assert set(flags.values()) == {0, 2000}
+                assert flags.pop("Gameflow_EW") == 2000
+                assert flags["Gameflow_KG"] == 0
+                assert set(flags.values()) == {0}
             elif table == "Items":
                 shop = asset.rows["I07001"]
                 assert get(shop, "m_BuyPrice").value == 321
