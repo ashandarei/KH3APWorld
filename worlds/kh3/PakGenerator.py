@@ -1,11 +1,13 @@
 from __future__ import annotations
 
 import hashlib
+import io
 import json
 import re
 import shutil
 import ssl
 import subprocess
+import tempfile
 import urllib.request
 import zipfile
 import zlib
@@ -16,6 +18,7 @@ from typing import Any
 
 import Utils
 
+from .installer_support.release_archive import verified_archive
 from .platform_support.download_tls import create_download_ssl_context
 
 ROOT = Path(Utils.local_path()).resolve()
@@ -23,6 +26,9 @@ KH3_LOOSE_WORLD_ROOT = ROOT / "worlds" / "kh3"
 KH3_RANDOMIZER_ROOT = KH3_LOOSE_WORLD_ROOT / "randomizer"
 KH3_EXTRACTED_DATA = KH3_LOOSE_WORLD_ROOT / "data" / "extracted_locations.json"
 KH3_CONTAINER_PAYLOAD = "kh3_seed.json"
+KH3_TEMPLATE_URL = "https://github.com/ashandarei/AP-GOA-KH3/releases/download/2.0.2/KH3-SeedTemplates.zip"
+KH3_TEMPLATE_SIZE = 227837
+KH3_TEMPLATE_SHA256 = "f6665cea301c2f5ecdc47f63dc95163137beb4975cd1ab6d6e4e837037bcb17a"
 KH3_TOOL_DOWNLOAD_USER_AGENT = "Archipelago-KH3-Client/tool-bootstrap"
 KH3_MINIMUM_GENERATED_PAK_SIZE_BYTES = 5 * 1024
 KH3_PAK_STAGING_HASH_LENGTH = 12
@@ -322,13 +328,26 @@ def copy_apworld_file(relative_path: str, destination: Path) -> Path:
     return destination
 
 
+def _fetch_seed_templates(url: str, size: int) -> bytes:
+    with tempfile.TemporaryDirectory(prefix="kh3-seed-templates-") as directory:
+        path = Path(directory) / "templates.zip"
+        _download_file(url, path)
+        with path.open("rb") as stream:
+            return stream.read(size + 1)
+
+
+def _released_seed_templates() -> bytes:
+    cache = Path(Utils.user_path("kh3", "cache", "seed-templates"))
+    try:
+        return verified_archive(KH3_TEMPLATE_URL, KH3_TEMPLATE_SIZE, KH3_TEMPLATE_SHA256,
+                                _fetch_seed_templates, cache)
+    except (OSError, ValueError) as exc:
+        raise KH3PakGenerationError(f"Could not download or verify KH3 seed templates: {exc}") from exc
+
+
 def prepare_randomizer_root(work_dir: Path) -> Path:
     destination = work_dir / "bundled-randomizer"
-    if get_apworld_archive_context() is not None:
-        copy_apworld_tree("randomizer", destination)
-        return destination
-
-    if (KH3_RANDOMIZER_ROOT / "wwwroot" / "DefaultKH3.json").is_file():
+    if get_apworld_archive_context() is None and (KH3_RANDOMIZER_ROOT / "wwwroot" / "DefaultKH3.json").is_file():
         # Keep extracted templates and generated staging out of the source checkout.
         if destination.exists():
             if destination.is_symlink() or destination.resolve().parent != work_dir.resolve():
@@ -341,7 +360,8 @@ def prepare_randomizer_root(work_dir: Path) -> Path:
         for ignore_path in (ROOT / "data" / "GLOBAL.apignore", KH3_RANDOMIZER_ROOT.parent / ".apignore"):
             if ignore_path.is_file():
                 patterns.extend(ignore_path.read_text(encoding="utf-8").splitlines())
-        selection = GitIgnoreSpec.from_lines(patterns)
+        # Source builds use the loose template inputs for offline development.
+        selection = GitIgnoreSpec.from_lines(p for p in patterns if p != "/randomizer/Content/**")
 
         def ignored(directory: str, names: list[str]) -> list[str]:
             return [name for name in names if name in {"bin", "obj", "Seeds"}
@@ -356,7 +376,18 @@ def prepare_randomizer_root(work_dir: Path) -> Path:
         )
         return destination
 
+    data = _released_seed_templates()
     copy_apworld_tree("randomizer", destination)
+    with zipfile.ZipFile(io.BytesIO(data)) as bundle:
+        for entry in bundle.infolist():
+            parts = entry.filename.split("/")
+            if (len(parts) < 2 or parts[0] != "Content" or any(part in ("", ".", "..") for part in parts)
+                    or "\\" in entry.filename or ":" in entry.filename):
+                raise KH3PakGenerationError(f"Invalid KH3 seed template: {entry.filename}")
+            target = destination.joinpath(*parts)
+            target.parent.mkdir(parents=True, exist_ok=True)
+            with bundle.open(entry) as source, target.open("xb") as output:
+                shutil.copyfileobj(source, output)
     return destination
 
 

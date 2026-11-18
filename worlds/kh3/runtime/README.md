@@ -24,14 +24,11 @@ If the release request fails, it uses the last cached release only if it still
 matches this APWorld's tag and DLL pins. Changing a pin invalidates the cache. An
 uncached first install needs internet; a matching cached installation works offline.
 
-`Win64/ue4ss-release.json` pins the release tag and both `UE4SS.dll` and
-`dwmapi.dll` hashes, matching `Win64/KH3AP-Licenses/manifest.json`.
-Upgrade these pins deliberately alongside the license manifest after runtime testing.
-`Mods/KH3APProbeCpp/runtime-release.json` pins the KH3Runtime release ZIP and
-its `main.dll` by version, size and SHA-256. Patch Game verifies both before
-changing the game, reuses an installed DLL only when its hash matches, and
-installs the same verified bytes into each active mod layout. The APWorld
-contains the release configuration and notices, without the native DLL.
+`Win64/ue4ss-release.json` pins the UE4SS release tag, DLL hashes, and the
+size and SHA-256 of its license ZIP. `Mods/KH3APProbeCpp/runtime-release.json`
+pins the KH3Runtime release ZIP and its DLL. Patch Game caches the verified
+archives for offline repairs, installs the probe in each active DLL layout,
+and places its notices in `Binaries/Win64/Mods/KH3APProbeCpp/`.
 
 XInput 1.3 is a separate platform prerequisite, not a UE4SS proxy:
 
@@ -70,19 +67,17 @@ test/example licenses, other-platform standard-library dependencies and unused
 license alternatives are omitted. Generated runtime code still retains its
 applicable attribution. The checksum/provenance manifest is the only other file.
 
-Patch Game copies this folder from the APWorld under `Binaries/Win64/` without
-license downloads. The same files are published as `KH3AP-Licenses-v3.0.4.zip`
-on the release. The manifest binds the notices to the frozen DLL hashes, and the
-APWorld build checks the folder contents and each notice's hash. Microsoft's
-XInput terms remain separate.
+Patch Game obtains this folder from the pinned `KH3AP-Licenses-v3.0.4.zip`
+on the ue4ss-goa release and installs it under `Binaries/Win64/`. Its manifest
+records the frozen DLL hashes and license provenance. The KH0.2 installer
+uses the same UE4SS notices and installs the verified 02-GoA license ZIP
+beside the companion's `dlls/` directory.
 
-The player APWorld includes these runtime notices. The host-only APWorld excludes
-the runtime DLLs and this folder; it retains the licenses for the generation
-code and data it distributes.
+The player APWorld includes the upstream MIT texts for the UE4SS and 02-GoA
+configuration files and Lua code it ships. The build verifies those texts and
+the other packaged licenses against `scripts/kh3-license-sources.json`.
 
-GitHub source repositories and binary release assets have different requirements.
-The APWorld and GitHub release ZIP contain the same binary notices. Source
-repositories retain their own root licenses and the original licenses/headers
+Source repositories retain their own root licenses and the original licenses/headers
 for source they redistribute. In particular, GLFW, AsmJit and AsmTK's zlib
 notices must remain with their source distributions, while zlib does not require
 a notice with binary-only distributions. Their source files and notices are
@@ -118,7 +113,14 @@ If an older `Mods/KH3APProbe` Lua probe directory exists, the installer moves
 it aside with an `.apbak-<timestamp>` suffix so it cannot compete with the C++
 runtime probe.
 
-The installer forces every bundled UE4SS settings layout to use the root
+The player archive carries one game-specific set of `UE4SS-settings.ini`,
+`MemberVariableLayout.ini`, and `VTableLayout.ini`. UE4SS v3.0.4 selects a
+direct child of its DLL directory matching the outer install folder name.
+The local EGS layout selects `Win64/KH_3/`; the standard nested Steam layout
+selects `Win64/KINGDOM HEARTS III/`. UE4SS uses its DLL directory by default
+when the matching child is absent.
+
+The installer configures the global and selected settings files to use the root
 `Binaries/Win64/Mods` directory and root `Mods/mods.txt`. If an older nested
 `Binaries/Win64/KINGDOM HEARTS III/Mods/mods.txt` exists, the installer disables
 `KH3APProbeCpp` there so only one probe DLL can be active.
@@ -127,9 +129,9 @@ Do not place local UE4SS logs, object dumps, crash dumps, or backup DLLs here.
 
 ## Garden of Assemblage pak compatibility
 
-The client explicitly selects GoA release `2.0.0` and
-`pakchunk99-GardenOfAssemblageRandomizer_99_P.pak` (27,536,128 bytes, SHA256
-`c0bdf84c5e9101022b2ebff2cdcafc9fb6577dbc51b99a6d4d5d4a2a9129f0c4`).
+The client explicitly selects GoA release `2.0.2` and
+`pakchunk99-GardenOfAssemblageRandomizer_99_P.pak` (27,463,653 bytes, SHA256
+`767c17b3c85970e61d3d5f56dec3ed1ef8e7ca007721ea0fd22f046178b1fd86`).
 These compatibility pins live in `client_support/goa_download.py`; they are
 independent of the APWorld's display version. Do not infer pak compatibility
 by searching for lower tags. Update the pins deliberately after testing a new pak.

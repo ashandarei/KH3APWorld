@@ -8,6 +8,7 @@ from datetime import datetime
 from pathlib import Path
 from typing import Any
 
+from .. import RuntimeDownload
 from ..RuntimeDownload import DLL_NAMES, RELEASE_CONFIG_NAME, record_installed, stage_runtime
 from .file_ops import (
     _copy_file,
@@ -190,12 +191,13 @@ def install_kh3_runtime(kh3_root_dir: Path, bridge_dir: Path | None = None) -> d
             config = json.loads(release_config.read_bytes())
             remote_release = stage_runtime(config, win64, staging)
             probe_source = _runtime_probe_source()
-            probe_source.use_installed(probe_dll_path(kh3_root_dir))
-            specific = path_specific_probe_dll_path(kh3_root_dir)
-            if specific is not None:
-                probe_source.use_installed(specific)
-            # Verify all probe bytes before prerequisites or any game-file writes.
-            probe_source.read_bytes()
+            notices = RuntimeDownload.release_notices(config)
+            probe_notices = probe_source.load_release(RuntimeDownload.runtime_cache_path().parent)
+            notices.update({f"Mods/KH3APProbeCpp/{name}": data for name, data in probe_notices.items()})
+            for name, data in notices.items():
+                target = staging / name
+                target.parent.mkdir(parents=True, exist_ok=True)
+                target.write_bytes(data)
         except Exception as exc:
             return {
                 "status": "error",
@@ -221,7 +223,10 @@ def install_kh3_runtime(kh3_root_dir: Path, bridge_dir: Path | None = None) -> d
                 "status_snapshot": runtime_install_status(kh3_root_dir),
             }
         record_installed(config, win64, remote_release)
-    bundled_result = _copy_tree_contents(runtime_source, win64, timestamp, exclude=DLL_NAMES)
+    # Game-specific INIs are installed below, after choosing the loader's directory.
+    bundled_result = _copy_tree_contents(
+        runtime_source, win64, timestamp, exclude=(*DLL_NAMES, "KH3AP-Licenses", "CustomGameConfigs", "KINGDOM HEARTS III")
+    )
     for key in ("copied", "skipped", "backups", "missing", "errors"):
         ue4ss_result[key].extend(bundled_result[key])
     errors.extend(f"Missing bundled UE4SS path: {path}" for path in ue4ss_result["missing"])

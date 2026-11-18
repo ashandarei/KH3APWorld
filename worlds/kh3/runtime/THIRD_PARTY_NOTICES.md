@@ -1,11 +1,10 @@
 # Third-Party Notices
 
-The complete notices for the frozen `v3.0.4` UE4SS runtime and its embedded
-dependencies and fonts are in `Win64/KH3AP-Licenses/`. Patch Game copies that
-folder to `Binaries/Win64/KH3AP-Licenses/` from the APWorld without downloading
-licenses. Its `manifest.json` identifies the frozen DLLs and records the
-license-file hashes and source provenance. The same folder is available as
-`KH3AP-Licenses-v3.0.4.zip` on the ue4ss-goa release.
+Patch Game obtains the notices for UE4SS and its embedded dependencies and
+fonts from `KH3AP-Licenses-v3.0.4.zip` on the pinned ue4ss-goa release.
+It verifies the ZIP and installs its files in `Binaries/Win64/KH3AP-Licenses/`.
+The included manifest identifies the frozen DLLs and records license hashes
+and source provenance.
 
 Microsoft XInput 1.3 is a Windows prerequisite, not a UE4SS proxy, and is not
 covered by the RE-UE4SS MIT license. This APWorld neither includes nor downloads

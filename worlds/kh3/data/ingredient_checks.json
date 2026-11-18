@@ -1,0 +1,2088 @@
+[
+  {
+    "id": "BX_02_PF_001",
+    "name": "Ingredients+ - San Fransokyo - Pickup 001",
+    "world": "San Fransokyo",
+    "display_name": "Rice / Sea Bass",
+    "description": "Ingredients+ - San Fransokyo - The City - Pickup 001 (Possible drops: Rice, Sea Bass)"
+  },
+  {
+    "id": "BX_02_PF_002",
+    "name": "Ingredients+ - San Fransokyo - Pickup 002",
+    "world": "San Fransokyo",
+    "display_name": "Eggplant / Onion",
+    "description": "Ingredients+ - San Fransokyo - The City - Pickup 002 (Possible drops: Eggplant, Onion)"
+  },
+  {
+    "id": "BX_02_PF_003",
+    "name": "Ingredients+ - San Fransokyo - Pickup 003",
+    "world": "San Fransokyo",
+    "display_name": "Eggplant / Garlic",
+    "description": "Ingredients+ - San Fransokyo - The City - Pickup 003 (Possible drops: Eggplant, Garlic)"
+  },
+  {
+    "id": "BX_02_PF_004",
+    "name": "Ingredients+ - San Fransokyo - Pickup 004",
+    "world": "San Fransokyo",
+    "display_name": "Cheese / Quail",
+    "description": "Ingredients+ - San Fransokyo - The City - Pickup 004 (Possible drops: Cheese, Quail)"
+  },
+  {
+    "id": "BX_02_PF_005",
+    "name": "Ingredients+ - San Fransokyo - Pickup 005",
+    "world": "San Fransokyo",
+    "display_name": "Butter / Olive Oil",
+    "description": "Ingredients+ - San Fransokyo - The City - Pickup 005 (Possible drops: Butter, Olive Oil)"
+  },
+  {
+    "id": "BX_02_PF_006",
+    "name": "Ingredients+ - San Fransokyo - Pickup 006",
+    "world": "San Fransokyo",
+    "display_name": "Olive Oil / Rice",
+    "description": "Ingredients+ - San Fransokyo - The City - Pickup 006 (Possible drops: Olive Oil, Rice)"
+  },
+  {
+    "id": "BX_02_PF_007",
+    "name": "Ingredients+ - San Fransokyo - Pickup 007",
+    "world": "San Fransokyo",
+    "display_name": "Garlic / Zucchini",
+    "description": "Ingredients+ - San Fransokyo - The City - Pickup 007 (Possible drops: Garlic, Zucchini)"
+  },
+  {
+    "id": "BX_02_PF_008",
+    "name": "Ingredients+ - San Fransokyo - Pickup 008",
+    "world": "San Fransokyo",
+    "display_name": "Tomato / Zucchini",
+    "description": "Ingredients+ - San Fransokyo - The City - Pickup 008 (Possible drops: Tomato, Zucchini)"
+  },
+  {
+    "id": "BX_02_PF_009",
+    "name": "Ingredients+ - San Fransokyo - Pickup 009",
+    "world": "San Fransokyo",
+    "display_name": "Quail / Rice",
+    "description": "Ingredients+ - San Fransokyo - The City - Pickup 009 (Possible drops: Quail, Rice)"
+  },
+  {
+    "id": "BX_02_PF_010",
+    "name": "Ingredients+ - San Fransokyo - Pickup 010",
+    "world": "San Fransokyo",
+    "display_name": "Cheese / Quail",
+    "description": "Ingredients+ - San Fransokyo - The City - Pickup 010 (Possible drops: Cheese, Quail)"
+  },
+  {
+    "id": "BX_02_PF_011",
+    "name": "Ingredients+ - San Fransokyo - Pickup 011",
+    "world": "San Fransokyo",
+    "display_name": "Butter / Olive Oil",
+    "description": "Ingredients+ - San Fransokyo - The City - Pickup 011 (Possible drops: Butter, Olive Oil)"
+  },
+  {
+    "id": "BX_02_PF_012",
+    "name": "Ingredients+ - San Fransokyo - Pickup 012",
+    "world": "San Fransokyo",
+    "display_name": "Olive Oil / Rice",
+    "description": "Ingredients+ - San Fransokyo - The City - Pickup 012 (Possible drops: Olive Oil, Rice)"
+  },
+  {
+    "id": "BX_02_PF_013",
+    "name": "Ingredients+ - San Fransokyo - Pickup 013",
+    "world": "San Fransokyo",
+    "display_name": "Eggplant / Tomato",
+    "description": "Ingredients+ - San Fransokyo - The City - Pickup 013 (Possible drops: Eggplant, Tomato)"
+  },
+  {
+    "id": "BX_02_PF_014",
+    "name": "Ingredients+ - San Fransokyo - Pickup 014",
+    "world": "San Fransokyo",
+    "display_name": "Eggplant / Garlic",
+    "description": "Ingredients+ - San Fransokyo - The City - Pickup 014 (Possible drops: Eggplant, Garlic)"
+  },
+  {
+    "id": "BX_02_PF_015",
+    "name": "Ingredients+ - San Fransokyo - Pickup 015",
+    "world": "San Fransokyo",
+    "display_name": "Garlic / Zucchini",
+    "description": "Ingredients+ - San Fransokyo - The City - Pickup 015 (Possible drops: Garlic, Zucchini)"
+  },
+  {
+    "id": "BX_02_PF_016",
+    "name": "Ingredients+ - San Fransokyo - Pickup 016",
+    "world": "San Fransokyo",
+    "display_name": "Tomato / Zucchini",
+    "description": "Ingredients+ - San Fransokyo - The City - Pickup 016 (Possible drops: Tomato, Zucchini)"
+  },
+  {
+    "id": "CA_01_PF_001",
+    "name": "Ingredients+ - The Caribbean - Pickup 001",
+    "world": "The Caribbean",
+    "display_name": "Veal",
+    "description": "Ingredients+ - The Caribbean - Port Royal - Pickup 001 (Possible drops: Veal)"
+  },
+  {
+    "id": "CA_01_PF_002",
+    "name": "Ingredients+ - The Caribbean - Pickup 002",
+    "world": "The Caribbean",
+    "display_name": "Apricot / Gooseberry",
+    "description": "Ingredients+ - The Caribbean - Port Royal - Pickup 002 (Possible drops: Apricot, Gooseberry)"
+  },
+  {
+    "id": "CA_01_PF_003",
+    "name": "Ingredients+ - The Caribbean - Pickup 003",
+    "world": "The Caribbean",
+    "display_name": "Beef",
+    "description": "Ingredients+ - The Caribbean - Port Royal - Pickup 003 (Possible drops: Beef)"
+  },
+  {
+    "id": "CA_01_PF_004",
+    "name": "Ingredients+ - The Caribbean - Pickup 004",
+    "world": "The Caribbean",
+    "display_name": "Quail",
+    "description": "Ingredients+ - The Caribbean - Port Royal - Pickup 004 (Possible drops: Quail)"
+  },
+  {
+    "id": "CA_01_PF_005",
+    "name": "Ingredients+ - The Caribbean - Pickup 005",
+    "world": "The Caribbean",
+    "display_name": "Carrot / Tomato",
+    "description": "Ingredients+ - The Caribbean - Port Royal - Pickup 005 (Possible drops: Carrot, Tomato)"
+  },
+  {
+    "id": "CA_01_PF_006",
+    "name": "Ingredients+ - The Caribbean - Pickup 006",
+    "world": "The Caribbean",
+    "display_name": "Celery / Onion",
+    "description": "Ingredients+ - The Caribbean - Port Royal - Pickup 006 (Possible drops: Celery, Onion)"
+  },
+  {
+    "id": "CA_01_PF_007",
+    "name": "Ingredients+ - The Caribbean - Pickup 007",
+    "world": "The Caribbean",
+    "display_name": "Celery / Pumpkin",
+    "description": "Ingredients+ - The Caribbean - Port Royal - Pickup 007 (Possible drops: Celery, Pumpkin)"
+  },
+  {
+    "id": "CA_01_PF_008",
+    "name": "Ingredients+ - The Caribbean - Pickup 008",
+    "world": "The Caribbean",
+    "display_name": "Gooseberry / Pear",
+    "description": "Ingredients+ - The Caribbean - Port Royal - Pickup 008 (Possible drops: Gooseberry, Pear)"
+  },
+  {
+    "id": "CA_01_PF_009",
+    "name": "Ingredients+ - The Caribbean - Pickup 009",
+    "world": "The Caribbean",
+    "display_name": "Onion / Pumpkin",
+    "description": "Ingredients+ - The Caribbean - Port Royal - Pickup 009 (Possible drops: Onion, Pumpkin)"
+  },
+  {
+    "id": "CA_01_PF_010",
+    "name": "Ingredients+ - The Caribbean - Pickup 010",
+    "world": "The Caribbean",
+    "display_name": "Carrot / Celery",
+    "description": "Ingredients+ - The Caribbean - Port Royal - Pickup 010 (Possible drops: Carrot, Celery)"
+  },
+  {
+    "id": "CA_01_PF_011",
+    "name": "Ingredients+ - The Caribbean - Pickup 011",
+    "world": "The Caribbean",
+    "display_name": "Celery / Pumpkin",
+    "description": "Ingredients+ - The Caribbean - Port Royal - Pickup 011 (Possible drops: Celery, Pumpkin)"
+  },
+  {
+    "id": "CA_01_PF_012",
+    "name": "Ingredients+ - The Caribbean - Pickup 012",
+    "world": "The Caribbean",
+    "display_name": "Onion / Tomato",
+    "description": "Ingredients+ - The Caribbean - Port Royal - Pickup 012 (Possible drops: Onion, Tomato)"
+  },
+  {
+    "id": "CA_01_PF_013",
+    "name": "Ingredients+ - The Caribbean - Pickup 013",
+    "world": "The Caribbean",
+    "display_name": "Filet Mignon",
+    "description": "Ingredients+ - The Caribbean - Port Royal - Pickup 013 (Possible drops: Filet Mignon)"
+  },
+  {
+    "id": "CA_01_PF_014",
+    "name": "Ingredients+ - The Caribbean - Pickup 014",
+    "world": "The Caribbean",
+    "display_name": "Filet Mignon",
+    "description": "Ingredients+ - The Caribbean - Port Royal - Pickup 014 (Possible drops: Filet Mignon)"
+  },
+  {
+    "id": "CA_01_PF_015",
+    "name": "Ingredients+ - The Caribbean - Pickup 015",
+    "world": "The Caribbean",
+    "display_name": "Quail",
+    "description": "Ingredients+ - The Caribbean - Port Royal - Pickup 015 (Possible drops: Quail)"
+  },
+  {
+    "id": "CA_01_PF_016",
+    "name": "Ingredients+ - The Caribbean - Pickup 016",
+    "world": "The Caribbean",
+    "display_name": "Lemon / Orange",
+    "description": "Ingredients+ - The Caribbean - Port Royal - Pickup 016 (Possible drops: Lemon, Orange)"
+  },
+  {
+    "id": "CA_01_PF_017",
+    "name": "Ingredients+ - The Caribbean - Pickup 017",
+    "world": "The Caribbean",
+    "display_name": "Carrot / Celery",
+    "description": "Ingredients+ - The Caribbean - Port Royal - Pickup 017 (Possible drops: Carrot, Celery)"
+  },
+  {
+    "id": "CA_01_PF_018",
+    "name": "Ingredients+ - The Caribbean - Pickup 018",
+    "world": "The Caribbean",
+    "display_name": "Apricot / Orange",
+    "description": "Ingredients+ - The Caribbean - Port Royal - Pickup 018 (Possible drops: Apricot, Orange)"
+  },
+  {
+    "id": "CA_01_PF_019",
+    "name": "Ingredients+ - The Caribbean - Pickup 019",
+    "world": "The Caribbean",
+    "display_name": "Gooseberry / Lemon",
+    "description": "Ingredients+ - The Caribbean - Port Royal - Pickup 019 (Possible drops: Gooseberry, Lemon)"
+  },
+  {
+    "id": "CA_01_PF_020",
+    "name": "Ingredients+ - The Caribbean - Pickup 020",
+    "world": "The Caribbean",
+    "display_name": "Lemon / Orange",
+    "description": "Ingredients+ - The Caribbean - Port Royal - Pickup 020 (Possible drops: Lemon, Orange)"
+  },
+  {
+    "id": "CA_02a_F_001",
+    "name": "Ingredients+ - The Caribbean - Pickup 021",
+    "world": "The Caribbean",
+    "display_name": "Parsley",
+    "description": "Ingredients+ - The Caribbean - The High Seas - Pickup 021 (Possible drops: Parsley)"
+  },
+  {
+    "id": "CA_02a_F_002",
+    "name": "Ingredients+ - The Caribbean - Pickup 022",
+    "world": "The Caribbean",
+    "display_name": "Saffron",
+    "description": "Ingredients+ - The Caribbean - The High Seas - Pickup 022 (Possible drops: Saffron)"
+  },
+  {
+    "id": "CA_02a_F_003",
+    "name": "Ingredients+ - The Caribbean - Pickup 023",
+    "world": "The Caribbean",
+    "display_name": "Miller Mushroom",
+    "description": "Ingredients+ - The Caribbean - The High Seas - Pickup 023 (Possible drops: Miller Mushroom)"
+  },
+  {
+    "id": "CA_02a_F_004",
+    "name": "Ingredients+ - The Caribbean - Pickup 024",
+    "world": "The Caribbean",
+    "display_name": "Crab",
+    "description": "Ingredients+ - The Caribbean - The High Seas - Pickup 024 (Possible drops: Crab)"
+  },
+  {
+    "id": "CA_02a_F_005",
+    "name": "Ingredients+ - The Caribbean - Pickup 025",
+    "world": "The Caribbean",
+    "display_name": "Crab",
+    "description": "Ingredients+ - The Caribbean - The High Seas - Pickup 025 (Possible drops: Crab)"
+  },
+  {
+    "id": "CA_02a_F_006",
+    "name": "Ingredients+ - The Caribbean - Pickup 026",
+    "world": "The Caribbean",
+    "display_name": "Lobster",
+    "description": "Ingredients+ - The Caribbean - The High Seas - Pickup 026 (Possible drops: Lobster)"
+  },
+  {
+    "id": "CA_02a_F_007",
+    "name": "Ingredients+ - The Caribbean - Pickup 027",
+    "world": "The Caribbean",
+    "display_name": "Lobster",
+    "description": "Ingredients+ - The Caribbean - The High Seas - Pickup 027 (Possible drops: Lobster)"
+  },
+  {
+    "id": "CA_02a_F_008",
+    "name": "Ingredients+ - The Caribbean - Pickup 028",
+    "world": "The Caribbean",
+    "display_name": "Mussel",
+    "description": "Ingredients+ - The Caribbean - The High Seas - Pickup 028 (Possible drops: Mussel)"
+  },
+  {
+    "id": "CA_02a_F_009",
+    "name": "Ingredients+ - The Caribbean - Pickup 029",
+    "world": "The Caribbean",
+    "display_name": "Mussel",
+    "description": "Ingredients+ - The Caribbean - The High Seas - Pickup 029 (Possible drops: Mussel)"
+  },
+  {
+    "id": "CA_02a_F_010",
+    "name": "Ingredients+ - The Caribbean - Pickup 030",
+    "world": "The Caribbean",
+    "display_name": "Mussel",
+    "description": "Ingredients+ - The Caribbean - The High Seas - Pickup 030 (Possible drops: Mussel)"
+  },
+  {
+    "id": "CA_02a_F_011",
+    "name": "Ingredients+ - The Caribbean - Pickup 031",
+    "world": "The Caribbean",
+    "display_name": "Mussel",
+    "description": "Ingredients+ - The Caribbean - The High Seas - Pickup 031 (Possible drops: Mussel)"
+  },
+  {
+    "id": "CA_02a_F_012",
+    "name": "Ingredients+ - The Caribbean - Pickup 032",
+    "world": "The Caribbean",
+    "display_name": "Scallop",
+    "description": "Ingredients+ - The Caribbean - The High Seas - Pickup 032 (Possible drops: Scallop)"
+  },
+  {
+    "id": "CA_02a_F_013",
+    "name": "Ingredients+ - The Caribbean - Pickup 033",
+    "world": "The Caribbean",
+    "display_name": "Scallop",
+    "description": "Ingredients+ - The Caribbean - The High Seas - Pickup 033 (Possible drops: Scallop)"
+  },
+  {
+    "id": "CA_02b_F_001",
+    "name": "Ingredients+ - The Caribbean - Pickup 034",
+    "world": "The Caribbean",
+    "display_name": "Miller Mushroom",
+    "description": "Ingredients+ - The Caribbean - The High Seas - Pickup 034 (Possible drops: Miller Mushroom)"
+  },
+  {
+    "id": "CA_02b_F_002",
+    "name": "Ingredients+ - The Caribbean - Pickup 035",
+    "world": "The Caribbean",
+    "display_name": "Crab",
+    "description": "Ingredients+ - The Caribbean - The High Seas - Pickup 035 (Possible drops: Crab)"
+  },
+  {
+    "id": "CA_02b_F_003",
+    "name": "Ingredients+ - The Caribbean - Pickup 036",
+    "world": "The Caribbean",
+    "display_name": "Crab",
+    "description": "Ingredients+ - The Caribbean - The High Seas - Pickup 036 (Possible drops: Crab)"
+  },
+  {
+    "id": "CA_02b_F_004",
+    "name": "Ingredients+ - The Caribbean - Pickup 037",
+    "world": "The Caribbean",
+    "display_name": "Crab",
+    "description": "Ingredients+ - The Caribbean - The High Seas - Pickup 037 (Possible drops: Crab)"
+  },
+  {
+    "id": "CA_02b_F_005",
+    "name": "Ingredients+ - The Caribbean - Pickup 038",
+    "world": "The Caribbean",
+    "display_name": "Lobster",
+    "description": "Ingredients+ - The Caribbean - The High Seas - Pickup 038 (Possible drops: Lobster)"
+  },
+  {
+    "id": "CA_02b_F_006",
+    "name": "Ingredients+ - The Caribbean - Pickup 039",
+    "world": "The Caribbean",
+    "display_name": "Lobster",
+    "description": "Ingredients+ - The Caribbean - The High Seas - Pickup 039 (Possible drops: Lobster)"
+  },
+  {
+    "id": "CA_02b_F_007",
+    "name": "Ingredients+ - The Caribbean - Pickup 040",
+    "world": "The Caribbean",
+    "display_name": "Mussel",
+    "description": "Ingredients+ - The Caribbean - The High Seas - Pickup 040 (Possible drops: Mussel)"
+  },
+  {
+    "id": "CA_02b_F_008",
+    "name": "Ingredients+ - The Caribbean - Pickup 041",
+    "world": "The Caribbean",
+    "display_name": "Mussel",
+    "description": "Ingredients+ - The Caribbean - The High Seas - Pickup 041 (Possible drops: Mussel)"
+  },
+  {
+    "id": "CA_02b_F_009",
+    "name": "Ingredients+ - The Caribbean - Pickup 042",
+    "world": "The Caribbean",
+    "display_name": "Mussel",
+    "description": "Ingredients+ - The Caribbean - The High Seas - Pickup 042 (Possible drops: Mussel)"
+  },
+  {
+    "id": "CA_02b_F_010",
+    "name": "Ingredients+ - The Caribbean - Pickup 043",
+    "world": "The Caribbean",
+    "display_name": "Mussel",
+    "description": "Ingredients+ - The Caribbean - The High Seas - Pickup 043 (Possible drops: Mussel)"
+  },
+  {
+    "id": "CA_02b_F_011",
+    "name": "Ingredients+ - The Caribbean - Pickup 044",
+    "world": "The Caribbean",
+    "display_name": "Scallop",
+    "description": "Ingredients+ - The Caribbean - The High Seas - Pickup 044 (Possible drops: Scallop)"
+  },
+  {
+    "id": "CA_02b_F_012",
+    "name": "Ingredients+ - The Caribbean - Pickup 045",
+    "world": "The Caribbean",
+    "display_name": "Scallop",
+    "description": "Ingredients+ - The Caribbean - The High Seas - Pickup 045 (Possible drops: Scallop)"
+  },
+  {
+    "id": "CA_02b_F_013",
+    "name": "Ingredients+ - The Caribbean - Pickup 046",
+    "world": "The Caribbean",
+    "display_name": "Scallop",
+    "description": "Ingredients+ - The Caribbean - The High Seas - Pickup 046 (Possible drops: Scallop)"
+  },
+  {
+    "id": "CA_02b_F_014",
+    "name": "Ingredients+ - The Caribbean - Pickup 047",
+    "world": "The Caribbean",
+    "display_name": "Scallop",
+    "description": "Ingredients+ - The Caribbean - The High Seas - Pickup 047 (Possible drops: Scallop)"
+  },
+  {
+    "id": "CA_02c_F_001",
+    "name": "Ingredients+ - The Caribbean - Pickup 048",
+    "world": "The Caribbean",
+    "display_name": "Black Truffle",
+    "description": "Ingredients+ - The Caribbean - The High Seas - Pickup 048 (Possible drops: Black Truffle)"
+  },
+  {
+    "id": "CA_02c_F_002",
+    "name": "Ingredients+ - The Caribbean - Pickup 049",
+    "world": "The Caribbean",
+    "display_name": "Saffron",
+    "description": "Ingredients+ - The Caribbean - The High Seas - Pickup 049 (Possible drops: Saffron)"
+  },
+  {
+    "id": "CA_02c_F_003",
+    "name": "Ingredients+ - The Caribbean - Pickup 050",
+    "world": "The Caribbean",
+    "display_name": "Crab",
+    "description": "Ingredients+ - The Caribbean - The High Seas - Pickup 050 (Possible drops: Crab)"
+  },
+  {
+    "id": "CA_02c_F_004",
+    "name": "Ingredients+ - The Caribbean - Pickup 051",
+    "world": "The Caribbean",
+    "display_name": "Crab",
+    "description": "Ingredients+ - The Caribbean - The High Seas - Pickup 051 (Possible drops: Crab)"
+  },
+  {
+    "id": "CA_02c_F_005",
+    "name": "Ingredients+ - The Caribbean - Pickup 052",
+    "world": "The Caribbean",
+    "display_name": "Scallop",
+    "description": "Ingredients+ - The Caribbean - The High Seas - Pickup 052 (Possible drops: Scallop)"
+  },
+  {
+    "id": "CA_02c_F_006",
+    "name": "Ingredients+ - The Caribbean - Pickup 053",
+    "world": "The Caribbean",
+    "display_name": "Scallop",
+    "description": "Ingredients+ - The Caribbean - The High Seas - Pickup 053 (Possible drops: Scallop)"
+  },
+  {
+    "id": "CA_02c_F_007",
+    "name": "Ingredients+ - The Caribbean - Pickup 054",
+    "world": "The Caribbean",
+    "display_name": "Mussel",
+    "description": "Ingredients+ - The Caribbean - The High Seas - Pickup 054 (Possible drops: Mussel)"
+  },
+  {
+    "id": "CA_02d_F_001",
+    "name": "Ingredients+ - The Caribbean - Pickup 055",
+    "world": "The Caribbean",
+    "display_name": "Dill",
+    "description": "Ingredients+ - The Caribbean - The High Seas - Pickup 055 (Possible drops: Dill)"
+  },
+  {
+    "id": "CA_02d_F_002",
+    "name": "Ingredients+ - The Caribbean - Pickup 056",
+    "world": "The Caribbean",
+    "display_name": "Lobster",
+    "description": "Ingredients+ - The Caribbean - The High Seas - Pickup 056 (Possible drops: Lobster)"
+  },
+  {
+    "id": "CA_02d_F_003",
+    "name": "Ingredients+ - The Caribbean - Pickup 057",
+    "world": "The Caribbean",
+    "display_name": "Lobster",
+    "description": "Ingredients+ - The Caribbean - The High Seas - Pickup 057 (Possible drops: Lobster)"
+  },
+  {
+    "id": "CA_02d_F_004",
+    "name": "Ingredients+ - The Caribbean - Pickup 058",
+    "world": "The Caribbean",
+    "display_name": "Scallop",
+    "description": "Ingredients+ - The Caribbean - The High Seas - Pickup 058 (Possible drops: Scallop)"
+  },
+  {
+    "id": "CA_02d_F_005",
+    "name": "Ingredients+ - The Caribbean - Pickup 059",
+    "world": "The Caribbean",
+    "display_name": "Scallop",
+    "description": "Ingredients+ - The Caribbean - The High Seas - Pickup 059 (Possible drops: Scallop)"
+  },
+  {
+    "id": "CA_02d_F_006",
+    "name": "Ingredients+ - The Caribbean - Pickup 060",
+    "world": "The Caribbean",
+    "display_name": "Scallop",
+    "description": "Ingredients+ - The Caribbean - The High Seas - Pickup 060 (Possible drops: Scallop)"
+  },
+  {
+    "id": "CA_02e_F_001",
+    "name": "Ingredients+ - The Caribbean - Pickup 061",
+    "world": "The Caribbean",
+    "display_name": "Miller Mushroom",
+    "description": "Ingredients+ - The Caribbean - The High Seas - Pickup 061 (Possible drops: Miller Mushroom)"
+  },
+  {
+    "id": "CA_02e_F_002",
+    "name": "Ingredients+ - The Caribbean - Pickup 062",
+    "world": "The Caribbean",
+    "display_name": "Dill",
+    "description": "Ingredients+ - The Caribbean - The High Seas - Pickup 062 (Possible drops: Dill)"
+  },
+  {
+    "id": "CA_02f_F_001",
+    "name": "Ingredients+ - The Caribbean - Pickup 063",
+    "world": "The Caribbean",
+    "display_name": "Portobello",
+    "description": "Ingredients+ - The Caribbean - The High Seas - Pickup 063 (Possible drops: Portobello)"
+  },
+  {
+    "id": "CA_02f_F_002",
+    "name": "Ingredients+ - The Caribbean - Pickup 064",
+    "world": "The Caribbean",
+    "display_name": "Thyme",
+    "description": "Ingredients+ - The Caribbean - The High Seas - Pickup 064 (Possible drops: Thyme)"
+  },
+  {
+    "id": "CA_02f_F_003",
+    "name": "Ingredients+ - The Caribbean - Pickup 065",
+    "world": "The Caribbean",
+    "display_name": "Crab",
+    "description": "Ingredients+ - The Caribbean - The High Seas - Pickup 065 (Possible drops: Crab)"
+  },
+  {
+    "id": "CA_02f_F_004",
+    "name": "Ingredients+ - The Caribbean - Pickup 066",
+    "world": "The Caribbean",
+    "display_name": "Crab",
+    "description": "Ingredients+ - The Caribbean - The High Seas - Pickup 066 (Possible drops: Crab)"
+  },
+  {
+    "id": "CA_02f_F_005",
+    "name": "Ingredients+ - The Caribbean - Pickup 067",
+    "world": "The Caribbean",
+    "display_name": "Crab",
+    "description": "Ingredients+ - The Caribbean - The High Seas - Pickup 067 (Possible drops: Crab)"
+  },
+  {
+    "id": "CA_02f_F_006",
+    "name": "Ingredients+ - The Caribbean - Pickup 068",
+    "world": "The Caribbean",
+    "display_name": "Mussel",
+    "description": "Ingredients+ - The Caribbean - The High Seas - Pickup 068 (Possible drops: Mussel)"
+  },
+  {
+    "id": "CA_02f_F_007",
+    "name": "Ingredients+ - The Caribbean - Pickup 069",
+    "world": "The Caribbean",
+    "display_name": "Mussel",
+    "description": "Ingredients+ - The Caribbean - The High Seas - Pickup 069 (Possible drops: Mussel)"
+  },
+  {
+    "id": "CA_02f_F_008",
+    "name": "Ingredients+ - The Caribbean - Pickup 070",
+    "world": "The Caribbean",
+    "display_name": "Mussel",
+    "description": "Ingredients+ - The Caribbean - The High Seas - Pickup 070 (Possible drops: Mussel)"
+  },
+  {
+    "id": "CA_02g_F_001",
+    "name": "Ingredients+ - The Caribbean - Pickup 071",
+    "world": "The Caribbean",
+    "display_name": "Portobello",
+    "description": "Ingredients+ - The Caribbean - The High Seas - Pickup 071 (Possible drops: Portobello)"
+  },
+  {
+    "id": "CA_02g_F_002",
+    "name": "Ingredients+ - The Caribbean - Pickup 072",
+    "world": "The Caribbean",
+    "display_name": "Thyme",
+    "description": "Ingredients+ - The Caribbean - The High Seas - Pickup 072 (Possible drops: Thyme)"
+  },
+  {
+    "id": "CA_02g_F_003",
+    "name": "Ingredients+ - The Caribbean - Pickup 073",
+    "world": "The Caribbean",
+    "display_name": "Lobster",
+    "description": "Ingredients+ - The Caribbean - The High Seas - Pickup 073 (Possible drops: Lobster)"
+  },
+  {
+    "id": "CA_02g_F_004",
+    "name": "Ingredients+ - The Caribbean - Pickup 074",
+    "world": "The Caribbean",
+    "display_name": "Lobster",
+    "description": "Ingredients+ - The Caribbean - The High Seas - Pickup 074 (Possible drops: Lobster)"
+  },
+  {
+    "id": "CA_02g_F_005",
+    "name": "Ingredients+ - The Caribbean - Pickup 075",
+    "world": "The Caribbean",
+    "display_name": "Lobster",
+    "description": "Ingredients+ - The Caribbean - The High Seas - Pickup 075 (Possible drops: Lobster)"
+  },
+  {
+    "id": "CA_02g_F_006",
+    "name": "Ingredients+ - The Caribbean - Pickup 076",
+    "world": "The Caribbean",
+    "display_name": "Mussel",
+    "description": "Ingredients+ - The Caribbean - The High Seas - Pickup 076 (Possible drops: Mussel)"
+  },
+  {
+    "id": "CA_02g_F_007",
+    "name": "Ingredients+ - The Caribbean - Pickup 077",
+    "world": "The Caribbean",
+    "display_name": "Mussel",
+    "description": "Ingredients+ - The Caribbean - The High Seas - Pickup 077 (Possible drops: Mussel)"
+  },
+  {
+    "id": "CA_02h_F_001",
+    "name": "Ingredients+ - The Caribbean - Pickup 078",
+    "world": "The Caribbean",
+    "display_name": "Chanterelle",
+    "description": "Ingredients+ - The Caribbean - The High Seas - Pickup 078 (Possible drops: Chanterelle)"
+  },
+  {
+    "id": "CA_02h_F_002",
+    "name": "Ingredients+ - The Caribbean - Pickup 079",
+    "world": "The Caribbean",
+    "display_name": "Black Trumpet",
+    "description": "Ingredients+ - The Caribbean - The High Seas - Pickup 079 (Possible drops: Black Trumpet)"
+  },
+  {
+    "id": "CA_02h_F_003",
+    "name": "Ingredients+ - The Caribbean - Pickup 080",
+    "world": "The Caribbean",
+    "display_name": "Basil",
+    "description": "Ingredients+ - The Caribbean - The High Seas - Pickup 080 (Possible drops: Basil)"
+  },
+  {
+    "id": "CA_02h_F_004",
+    "name": "Ingredients+ - The Caribbean - Pickup 081",
+    "world": "The Caribbean",
+    "display_name": "Dill",
+    "description": "Ingredients+ - The Caribbean - The High Seas - Pickup 081 (Possible drops: Dill)"
+  },
+  {
+    "id": "CA_02h_F_005",
+    "name": "Ingredients+ - The Caribbean - Pickup 082",
+    "world": "The Caribbean",
+    "display_name": "Dill",
+    "description": "Ingredients+ - The Caribbean - The High Seas - Pickup 082 (Possible drops: Dill)"
+  },
+  {
+    "id": "CA_02h_F_006",
+    "name": "Ingredients+ - The Caribbean - Pickup 083",
+    "world": "The Caribbean",
+    "display_name": "Crab",
+    "description": "Ingredients+ - The Caribbean - The High Seas - Pickup 083 (Possible drops: Crab)"
+  },
+  {
+    "id": "CA_02h_F_007",
+    "name": "Ingredients+ - The Caribbean - Pickup 084",
+    "world": "The Caribbean",
+    "display_name": "Crab",
+    "description": "Ingredients+ - The Caribbean - The High Seas - Pickup 084 (Possible drops: Crab)"
+  },
+  {
+    "id": "CA_02h_F_008",
+    "name": "Ingredients+ - The Caribbean - Pickup 085",
+    "world": "The Caribbean",
+    "display_name": "Crab",
+    "description": "Ingredients+ - The Caribbean - The High Seas - Pickup 085 (Possible drops: Crab)"
+  },
+  {
+    "id": "CA_02h_F_009",
+    "name": "Ingredients+ - The Caribbean - Pickup 086",
+    "world": "The Caribbean",
+    "display_name": "Crab",
+    "description": "Ingredients+ - The Caribbean - The High Seas - Pickup 086 (Possible drops: Crab)"
+  },
+  {
+    "id": "CA_02h_F_010",
+    "name": "Ingredients+ - The Caribbean - Pickup 087",
+    "world": "The Caribbean",
+    "display_name": "Scallop",
+    "description": "Ingredients+ - The Caribbean - The High Seas - Pickup 087 (Possible drops: Scallop)"
+  },
+  {
+    "id": "CA_02h_F_011",
+    "name": "Ingredients+ - The Caribbean - Pickup 088",
+    "world": "The Caribbean",
+    "display_name": "Scallop",
+    "description": "Ingredients+ - The Caribbean - The High Seas - Pickup 088 (Possible drops: Scallop)"
+  },
+  {
+    "id": "CA_02h_F_012",
+    "name": "Ingredients+ - The Caribbean - Pickup 089",
+    "world": "The Caribbean",
+    "display_name": "Scallop",
+    "description": "Ingredients+ - The Caribbean - The High Seas - Pickup 089 (Possible drops: Scallop)"
+  },
+  {
+    "id": "CA_02h_F_013",
+    "name": "Ingredients+ - The Caribbean - Pickup 090",
+    "world": "The Caribbean",
+    "display_name": "Scallop",
+    "description": "Ingredients+ - The Caribbean - The High Seas - Pickup 090 (Possible drops: Scallop)"
+  },
+  {
+    "id": "CA_02i_F_001",
+    "name": "Ingredients+ - The Caribbean - Pickup 091",
+    "world": "The Caribbean",
+    "display_name": "Porcini",
+    "description": "Ingredients+ - The Caribbean - The High Seas - Pickup 091 (Possible drops: Porcini)"
+  },
+  {
+    "id": "CA_02i_F_002",
+    "name": "Ingredients+ - The Caribbean - Pickup 092",
+    "world": "The Caribbean",
+    "display_name": "Porcini",
+    "description": "Ingredients+ - The Caribbean - The High Seas - Pickup 092 (Possible drops: Porcini)"
+  },
+  {
+    "id": "CA_02i_F_003",
+    "name": "Ingredients+ - The Caribbean - Pickup 093",
+    "world": "The Caribbean",
+    "display_name": "Bay Leaf",
+    "description": "Ingredients+ - The Caribbean - The High Seas - Pickup 093 (Possible drops: Bay Leaf)"
+  },
+  {
+    "id": "CA_02j_F_001",
+    "name": "Ingredients+ - The Caribbean - Pickup 094",
+    "world": "The Caribbean",
+    "display_name": "Morel",
+    "description": "Ingredients+ - The Caribbean - The High Seas - Pickup 094 (Possible drops: Morel)"
+  },
+  {
+    "id": "CA_02j_F_002",
+    "name": "Ingredients+ - The Caribbean - Pickup 095",
+    "world": "The Caribbean",
+    "display_name": "Morel",
+    "description": "Ingredients+ - The Caribbean - The High Seas - Pickup 095 (Possible drops: Morel)"
+  },
+  {
+    "id": "CA_02j_F_003",
+    "name": "Ingredients+ - The Caribbean - Pickup 096",
+    "world": "The Caribbean",
+    "display_name": "King Oyster Mushroom",
+    "description": "Ingredients+ - The Caribbean - The High Seas - Pickup 096 (Possible drops: King Oyster Mushroom)"
+  },
+  {
+    "id": "CA_02j_F_004",
+    "name": "Ingredients+ - The Caribbean - Pickup 097",
+    "world": "The Caribbean",
+    "display_name": "King Oyster Mushroom",
+    "description": "Ingredients+ - The Caribbean - The High Seas - Pickup 097 (Possible drops: King Oyster Mushroom)"
+  },
+  {
+    "id": "CA_02j_F_005",
+    "name": "Ingredients+ - The Caribbean - Pickup 098",
+    "world": "The Caribbean",
+    "display_name": "Cloves",
+    "description": "Ingredients+ - The Caribbean - The High Seas - Pickup 098 (Possible drops: Cloves)"
+  },
+  {
+    "id": "CA_02j_F_006",
+    "name": "Ingredients+ - The Caribbean - Pickup 099",
+    "world": "The Caribbean",
+    "display_name": "Rosemary",
+    "description": "Ingredients+ - The Caribbean - The High Seas - Pickup 099 (Possible drops: Rosemary)"
+  },
+  {
+    "id": "CA_02j_F_007",
+    "name": "Ingredients+ - The Caribbean - Pickup 100",
+    "world": "The Caribbean",
+    "display_name": "Lobster",
+    "description": "Ingredients+ - The Caribbean - The High Seas - Pickup 100 (Possible drops: Lobster)"
+  },
+  {
+    "id": "CA_02j_F_008",
+    "name": "Ingredients+ - The Caribbean - Pickup 101",
+    "world": "The Caribbean",
+    "display_name": "Lobster",
+    "description": "Ingredients+ - The Caribbean - The High Seas - Pickup 101 (Possible drops: Lobster)"
+  },
+  {
+    "id": "CA_02j_F_009",
+    "name": "Ingredients+ - The Caribbean - Pickup 102",
+    "world": "The Caribbean",
+    "display_name": "Lobster",
+    "description": "Ingredients+ - The Caribbean - The High Seas - Pickup 102 (Possible drops: Lobster)"
+  },
+  {
+    "id": "CA_02j_F_010",
+    "name": "Ingredients+ - The Caribbean - Pickup 103",
+    "world": "The Caribbean",
+    "display_name": "Mussel",
+    "description": "Ingredients+ - The Caribbean - The High Seas - Pickup 103 (Possible drops: Mussel)"
+  },
+  {
+    "id": "CA_02j_F_011",
+    "name": "Ingredients+ - The Caribbean - Pickup 104",
+    "world": "The Caribbean",
+    "display_name": "Mussel",
+    "description": "Ingredients+ - The Caribbean - The High Seas - Pickup 104 (Possible drops: Mussel)"
+  },
+  {
+    "id": "CA_02j_F_012",
+    "name": "Ingredients+ - The Caribbean - Pickup 105",
+    "world": "The Caribbean",
+    "display_name": "Mussel",
+    "description": "Ingredients+ - The Caribbean - The High Seas - Pickup 105 (Possible drops: Mussel)"
+  },
+  {
+    "id": "CA_02j_F_013",
+    "name": "Ingredients+ - The Caribbean - Pickup 106",
+    "world": "The Caribbean",
+    "display_name": "Mussel",
+    "description": "Ingredients+ - The Caribbean - The High Seas - Pickup 106 (Possible drops: Mussel)"
+  },
+  {
+    "id": "FZ_01_F_001",
+    "name": "Ingredients+ - Arendelle - Pickup 001",
+    "world": "Arendelle",
+    "display_name": "Black Truffle",
+    "description": "Ingredients+ - Arendelle - The North Mountain - Pickup 001 (Possible drops: Black Truffle)"
+  },
+  {
+    "id": "FZ_01_F_004",
+    "name": "Ingredients+ - Arendelle - Pickup 002",
+    "world": "Arendelle",
+    "display_name": "Gooseberry",
+    "description": "Ingredients+ - Arendelle - The North Mountain - Pickup 002 (Possible drops: Gooseberry)"
+  },
+  {
+    "id": "FZ_01_F_005",
+    "name": "Ingredients+ - Arendelle - Pickup 003",
+    "world": "Arendelle",
+    "display_name": "Raspberry",
+    "description": "Ingredients+ - Arendelle - The North Mountain - Pickup 003 (Possible drops: Raspberry)"
+  },
+  {
+    "id": "FZ_01_F_006",
+    "name": "Ingredients+ - Arendelle - Pickup 004",
+    "world": "Arendelle",
+    "display_name": "Miller Mushroom",
+    "description": "Ingredients+ - Arendelle - The North Mountain - Pickup 004 (Possible drops: Miller Mushroom)"
+  },
+  {
+    "id": "FZ_01_F_007",
+    "name": "Ingredients+ - Arendelle - Pickup 005",
+    "world": "Arendelle",
+    "display_name": "Morel",
+    "description": "Ingredients+ - Arendelle - The North Mountain - Pickup 005 (Possible drops: Morel)"
+  },
+  {
+    "id": "FZ_01_F_008",
+    "name": "Ingredients+ - Arendelle - Pickup 006",
+    "world": "Arendelle",
+    "display_name": "Gooseberry",
+    "description": "Ingredients+ - Arendelle - The North Mountain - Pickup 006 (Possible drops: Gooseberry)"
+  },
+  {
+    "id": "FZ_01_PF_002",
+    "name": "Ingredients+ - Arendelle - Pickup 007",
+    "world": "Arendelle",
+    "display_name": "Carrot",
+    "description": "Ingredients+ - Arendelle - The North Mountain - Pickup 007 (Possible drops: Carrot)"
+  },
+  {
+    "id": "FZ_01_PF_003",
+    "name": "Ingredients+ - Arendelle - Pickup 008",
+    "world": "Arendelle",
+    "display_name": "Carrot",
+    "description": "Ingredients+ - Arendelle - The North Mountain - Pickup 008 (Possible drops: Carrot)"
+  },
+  {
+    "id": "FZ_01_PF_009",
+    "name": "Ingredients+ - Arendelle - Pickup 009",
+    "world": "Arendelle",
+    "display_name": "Cod",
+    "description": "Ingredients+ - Arendelle - The North Mountain - Pickup 009 (Possible drops: Cod)"
+  },
+  {
+    "id": "FZ_01_PF_010",
+    "name": "Ingredients+ - Arendelle - Pickup 010",
+    "world": "Arendelle",
+    "display_name": "Carrot",
+    "description": "Ingredients+ - Arendelle - The North Mountain - Pickup 010 (Possible drops: Carrot)"
+  },
+  {
+    "id": "FZ_01_PF_011",
+    "name": "Ingredients+ - Arendelle - Pickup 011",
+    "world": "Arendelle",
+    "display_name": "Cod",
+    "description": "Ingredients+ - Arendelle - The North Mountain - Pickup 011 (Possible drops: Cod)"
+  },
+  {
+    "id": "FZ_04_F_002",
+    "name": "Ingredients+ - Arendelle - Pickup 012",
+    "world": "Arendelle",
+    "display_name": "Raspberry",
+    "description": "Ingredients+ - Arendelle - The North Mountain - Pickup 012 (Possible drops: Raspberry)"
+  },
+  {
+    "id": "FZ_04_F_003",
+    "name": "Ingredients+ - Arendelle - Pickup 013",
+    "world": "Arendelle",
+    "display_name": "Portobello",
+    "description": "Ingredients+ - Arendelle - The North Mountain - Pickup 013 (Possible drops: Portobello)"
+  },
+  {
+    "id": "FZ_04_F_004",
+    "name": "Ingredients+ - Arendelle - Pickup 014",
+    "world": "Arendelle",
+    "display_name": "Blackberry",
+    "description": "Ingredients+ - Arendelle - The North Mountain - Pickup 014 (Possible drops: Blackberry)"
+  },
+  {
+    "id": "FZ_04_F_005",
+    "name": "Ingredients+ - Arendelle - Pickup 015",
+    "world": "Arendelle",
+    "display_name": "Raspberry",
+    "description": "Ingredients+ - Arendelle - The North Mountain - Pickup 015 (Possible drops: Raspberry)"
+  },
+  {
+    "id": "FZ_04_PF_001",
+    "name": "Ingredients+ - Arendelle - Pickup 016",
+    "world": "Arendelle",
+    "display_name": "Carrot",
+    "description": "Ingredients+ - Arendelle - The North Mountain - Pickup 016 (Possible drops: Carrot)"
+  },
+  {
+    "id": "FZ_05_F_001",
+    "name": "Ingredients+ - Arendelle - Pickup 017",
+    "world": "Arendelle",
+    "display_name": "Blackberry",
+    "description": "Ingredients+ - Arendelle - The North Mountain - Pickup 017 (Possible drops: Blackberry)"
+  },
+  {
+    "id": "FZ_05_PF_002",
+    "name": "Ingredients+ - Arendelle - Pickup 018",
+    "world": "Arendelle",
+    "display_name": "Carrot",
+    "description": "Ingredients+ - Arendelle - The North Mountain - Pickup 018 (Possible drops: Carrot)"
+  },
+  {
+    "id": "HE_02_F_002",
+    "name": "Ingredients+ - Olympus - Pickup 001",
+    "world": "Olympus",
+    "display_name": "Apple",
+    "description": "Ingredients+ - Olympus - Mount Olympus - Pickup 001 (Possible drops: Apple)"
+  },
+  {
+    "id": "HE_02_F_004",
+    "name": "Ingredients+ - Olympus - Pickup 002",
+    "world": "Olympus",
+    "display_name": "Apricot",
+    "description": "Ingredients+ - Olympus - Mount Olympus - Pickup 002 (Possible drops: Apricot)"
+  },
+  {
+    "id": "HE_02_F_005",
+    "name": "Ingredients+ - Olympus - Pickup 003",
+    "world": "Olympus",
+    "display_name": "Apple",
+    "description": "Ingredients+ - Olympus - Mount Olympus - Pickup 003 (Possible drops: Apple)"
+  },
+  {
+    "id": "HE_02_F_006",
+    "name": "Ingredients+ - Olympus - Pickup 004",
+    "world": "Olympus",
+    "display_name": "Apple",
+    "description": "Ingredients+ - Olympus - Mount Olympus - Pickup 004 (Possible drops: Apple)"
+  },
+  {
+    "id": "HE_02_F_007",
+    "name": "Ingredients+ - Olympus - Pickup 005",
+    "world": "Olympus",
+    "display_name": "Apricot",
+    "description": "Ingredients+ - Olympus - Mount Olympus - Pickup 005 (Possible drops: Apricot)"
+  },
+  {
+    "id": "HE_02_F_008",
+    "name": "Ingredients+ - Olympus - Pickup 006",
+    "world": "Olympus",
+    "display_name": "Apple",
+    "description": "Ingredients+ - Olympus - Mount Olympus - Pickup 006 (Possible drops: Apple)"
+  },
+  {
+    "id": "HE_02_PF_001",
+    "name": "Ingredients+ - Olympus - Pickup 007",
+    "world": "Olympus",
+    "display_name": "Beef",
+    "description": "Ingredients+ - Olympus - Mount Olympus - Pickup 007 (Possible drops: Beef)"
+  },
+  {
+    "id": "HE_02_PF_003",
+    "name": "Ingredients+ - Olympus - Pickup 008",
+    "world": "Olympus",
+    "display_name": "Veal",
+    "description": "Ingredients+ - Olympus - Mount Olympus - Pickup 008 (Possible drops: Veal)"
+  },
+  {
+    "id": "HE_02_PF_009",
+    "name": "Ingredients+ - Olympus - Pickup 009",
+    "world": "Olympus",
+    "display_name": "Pear",
+    "description": "Ingredients+ - Olympus - Mount Olympus - Pickup 009 (Possible drops: Pear)"
+  },
+  {
+    "id": "HE_03_F_006",
+    "name": "Ingredients+ - Olympus - Pickup 010",
+    "world": "Olympus",
+    "display_name": "Porcini",
+    "description": "Ingredients+ - Olympus - Thebes - Pickup 010 (Possible drops: Porcini)"
+  },
+  {
+    "id": "HE_03_F_007",
+    "name": "Ingredients+ - Olympus - Pickup 011",
+    "world": "Olympus",
+    "display_name": "Cloves",
+    "description": "Ingredients+ - Olympus - Thebes - Pickup 011 (Possible drops: Cloves)"
+  },
+  {
+    "id": "HE_03_F_008",
+    "name": "Ingredients+ - Olympus - Pickup 012",
+    "world": "Olympus",
+    "display_name": "Morel",
+    "description": "Ingredients+ - Olympus - Thebes - Pickup 012 (Possible drops: Morel)"
+  },
+  {
+    "id": "HE_03_F_009",
+    "name": "Ingredients+ - Olympus - Pickup 013",
+    "world": "Olympus",
+    "display_name": "Rosemary",
+    "description": "Ingredients+ - Olympus - Thebes - Pickup 013 (Possible drops: Rosemary)"
+  },
+  {
+    "id": "HE_03_F_010",
+    "name": "Ingredients+ - Olympus - Pickup 014",
+    "world": "Olympus",
+    "display_name": "Cloves",
+    "description": "Ingredients+ - Olympus - Thebes - Pickup 014 (Possible drops: Cloves)"
+  },
+  {
+    "id": "HE_03_F_011",
+    "name": "Ingredients+ - Olympus - Pickup 015",
+    "world": "Olympus",
+    "display_name": "Cloves",
+    "description": "Ingredients+ - Olympus - Thebes - Pickup 015 (Possible drops: Cloves)"
+  },
+  {
+    "id": "HE_03_F_012",
+    "name": "Ingredients+ - Olympus - Pickup 016",
+    "world": "Olympus",
+    "display_name": "King Oyster Mushroom",
+    "description": "Ingredients+ - Olympus - Thebes - Pickup 016 (Possible drops: King Oyster Mushroom)"
+  },
+  {
+    "id": "HE_03_F_016",
+    "name": "Ingredients+ - Olympus - Pickup 017",
+    "world": "Olympus",
+    "display_name": "Parsley",
+    "description": "Ingredients+ - Olympus - Thebes - Pickup 017 (Possible drops: Parsley)"
+  },
+  {
+    "id": "HE_03_F_017",
+    "name": "Ingredients+ - Olympus - Pickup 018",
+    "world": "Olympus",
+    "display_name": "Black Truffle",
+    "description": "Ingredients+ - Olympus - Thebes - Pickup 018 (Possible drops: Black Truffle)"
+  },
+  {
+    "id": "HE_03_F_018",
+    "name": "Ingredients+ - Olympus - Pickup 019",
+    "world": "Olympus",
+    "display_name": "Cloves",
+    "description": "Ingredients+ - Olympus - Thebes - Pickup 019 (Possible drops: Cloves)"
+  },
+  {
+    "id": "HE_03_F_019",
+    "name": "Ingredients+ - Olympus - Pickup 020",
+    "world": "Olympus",
+    "display_name": "Chanterelle",
+    "description": "Ingredients+ - Olympus - Thebes - Pickup 020 (Possible drops: Chanterelle)"
+  },
+  {
+    "id": "HE_03_F_020",
+    "name": "Ingredients+ - Olympus - Pickup 021",
+    "world": "Olympus",
+    "display_name": "King Oyster Mushroom",
+    "description": "Ingredients+ - Olympus - Thebes - Pickup 021 (Possible drops: King Oyster Mushroom)"
+  },
+  {
+    "id": "HE_03_F_021",
+    "name": "Ingredients+ - Olympus - Pickup 022",
+    "world": "Olympus",
+    "display_name": "Bay Leaf",
+    "description": "Ingredients+ - Olympus - Thebes - Pickup 022 (Possible drops: Bay Leaf)"
+  },
+  {
+    "id": "HE_03_F_022",
+    "name": "Ingredients+ - Olympus - Pickup 023",
+    "world": "Olympus",
+    "display_name": "Porcini",
+    "description": "Ingredients+ - Olympus - Thebes - Pickup 023 (Possible drops: Porcini)"
+  },
+  {
+    "id": "HE_03_F_023",
+    "name": "Ingredients+ - Olympus - Pickup 024",
+    "world": "Olympus",
+    "display_name": "Cloves",
+    "description": "Ingredients+ - Olympus - Thebes - Pickup 024 (Possible drops: Cloves)"
+  },
+  {
+    "id": "HE_03_PF_001",
+    "name": "Ingredients+ - Olympus - Pickup 025",
+    "world": "Olympus",
+    "display_name": "Beef",
+    "description": "Ingredients+ - Olympus - Thebes - Pickup 025 (Possible drops: Beef)"
+  },
+  {
+    "id": "HE_03_PF_002",
+    "name": "Ingredients+ - Olympus - Pickup 026",
+    "world": "Olympus",
+    "display_name": "Celery / Onion",
+    "description": "Ingredients+ - Olympus - Thebes - Pickup 026 (Possible drops: Celery, Onion)"
+  },
+  {
+    "id": "HE_03_PF_003",
+    "name": "Ingredients+ - Olympus - Pickup 027",
+    "world": "Olympus",
+    "display_name": "Veal",
+    "description": "Ingredients+ - Olympus - Thebes - Pickup 027 (Possible drops: Veal)"
+  },
+  {
+    "id": "HE_03_PF_004",
+    "name": "Ingredients+ - Olympus - Pickup 028",
+    "world": "Olympus",
+    "display_name": "Lemon",
+    "description": "Ingredients+ - Olympus - Thebes - Pickup 028 (Possible drops: Lemon)"
+  },
+  {
+    "id": "HE_03_PF_005",
+    "name": "Ingredients+ - Olympus - Pickup 029",
+    "world": "Olympus",
+    "display_name": "Celery / Onion",
+    "description": "Ingredients+ - Olympus - Thebes - Pickup 029 (Possible drops: Celery, Onion)"
+  },
+  {
+    "id": "HE_03_PF_014",
+    "name": "Ingredients+ - Olympus - Pickup 030",
+    "world": "Olympus",
+    "display_name": "Celery / Onion",
+    "description": "Ingredients+ - Olympus - Thebes - Pickup 030 (Possible drops: Celery, Onion)"
+  },
+  {
+    "id": "HE_03_PF_015",
+    "name": "Ingredients+ - Olympus - Pickup 031",
+    "world": "Olympus",
+    "display_name": "Lemon",
+    "description": "Ingredients+ - Olympus - Thebes - Pickup 031 (Possible drops: Lemon)"
+  },
+  {
+    "id": "HE_03_PF_024",
+    "name": "Ingredients+ - Olympus - Pickup 032",
+    "world": "Olympus",
+    "display_name": "Celery / Onion",
+    "description": "Ingredients+ - Olympus - Thebes - Pickup 032 (Possible drops: Celery, Onion)"
+  },
+  {
+    "id": "HE_03_PF_025",
+    "name": "Ingredients+ - Olympus - Pickup 033",
+    "world": "Olympus",
+    "display_name": "Lemon",
+    "description": "Ingredients+ - Olympus - Thebes - Pickup 033 (Possible drops: Lemon)"
+  },
+  {
+    "id": "MI_01_PF_001",
+    "name": "Ingredients+ - Monstropolis - Pickup 001",
+    "world": "Monstropolis",
+    "display_name": "Lemon / Orange",
+    "description": "Ingredients+ - Monstropolis - Monsters, Inc. - Pickup 001 (Possible drops: Lemon, Orange)"
+  },
+  {
+    "id": "MI_01_PF_002",
+    "name": "Ingredients+ - Monstropolis - Pickup 002",
+    "world": "Monstropolis",
+    "display_name": "Dill / Saffron",
+    "description": "Ingredients+ - Monstropolis - Monsters, Inc. - Pickup 002 (Possible drops: Dill, Saffron)"
+  },
+  {
+    "id": "MI_01_PF_003",
+    "name": "Ingredients+ - Monstropolis - Pickup 003",
+    "world": "Monstropolis",
+    "display_name": "Rice",
+    "description": "Ingredients+ - Monstropolis - Monsters, Inc. - Pickup 003 (Possible drops: Rice)"
+  },
+  {
+    "id": "MI_01_PF_004",
+    "name": "Ingredients+ - Monstropolis - Pickup 004",
+    "world": "Monstropolis",
+    "display_name": "Filet Mignon",
+    "description": "Ingredients+ - Monstropolis - Monsters, Inc. - Pickup 004 (Possible drops: Filet Mignon)"
+  },
+  {
+    "id": "MI_02_PF_001",
+    "name": "Ingredients+ - Monstropolis - Pickup 005",
+    "world": "Monstropolis",
+    "display_name": "Cheese",
+    "description": "Ingredients+ - Monstropolis - The Factory - Pickup 005 (Possible drops: Cheese)"
+  },
+  {
+    "id": "MI_02_PF_002",
+    "name": "Ingredients+ - Monstropolis - Pickup 006",
+    "world": "Monstropolis",
+    "display_name": "Onion",
+    "description": "Ingredients+ - Monstropolis - The Factory - Pickup 006 (Possible drops: Onion)"
+  },
+  {
+    "id": "MI_03_PF_001",
+    "name": "Ingredients+ - Monstropolis - Pickup 007",
+    "world": "Monstropolis",
+    "display_name": "Olive Oil",
+    "description": "Ingredients+ - Monstropolis - The Power Plant - Pickup 007 (Possible drops: Olive Oil)"
+  },
+  {
+    "id": "MI_03_PF_002",
+    "name": "Ingredients+ - Monstropolis - Pickup 008",
+    "world": "Monstropolis",
+    "display_name": "Mussel",
+    "description": "Ingredients+ - Monstropolis - The Power Plant - Pickup 008 (Possible drops: Mussel)"
+  },
+  {
+    "id": "MI_03_PF_003",
+    "name": "Ingredients+ - Monstropolis - Pickup 009",
+    "world": "Monstropolis",
+    "display_name": "Orange / Pear",
+    "description": "Ingredients+ - Monstropolis - The Power Plant - Pickup 009 (Possible drops: Orange, Pear)"
+  },
+  {
+    "id": "MI_03_PF_004",
+    "name": "Ingredients+ - Monstropolis - Pickup 010",
+    "world": "Monstropolis",
+    "display_name": "Celery / Saffron",
+    "description": "Ingredients+ - Monstropolis - The Power Plant - Pickup 010 (Possible drops: Celery, Saffron)"
+  },
+  {
+    "id": "MI_04_PF_001",
+    "name": "Ingredients+ - Monstropolis - Pickup 011",
+    "world": "Monstropolis",
+    "display_name": "Lemon / Orange",
+    "description": "Ingredients+ - Monstropolis - The Door Vault - Pickup 011 (Possible drops: Lemon, Orange)"
+  },
+  {
+    "id": "MI_04_PF_002",
+    "name": "Ingredients+ - Monstropolis - Pickup 012",
+    "world": "Monstropolis",
+    "display_name": "Dill / Tomato",
+    "description": "Ingredients+ - Monstropolis - The Door Vault - Pickup 012 (Possible drops: Dill, Tomato)"
+  },
+  {
+    "id": "MI_04_PF_003",
+    "name": "Ingredients+ - Monstropolis - Pickup 013",
+    "world": "Monstropolis",
+    "display_name": "Olive Oil",
+    "description": "Ingredients+ - Monstropolis - The Door Vault - Pickup 013 (Possible drops: Olive Oil)"
+  },
+  {
+    "id": "MI_04_PF_004",
+    "name": "Ingredients+ - Monstropolis - Pickup 014",
+    "world": "Monstropolis",
+    "display_name": "Pear",
+    "description": "Ingredients+ - Monstropolis - The Door Vault - Pickup 014 (Possible drops: Pear)"
+  },
+  {
+    "id": "MI_04_PF_005",
+    "name": "Ingredients+ - Monstropolis - Pickup 015",
+    "world": "Monstropolis",
+    "display_name": "Beef",
+    "description": "Ingredients+ - Monstropolis - The Door Vault - Pickup 015 (Possible drops: Beef)"
+  },
+  {
+    "id": "RA_01_F_001",
+    "name": "Ingredients+ - Kingdom of Corona - Pickup 001",
+    "world": "Kingdom of Corona",
+    "display_name": "Rosemary",
+    "description": "Ingredients+ - Kingdom of Corona - The Forest - Pickup 001 (Possible drops: Rosemary)"
+  },
+  {
+    "id": "RA_01_F_002",
+    "name": "Ingredients+ - Kingdom of Corona - Pickup 002",
+    "world": "Kingdom of Corona",
+    "display_name": "Rosemary",
+    "description": "Ingredients+ - Kingdom of Corona - The Forest - Pickup 002 (Possible drops: Rosemary)"
+  },
+  {
+    "id": "RA_01_F_003",
+    "name": "Ingredients+ - Kingdom of Corona - Pickup 003",
+    "world": "Kingdom of Corona",
+    "display_name": "Bay Leaf",
+    "description": "Ingredients+ - Kingdom of Corona - The Forest - Pickup 003 (Possible drops: Bay Leaf)"
+  },
+  {
+    "id": "RA_01_F_004",
+    "name": "Ingredients+ - Kingdom of Corona - Pickup 004",
+    "world": "Kingdom of Corona",
+    "display_name": "Bay Leaf",
+    "description": "Ingredients+ - Kingdom of Corona - The Forest - Pickup 004 (Possible drops: Bay Leaf)"
+  },
+  {
+    "id": "RA_01_F_005",
+    "name": "Ingredients+ - Kingdom of Corona - Pickup 005",
+    "world": "Kingdom of Corona",
+    "display_name": "Eel",
+    "description": "Ingredients+ - Kingdom of Corona - The Forest - Pickup 005 (Possible drops: Eel)"
+  },
+  {
+    "id": "RA_01_F_006",
+    "name": "Ingredients+ - Kingdom of Corona - Pickup 006",
+    "world": "Kingdom of Corona",
+    "display_name": "Thyme",
+    "description": "Ingredients+ - Kingdom of Corona - The Forest - Pickup 006 (Possible drops: Thyme)"
+  },
+  {
+    "id": "RA_01_F_007",
+    "name": "Ingredients+ - Kingdom of Corona - Pickup 007",
+    "world": "Kingdom of Corona",
+    "display_name": "Thyme",
+    "description": "Ingredients+ - Kingdom of Corona - The Forest - Pickup 007 (Possible drops: Thyme)"
+  },
+  {
+    "id": "RA_01_F_008",
+    "name": "Ingredients+ - Kingdom of Corona - Pickup 008",
+    "world": "Kingdom of Corona",
+    "display_name": "Basil",
+    "description": "Ingredients+ - Kingdom of Corona - The Forest - Pickup 008 (Possible drops: Basil)"
+  },
+  {
+    "id": "RA_01_F_009",
+    "name": "Ingredients+ - Kingdom of Corona - Pickup 009",
+    "world": "Kingdom of Corona",
+    "display_name": "Bay Leaf",
+    "description": "Ingredients+ - Kingdom of Corona - The Forest - Pickup 009 (Possible drops: Bay Leaf)"
+  },
+  {
+    "id": "RA_01_F_010",
+    "name": "Ingredients+ - Kingdom of Corona - Pickup 010",
+    "world": "Kingdom of Corona",
+    "display_name": "Basil",
+    "description": "Ingredients+ - Kingdom of Corona - The Forest - Pickup 010 (Possible drops: Basil)"
+  },
+  {
+    "id": "RA_01_F_011",
+    "name": "Ingredients+ - Kingdom of Corona - Pickup 011",
+    "world": "Kingdom of Corona",
+    "display_name": "Morel",
+    "description": "Ingredients+ - Kingdom of Corona - The Forest - Pickup 011 (Possible drops: Morel)"
+  },
+  {
+    "id": "RA_01_F_012",
+    "name": "Ingredients+ - Kingdom of Corona - Pickup 012",
+    "world": "Kingdom of Corona",
+    "display_name": "Chanterelle",
+    "description": "Ingredients+ - Kingdom of Corona - The Forest - Pickup 012 (Possible drops: Chanterelle)"
+  },
+  {
+    "id": "RA_01_F_013",
+    "name": "Ingredients+ - Kingdom of Corona - Pickup 013",
+    "world": "Kingdom of Corona",
+    "display_name": "Rosemary",
+    "description": "Ingredients+ - Kingdom of Corona - The Forest - Pickup 013 (Possible drops: Rosemary)"
+  },
+  {
+    "id": "RA_01_F_014",
+    "name": "Ingredients+ - Kingdom of Corona - Pickup 014",
+    "world": "Kingdom of Corona",
+    "display_name": "Bay Leaf",
+    "description": "Ingredients+ - Kingdom of Corona - The Forest - Pickup 014 (Possible drops: Bay Leaf)"
+  },
+  {
+    "id": "RA_01_F_015",
+    "name": "Ingredients+ - Kingdom of Corona - Pickup 015",
+    "world": "Kingdom of Corona",
+    "display_name": "Thyme",
+    "description": "Ingredients+ - Kingdom of Corona - The Forest - Pickup 015 (Possible drops: Thyme)"
+  },
+  {
+    "id": "RA_01_F_016",
+    "name": "Ingredients+ - Kingdom of Corona - Pickup 016",
+    "world": "Kingdom of Corona",
+    "display_name": "Thyme",
+    "description": "Ingredients+ - Kingdom of Corona - The Forest - Pickup 016 (Possible drops: Thyme)"
+  },
+  {
+    "id": "RA_01_F_017",
+    "name": "Ingredients+ - Kingdom of Corona - Pickup 017",
+    "world": "Kingdom of Corona",
+    "display_name": "Black Truffle",
+    "description": "Ingredients+ - Kingdom of Corona - The Forest - Pickup 017 (Possible drops: Black Truffle)"
+  },
+  {
+    "id": "RA_01_F_018",
+    "name": "Ingredients+ - Kingdom of Corona - Pickup 018",
+    "world": "Kingdom of Corona",
+    "display_name": "Eel",
+    "description": "Ingredients+ - Kingdom of Corona - The Forest - Pickup 018 (Possible drops: Eel)"
+  },
+  {
+    "id": "RA_01_F_019",
+    "name": "Ingredients+ - Kingdom of Corona - Pickup 019",
+    "world": "Kingdom of Corona",
+    "display_name": "King Oyster Mushroom",
+    "description": "Ingredients+ - Kingdom of Corona - The Forest - Pickup 019 (Possible drops: King Oyster Mushroom)"
+  },
+  {
+    "id": "RA_01_F_020",
+    "name": "Ingredients+ - Kingdom of Corona - Pickup 020",
+    "world": "Kingdom of Corona",
+    "display_name": "Black Trumpet",
+    "description": "Ingredients+ - Kingdom of Corona - The Forest - Pickup 020 (Possible drops: Black Trumpet)"
+  },
+  {
+    "id": "RA_01_F_021",
+    "name": "Ingredients+ - Kingdom of Corona - Pickup 021",
+    "world": "Kingdom of Corona",
+    "display_name": "Morel",
+    "description": "Ingredients+ - Kingdom of Corona - The Forest - Pickup 021 (Possible drops: Morel)"
+  },
+  {
+    "id": "RA_01_F_022",
+    "name": "Ingredients+ - Kingdom of Corona - Pickup 022",
+    "world": "Kingdom of Corona",
+    "display_name": "Chanterelle",
+    "description": "Ingredients+ - Kingdom of Corona - The Forest - Pickup 022 (Possible drops: Chanterelle)"
+  },
+  {
+    "id": "RA_01_F_023",
+    "name": "Ingredients+ - Kingdom of Corona - Pickup 023",
+    "world": "Kingdom of Corona",
+    "display_name": "King Oyster Mushroom",
+    "description": "Ingredients+ - Kingdom of Corona - The Forest - Pickup 023 (Possible drops: King Oyster Mushroom)"
+  },
+  {
+    "id": "RA_01_F_024",
+    "name": "Ingredients+ - Kingdom of Corona - Pickup 024",
+    "world": "Kingdom of Corona",
+    "display_name": "Basil",
+    "description": "Ingredients+ - Kingdom of Corona - The Forest - Pickup 024 (Possible drops: Basil)"
+  },
+  {
+    "id": "RA_01_F_025",
+    "name": "Ingredients+ - Kingdom of Corona - Pickup 025",
+    "world": "Kingdom of Corona",
+    "display_name": "Basil",
+    "description": "Ingredients+ - Kingdom of Corona - The Forest - Pickup 025 (Possible drops: Basil)"
+  },
+  {
+    "id": "RA_01_F_026",
+    "name": "Ingredients+ - Kingdom of Corona - Pickup 026",
+    "world": "Kingdom of Corona",
+    "display_name": "Rosemary",
+    "description": "Ingredients+ - Kingdom of Corona - The Forest - Pickup 026 (Possible drops: Rosemary)"
+  },
+  {
+    "id": "RA_01_F_027",
+    "name": "Ingredients+ - Kingdom of Corona - Pickup 027",
+    "world": "Kingdom of Corona",
+    "display_name": "Black Trumpet",
+    "description": "Ingredients+ - Kingdom of Corona - The Forest - Pickup 027 (Possible drops: Black Trumpet)"
+  },
+  {
+    "id": "RA_01_F_028",
+    "name": "Ingredients+ - Kingdom of Corona - Pickup 028",
+    "world": "Kingdom of Corona",
+    "display_name": "Eel",
+    "description": "Ingredients+ - Kingdom of Corona - The Forest - Pickup 028 (Possible drops: Eel)"
+  },
+  {
+    "id": "RA_01_F_029",
+    "name": "Ingredients+ - Kingdom of Corona - Pickup 029",
+    "world": "Kingdom of Corona",
+    "display_name": "Bay Leaf",
+    "description": "Ingredients+ - Kingdom of Corona - The Forest - Pickup 029 (Possible drops: Bay Leaf)"
+  },
+  {
+    "id": "RA_01_F_030",
+    "name": "Ingredients+ - Kingdom of Corona - Pickup 030",
+    "world": "Kingdom of Corona",
+    "display_name": "Basil",
+    "description": "Ingredients+ - Kingdom of Corona - The Forest - Pickup 030 (Possible drops: Basil)"
+  },
+  {
+    "id": "RA_01_F_031",
+    "name": "Ingredients+ - Kingdom of Corona - Pickup 031",
+    "world": "Kingdom of Corona",
+    "display_name": "Chanterelle",
+    "description": "Ingredients+ - Kingdom of Corona - The Forest - Pickup 031 (Possible drops: Chanterelle)"
+  },
+  {
+    "id": "RA_01_F_032",
+    "name": "Ingredients+ - Kingdom of Corona - Pickup 032",
+    "world": "Kingdom of Corona",
+    "display_name": "Scallop",
+    "description": "Ingredients+ - Kingdom of Corona - The Forest - Pickup 032 (Possible drops: Scallop)"
+  },
+  {
+    "id": "RA_01_F_033",
+    "name": "Ingredients+ - Kingdom of Corona - Pickup 033",
+    "world": "Kingdom of Corona",
+    "display_name": "Scallop",
+    "description": "Ingredients+ - Kingdom of Corona - The Forest - Pickup 033 (Possible drops: Scallop)"
+  },
+  {
+    "id": "RA_01_F_034",
+    "name": "Ingredients+ - Kingdom of Corona - Pickup 034",
+    "world": "Kingdom of Corona",
+    "display_name": "Eel",
+    "description": "Ingredients+ - Kingdom of Corona - The Forest - Pickup 034 (Possible drops: Eel)"
+  },
+  {
+    "id": "RA_01_F_035",
+    "name": "Ingredients+ - Kingdom of Corona - Pickup 035",
+    "world": "Kingdom of Corona",
+    "display_name": "Eel",
+    "description": "Ingredients+ - Kingdom of Corona - The Forest - Pickup 035 (Possible drops: Eel)"
+  },
+  {
+    "id": "RA_01_F_036",
+    "name": "Ingredients+ - Kingdom of Corona - Pickup 036",
+    "world": "Kingdom of Corona",
+    "display_name": "Eel",
+    "description": "Ingredients+ - Kingdom of Corona - The Forest - Pickup 036 (Possible drops: Eel)"
+  },
+  {
+    "id": "RA_01_F_037",
+    "name": "Ingredients+ - Kingdom of Corona - Pickup 037",
+    "world": "Kingdom of Corona",
+    "display_name": "Eel",
+    "description": "Ingredients+ - Kingdom of Corona - The Forest - Pickup 037 (Possible drops: Eel)"
+  },
+  {
+    "id": "RA_01_F_038",
+    "name": "Ingredients+ - Kingdom of Corona - Pickup 038",
+    "world": "Kingdom of Corona",
+    "display_name": "Eel",
+    "description": "Ingredients+ - Kingdom of Corona - The Forest - Pickup 038 (Possible drops: Eel)"
+  },
+  {
+    "id": "RA_01_F_039",
+    "name": "Ingredients+ - Kingdom of Corona - Pickup 039",
+    "world": "Kingdom of Corona",
+    "display_name": "Eel",
+    "description": "Ingredients+ - Kingdom of Corona - The Forest - Pickup 039 (Possible drops: Eel)"
+  },
+  {
+    "id": "RA_01_F_040",
+    "name": "Ingredients+ - Kingdom of Corona - Pickup 040",
+    "world": "Kingdom of Corona",
+    "display_name": "Eel",
+    "description": "Ingredients+ - Kingdom of Corona - The Forest - Pickup 040 (Possible drops: Eel)"
+  },
+  {
+    "id": "RA_01_F_041",
+    "name": "Ingredients+ - Kingdom of Corona - Pickup 041",
+    "world": "Kingdom of Corona",
+    "display_name": "Lobster",
+    "description": "Ingredients+ - Kingdom of Corona - The Forest - Pickup 041 (Possible drops: Lobster)"
+  },
+  {
+    "id": "RA_01_F_042",
+    "name": "Ingredients+ - Kingdom of Corona - Pickup 042",
+    "world": "Kingdom of Corona",
+    "display_name": "Sea Bass",
+    "description": "Ingredients+ - Kingdom of Corona - The Forest - Pickup 042 (Possible drops: Sea Bass)"
+  },
+  {
+    "id": "RA_01_F_043",
+    "name": "Ingredients+ - Kingdom of Corona - Pickup 043",
+    "world": "Kingdom of Corona",
+    "display_name": "Sea Bass",
+    "description": "Ingredients+ - Kingdom of Corona - The Forest - Pickup 043 (Possible drops: Sea Bass)"
+  },
+  {
+    "id": "RA_02_F_001",
+    "name": "Ingredients+ - Kingdom of Corona - Pickup 044",
+    "world": "Kingdom of Corona",
+    "display_name": "Cod",
+    "description": "Ingredients+ - Kingdom of Corona - The Kingdom - Pickup 044 (Possible drops: Cod)"
+  },
+  {
+    "id": "RA_02_F_002",
+    "name": "Ingredients+ - Kingdom of Corona - Pickup 045",
+    "world": "Kingdom of Corona",
+    "display_name": "Lobster",
+    "description": "Ingredients+ - Kingdom of Corona - The Kingdom - Pickup 045 (Possible drops: Lobster)"
+  },
+  {
+    "id": "RA_02_F_003",
+    "name": "Ingredients+ - Kingdom of Corona - Pickup 046",
+    "world": "Kingdom of Corona",
+    "display_name": "Sea Bass",
+    "description": "Ingredients+ - Kingdom of Corona - The Kingdom - Pickup 046 (Possible drops: Sea Bass)"
+  },
+  {
+    "id": "RA_02_F_004",
+    "name": "Ingredients+ - Kingdom of Corona - Pickup 047",
+    "world": "Kingdom of Corona",
+    "display_name": "Cod",
+    "description": "Ingredients+ - Kingdom of Corona - The Kingdom - Pickup 047 (Possible drops: Cod)"
+  },
+  {
+    "id": "RA_02_F_005",
+    "name": "Ingredients+ - Kingdom of Corona - Pickup 048",
+    "world": "Kingdom of Corona",
+    "display_name": "Sea Bass",
+    "description": "Ingredients+ - Kingdom of Corona - The Kingdom - Pickup 048 (Possible drops: Sea Bass)"
+  },
+  {
+    "id": "RA_02_F_006",
+    "name": "Ingredients+ - Kingdom of Corona - Pickup 049",
+    "world": "Kingdom of Corona",
+    "display_name": "Mussel",
+    "description": "Ingredients+ - Kingdom of Corona - The Kingdom - Pickup 049 (Possible drops: Mussel)"
+  },
+  {
+    "id": "RA_02_F_007",
+    "name": "Ingredients+ - Kingdom of Corona - Pickup 050",
+    "world": "Kingdom of Corona",
+    "display_name": "Mussel",
+    "description": "Ingredients+ - Kingdom of Corona - The Kingdom - Pickup 050 (Possible drops: Mussel)"
+  },
+  {
+    "id": "RA_02_F_008",
+    "name": "Ingredients+ - Kingdom of Corona - Pickup 051",
+    "world": "Kingdom of Corona",
+    "display_name": "Sole",
+    "description": "Ingredients+ - Kingdom of Corona - The Kingdom - Pickup 051 (Possible drops: Sole)"
+  },
+  {
+    "id": "RA_02_F_009",
+    "name": "Ingredients+ - Kingdom of Corona - Pickup 052",
+    "world": "Kingdom of Corona",
+    "display_name": "Cod",
+    "description": "Ingredients+ - Kingdom of Corona - The Kingdom - Pickup 052 (Possible drops: Cod)"
+  },
+  {
+    "id": "RA_02_F_010",
+    "name": "Ingredients+ - Kingdom of Corona - Pickup 053",
+    "world": "Kingdom of Corona",
+    "display_name": "Scallop",
+    "description": "Ingredients+ - Kingdom of Corona - The Kingdom - Pickup 053 (Possible drops: Scallop)"
+  },
+  {
+    "id": "RA_02_PF_011",
+    "name": "Ingredients+ - Kingdom of Corona - Pickup 054",
+    "world": "Kingdom of Corona",
+    "display_name": "Pumpkin",
+    "description": "Ingredients+ - Kingdom of Corona - The Kingdom - Pickup 054 (Possible drops: Pumpkin)"
+  },
+  {
+    "id": "RA_02_PF_012",
+    "name": "Ingredients+ - Kingdom of Corona - Pickup 055",
+    "world": "Kingdom of Corona",
+    "display_name": "Zucchini",
+    "description": "Ingredients+ - Kingdom of Corona - The Kingdom - Pickup 055 (Possible drops: Zucchini)"
+  },
+  {
+    "id": "RA_02_PF_013",
+    "name": "Ingredients+ - Kingdom of Corona - Pickup 056",
+    "world": "Kingdom of Corona",
+    "display_name": "Tomato",
+    "description": "Ingredients+ - Kingdom of Corona - The Kingdom - Pickup 056 (Possible drops: Tomato)"
+  },
+  {
+    "id": "RA_02_PF_014",
+    "name": "Ingredients+ - Kingdom of Corona - Pickup 057",
+    "world": "Kingdom of Corona",
+    "display_name": "Eggplant",
+    "description": "Ingredients+ - Kingdom of Corona - The Kingdom - Pickup 057 (Possible drops: Eggplant)"
+  },
+  {
+    "id": "RA_02_PF_015",
+    "name": "Ingredients+ - Kingdom of Corona - Pickup 058",
+    "world": "Kingdom of Corona",
+    "display_name": "Garlic",
+    "description": "Ingredients+ - Kingdom of Corona - The Kingdom - Pickup 058 (Possible drops: Garlic)"
+  },
+  {
+    "id": "RA_02_PF_016",
+    "name": "Ingredients+ - Kingdom of Corona - Pickup 059",
+    "world": "Kingdom of Corona",
+    "display_name": "Pumpkin",
+    "description": "Ingredients+ - Kingdom of Corona - The Kingdom - Pickup 059 (Possible drops: Pumpkin)"
+  },
+  {
+    "id": "RA_02_PF_017",
+    "name": "Ingredients+ - Kingdom of Corona - Pickup 060",
+    "world": "Kingdom of Corona",
+    "display_name": "Zucchini",
+    "description": "Ingredients+ - Kingdom of Corona - The Kingdom - Pickup 060 (Possible drops: Zucchini)"
+  },
+  {
+    "id": "RA_02_PF_018",
+    "name": "Ingredients+ - Kingdom of Corona - Pickup 061",
+    "world": "Kingdom of Corona",
+    "display_name": "Tomato",
+    "description": "Ingredients+ - Kingdom of Corona - The Kingdom - Pickup 061 (Possible drops: Tomato)"
+  },
+  {
+    "id": "RA_02_PF_019",
+    "name": "Ingredients+ - Kingdom of Corona - Pickup 062",
+    "world": "Kingdom of Corona",
+    "display_name": "Eggplant",
+    "description": "Ingredients+ - Kingdom of Corona - The Kingdom - Pickup 062 (Possible drops: Eggplant)"
+  },
+  {
+    "id": "RA_02_PF_020",
+    "name": "Ingredients+ - Kingdom of Corona - Pickup 063",
+    "world": "Kingdom of Corona",
+    "display_name": "Garlic",
+    "description": "Ingredients+ - Kingdom of Corona - The Kingdom - Pickup 063 (Possible drops: Garlic)"
+  },
+  {
+    "id": "TS_01_F_001",
+    "name": "Ingredients+ - Toy Box - Pickup 001",
+    "world": "Toy Box",
+    "display_name": "Rosemary",
+    "description": "Ingredients+ - Toy Box - Andy's House - Pickup 001 (Possible drops: Rosemary)"
+  },
+  {
+    "id": "TS_01_F_002",
+    "name": "Ingredients+ - Toy Box - Pickup 002",
+    "world": "Toy Box",
+    "display_name": "Parsley",
+    "description": "Ingredients+ - Toy Box - Andy's House - Pickup 002 (Possible drops: Parsley)"
+  },
+  {
+    "id": "TS_01_F_003",
+    "name": "Ingredients+ - Toy Box - Pickup 003",
+    "world": "Toy Box",
+    "display_name": "Parsley",
+    "description": "Ingredients+ - Toy Box - Andy's House - Pickup 003 (Possible drops: Parsley)"
+  },
+  {
+    "id": "TS_01_F_004",
+    "name": "Ingredients+ - Toy Box - Pickup 004",
+    "world": "Toy Box",
+    "display_name": "Basil",
+    "description": "Ingredients+ - Toy Box - Andy's House - Pickup 004 (Possible drops: Basil)"
+  },
+  {
+    "id": "TS_01_F_005",
+    "name": "Ingredients+ - Toy Box - Pickup 005",
+    "world": "Toy Box",
+    "display_name": "Thyme",
+    "description": "Ingredients+ - Toy Box - Andy's House - Pickup 005 (Possible drops: Thyme)"
+  },
+  {
+    "id": "TS_01_F_006",
+    "name": "Ingredients+ - Toy Box - Pickup 006",
+    "world": "Toy Box",
+    "display_name": "Rosemary",
+    "description": "Ingredients+ - Toy Box - Andy's House - Pickup 006 (Possible drops: Rosemary)"
+  },
+  {
+    "id": "TS_01_F_007",
+    "name": "Ingredients+ - Toy Box - Pickup 007",
+    "world": "Toy Box",
+    "display_name": "Cloves",
+    "description": "Ingredients+ - Toy Box - Andy's House - Pickup 007 (Possible drops: Cloves)"
+  },
+  {
+    "id": "TS_01_F_008",
+    "name": "Ingredients+ - Toy Box - Pickup 008",
+    "world": "Toy Box",
+    "display_name": "Basil",
+    "description": "Ingredients+ - Toy Box - Andy's House - Pickup 008 (Possible drops: Basil)"
+  },
+  {
+    "id": "TS_01_F_009",
+    "name": "Ingredients+ - Toy Box - Pickup 009",
+    "world": "Toy Box",
+    "display_name": "Basil",
+    "description": "Ingredients+ - Toy Box - Andy's House - Pickup 009 (Possible drops: Basil)"
+  },
+  {
+    "id": "TS_01_F_010",
+    "name": "Ingredients+ - Toy Box - Pickup 010",
+    "world": "Toy Box",
+    "display_name": "Bay Leaf",
+    "description": "Ingredients+ - Toy Box - Andy's House - Pickup 010 (Possible drops: Bay Leaf)"
+  },
+  {
+    "id": "TS_01_F_011",
+    "name": "Ingredients+ - Toy Box - Pickup 011",
+    "world": "Toy Box",
+    "display_name": "Thyme",
+    "description": "Ingredients+ - Toy Box - Andy's House - Pickup 011 (Possible drops: Thyme)"
+  },
+  {
+    "id": "TS_01_F_012",
+    "name": "Ingredients+ - Toy Box - Pickup 012",
+    "world": "Toy Box",
+    "display_name": "Parsley",
+    "description": "Ingredients+ - Toy Box - Andy's House - Pickup 012 (Possible drops: Parsley)"
+  },
+  {
+    "id": "TS_01_F_013",
+    "name": "Ingredients+ - Toy Box - Pickup 013",
+    "world": "Toy Box",
+    "display_name": "Cloves",
+    "description": "Ingredients+ - Toy Box - Andy's House - Pickup 013 (Possible drops: Cloves)"
+  },
+  {
+    "id": "TS_01_F_014",
+    "name": "Ingredients+ - Toy Box - Pickup 014",
+    "world": "Toy Box",
+    "display_name": "Rosemary",
+    "description": "Ingredients+ - Toy Box - Andy's House - Pickup 014 (Possible drops: Rosemary)"
+  },
+  {
+    "id": "TS_01_F_015",
+    "name": "Ingredients+ - Toy Box - Pickup 015",
+    "world": "Toy Box",
+    "display_name": "Cloves",
+    "description": "Ingredients+ - Toy Box - Andy's House - Pickup 015 (Possible drops: Cloves)"
+  },
+  {
+    "id": "TS_01_F_016",
+    "name": "Ingredients+ - Toy Box - Pickup 016",
+    "world": "Toy Box",
+    "display_name": "Basil",
+    "description": "Ingredients+ - Toy Box - Andy's House - Pickup 016 (Possible drops: Basil)"
+  },
+  {
+    "id": "TS_01_F_017",
+    "name": "Ingredients+ - Toy Box - Pickup 017",
+    "world": "Toy Box",
+    "display_name": "Thyme",
+    "description": "Ingredients+ - Toy Box - Andy's House - Pickup 017 (Possible drops: Thyme)"
+  },
+  {
+    "id": "TS_01_F_018",
+    "name": "Ingredients+ - Toy Box - Pickup 018",
+    "world": "Toy Box",
+    "display_name": "Bay Leaf",
+    "description": "Ingredients+ - Toy Box - Andy's House - Pickup 018 (Possible drops: Bay Leaf)"
+  },
+  {
+    "id": "TS_02_PF_001",
+    "name": "Ingredients+ - Toy Box - Pickup 019",
+    "world": "Toy Box",
+    "display_name": "Caviar / Cheese",
+    "description": "Ingredients+ - Toy Box - Galaxy Toys - Pickup 019 (Possible drops: Caviar, Cheese)"
+  },
+  {
+    "id": "TS_02_PF_002",
+    "name": "Ingredients+ - Toy Box - Pickup 020",
+    "world": "Toy Box",
+    "display_name": "Pumpkin / Tomato",
+    "description": "Ingredients+ - Toy Box - Galaxy Toys - Pickup 020 (Possible drops: Pumpkin, Tomato)"
+  },
+  {
+    "id": "TS_02_PF_003",
+    "name": "Ingredients+ - Toy Box - Pickup 021",
+    "world": "Toy Box",
+    "display_name": "Chocolate / Cornichon",
+    "description": "Ingredients+ - Toy Box - Galaxy Toys - Pickup 021 (Possible drops: Chocolate, Cornichon)"
+  },
+  {
+    "id": "TS_02_PF_004",
+    "name": "Ingredients+ - Toy Box - Pickup 022",
+    "world": "Toy Box",
+    "display_name": "Beef / Garlic",
+    "description": "Ingredients+ - Toy Box - Galaxy Toys - Pickup 022 (Possible drops: Beef, Garlic)"
+  },
+  {
+    "id": "TS_02_PF_005",
+    "name": "Ingredients+ - Toy Box - Pickup 023",
+    "world": "Toy Box",
+    "display_name": "Cheese / Olive Oil",
+    "description": "Ingredients+ - Toy Box - Galaxy Toys - Pickup 023 (Possible drops: Cheese, Olive Oil)"
+  },
+  {
+    "id": "TS_02_PF_006",
+    "name": "Ingredients+ - Toy Box - Pickup 024",
+    "world": "Toy Box",
+    "display_name": "Pumpkin / Tomato",
+    "description": "Ingredients+ - Toy Box - Galaxy Toys - Pickup 024 (Possible drops: Pumpkin, Tomato)"
+  },
+  {
+    "id": "TS_02_PF_007",
+    "name": "Ingredients+ - Toy Box - Pickup 025",
+    "world": "Toy Box",
+    "display_name": "Butter / Cornichon",
+    "description": "Ingredients+ - Toy Box - Galaxy Toys - Pickup 025 (Possible drops: Butter, Cornichon)"
+  },
+  {
+    "id": "TS_02_PF_008",
+    "name": "Ingredients+ - Toy Box - Pickup 026",
+    "world": "Toy Box",
+    "display_name": "Beef / Garlic",
+    "description": "Ingredients+ - Toy Box - Galaxy Toys - Pickup 026 (Possible drops: Beef, Garlic)"
+  },
+  {
+    "id": "TS_02_PF_009",
+    "name": "Ingredients+ - Toy Box - Pickup 027",
+    "world": "Toy Box",
+    "display_name": "Cheese / Olive Oil",
+    "description": "Ingredients+ - Toy Box - Galaxy Toys - Pickup 027 (Possible drops: Cheese, Olive Oil)"
+  },
+  {
+    "id": "TS_02_PF_010",
+    "name": "Ingredients+ - Toy Box - Pickup 028",
+    "world": "Toy Box",
+    "display_name": "Caviar / Chocolate",
+    "description": "Ingredients+ - Toy Box - Galaxy Toys - Pickup 028 (Possible drops: Caviar, Chocolate)"
+  },
+  {
+    "id": "TS_02_PF_011",
+    "name": "Ingredients+ - Toy Box - Pickup 029",
+    "world": "Toy Box",
+    "display_name": "Butter / Cornichon",
+    "description": "Ingredients+ - Toy Box - Galaxy Toys - Pickup 029 (Possible drops: Butter, Cornichon)"
+  },
+  {
+    "id": "TT_01_PF_001",
+    "name": "Ingredients+ - Twilight Town - Pickup 001",
+    "world": "Twilight Town",
+    "display_name": "Apricot / Pear",
+    "description": "Ingredients+ - Twilight Town - The Neighborhood - Pickup 001 (Possible drops: Apricot, Pear)"
+  },
+  {
+    "id": "TT_01_PF_002",
+    "name": "Ingredients+ - Twilight Town - Pickup 002",
+    "world": "Twilight Town",
+    "display_name": "Apricot / Lemon",
+    "description": "Ingredients+ - Twilight Town - The Neighborhood - Pickup 002 (Possible drops: Apricot, Lemon)"
+  },
+  {
+    "id": "TT_01_PF_003",
+    "name": "Ingredients+ - Twilight Town - Pickup 003",
+    "world": "Twilight Town",
+    "display_name": "Lemon / Pear",
+    "description": "Ingredients+ - Twilight Town - The Neighborhood - Pickup 003 (Possible drops: Lemon, Pear)"
+  },
+  {
+    "id": "TT_01_PF_004",
+    "name": "Ingredients+ - Twilight Town - Pickup 004",
+    "world": "Twilight Town",
+    "display_name": "Apple / Lemon",
+    "description": "Ingredients+ - Twilight Town - The Neighborhood - Pickup 004 (Possible drops: Apple, Lemon)"
+  },
+  {
+    "id": "TT_01_PF_006",
+    "name": "Ingredients+ - Twilight Town - Pickup 005",
+    "world": "Twilight Town",
+    "display_name": "Apple / Pear",
+    "description": "Ingredients+ - Twilight Town - The Neighborhood - Pickup 005 (Possible drops: Apple, Pear)"
+  },
+  {
+    "id": "TT_01_PF_007",
+    "name": "Ingredients+ - Twilight Town - Pickup 006",
+    "world": "Twilight Town",
+    "display_name": "Sole / Veal",
+    "description": "Ingredients+ - Twilight Town - The Neighborhood - Pickup 006 (Possible drops: Sole, Veal)"
+  },
+  {
+    "id": "TT_01_PF_008",
+    "name": "Ingredients+ - Twilight Town - Pickup 007",
+    "world": "Twilight Town",
+    "display_name": "Caviar / Cornichon",
+    "description": "Ingredients+ - Twilight Town - The Neighborhood - Pickup 007 (Possible drops: Caviar, Cornichon)"
+  },
+  {
+    "id": "TT_01_PF_009",
+    "name": "Ingredients+ - Twilight Town - Pickup 008",
+    "world": "Twilight Town",
+    "display_name": "Butter / Chocolate",
+    "description": "Ingredients+ - Twilight Town - The Neighborhood - Pickup 008 (Possible drops: Butter, Chocolate)"
+  },
+  {
+    "id": "TT_01_PF_010",
+    "name": "Ingredients+ - Twilight Town - Pickup 009",
+    "world": "Twilight Town",
+    "display_name": "Butter / Caviar",
+    "description": "Ingredients+ - Twilight Town - The Neighborhood - Pickup 009 (Possible drops: Butter, Caviar)"
+  },
+  {
+    "id": "TT_01_PF_011",
+    "name": "Ingredients+ - Twilight Town - Pickup 010",
+    "world": "Twilight Town",
+    "display_name": "Caviar / Chocolate",
+    "description": "Ingredients+ - Twilight Town - The Neighborhood - Pickup 010 (Possible drops: Caviar, Chocolate)"
+  },
+  {
+    "id": "TT_01_PF_012",
+    "name": "Ingredients+ - Twilight Town - Pickup 011",
+    "world": "Twilight Town",
+    "display_name": "Butter / Chocolate",
+    "description": "Ingredients+ - Twilight Town - The Neighborhood - Pickup 011 (Possible drops: Butter, Chocolate)"
+  },
+  {
+    "id": "TT_01_PF_013",
+    "name": "Ingredients+ - Twilight Town - Pickup 012",
+    "world": "Twilight Town",
+    "display_name": "Butter / Caviar",
+    "description": "Ingredients+ - Twilight Town - The Neighborhood - Pickup 012 (Possible drops: Butter, Caviar)"
+  },
+  {
+    "id": "TT_01_PF_014",
+    "name": "Ingredients+ - Twilight Town - Pickup 013",
+    "world": "Twilight Town",
+    "display_name": "Eel / Sole",
+    "description": "Ingredients+ - Twilight Town - The Neighborhood - Pickup 013 (Possible drops: Eel, Sole)"
+  },
+  {
+    "id": "TT_01c_F_001",
+    "name": "Ingredients+ - Twilight Town - Pickup 014",
+    "world": "Twilight Town",
+    "display_name": "Unknown ingredient",
+    "description": "Ingredients+ - Twilight Town - The Neighborhood - Pickup 014 (Drop unknown)"
+  },
+  {
+    "id": "TT_01c_F_002",
+    "name": "Ingredients+ - Twilight Town - Pickup 015",
+    "world": "Twilight Town",
+    "display_name": "Black Trumpet",
+    "description": "Ingredients+ - Twilight Town - The Neighborhood - Pickup 015 (Possible drops: Black Trumpet)"
+  },
+  {
+    "id": "TT_01c_F_003",
+    "name": "Ingredients+ - Twilight Town - Pickup 016",
+    "world": "Twilight Town",
+    "display_name": "Chanterelle",
+    "description": "Ingredients+ - Twilight Town - The Neighborhood - Pickup 016 (Possible drops: Chanterelle)"
+  },
+  {
+    "id": "TT_01c_F_004",
+    "name": "Ingredients+ - Twilight Town - Pickup 017",
+    "world": "Twilight Town",
+    "display_name": "Unknown ingredient",
+    "description": "Ingredients+ - Twilight Town - The Neighborhood - Pickup 017 (Drop unknown)"
+  },
+  {
+    "id": "TT_01d_F_001",
+    "name": "Ingredients+ - Twilight Town - Pickup 018",
+    "world": "Twilight Town",
+    "display_name": "Parsley",
+    "description": "Ingredients+ - Twilight Town - The Neighborhood - Pickup 018 (Possible drops: Parsley)"
+  }
+]

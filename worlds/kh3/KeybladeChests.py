@@ -1,9 +1,6 @@
-"""Seed-owned chest requirements and fixed Keyblade palettes."""
+"""Seed-owned Keyblade chest requirements."""
 
 from __future__ import annotations
-
-import json
-from importlib.resources import files
 
 from .Data import (
     PORTAL_KEYBLADE_ITEM_NAMES,
@@ -15,9 +12,6 @@ from .Data import (
 
 KEYBLADE_CHEST_FIELDS = (
     "keyblade_chest_keyblade", "keyblade_chest_token", "keyblade_chest_native",
-)
-KEYBLADE_CHEST_PALETTES = json.loads(
-    files(__package__).joinpath("data/keyblade_chest_palettes.json").read_text(encoding="utf-8")
 )
 
 
@@ -39,8 +33,6 @@ def assign_keyblade_chests(rng, locations: list[dict], options, slot_data: dict 
         if (enabled and row.get("type") == "treasure" and "mom_song_id" not in row
                 and world_option and int(getattr(options, world_option).value) == 2):
             candidates[(row["source_table"], row["source_id"])] = row
-    if set(RANDOMIZED_KEYBLADE_ITEM_NAMES) != set(KEYBLADE_CHEST_PALETTES):
-        raise ValueError("Chestsanity palettes must cover every randomized Keyblade.")
     # Keep chest keys separate from the active world-door keys. In character
     # mode those same door Keyblades instead become the chest requirements.
     party_portals = int(options.portal_unlocks.value) == 1

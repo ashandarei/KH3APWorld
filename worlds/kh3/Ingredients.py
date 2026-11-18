@@ -4,10 +4,8 @@ Each location records the first qualifying world pickup, independently of stock
 already bought, consumed or restored. The original ingredient is never removed.
 """
 import json
-import re
 
 from .PackageResources import read_package_text
-from .MinimapReference import MINIMAP_REFERENCE
 
 INGREDIENT_NAMES = (
     "Crab", "Scallop", "Lobster", "Sole", "Eel", "Sea Bass", "Mussel", "Cod",
@@ -26,38 +24,8 @@ INGREDIENT_STATE_SCHEMA = "kh3ap.runtime_ingredient_state.v1"
 INGREDIENT_WORLD_SOURCES = json.loads(read_package_text(
     "data/ingredient_sources.json", module_file=__file__))["ingredients"]
 INGREDIENT_SPOTS = json.loads(read_package_text(
-    "data/ingredient_spots.json", module_file=__file__))["spots"]
+    "data/ingredient_checks.json", module_file=__file__))
 INGREDIENT_SPOTS_BY_ID = {spot["id"]: spot for spot in INGREDIENT_SPOTS}
-
-
-def _spot_labels() -> tuple[dict[str, str], dict[str, str]]:
-    """Join exact actor identities to the reviewed journal and map labels once."""
-    journal = json.loads(read_package_text("data/ingredient_journal.json", module_file=__file__))
-    actor_drops: dict[str, set[str]] = {}
-    for ingredient in journal["ingredients"]:
-        for source in ingredient["sources"]:
-            for actor in source["actors"]:
-                actor_drops.setdefault(actor, set()).add(ingredient["name"])
-    maps = {key[:4].lower(): entry["map_name"] for key, entry in MINIMAP_REFERENCE.items()
-            if entry["map_name"]}
-    display_names, descriptions = {}, {}
-    for spot in INGREDIENT_SPOTS:
-        map_names, drops = set(), set()
-        for actor in spot["actors"]:
-            match = re.search(r"/Levels/([a-z]{2})/\1_(\d\d)/", actor)
-            if match:
-                map_key = match[1] + match[2]
-                map_names.add(maps.get(map_key, f"Map {match[1]}_{match[2]}"))
-            drops.update(actor_drops.get(actor, ()))
-        pickup = spot["name"].rsplit(" - ", 1)[-1]
-        display_names[spot["id"]] = " / ".join(sorted(drops)) if drops else "Unknown ingredient"
-        drop_label = "Possible drops: " + ", ".join(sorted(drops)) if drops else "Drop unknown"
-        descriptions[spot["id"]] = (
-            f"Ingredients+ - {spot['world']} - {' / '.join(sorted(map_names))} - {pickup} ({drop_label})")
-        if spot["id"] in INGREDIENT_JUNK_SPOTS:
-            display_names[spot["id"]] += " (Optional - not required)"
-            descriptions[spot["id"]] += " (Optional - not required)"
-    return display_names, descriptions
 
 
 def ingredient_location_description(location: dict) -> str | None:
@@ -86,7 +54,13 @@ INGREDIENT_JUNK_SPOTS = (
 )
 
 
-INGREDIENT_SPOT_DISPLAY_NAMES, INGREDIENT_SPOT_DESCRIPTIONS = _spot_labels()
+def _spot_labels(field: str) -> dict[str, str]:
+    return {spot["id"]: spot[field] + (" (Optional - not required)" if spot["id"] in INGREDIENT_JUNK_SPOTS else "")
+            for spot in INGREDIENT_SPOTS}
+
+
+INGREDIENT_SPOT_DISPLAY_NAMES = _spot_labels("display_name")
+INGREDIENT_SPOT_DESCRIPTIONS = _spot_labels("description")
 
 
 def ingredient_spot_is_junk(location: dict) -> bool:

@@ -27,6 +27,11 @@ from . import KH3TestBase
 from .test_helpers import KH3WorldIntegrityMixin
 
 
+def authored_ingredient_spots():
+    source = Path(__file__).resolve().parents[1] / "data/ingredient_spots.json"
+    return json.loads(source.read_text(encoding="utf-8"))["spots"]
+
+
 class TestIngredientChecks(KH3WorldIntegrityMixin, KH3TestBase):
     options = {"ingredients": "ingredientsanity"}
 
@@ -313,7 +318,7 @@ class TestIngredientSpots(KH3WorldIntegrityMixin, KH3TestBase):
     def test_native_catalog_matches_python_catalog(self):
         header = native_project_root() / 'KH3APProbeCpp/kh3ap/features/ingredients/ingredient_spots.h'
         native = re.findall(r'\{L"([^"]+)", L"([^"]+)"\}', header.read_text())
-        expected = [(actor, spot["id"]) for spot in INGREDIENT_SPOTS for actor in spot["actors"]]
+        expected = [(actor, spot["id"]) for spot in authored_ingredient_spots() for actor in spot["actors"]]
         self.assertEqual(native, expected)
 
     def test_spot_catalog_and_generation(self):
@@ -323,10 +328,12 @@ class TestIngredientSpots(KH3WorldIntegrityMixin, KH3TestBase):
         self.assertEqual({x["source_table"] for x in checks}, {"IngredientSpot"})
         self.assertEqual(len(self.multiworld.itempool), len(self.multiworld.get_unfilled_locations()))
         self.assertEqual(len({s["id"] for s in INGREDIENT_SPOTS}), 298)
-        actors = [actor for s in INGREDIENT_SPOTS for actor in s["actors"]]
+        spots = authored_ingredient_spots()
+        self.assertEqual([spot["id"] for spot in spots], [spot["id"] for spot in INGREDIENT_SPOTS])
+        actors = [actor for spot in spots for actor in spot["actors"]]
         self.assertEqual(len(set(actors)), len(actors))
         self.assertFalse(any("tutorial" in a.lower() for a in actors))
-        self.assertEqual(sum(len(s["actors"]) > 1 for s in INGREDIENT_SPOTS), 24)
+        self.assertEqual(sum(len(s["actors"]) > 1 for s in spots), 24)
         slots = self.world.build_runtime_slot_data()
         self.assertEqual(slots["ingredients"], 2)
         self.assertEqual(slots["ingredient_checks"], 0)

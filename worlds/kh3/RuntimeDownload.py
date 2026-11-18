@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import hashlib
+import io
 import json
 import logging
 import os
@@ -10,10 +11,12 @@ import re
 import threading
 import time
 import urllib.request
+import zipfile
 from pathlib import Path
 from typing import Any
 
 from .bridge_support.files import atomic_write_json, load_optional_json_file
+from .installer_support.release_archive import verified_archive
 from .platform_support.download_tls import create_download_ssl_context
 
 logger = logging.getLogger("Client")
@@ -21,6 +24,7 @@ REPOSITORY = "ashandarei/ue4ss-goa"
 RELEASE_API_URL = f"https://api.github.com/repos/{REPOSITORY}/releases/tags/"
 RELEASE_CONFIG_NAME = "ue4ss-release.json"
 DLL_NAMES = ("UE4SS.dll", "dwmapi.dll")
+NOTICE_FILES = ("KH3AP-Licenses/manifest.json", "KH3AP-Licenses/THIRD_PARTY_NOTICES.txt")
 MAX_DLL_SIZE = 128 * 1024 * 1024
 _CACHE_LOCK = threading.RLock()
 
@@ -177,6 +181,16 @@ def _normalize_release(release: Any, config: dict[str, Any]) -> dict[str, Any]:
             raise ValueError(f"UE4SS release {tag}: {name} differs from this APWorld's pinned DLL")
         selected[name] = {"sha256": sha256, "size": size, "url": url}
     return {"tag": tag, "files": selected, "manifest": release}
+
+
+def release_notices(config: dict[str, Any]) -> dict[str, bytes]:
+    release_url(config)
+    tag = config["release_tag"]
+    url = f"https://github.com/{REPOSITORY}/releases/download/{tag}/KH3AP-Licenses-{tag}.zip"
+    data = verified_archive(url, config.get("notices_size"), config.get("notices_sha256"),
+                            _read_url, runtime_cache_path().parent)
+    with zipfile.ZipFile(io.BytesIO(data)) as archive:
+        return {name: archive.read(name) for name in NOTICE_FILES}
 
 
 def stage_runtime(config: dict[str, Any], win64: Path, staging: Path) -> dict[str, Any]:

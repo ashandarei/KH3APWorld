@@ -25,8 +25,10 @@ The upstream README's complete credits section is preserved in
 UPSTREAM-KH3RandomizerClient-CREDITS.txt, including the main developers,
 CriticPerfect and WaterKH, and the other contributors acknowledged there.
 
-These notices apply to the adapted portions; they do not declare a license for
-the entire APWorld or for the game assets. Additional notices for the asset
-format references and runtime components are included in
-seedgen/THIRD_PARTY_NOTICES.txt, runtime/THIRD_PARTY_NOTICES.md, and
-runtime/MoM/THIRD_PARTY_NOTICES.md when those components are packaged.
+The player package includes configuration files from 02-GoA and configuration
+and Lua signature files from UE4SS. Their upstream MIT licenses are in
+LICENSE-02-GoA.txt and LICENSE-UE4SS.txt. The seed generator documents its
+format references in seedgen/THIRD_PARTY_NOTICES.txt.
+
+The installers obtain binary redistribution notices from the same GitHub
+releases as KH3Runtime, 02-GoA, UE4SS and MoM-GoA-AP.

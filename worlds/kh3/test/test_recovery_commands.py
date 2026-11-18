@@ -1,5 +1,6 @@
 """Recovery runs through the real client parser and in-memory IPC boundary."""
 import json
+from pathlib import Path
 from types import SimpleNamespace
 
 import pytest
@@ -147,6 +148,13 @@ def test_invalid_name_never_dispatches(recovery, name):
     service, transport, _ = recovery
     assert not service.gameflow(name)
     assert transport.read(GAMEFLOW) is None
+
+
+def test_mapjump_paths_match_persistent_maps_in_grant_audit():
+    data = Path(__file__).resolve().parents[1] / "data"
+    entries = json.loads((data / "runtime_map_ap_grant_classification.json").read_text(encoding="utf-8"))["entries"]
+    expected = {row["path"] for row in entries if row["path"].rsplit("/", 1)[-1].casefold() == row["map"].casefold()}
+    assert (data / "map_jump_paths.txt").read_text(encoding="utf-8").splitlines() == sorted(expected)
 
 
 def test_mapjump_parser_resolves_catalog_and_only_reports_dispatch(recovery):

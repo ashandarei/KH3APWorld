@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import json
+from functools import cache
 from pathlib import Path
 
 WORLD_ROOT = Path(__file__).resolve().parent
@@ -203,9 +204,11 @@ def build_items(defaults: dict, display_names: dict[str, str]) -> list[dict]:
     return items
 
 
-def build_runtime_flag_rows_by_token(defaults: dict) -> dict[str, list[str]]:
+@cache
+def load_runtime_flag_rows_by_token() -> dict[str, list[str]]:
+    """Derive native item flags from the merged defaults for developer tools."""
     token_to_rows: dict[str, set[str]] = {}
-    for category in defaults.values():
+    for category in load_default_kh3().values():
         if not isinstance(category, dict):
             continue
         for row_name, payload in category.items():
@@ -394,7 +397,6 @@ def main() -> None:
         "meta": {
             "source_default_kh3": DEFAULT_KH3_PATH.relative_to(WORLD_ROOT).as_posix(),
             "source_descriptions": DESCRIPTIONS_PATH.relative_to(WORLD_ROOT).as_posix(),
-            "runtime_flag_rows_by_token": build_runtime_flag_rows_by_token(defaults),
         },
         "items": build_items(defaults, display_names),
         "locations": locations,

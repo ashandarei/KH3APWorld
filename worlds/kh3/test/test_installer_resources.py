@@ -6,7 +6,7 @@ import sys
 import zipfile
 from pathlib import Path
 
-from ..installer_support import resources, probe_release
+from ..installer_support import resources, probe_release, release_archive
 from ..platform_support import download_tls
 from .runtime_download_fixture import probe_release_payload
 
@@ -19,6 +19,7 @@ def test_resource_owner_imports_and_reads_from_packaged_world(tmp_path):
         bundle.writestr("fixture/installer_support/__init__.py", "")
         bundle.write(Path(resources.__file__), "fixture/installer_support/resources.py")
         bundle.writestr("fixture/runtime/Win64/UE4SS-settings.ini", b"settings fixture")
+        bundle.write(Path(release_archive.__file__), "fixture/installer_support/release_archive.py")
         bundle.write(Path(probe_release.__file__), "fixture/installer_support/probe_release.py")
         bundle.writestr("fixture/platform_support/__init__.py", "")
         bundle.write(Path(download_tls.__file__), "fixture/platform_support/download_tls.py")

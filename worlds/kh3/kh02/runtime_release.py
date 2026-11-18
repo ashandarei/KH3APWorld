@@ -6,6 +6,7 @@ import json
 import re
 import urllib.request
 
+from ..installer_support.release_archive import verified_archive
 from ..platform_support.download_tls import create_download_ssl_context
 
 CONFIG_NAME = "02-goa-release.json"
@@ -14,7 +15,7 @@ MAX_DLL_SIZE = 128 * 1024 * 1024
 ASSET_PROTOCOL = 3
 
 
-def companion_bytes(resource) -> bytes:
+def companion_payload(resource) -> tuple[bytes, bytes]:
     """Stage verified bytes before installation; never fall back on download failure."""
     config = json.loads(resource("runtime", "KH02", CONFIG_NAME).read_bytes())
     if type(config.get("asset_protocol")) is not int or config["asset_protocol"] != ASSET_PROTOCOL:
@@ -31,10 +32,16 @@ def companion_bytes(resource) -> bytes:
     if config.get("source") != "release":
         raise ValueError("KH0.2 companion must use a pinned GitHub release")
     url = f"https://github.com/{REPOSITORY}/releases/download/{tag}/main.dll"
+    notices_url = f"https://github.com/{REPOSITORY}/releases/download/{tag}/02-GoA-{tag}-licenses.zip"
+    notices = verified_archive(notices_url, config.get("notices_size"), config.get("notices_sha256"), _download)
+    data = _download(url, size)
+    if len(data) != size or hashlib.sha256(data).hexdigest() != sha256:
+        raise ValueError("KH0.2 main.dll failed size/SHA-256 verification")
+    return data, notices
+
+
+def _download(url: str, size: int) -> bytes:
     request = urllib.request.Request(url, headers={
         "User-Agent": "KH3-Archipelago-Runtime", "Accept": "application/octet-stream"})
     with urllib.request.urlopen(request, timeout=60, context=create_download_ssl_context()) as response:
-        data = response.read(size + 1)
-    if len(data) != size or hashlib.sha256(data).hexdigest() != sha256:
-        raise ValueError("KH0.2 main.dll failed size/SHA-256 verification")
-    return data
+        return response.read(size + 1)

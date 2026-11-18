@@ -12,6 +12,7 @@ WORLD = ROOT / "worlds/kh3"
 
 def catalog_data() -> dict:
     data = import_world_module("Data")
+    flag_rows = import_world_module("extract_data").load_runtime_flag_rows_by_token()
     extracted = data.load_extracted_data()
     ids = data.build_item_name_to_id(extracted)
     tokens = dict(data._build_runtime_token_to_item_name())
@@ -20,7 +21,7 @@ def catalog_data() -> dict:
         "items": {str(item_id): {"name": data.resolve_item_display_name(name),
                    "token": data.resolve_item_runtime_token(name) or ""}
                   for name, item_id in sorted(ids.items(), key=lambda entry: entry[1])},
-        "tokens": {token: {"name": name, "flags": data.resolve_runtime_flag_names(token),
+        "tokens": {token: {"name": name, "flags": flag_rows.get(token, []),
                            "munny": data.MUNNY_POUCH_MUNNY_AMOUNT_BY_NAME.get(name, 0)}
                    for token, name in sorted(tokens.items())},
         "vbonus_bundles": [{"tokens": list(bundle), "source_id": source}
@@ -34,6 +35,8 @@ def catalog_data() -> dict:
 def chest_data() -> dict:
     data = import_world_module("Data")
     palettes = json.loads((WORLD / "data/keyblade_chest_palettes.json").read_text(encoding="utf-8"))
+    if set(data.RANDOMIZED_KEYBLADE_ITEM_NAMES) != set(palettes):
+        raise ValueError("Chestsanity palettes must cover every randomized Keyblade.")
     for name, palette in palettes.items():
         palette["token"] = data.resolve_item_runtime_token(name)
     chests = {

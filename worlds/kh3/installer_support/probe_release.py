@@ -12,6 +12,7 @@ from pathlib import Path
 from types import SimpleNamespace
 
 from ..platform_support.download_tls import create_download_ssl_context
+from .release_archive import verified_archive
 
 CONFIG_PATH = ("runtime", "Mods", "KH3APProbeCpp", "runtime-release.json")
 REPOSITORY = "ashandarei/KH3Runtime"
@@ -73,7 +74,7 @@ def _player_metadata(package: zipfile.ZipFile, config: dict) -> None:
 
 
 class PinnedProbeResource:
-    """Metadata is local; only explicit installation reads/downloads the DLL."""
+    """Status reads the local pin. Installation verifies the published DLL and notices."""
 
     name = "main.dll"
 
@@ -105,30 +106,34 @@ class PinnedProbeResource:
         return self.is_file() and info.get("size") == self.config["size"] and (
             str(info.get("sha256", "")).lower() == self.config["sha256"])
 
-    def use_installed(self, path: Path) -> None:
-        """A verified existing DLL can repair another layout without network access."""
-        if self._data is not None:
-            return
-        if path.is_file() and path.stat().st_size == self.config["size"]:
-            data = path.read_bytes()
-            if hashlib.sha256(data).hexdigest() == self.config["sha256"]:
-                self._data = data
-
     def read_bytes(self) -> bytes:
-        if self._data is not None:
-            return self._data
+        if self._data is None:
+            self.load_release()
+        return self._data
+
+    def load_release(self, cache_dir: Path | None = None) -> dict[str, bytes]:
+        """Verify the DLL and collect its accompanying license files from the same ZIP."""
         config = self.config
         url = f"https://github.com/{REPOSITORY}/releases/download/{config['release_tag']}/{config['asset']}"
-        archive = _download(url, config["archive_size"])
-        if len(archive) != config["archive_size"] or hashlib.sha256(archive).hexdigest() != config["archive_sha256"]:
-            raise ValueError("KH3Runtime archive failed size/SHA-256 verification")
+        archive = verified_archive(url, config["archive_size"], config["archive_sha256"], _download, cache_dir)
         with zipfile.ZipFile(io.BytesIO(archive)) as package:
             matches = [entry for entry in package.infolist() if entry.filename == DLL_ENTRY]
             if len(matches) != 1 or matches[0].file_size != config["size"]:
                 raise ValueError("KH3Runtime archive has an invalid DLL entry")
             data = package.read(matches[0])
             _player_metadata(package, config)
+            notices = {name: package.read(name) for name in ("LICENSE", "THIRD_PARTY_NOTICES.md")}
+            for entry in package.infolist():
+                if entry.is_dir() or not entry.filename.startswith("licenses/"):
+                    continue
+                if not re.fullmatch(r"licenses/[A-Za-z0-9_-][A-Za-z0-9_.-]*", entry.filename):
+                    raise ValueError(f"Unexpected KH3Runtime license path: {entry.filename}")
+                if entry.filename in notices:
+                    raise ValueError(f"Duplicate KH3Runtime license: {entry.filename}")
+                notices[entry.filename] = package.read(entry)
+            if len(notices) == 2 or not all(notices.values()):
+                raise ValueError("KH3Runtime archive is missing dependency notices")
         if len(data) != config["size"] or hashlib.sha256(data).hexdigest() != config["sha256"]:
             raise ValueError("KH3Runtime main.dll failed size/SHA-256 verification")
         self._data = data
-        return data
+        return notices

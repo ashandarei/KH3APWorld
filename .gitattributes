@@ -1,2 +1,4 @@
 worlds/blasphemous/region_data.py linguist-generated=true
 worlds/yachtdice/YachtWeights.py linguist-generated=true
+worlds/kh3/LICENSE text eol=lf
+worlds/kh3/LICENSE-*.txt text eol=lf

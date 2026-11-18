@@ -114,7 +114,7 @@ class KH3HostApworldTests(unittest.TestCase):
             self.assertIn(b"GNU GENERAL PUBLIC LICENSE", archive.read("kh3/LICENSE"))
             self.assertIn(b"Version 3, 29 June 2007", archive.read("kh3/LICENSE"))
             self.assertTrue((ROOT / "LICENSE").read_bytes().startswith(b"MIT License"))
-            self.assertEqual((ROOT / "LICENSE").read_bytes(), archive.read("kh3/LICENSE-Archipelago.txt"))
+            self.assertEqual((ROOT / "LICENSE").read_text(), archive.read("kh3/LICENSE-Archipelago.txt").decode())
             for runtime_license in (
                 "runtime/Mods/KH3APProbeCpp/LICENSE", "runtime/KH02/02-GoA-Licenses/LICENSE"
             ):

@@ -11,6 +11,14 @@ from unittest.mock import patch
 from .. import RuntimeDownload
 
 
+def loader_notice_zip():
+    buffer = io.BytesIO()
+    with zipfile.ZipFile(buffer, "w") as archive:
+        for name in RuntimeDownload.NOTICE_FILES:
+            archive.writestr(name, f"published {name}")
+    return buffer.getvalue()
+
+
 @contextmanager
 def runtime_release_fixture(bundle: Path):
     payloads = {}
@@ -22,6 +30,8 @@ def runtime_release_fixture(bundle: Path):
     config = {"repository": RuntimeDownload.REPOSITORY, "release_tag": "v3.0.4",
               "ue4ss_sha256": hashlib.sha256(payloads["UE4SS.dll"]).hexdigest(),
               "proxy_sha256": {"dwmapi.dll": hashlib.sha256(payloads["dwmapi.dll"]).hexdigest()}}
+    notices = loader_notice_zip()
+    config.update(notices_size=len(notices), notices_sha256=hashlib.sha256(notices).hexdigest())
     (bundle / RuntimeDownload.RELEASE_CONFIG_NAME).write_text(json.dumps(config), encoding="utf-8")
     release = {
         "tag_name": "v3.0.4",
@@ -38,6 +48,7 @@ def runtime_release_fixture(bundle: Path):
         ],
     }
     responses = {asset["browser_download_url"]: payloads[asset["name"]] for asset in release["assets"]}
+    responses["https://github.com/ashandarei/ue4ss-goa/releases/download/v3.0.4/KH3AP-Licenses-v3.0.4.zip"] = notices
     responses[RuntimeDownload.release_url(config)] = json.dumps(release).encode()
 
     def read_url(url, limit):
@@ -64,6 +75,9 @@ def probe_release_payload(data=b"probe", *, metadata_overrides=None):
     }
     metadata.update(metadata_overrides or {})
     with zipfile.ZipFile(output, "w") as archive:
+        archive.writestr("LICENSE", b"published MIT")
+        archive.writestr("THIRD_PARTY_NOTICES.md", b"published notices")
+        archive.writestr("licenses/dependency.txt", b"published dependency")
         archive.writestr(probe_release.DLL_ENTRY, data)
         archive.writestr(probe_release.DLL_ENTRY + ".build.json", json.dumps(metadata))
         archive.writestr("manifest.json", json.dumps({**metadata, "schema": 1, "version": "2.0.0"}))

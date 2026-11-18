@@ -10,19 +10,21 @@ from contextlib import contextmanager
 from datetime import datetime
 from pathlib import Path
 
+from ..RuntimeDownload import NOTICE_FILES
 from ..bridge_support.files import atomic_write_json
 from ..installer_support.resources import _runtime_resource
 from ..platform_support.process_status import is_process_running
 from .installation import EXE, inspect_install
 
 MOD = "Mods/KH02APProbeCpp/dlls/main.dll"
+COMPANION_NOTICES = "Mods/KH02APProbeCpp/02-GoA-licenses.zip"
 MODS = "Mods/mods.txt"
 STATE = "kh02-client-install"
 SETUP = ("MemberVariableLayout.ini", "VTableLayout.ini", "UE4SS-settings.ini")
 # Recognize preceding installer journals so their backups remain reversible.
 # New installs never create a catalog; the companion discovers its index in RAM.
 RETIRED_CATALOG = "kh02_asset_catalog.json"
-MANAGED = {MOD, MODS, *SETUP, RETIRED_CATALOG, "override.txt", "UE4SS.dll", "dwmapi.dll"}
+MANAGED = {MOD, MODS, COMPANION_NOTICES, *NOTICE_FILES, *SETUP, RETIRED_CATALOG, "override.txt", "UE4SS.dll", "dwmapi.dll"}
 
 
 def safe_path(root: Path, name: str) -> Path:
@@ -113,24 +115,25 @@ def mod_list(data: bytes, enabled: bool) -> bytes:
 
 
 def payload(root: Path) -> dict[str, bytes]:
-    from .runtime_release import companion_bytes
+    from .runtime_release import companion_payload
     resources = {name: _runtime_resource("runtime", "KH02", name) for name in SETUP}
     missing = [name for name, resource in resources.items() if not resource.is_file()]
     if missing:
         raise FileNotFoundError("KH0.2 runtime payload is missing: " + ", ".join(missing))
     files = {name: resource.read_bytes() for name, resource in resources.items()}
-    files[MOD] = companion_bytes(_runtime_resource)
+    files[MOD], files[COMPANION_NOTICES] = companion_payload(_runtime_resource)
     # With override.txt selecting the executable directory, UE4SS's default
     # Mods path follows the loaded source even through a Linux document portal.
     files["override.txt"] = b".\n"
     # Verify existing loaders against the same release pins as KH3 before any game writes.
-    from ..RuntimeDownload import DLL_NAMES, RELEASE_CONFIG_NAME, stage_runtime
-    for name in DLL_NAMES:
+    from ..RuntimeDownload import DLL_NAMES, RELEASE_CONFIG_NAME, release_notices, stage_runtime
+    for name in (*DLL_NAMES, *NOTICE_FILES):
         safe_path(root, name)
     config = json.loads(_runtime_resource("runtime", "Win64", RELEASE_CONFIG_NAME).read_bytes())
     with tempfile.TemporaryDirectory(prefix="kh02-loader-") as directory:
         staging = Path(directory)
         release = stage_runtime(config, root, staging)
+        files.update(release_notices(config))
         files.update({name: (staging / name).read_bytes() for name in release["downloaded"]})
     return files
 
@@ -202,7 +205,7 @@ def uninstall(path: Path) -> str:
             if name == MODS and current is not None and digest(current) != entry["sha256"]:
                 atomic_bytes(target, mod_list(current, False))
                 continue
-            if other_mods and name not in (MOD, MODS, RETIRED_CATALOG):
+            if other_mods and name not in (MOD, MODS, COMPANION_NOTICES, RETIRED_CATALOG):
                 continue
             if current is not None and digest(current) not in (
                     entry["sha256"], entry.get("original_sha256"), *entry.get("previous_hashes", [])):

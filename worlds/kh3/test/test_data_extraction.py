@@ -18,4 +18,6 @@ def test_json_source_catalog_reproduces_bundled_items_locations_and_runtime_flag
         descriptions["chest_location_descriptions"],
     )
     assert locations == bundled["locations"]
-    assert extract_data.build_runtime_flag_rows_by_token(defaults) == bundled["meta"]["runtime_flag_rows_by_token"]
+    assert "runtime_flag_rows_by_token" not in bundled["meta"]
+    flags = extract_data.load_runtime_flag_rows_by_token()
+    assert flags["ETresVictoryBonusKind::MELEM_CURE"][0] == "GIVESORA_MELEM_CURE_01"

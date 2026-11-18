@@ -2,7 +2,6 @@
 from __future__ import annotations
 
 from functools import lru_cache
-import json
 import re
 
 from ..PackageResources import read_package_text
@@ -46,6 +45,7 @@ KH02_MAPS = (
     (9, "APKH02Depths", "/Game/Maps/APKH02Mirrors/APKH02Depths", "Depths"),
     (10, "APKH02DestinyIslands", "/Game/Maps/APKH02Mirrors/APKH02DestinyIslands", "DestinyIslands"),
     (11, "APKH02MirrorChallenge", "/Game/Maps/APKH02Mirrors/APKH02MirrorChallenge", "MirrorChallenge"),
+    (12, "APKH02MirrorChallengeSecond", "/Game/Maps/APKH02Mirrors/APKH02MirrorChallengeSecond", "MirrorChallengeSecond"),
     (59, "APKH02Transition", "/Game/Maps/APKH02Mirrors/APKH02Transition", "KH02Transition"),
     (60, "APKH02Epilogue", "/Game/Maps/APKH02Mirrors/APKH02Epilogue", "Epilogue"),
 )
@@ -53,15 +53,11 @@ KH02_MAPS = (
 
 @lru_cache(maxsize=1)
 def _map_names() -> dict[str, set[str]]:
-    entries = json.loads(read_package_text(
-        "data/runtime_map_ap_grant_classification.json", module_file=__file__,
-    ))["entries"]
+    paths = read_package_text("data/map_jump_paths.txt", module_file=__file__).splitlines()
     names: dict[str, set[str]] = {}
-    for row in entries:
-        # The grant audit also records incomplete/manual paths. They are not
-        # persistent-map destinations and must not make a real map ambiguous.
-        if row["path"].rsplit("/", 1)[-1].casefold() == row["map"].casefold():
-            names.setdefault(row["map"].casefold(), set()).add(row["path"])
+    for path in paths:
+        map_name = path.rsplit("/", 1)[-1].casefold()
+        names.setdefault(map_name, set()).add(path)
     for zone, first_map in ZONE_START_MAPS.items():
         names[zone] = names[first_map].copy()
     for area, host, package, alias in KH02_MAPS:

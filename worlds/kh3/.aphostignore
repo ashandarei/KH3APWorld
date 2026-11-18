@@ -46,14 +46,12 @@
 !/kh02/__init__.py
 !/kh02/locations.py
 !/kh02/objectives.py
-!/data/adversary_journal.json
+!/data/adversary_checks.json
 !/data/extracted_locations.json
 !/data/ingredient_logic_dependencies.json
-!/data/ingredient_journal.json
+!/data/ingredient_checks.json
 !/data/ingredient_sources.json
-!/data/ingredient_spots.json
 !/data/ingredient_spawn_rates.json
-!/data/keyblade_chest_palettes.json
 !/data/lucky_emblem_spots.json
 !/data/minigame_item_rewards.json
 !/data/minimap_reference.json

@@ -25,7 +25,7 @@ def write_apworld(output_path: Path, world_directory: Path, files: list[str],
     The caller must serialize writers (the Docker cache mount uses sharing=locked).
     """
     output_path.parent.mkdir(parents=True, exist_ok=True)
-    files = sorted(files)
+    files = sorted(Path(name).as_posix() for name in files)
     manifest_json = json.dumps(manifest)
     key_inputs = {
         "builder": file_digest(Path(__file__)),

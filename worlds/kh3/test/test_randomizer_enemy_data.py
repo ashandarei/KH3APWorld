@@ -53,7 +53,7 @@ class KH3RandomizerEnemyDataTest(unittest.TestCase):
         for relative_path in level_paths | {
             path.relative_to(RANDOMIZER_ROOT).as_posix() for path in enemy_paths
         }:
-            self.assertFalse(apignore.match_file(f"randomizer/{relative_path}"), relative_path)
+            self.assertTrue(apignore.match_file(f"randomizer/{relative_path}"), relative_path)
 
         from ..seedgen.remaps import EXCLUDED_ENEMY_FILES
         self.assertEqual(EXCLUDED_ENEMY_FILES, EXCLUDED_ENEMY_FILE_NAMES)

@@ -75,20 +75,18 @@ def test_rejects_corrupt_or_mismatched_download(tmp_path, mutation):
         source_for(tmp_path, config).read_bytes()
 
 
-def test_installed_hash_match_works_offline_and_same_size_mismatch_does_not(tmp_path):
-    config, _ = probe_release_payload()
-    installed = tmp_path / "main.dll"
-    installed.write_bytes(b"probe")
+def test_cached_release_repairs_dll_and_notices_offline_and_rejects_corruption(tmp_path):
+    config, archive = probe_release_payload()
+    with patch.object(probe_release, "_download", return_value=archive):
+        source_for(tmp_path, config).load_release(tmp_path)
     with patch.object(probe_release, "_download", side_effect=OSError("offline")) as download:
         source = source_for(tmp_path, config)
-        source.use_installed(installed)
+        assert source.load_release(tmp_path)["licenses/dependency.txt"] == b"published dependency"
         assert source.read_bytes() == b"probe"
         download.assert_not_called()
-        installed.write_bytes(b"wrong")
-        source = source_for(tmp_path, config)
-        source.use_installed(installed)
+        (tmp_path / (config["archive_sha256"] + ".zip")).write_bytes(b"x" * len(archive))
         with pytest.raises(OSError):
-            source.read_bytes()
+            source_for(tmp_path, config).load_release(tmp_path)
 
 
 @pytest.mark.parametrize("failure", [OSError("offline"), b"corrupted archive"])
@@ -102,6 +100,8 @@ def test_failed_probe_download_preserves_install_and_skips_prerequisites(tmp_pat
     kwargs = {"side_effect": failure} if isinstance(failure, Exception) else {"return_value": failure}
     with probe_release_fixture(probe), \
             patch.object(installation, "stage_runtime", return_value={"skipped": []}), \
+            patch.object(installation.RuntimeDownload, "release_notices", return_value={}), \
+            patch.object(installation.RuntimeDownload, "runtime_cache_path", return_value=tmp_path / "cache.json"), \
             patch.object(probe_release, "_download", **kwargs), \
             patch.object(installation, "prepare_xinput_runtime") as prerequisite:
         result = installation.install_kh3_runtime(tmp_path / "game")

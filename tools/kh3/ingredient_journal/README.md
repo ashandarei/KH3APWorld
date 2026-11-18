@@ -64,6 +64,7 @@ Run from the APWorld checkout; stock assets/localization remain ignored fixtures
 ```powershell
 python tools/kh3/ingredient_journal/generate_catalog.py --items LOCAL_TresItemData.uasset
 python -m tools.kh3.ingredient_journal.generate_adversaries --snapshot build/adversaries-test/catalog-with-actors.json --names build/adversaries-test/kh3_char_name.locres
+python tools/kh3/ingredient_journal/generate_player_catalogs.py
 .\scripts\test-kh3.ps1 -NativeIntegration -PytestArgs @('tools/kh3/tests/test_adversary_journal.py', 'tools/kh3/tests/test_ingredient_journal.py', 'tools/kh3/tests/test_shop_runtime_extension.py', '-q')
 ```
 

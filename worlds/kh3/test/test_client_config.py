@@ -3274,8 +3274,6 @@ class TestKH3ItemConsumerPlan(unittest.TestCase):
                 result["ue4ss_settings"]["changed"],
                 [
                     "UE4SS-settings.ini",
-                    "CustomGameConfigs/Kingdom Hearts 3/UE4SS-settings.ini",
-                    "KINGDOM HEARTS III/UE4SS-settings.ini",
                 ],
             )
             for relative_path in installer_ue4ss_config.ue4ss_settings_relative_paths(win64):
@@ -3438,7 +3436,10 @@ class TestKH3ItemConsumerPlan(unittest.TestCase):
             )
             self.assertIn("AddressLoaded - 0x20", signature_path.read_text(encoding="utf-8"))
             self.assertIn("AddressLoaded - 0x20", config_signature_path.read_text(encoding="utf-8"))
-            self.assertTrue((win64 / "KH_3" / "MemberVariableLayout.ini").is_file())
+            for name in ("MemberVariableLayout.ini", "VTableLayout.ini", "UE4SS-settings.ini"):
+                self.assertTrue((win64 / "KH_3" / name).is_file())
+                self.assertFalse((win64 / "KINGDOM HEARTS III" / name).exists())
+            self.assertFalse((win64 / "CustomGameConfigs").exists())
             self.assertEqual((win64 / "KH_3" / "UE4SS_Signatures" / "FName_Constructor.lua").read_text(encoding="utf-8"), "fname")
             path_specific_probe = win64 / "KH_3" / "Mods" / "KH3APProbeCpp"
             self.assertEqual((path_specific_probe / "dlls" / "main.dll").read_bytes(), b"probe")
@@ -3482,7 +3483,7 @@ class TestKH3ItemConsumerPlan(unittest.TestCase):
             self.assertEqual(status["probe_dll_build_stamp"], "2026-05-07T04:25 dev-test-build")
             self.assertEqual(status["probe_dll_short_hash"], hashlib.sha256(probe_bytes).hexdigest().upper()[:8])
 
-    def test_runtime_installer_enforces_required_ue4ss_settings_in_all_layouts(self) -> None:
+    def test_runtime_installer_configures_selected_game_directory_and_preserves_unused_template(self) -> None:
         with TemporaryDirectory() as temp_dir:
             temp_root = Path(temp_dir)
             bundle_win64 = temp_root / "bundle" / "Win64"
@@ -3499,10 +3500,13 @@ class TestKH3ItemConsumerPlan(unittest.TestCase):
             legacy_settings.write_text("[Hooks]\n", encoding="utf-8")
             bundle_probe.write_bytes(b"probe")
 
-            kh3_root = temp_root / "KINGDOM HEARTS III"
+            kh3_root = temp_root / "KINGDOM HEARTS III" / "KINGDOM HEARTS III"
             win64 = kh3_root / "Binaries" / "Win64"
             win64.mkdir(parents=True)
 
+            unused_settings = win64 / "CustomGameConfigs" / "Kingdom Hearts 3" / "UE4SS-settings.ini"
+            unused_settings.parent.mkdir(parents=True)
+            unused_settings.write_text("existing settings", encoding="utf-8")
             with runtime_release_fixture(bundle_win64), \
                     patch.object(installer_resources, "RUNTIME_WIN64_DIR", bundle_win64), \
                     probe_release_fixture(bundle_probe):
@@ -3513,10 +3517,10 @@ class TestKH3ItemConsumerPlan(unittest.TestCase):
                 result["ue4ss_settings"]["changed"],
                 [
                     "UE4SS-settings.ini",
-                    "CustomGameConfigs/Kingdom Hearts 3/UE4SS-settings.ini",
                     "KINGDOM HEARTS III/UE4SS-settings.ini",
                 ],
             )
+            self.assertEqual(unused_settings.read_text(encoding="utf-8"), "existing settings")
             for relative_path in installer_ue4ss_config.ue4ss_settings_relative_paths(win64):
                 text = (win64 / relative_path).read_text(encoding="utf-8")
                 self.assertIn("HookProcessInternal = 0", text)

@@ -2,6 +2,7 @@
 
 import copy
 import hashlib
+import io
 import json
 import os
 import unittest
@@ -11,7 +12,7 @@ from tempfile import TemporaryDirectory
 from unittest.mock import patch
 
 from worlds.kh3 import RuntimeDownload
-from .runtime_download_fixture import probe_release_fixture, probe_release_payload
+from .runtime_download_fixture import loader_notice_zip, probe_release_fixture, probe_release_payload
 from ..installer_support import probe_release
 
 from ..installer_support import (
@@ -42,6 +43,8 @@ class TestRuntimeDownload(unittest.TestCase):
             name: hashlib.sha256(data).hexdigest()
             for name, data in self.payloads.items() if name != "UE4SS.dll"
         }}
+        self.notice_zip = loader_notice_zip()
+        self.config.update(notices_size=len(self.notice_zip), notices_sha256=hashlib.sha256(self.notice_zip).hexdigest())
         self.release = {"tag_name": "v3.0.4", "draft": False, "prerelease": False, "assets": [
             {"name": name, "size": len(data), "digest": "sha256:" + hashlib.sha256(data).hexdigest(),
              "browser_download_url": f"https://github.com/ashandarei/ue4ss-goa/releases/download/v3.0.4/{name}"}
@@ -51,6 +54,8 @@ class TestRuntimeDownload(unittest.TestCase):
     def read_url(self, url, limit):
         if url == RuntimeDownload.release_url(self.config):
             return json.dumps(self.release).encode()
+        if url.endswith("/KH3AP-Licenses-v3.0.4.zip"):
+            return self.notice_zip
         return self.payloads[url.rsplit("/", 1)[1]]
 
     def test_downloads_missing_files_and_skips_hash_matches(self):
@@ -289,17 +294,12 @@ class TestRuntimeDownload(unittest.TestCase):
         with TemporaryDirectory() as temp:
             root = Path(temp)
             archive = root / "kh3.apworld"
-            license_root = Path(__file__).resolve().parents[1] / "runtime/Win64/KH3AP-Licenses"
-            licenses = {path.relative_to(license_root).as_posix(): path.read_bytes()
-                        for path in license_root.rglob("*") if path.is_file()}
-            self.assertIn("manifest.json", licenses)
-            self.assertIn("THIRD_PARTY_NOTICES.txt", licenses)
+            with zipfile.ZipFile(io.BytesIO(self.notice_zip)) as upstream:
+                licenses = {name: upstream.read(name) for name in upstream.namelist()}
             with zipfile.ZipFile(archive, "w") as output:
                 output.writestr("kh3/runtime/Win64/ue4ss-release.json", json.dumps(self.config))
                 output.writestr("kh3/runtime/Win64/UE4SS-settings.ini", "[General]\n")
                 output.writestr("kh3/runtime/Mods/KH3APProbeCpp/runtime-release.json", json.dumps(probe_release_payload()[0]))
-                for name, data in licenses.items():
-                    output.writestr(f"kh3/runtime/Win64/KH3AP-Licenses/{name}", data)
             game = root / "game"
             win64 = game / "Binaries" / "Win64"
             win64.mkdir(parents=True)
@@ -313,10 +313,12 @@ class TestRuntimeDownload(unittest.TestCase):
                 for name, data in self.payloads.items():
                     self.assertEqual((win64 / name).read_bytes(), data)
                 for name, data in licenses.items():
-                    self.assertEqual((win64 / "KH3AP-Licenses" / name).read_bytes(), data)
+                    self.assertEqual((win64 / name).read_bytes(), data)
                 self.assertEqual({call.args[0] for call in fetch.call_args_list},
                                  {RuntimeDownload.release_url(self.config),
+                                  "https://github.com/ashandarei/ue4ss-goa/releases/download/v3.0.4/KH3AP-Licenses-v3.0.4.zip",
                                   *(asset["browser_download_url"] for asset in self.release["assets"])})
+                self.assertEqual((win64 / "Mods/KH3APProbeCpp/licenses/dependency.txt").read_bytes(), b"published dependency")
                 backups = list(win64.glob("UE4SS.dll.apbak-*"))
                 self.assertEqual(len(backups), 1)
                 self.assertEqual(backups[0].read_bytes(), b"old-runtime")
@@ -326,14 +328,14 @@ class TestRuntimeDownload(unittest.TestCase):
                 self.assertEqual(second["ue4ss_release"]["downloaded"], [])
                 self.assertEqual(fetch.call_count, 1)
                 for name, data in licenses.items():
-                    self.assertEqual((win64 / "KH3AP-Licenses" / name).read_bytes(), data)
+                    self.assertEqual((win64 / name).read_bytes(), data)
                 missing_notice = win64 / "KH3AP-Licenses/THIRD_PARTY_NOTICES.txt"
                 missing_notice.unlink()
                 with patch.object(RuntimeDownload, "_read_url", side_effect=OSError("offline")):
                     offline = installer_installation.install_kh3_runtime(game)
                 self.assertEqual(offline["status"], "ok", offline.get("errors"))
                 self.assertEqual(offline["ue4ss_release"]["downloaded"], [])
-                self.assertEqual(missing_notice.read_bytes(), licenses["THIRD_PARTY_NOTICES.txt"])
+                self.assertEqual(missing_notice.read_bytes(), licenses["KH3AP-Licenses/THIRD_PARTY_NOTICES.txt"])
                 fetch.reset_mock()
                 installer_status.runtime_install_status(game)
                 fetch.assert_not_called()

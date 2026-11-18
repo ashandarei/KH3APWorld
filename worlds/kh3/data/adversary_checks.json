@@ -1,0 +1,400 @@
+[
+  {
+    "id": "HEARTLESS_01",
+    "name": "Shadow",
+    "worlds": [
+      "Keyblade Graveyard",
+      "Kingdom of Corona",
+      "Olympus",
+      "Re Mind",
+      "San Fransokyo",
+      "Toy Box",
+      "Twilight Town"
+    ]
+  },
+  {
+    "id": "HEARTLESS_02",
+    "name": "Neoshadow",
+    "worlds": [
+      "Re Mind",
+      "San Fransokyo",
+      "Twilight Town"
+    ]
+  },
+  {
+    "id": "HEARTLESS_03",
+    "name": "Fluttering",
+    "worlds": [
+      "Arendelle",
+      "Keyblade Graveyard",
+      "Kingdom of Corona",
+      "Monstropolis"
+    ]
+  },
+  {
+    "id": "HEARTLESS_04",
+    "name": "Flame Core",
+    "worlds": [
+      "Monstropolis",
+      "Olympus",
+      "Re Mind"
+    ]
+  },
+  {
+    "id": "HEARTLESS_05",
+    "name": "Water Core",
+    "worlds": [
+      "Kingdom of Corona",
+      "Monstropolis",
+      "Olympus",
+      "Re Mind"
+    ]
+  },
+  {
+    "id": "HEARTLESS_06",
+    "name": "Earth Core",
+    "worlds": [
+      "Kingdom of Corona",
+      "Olympus",
+      "The Caribbean"
+    ]
+  },
+  {
+    "id": "HEARTLESS_08",
+    "name": "Soldier",
+    "worlds": [
+      "Arendelle",
+      "Monstropolis",
+      "Olympus",
+      "San Fransokyo"
+    ]
+  },
+  {
+    "id": "HEARTLESS_09",
+    "name": "High Soldier",
+    "worlds": [
+      "San Fransokyo"
+    ]
+  },
+  {
+    "id": "HEARTLESS_10",
+    "name": "Air Soldier",
+    "worlds": [
+      "Keyblade Graveyard",
+      "Olympus"
+    ]
+  },
+  {
+    "id": "HEARTLESS_11",
+    "name": "Large Body",
+    "worlds": [
+      "Monstropolis",
+      "Olympus",
+      "Toy Box",
+      "Twilight Town"
+    ]
+  },
+  {
+    "id": "HEARTLESS_12",
+    "name": "Helmed Body",
+    "worlds": [
+      "Arendelle",
+      "Re Mind"
+    ]
+  },
+  {
+    "id": "HEARTLESS_13",
+    "name": "Vermilion Samba",
+    "worlds": [
+      "Monstropolis",
+      "Toy Box",
+      "Twilight Town"
+    ]
+  },
+  {
+    "id": "HEARTLESS_14",
+    "name": "Marine Rumba",
+    "worlds": [
+      "Arendelle",
+      "Kingdom of Corona",
+      "Monstropolis",
+      "Re Mind"
+    ]
+  },
+  {
+    "id": "HEARTLESS_15",
+    "name": "Gold Beat",
+    "worlds": [
+      "Arendelle",
+      "Monstropolis",
+      "San Fransokyo",
+      "Toy Box"
+    ]
+  },
+  {
+    "id": "HEARTLESS_16",
+    "name": "Malachite Bolero",
+    "worlds": [
+      "Kingdom of Corona",
+      "Re Mind"
+    ]
+  },
+  {
+    "id": "HEARTLESS_17",
+    "name": "Popcat",
+    "worlds": [
+      "Arendelle",
+      "Olympus",
+      "Re Mind"
+    ]
+  },
+  {
+    "id": "HEARTLESS_18",
+    "name": "Vitality Popcat",
+    "worlds": [
+      "Arendelle",
+      "Re Mind",
+      "Toy Box"
+    ]
+  },
+  {
+    "id": "HEARTLESS_19",
+    "name": "Magic Popcat",
+    "worlds": [
+      "Arendelle",
+      "Re Mind",
+      "Toy Box"
+    ]
+  },
+  {
+    "id": "HEARTLESS_20",
+    "name": "Focus Popcat",
+    "worlds": [
+      "Arendelle",
+      "Re Mind",
+      "Toy Box"
+    ]
+  },
+  {
+    "id": "HEARTLESS_21",
+    "name": "Munny Popcat",
+    "worlds": [
+      "Arendelle",
+      "Kingdom of Corona",
+      "Toy Box",
+      "Twilight Town"
+    ]
+  },
+  {
+    "id": "HEARTLESS_22",
+    "name": "Bizarre Archer",
+    "worlds": [
+      "Kingdom of Corona",
+      "Olympus",
+      "Twilight Town"
+    ]
+  },
+  {
+    "id": "HEARTLESS_23",
+    "name": "Rock Troll",
+    "worlds": [
+      "Arendelle",
+      "Keyblade Graveyard",
+      "Olympus"
+    ]
+  },
+  {
+    "id": "HEARTLESS_25",
+    "name": "Satyr",
+    "worlds": [
+      "Arendelle",
+      "Olympus",
+      "Re Mind"
+    ]
+  },
+  {
+    "id": "HEARTLESS_26",
+    "name": "Mechanitaur",
+    "worlds": [
+      "San Fransokyo"
+    ]
+  },
+  {
+    "id": "HEARTLESS_27",
+    "name": "Toy Trooper",
+    "worlds": [
+      "Toy Box"
+    ]
+  },
+  {
+    "id": "HEARTLESS_28",
+    "name": "Pole Cannon",
+    "worlds": [
+      "San Fransokyo",
+      "Toy Box"
+    ]
+  },
+  {
+    "id": "HEARTLESS_29",
+    "name": "Marionette",
+    "worlds": [
+      "Toy Box"
+    ]
+  },
+  {
+    "id": "HEARTLESS_30",
+    "name": "Powerwild",
+    "worlds": [
+      "Kingdom of Corona"
+    ]
+  },
+  {
+    "id": "HEARTLESS_31",
+    "name": "Pogo Shovel",
+    "worlds": [
+      "Monstropolis",
+      "San Fransokyo"
+    ]
+  },
+  {
+    "id": "HEARTLESS_32",
+    "name": "Parasol Beauty",
+    "worlds": [
+      "Arendelle",
+      "Kingdom of Corona"
+    ]
+  },
+  {
+    "id": "HEARTLESS_33",
+    "name": "Chief Puff",
+    "worlds": [
+      "Kingdom of Corona"
+    ]
+  },
+  {
+    "id": "HEARTLESS_34",
+    "name": "Puffball",
+    "worlds": [
+      "Kingdom of Corona"
+    ]
+  },
+  {
+    "id": "HEARTLESS_36",
+    "name": "Winterhorn",
+    "worlds": [
+      "Arendelle"
+    ]
+  },
+  {
+    "id": "HEARTLESS_37",
+    "name": "Vaporfly",
+    "worlds": [
+      "The Caribbean"
+    ]
+  },
+  {
+    "id": "HEARTLESS_38",
+    "name": "Sea Sprite",
+    "worlds": [
+      "The Caribbean"
+    ]
+  },
+  {
+    "id": "HEARTLESS_39",
+    "name": "Spear Lizard",
+    "worlds": [
+      "The Caribbean"
+    ]
+  },
+  {
+    "id": "HEARTLESS_40",
+    "name": "Anchor Raider",
+    "worlds": [
+      "The Caribbean"
+    ]
+  },
+  {
+    "id": "HEARTLESS_41",
+    "name": "Tireblade",
+    "worlds": [
+      "San Fransokyo"
+    ]
+  },
+  {
+    "id": "NOBODY_01",
+    "name": "Dusk",
+    "worlds": [
+      "Arendelle",
+      "Keyblade Graveyard",
+      "Kingdom of Corona",
+      "Re Mind",
+      "Twilight Town"
+    ]
+  },
+  {
+    "id": "NOBODY_03",
+    "name": "Berserker",
+    "worlds": [
+      "Re Mind"
+    ]
+  },
+  {
+    "id": "NOBODY_04",
+    "name": "Gambler",
+    "worlds": [
+      "Re Mind"
+    ]
+  },
+  {
+    "id": "NOBODY_05",
+    "name": "Sorcerer",
+    "worlds": [
+      "Twilight Town"
+    ]
+  },
+  {
+    "id": "NOBODY_06",
+    "name": "Reaper",
+    "worlds": [
+      "Keyblade Graveyard",
+      "Kingdom of Corona"
+    ]
+  },
+  {
+    "id": "NOBODY_07",
+    "name": "Ninja",
+    "worlds": [
+      "Arendelle",
+      "Re Mind"
+    ]
+  },
+  {
+    "id": "UNVERSED_01",
+    "name": "Flood",
+    "worlds": [
+      "Monstropolis"
+    ]
+  },
+  {
+    "id": "UNVERSED_02",
+    "name": "Flowersnake",
+    "worlds": [
+      "Monstropolis"
+    ]
+  },
+  {
+    "id": "UNVERSED_03",
+    "name": "Spiked Turtletoad",
+    "worlds": [
+      "Keyblade Graveyard",
+      "Monstropolis"
+    ]
+  },
+  {
+    "id": "UNVERSED_04",
+    "name": "Turtletoad",
+    "worlds": [
+      "Monstropolis"
+    ]
+  }
+]

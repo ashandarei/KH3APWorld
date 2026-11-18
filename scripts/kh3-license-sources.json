@@ -1,0 +1,32 @@
+[
+  {
+    "file": "LICENSE",
+    "url": "https://raw.githubusercontent.com/ashandarei/KH3APWorld/d5e20c74a0e235f68be57788595c6d185da4b1c1/worlds/kh3/LICENSE",
+    "sha256": "3972dc9744f6499f0f9b2dbf76696f2ae7ad8af9b23dde66d6af86c9dfb36986",
+    "player_only": false
+  },
+  {
+    "file": "LICENSE-Archipelago.txt",
+    "url": "https://raw.githubusercontent.com/ArchipelagoMW/Archipelago/54803be064fc7e80c4628777ed0b46a9390f255f/LICENSE",
+    "sha256": "f66c14cec56600dec0a63c5dc14d9fe3dc4efbcdfbf34b100b6fcf1f1e3ded00",
+    "player_only": false
+  },
+  {
+    "file": "LICENSE-KH3RandomizerClient.txt",
+    "url": "https://raw.githubusercontent.com/WaterKH/KH3RandomizerClient/e342d83d81cea1af6f228ee9da233db075b67054/LICENSE",
+    "sha256": "c71d239df91726fc519c6eb72d318ec65820627232b2f796219e87dcf35d0ab4",
+    "player_only": false
+  },
+  {
+    "file": "LICENSE-UE4SS.txt",
+    "url": "https://raw.githubusercontent.com/ashandarei/ue4ss-goa/06dd053d3e537ec2b477ee76337661b15642d012/LICENSE",
+    "sha256": "ddc030e25d0ea87aca4ae84c0ed3f868d69273c00c0c12ea1e26f1c6130f5d2e",
+    "player_only": true
+  },
+  {
+    "file": "LICENSE-02-GoA.txt",
+    "url": "https://raw.githubusercontent.com/ashandarei/02-GoA/397cfe13b14bf51457f7108fc76e14054f209b38/LICENSE",
+    "sha256": "baecf7797c19ee7ed07928231fedbe0d000fd2cf24a37b63c4810ce924b2fbb0",
+    "player_only": true
+  }
+]

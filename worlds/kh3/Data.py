@@ -1131,41 +1131,6 @@ def resolve_runtime_token_display_name(runtime_token: str | None) -> str | None:
     return normalized_token
 
 
-@lru_cache(maxsize=1)
-def _build_runtime_token_to_flag_rows() -> dict[str, list[str]]:
-    extracted_data = load_extracted_data()
-    raw_mapping = extracted_data.get("meta", {}).get("runtime_flag_rows_by_token", {})
-    if not isinstance(raw_mapping, dict):
-        return {}
-
-    mapping: dict[str, list[str]] = {}
-    for runtime_token, row_names in raw_mapping.items():
-        if not isinstance(row_names, list):
-            continue
-        normalized_token = normalize_runtime_token(str(runtime_token))
-        normalized_rows = [str(row_name) for row_name in row_names if row_name]
-        if normalized_token and normalized_rows:
-            mapping[normalized_token] = normalized_rows
-    return mapping
-
-
-def resolve_runtime_flag_name(runtime_token: str | None) -> str | None:
-    if not runtime_token:
-        return None
-    flag_rows = _build_runtime_token_to_flag_rows().get(normalize_runtime_token(runtime_token), [])
-    return flag_rows[0] if flag_rows else None
-
-
-def resolve_runtime_flag_names(runtime_token: str | None) -> list[str]:
-    if not runtime_token:
-        return []
-    return list(_build_runtime_token_to_flag_rows().get(normalize_runtime_token(runtime_token), []))
-
-
-def resolve_item_runtime_flag_name(item_name: str) -> str | None:
-    return resolve_runtime_flag_name(resolve_item_runtime_token(item_name))
-
-
 def _normalize_runtime_token_list(values: Iterable[str]) -> tuple[str, ...]:
     return tuple(
         sorted(

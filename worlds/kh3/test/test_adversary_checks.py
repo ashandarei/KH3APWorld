@@ -5,7 +5,7 @@ from Fill import distribute_items_restrictive
 from test.general import setup_multiworld
 
 from .. import KH3World
-from ..Adversaries import ADVERSARIES, ADVERSARY_EXCLUSIONS
+from ..Adversaries import ADVERSARIES
 from ..SlotData import decode_slot_data, encode_slot_data
 from . import KH3TestBase
 from .test_helpers import KH3WorldIntegrityMixin
@@ -18,7 +18,8 @@ class TestAdversaryChecks(KH3WorldIntegrityMixin, KH3TestBase):
         self.world_setup()
         checks = [r for r in self.world.active_locations if r["type"] == "adversary"]
         self.assertEqual(len(checks), 48)
-        self.assertFalse(ADVERSARY_EXCLUSIONS & {e["name"] for e in ADVERSARIES})
+        journal_only = {"Dark Inferno", "Metal Troll", "Chaos Carriage", "Frost Serpent", "Sniper"}
+        self.assertTrue(journal_only.isdisjoint(e["name"] for e in ADVERSARIES))
         self.assertEqual({r["source_id"] for r in checks}, {e["id"] for e in ADVERSARIES})
         slots = self.world.build_runtime_slot_data()
         self.assertEqual(slots["adversary_checks"], 1)

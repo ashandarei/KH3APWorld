@@ -52,7 +52,7 @@ def _copy_tree_contents(
         # Never copy a loose Microsoft DLL from an older bundle, including aliases.
         if relative_parts[-1].casefold() == "xinput1_3.dll":
             continue
-        if len(relative_parts) == 1 and relative_parts[0].casefold() in {name.casefold() for name in exclude}:
+        if relative_parts[0].casefold() in {name.casefold() for name in exclude}:
             continue
         relative = Path(*relative_parts)
         target = target_dir / relative

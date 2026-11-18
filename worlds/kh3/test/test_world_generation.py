@@ -73,7 +73,6 @@ from ..Data import (
     local_seeded_reward_requires_bridge_delivery,
     normalize_locations,
     resolve_item_display_name,
-    resolve_item_runtime_flag_name,
     resolve_item_runtime_token,
     resolve_vbonus_source_id_for_tokens,
 )
@@ -1051,6 +1050,8 @@ battle_level_mode: "{battle}"
                 PakGenerator,
                 "copy_apworld_tree",
             ) as copy_tree, patch.object(
+                PakGenerator, "_released_seed_templates", return_value=b"PK\x05\x06" + bytes(18)
+            ), patch.object(
                 PakGenerator,
                 "copy_apworld_file",
                 side_effect=lambda _source, destination: destination,
@@ -1591,7 +1592,6 @@ battle_level_mode: "{battle}"
                 self.assertEqual(resolve_item_display_name(raw_name), display_name)
                 self.assertEqual(resolve_item_runtime_token(raw_name), runtime_token)
         self.assertEqual(resolve_item_runtime_token("Proof of Promises"), "KEY_ITEM15")
-        self.assertEqual(resolve_item_runtime_flag_name("Magic: Cure"), "GIVESORA_MELEM_CURE_01")
         self.assertEqual(
             resolve_vbonus_source_id_for_tokens([
                 "ETresVictoryBonusKind::MELEM_CURE",

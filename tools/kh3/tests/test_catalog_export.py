@@ -21,6 +21,14 @@ def run_python(arguments, cwd, *, scope=None):
                           capture_output=True, text=True, timeout=60)
 
 
+def test_player_journal_catalogs_match_authoring_inputs():
+    from tools.kh3.ingredient_journal.generate_player_catalogs import DATA, adversary_checks, ingredient_checks
+
+    for filename, expected in (("adversary_checks.json", adversary_checks()),
+                               ("ingredient_checks.json", ingredient_checks())):
+        assert json.loads((DATA / filename).read_text(encoding="utf-8")) == expected
+
+
 @pytest.mark.parametrize("module,builder,section", [
     ("generate_native_catalog", "chest_data", "chests"),
     ("generate_native_catalog", "catalog_data", "catalog"),

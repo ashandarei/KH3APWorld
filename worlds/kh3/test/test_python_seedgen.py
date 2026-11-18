@@ -1,6 +1,8 @@
 from __future__ import annotations
 
 import copy
+import hashlib
+import io
 import importlib
 import json
 import os
@@ -153,6 +155,51 @@ def test_website_cli_generates_pak_with_resource_fingerprint(templates, tmp_path
     fingerprint = json.loads(PakReader(pak).read(FINGERPRINT_PATH))
     assert fingerprint["implementation"] == "python"
     assert len(fingerprint["source_sha256"]) == 64
+
+
+def test_released_templates_reproduce_source_seed(tmp_path, monkeypatch):
+    from Utils import read_apignore
+    from scripts.kh3_apworld_archive import write_apworld
+
+    world = Path(__file__).resolve().parents[1]
+    ignores = read_apignore(world.parents[1] / "data/GLOBAL.apignore") + read_apignore(world / ".apignore")
+    inputs_to_ship = [path for path in ignores.match_tree_files(str(world), negate=True)
+                      if Path(path).parts[0] == "randomizer"]
+    archive_path = tmp_path / "template-fixture.zip"
+    write_apworld(archive_path, world, inputs_to_ship, "kh3", {})
+    with zipfile.ZipFile(archive_path) as archive:
+        assert "kh3/randomizer/Content.tar.xz" not in archive.namelist()
+        assert not any(name.startswith("kh3/randomizer/Content/") for name in archive.namelist())
+
+    loose = PakGenerator.prepare_randomizer_root(tmp_path / "loose")
+    buffer = io.BytesIO()
+    with zipfile.ZipFile(buffer, "w", zipfile.ZIP_DEFLATED) as templates:
+        for path in sorted((loose / "Content").rglob("*")):
+            if path.is_file():
+                templates.write(path, path.relative_to(loose))
+    payload = buffer.getvalue()
+    monkeypatch.setattr(PakGenerator, "get_apworld_archive_context", lambda: (archive_path, "kh3"))
+    monkeypatch.setattr(PakGenerator.Utils, "user_path", lambda *parts: str(tmp_path.joinpath(*parts)))
+    monkeypatch.setattr(PakGenerator, "KH3_TEMPLATE_SIZE", len(payload))
+    monkeypatch.setattr(PakGenerator, "KH3_TEMPLATE_SHA256", hashlib.sha256(payload).hexdigest())
+    monkeypatch.setattr(PakGenerator, "_fetch_seed_templates", lambda url, size: b"x" * size)
+    with pytest.raises(PakGenerator.KH3PakGenerationError, match="verification"):
+        PakGenerator.prepare_randomizer_root(tmp_path / "packaged")
+    monkeypatch.setattr(PakGenerator, "_fetch_seed_templates", lambda url, size: payload)
+    bundled = PakGenerator.prepare_randomizer_root(tmp_path / "packaged")
+    monkeypatch.setattr(PakGenerator, "_fetch_seed_templates", lambda *_: pytest.fail("unexpected download"))
+    PakGenerator.prepare_randomizer_root(tmp_path / "offline")
+    expected = {path.relative_to(loose) for path in loose.rglob("*") if path.is_file()}
+    assert {p.relative_to(bundled) for p in bundled.rglob("*") if p.is_file()} == expected
+    for path in expected:
+        assert (bundled / path).read_bytes() == (loose / path).read_bytes()
+
+    def seed_bytes(root):
+        config, items, metadata = inputs(root)
+        pak, spoiler = generate_seed(root, root.parent / "output", metadata["seed"], config, items, metadata)
+        return pak.read_bytes(), spoiler.read_bytes()
+
+    assert seed_bytes(bundled) == seed_bytes(loose)
 
 
 @pytest.mark.parametrize("table", list(PATHS))

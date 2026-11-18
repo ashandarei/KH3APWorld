@@ -90,6 +90,11 @@ Use **Import Seed Pak** in Save Manager to select the file your host gave you.
 It may end in `.pak`, `.apkh3`, or `.zip`. Then click **Activate** beside the
 matching run and connect to your room.
 
+The first time the installed client generates a seed pak locally, it downloads
+the 223 KiB seed-template ZIP from the pinned GoA release. The client checks
+its SHA-256 and extracts it automatically on Windows and Linux. Later seeds
+can use the cached ZIP offline. Importing a ready-made `.pak` skips this download.
+
 ## Help with common problems
 
 | Problem | What to do |

@@ -21,8 +21,6 @@ if (-not [IO.Path]::IsPathRooted($BuildDir)) { $BuildDir = Join-Path $RepoRoot $
 $BuildDir = [IO.Path]::GetFullPath($BuildDir)
 $BaseArtifact = Join-Path $BuildDir "kh3.apworld"
 $HostDownloadArtifact = Join-Path $BuildDir "kh3-host.apworld"
-$LicenseDir = Join-Path $WorldDir "runtime\Win64\KH3AP-Licenses"
-$LicenseManifestPath = Join-Path $LicenseDir "manifest.json"
 if (-not $HostOnly) {
     $CompanionConfigPath = Join-Path $WorldDir 'runtime/KH02/02-goa-release.json'
     $CompanionConfig = Get-Content -LiteralPath $CompanionConfigPath -Raw | ConvertFrom-Json
@@ -75,14 +73,9 @@ function Assert-ArchiveNotices {
     if ($PlayerPackage) {
         $RequiredNotices += @(
             "seedgen/THIRD_PARTY_NOTICES.txt",
-            "runtime/THIRD_PARTY_NOTICES.md",
-            "runtime/KH02/02-GoA-Licenses/LICENSE",
-            "runtime/KH02/02-GoA-Licenses/THIRD_PARTY_NOTICES.md",
             "runtime/KH02/02-goa-release.json",
             "runtime/KH02/host-manifest.json",
             "kh02/host_runtime.py",
-            "runtime/Mods/KH3APProbeCpp/LICENSE",
-            "runtime/Mods/KH3APProbeCpp/THIRD_PARTY_NOTICES.md",
             "runtime/Mods/KH3APProbeCpp/runtime-release.json"
         )
     }
@@ -95,33 +88,30 @@ function Assert-ArchiveNotices {
                 throw "Built APWorld is missing a required third-party notice: $Notice"
             }
         }
-        if ($PlayerPackage) {
-            if ($null -ne $NoticeZip.GetEntry("kh3/runtime/KH02/KH02_CastleTownHost_P.pak")) {
-                throw "Built APWorld bundles the host pak instead of using its pinned release."
+        # Compare the actual packaged texts to the upstream bytes reviewed for this release.
+        $Sources = Get-Content -Raw -LiteralPath (Join-Path $PSScriptRoot 'kh3-license-sources.json') | ConvertFrom-Json
+        $PackagedSources = @($Sources | Where-Object { $PlayerPackage -or -not $_.player_only })
+        foreach ($Source in $PackagedSources) {
+            $Entry = $NoticeZip.GetEntry("kh3/$($Source.file)")
+            if ($null -eq $Entry) { throw "Missing license: $($Source.file)" }
+            $Stream = $Entry.Open()
+            try {
+                if ((Get-FileHash -InputStream $Stream -Algorithm SHA256).Hash -ne $Source.sha256) {
+                    throw "Packaged $($Source.file) differs from $($Source.url)"
+                }
+            } finally { $Stream.Dispose() }
+        }
+        foreach ($Entry in $NoticeZip.Entries) {
+            if ($Entry.Name -match '^(?:licen[cs]es?|copying|ofl)(?:$|[-_.])' -and
+                $Entry.FullName.Substring(4) -notin $PackagedSources.file) {
+                throw "Packaged license has no verified upstream source: $($Entry.FullName)"
             }
-            # Host-only packages do not distribute the runtime or its notices.
-            $ExpectedLicenses = @($LicenseManifest.files.PSObject.Properties | ForEach-Object {
-                @{ Name = $_.Name; Hash = $_.Value }
-            }) + @(@{ Name = "manifest.json"; Hash = (Get-FileHash -LiteralPath $LicenseManifestPath -Algorithm SHA256).Hash })
-            foreach ($ExpectedLicense in $ExpectedLicenses) {
-                $EntryName = "kh3/runtime/Win64/KH3AP-Licenses/$($ExpectedLicense.Name)"
-                $LicenseEntry = $NoticeZip.GetEntry($EntryName)
-                if ($null -eq $LicenseEntry) {
-                    throw "Built APWorld is missing a frozen runtime notice: $EntryName"
-                }
-                $NoticeStream = $LicenseEntry.Open()
-                $Hasher = [System.Security.Cryptography.SHA256]::Create()
-                try {
-                    $NoticeHash = [System.BitConverter]::ToString($Hasher.ComputeHash($NoticeStream)).Replace("-", "")
-                    if ($NoticeHash -ne $ExpectedLicense.Hash) {
-                        throw "Built APWorld runtime notice differs from its manifest: $EntryName"
-                    }
-                }
-                finally {
-                    $NoticeStream.Dispose()
-                    $Hasher.Dispose()
-                }
+            if ($Entry.FullName -match '^kh3/runtime/(?:Win64/KH3AP-Licenses/|KH02/02-GoA-Licenses/|THIRD_PARTY_NOTICES|Mods/KH3APProbeCpp/(?!runtime-release[.]json$))') {
+                throw "Unexpected packaged runtime file: $($Entry.FullName)"
             }
+        }
+        if ($PlayerPackage -and $null -ne $NoticeZip.GetEntry("kh3/runtime/KH02/KH02_CastleTownHost_P.pak")) {
+            throw "Built APWorld bundles the host pak instead of using its pinned release."
         }
     }
     finally {
@@ -138,25 +128,6 @@ if (-not (Test-Path -LiteralPath $ApignorePath)) {
 }
 
 if (-not $HostOnly) {
-    if (-not (Test-Path -LiteralPath $LicenseManifestPath)) {
-        throw "Missing frozen UE4SS runtime license manifest: $LicenseManifestPath"
-    }
-    $LicenseManifest = Get-Content -LiteralPath $LicenseManifestPath -Raw | ConvertFrom-Json
-    if ($LicenseManifest.schema -ne 1 -or
-        $null -eq $LicenseManifest.files.PSObject.Properties["THIRD_PARTY_NOTICES.txt"]) {
-        throw "Invalid frozen UE4SS runtime license manifest."
-    }
-    foreach ($LicenseFile in $LicenseManifest.files.PSObject.Properties) {
-        $SourceNotice = Join-Path $LicenseDir $LicenseFile.Name
-        if (-not (Test-Path -LiteralPath $SourceNotice -PathType Leaf) -or
-            (Get-FileHash -LiteralPath $SourceNotice -Algorithm SHA256).Hash -ne $LicenseFile.Value) {
-            throw "Runtime license file is missing or differs from its manifest: $($LicenseFile.Name)"
-        }
-    }
-    $SourceLicenses = @(Get-ChildItem -LiteralPath $LicenseDir -Recurse -File)
-    if ($SourceLicenses.Count -ne @($LicenseManifest.files.PSObject.Properties).Count + 1) {
-        throw "Runtime license folder contains files outside its manifest. Remove obsolete notices before packaging."
-    }
     Invoke-CheckedCommand -FilePath $Python -CommandArguments @(
         "-c",
         "from pathlib import Path; from worlds.kh3.kh02.host_runtime import host_manifest; root=Path('worlds/kh3'); resource=lambda *parts: root.joinpath(*parts); host_manifest(resource); print('Verified pinned KH0.2 host map configuration.')"
@@ -295,6 +266,11 @@ try {
         }
         if ($null -eq $ManifestEntry) {
             throw "Built APWorld is missing kh3/archipelago.json."
+        }
+        if ($null -ne $Zip.GetEntry("kh3/randomizer/Content.tar.xz") -or
+            $null -ne $Zip.GetEntry("kh3/randomizer/KH3-SeedTemplates.zip") -or
+            @($Entries | Where-Object { $_.FullName -like "kh3/randomizer/Content/*" }).Count -ne 0) {
+            throw "Built APWorld contains seed templates supplied by the pinned GoA release."
         }
         if ($null -ne $DllEntry -or
             $null -eq $Zip.GetEntry("kh3/runtime/Mods/KH3APProbeCpp/runtime-release.json") -or

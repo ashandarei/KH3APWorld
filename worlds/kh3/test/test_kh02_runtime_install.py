@@ -202,8 +202,8 @@ def verified_release(tmp_path, monkeypatch):
     companion = b"MZ-reviewed-companion-fixture"
     synthetic[runtime_release.CONFIG_NAME] = json.dumps(dict(
         repository=runtime_release.REPOSITORY, release_tag="2.0.0", asset="main.dll", asset_protocol=3,
-        source="release", size=len(companion), sha256=runtime.digest(companion))).encode()
-    monkeypatch.setattr(runtime_release.urllib.request, "urlopen", lambda *a, **kw: io.BytesIO(companion))
+        source="release", notices_size=8, notices_sha256=runtime.digest(b"licenses"), size=len(companion), sha256=runtime.digest(companion))).encode()
+    monkeypatch.setattr(runtime_release.urllib.request, "urlopen", lambda request, **kw: io.BytesIO(b"licenses" if request.full_url.endswith(".zip") else companion))
     for name, data in synthetic.items():
         (bundle / name).write_bytes(data)
     monkeypatch.setattr(runtime, "inspect_install", lambda *a, **kw: Installation(tmp_path / "game", "egs"))
@@ -237,16 +237,19 @@ def test_packaged_payload_downloads_companion_and_reuses_verified_loader(tmp_pat
                        (verified_release / RuntimeDownload.RELEASE_CONFIG_NAME).read_bytes())
     monkeypatch.setattr(resources, "_apworld_archive_context", lambda: (archive, "kh3"))
     monkeypatch.setattr(runtime, "_runtime_resource", resources._runtime_resource)
-    download = Mock(side_effect=lambda *a, **kw: io.BytesIO(b"downloaded probe"))
+    download = Mock(side_effect=lambda request, **kw: io.BytesIO(b"licenses" if request.full_url.endswith(".zip") else b"downloaded probe"))
     monkeypatch.setattr(runtime_release.urllib.request, "urlopen", download)
     files = runtime.payload(root)
+    assert files[runtime.COMPANION_NOTICES] == b"licenses"
+    assert files[runtime.NOTICE_FILES[0]].startswith(b"published")
     assert files[runtime.MOD] == b"downloaded probe"
     assert download.call_args.args[0].full_url == "https://github.com/ashandarei/02-GoA/releases/download/2.0.0/main.dll"
     assert runtime.RETIRED_CATALOG not in files
     assert files["UE4SS-settings.ini"] == b"ModsFolderPath =\n"
     assert "UE4SS.dll" not in files and "dwmapi.dll" not in files
     assert [call.args[0] for call in RuntimeDownload._read_url.call_args_list] == [
-        RuntimeDownload.release_url(json.loads((verified_release / RuntimeDownload.RELEASE_CONFIG_NAME).read_bytes()))]
+        RuntimeDownload.release_url(json.loads((verified_release / RuntimeDownload.RELEASE_CONFIG_NAME).read_bytes())),
+        "https://github.com/ashandarei/ue4ss-goa/releases/download/v3.0.4/KH3AP-Licenses-v3.0.4.zip"]
 
 
 def test_clean_install_stages_loader_before_mutating_game(tmp_path, monkeypatch, verified_release):
@@ -293,7 +296,7 @@ def test_payload_verifies_both_loaders_and_only_stages_mismatches(tmp_path, veri
         assert files[name] == b"test-release-" + name.encode()
     assert {path.name: path.read_bytes() for path in root.iterdir()} == original
     download_urls = [call.args[0] for call in RuntimeDownload._read_url.call_args_list][1:]
-    assert [url.rsplit("/", 1)[-1] for url in download_urls] == expected_downloads
+    assert [url.rsplit("/", 1)[-1] for url in download_urls if url.endswith(".dll")] == expected_downloads
 
 
 def test_loader_repair_backs_up_and_uninstall_restores_existing_files(tmp_path, monkeypatch, verified_release):

@@ -5,5 +5,7 @@
   "asset_protocol": 3,
   "sha256": "164c3a226a77629c8bff2e9d8cce7d45cca6eab2d9bea0269d58fb899c378366",
   "size": 2139136,
-  "source": "release"
+  "source": "release",
+  "notices_size": 29278,
+  "notices_sha256": "4d02a88ec416c1d05b15dc321302fae9db581c67755beddfd6bc3cf59ad73be4"
 }

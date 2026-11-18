@@ -4,6 +4,7 @@ import json
 import os
 import random
 import subprocess
+from pathlib import Path
 from types import SimpleNamespace
 
 import pytest
@@ -18,10 +19,12 @@ def test_generated_chests_follow_external_clear_and_server_release_facts(tmp_pat
     from worlds.kh3.Bridge import build_bridge_slot_data
     from worlds.kh3.client_support.mom_challenges import MoMChallengeService
     from worlds.kh3.Data import WORLD_LOCATION_POOL_OPTIONS, load_extracted_data, normalize_locations
-    from worlds.kh3.KeybladeChests import KEYBLADE_CHEST_PALETTES, assign_keyblade_chests
+    from worlds.kh3.KeybladeChests import assign_keyblade_chests
     from worlds.kh3.MelodyOfMemory import select_music_chests
     from worlds.kh3.transport.pipe_transport import register, unregister
 
+    source = Path(__file__).resolve().parents[3] / "worlds/kh3/data/keyblade_chest_palettes.json"
+    palettes = json.loads(source.read_text(encoding="utf-8"))
     rows = [row for row in normalize_locations(load_extracted_data()) if row["type"] == "treasure"]
     rng = random.Random(107)
     placed = select_music_chests(rng, rows, 8, conversion_count, 2)
@@ -58,7 +61,7 @@ def test_generated_chests_follow_external_clear_and_server_release_facts(tmp_pat
         for row in keys["chests"]:
             assignment = expected[row["treasure_id"]]
             assert row["keyblade"] == assignment["keyblade_chest_token"]
-            palette = KEYBLADE_CHEST_PALETTES[assignment["keyblade_chest_keyblade"]]
+            palette = palettes[assignment["keyblade_chest_keyblade"]]
             assert [row[f"body_{axis}"] for axis in "rgb"] == palette["body"]
 
         def music():

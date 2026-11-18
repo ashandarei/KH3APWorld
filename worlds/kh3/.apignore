@@ -12,6 +12,8 @@
 /randomizer/wwwroot/pak/UnrealPak-Unpack.bat
 /randomizer/wwwroot/pak/readme.txt
 /runtime/Mods/KH3APProbeCpp/dlls/main.dll*
+# UE4SS selects the game-specific INIs from a direct child of Win64.
+/runtime/Win64/CustomGameConfigs
 # Patch Game fetches UE4SS and its proxy from the pinned ue4ss-goa GitHub release.
 /runtime/Win64/UE4SS.dll
 /runtime/Win64/dwmapi.dll
@@ -25,7 +27,14 @@
 /data/source_descriptions.json
 /extract_data.py
 
+# The client ships map_jump_paths.txt for /mapjump.
+/data/runtime_map_ap_grant_classification.json
+
 # Developer catalog generation and source tests use these inputs.
+/data/adversary_journal.json
+/data/ingredient_journal.json
+/data/ingredient_spots.json
+/data/keyblade_chest_palettes.json
 /data/event_flags.json
 /data/vbonus_flags.json
 /randomizer/wwwroot/DefaultEnemies.json
@@ -37,7 +46,7 @@
 
 # Enemy level maps are now represented by DefaultEnemyRuntimeTargets.json and
 # remapped by the UE4SS BeginPlay hook. Only the unrelated Avalanche QoL patch
-# still needs a cooked level pair in the APWorld.
+# still needs a cooked level pair for generation from a source checkout.
 /randomizer/Content/Levels/**/*.umap
 /randomizer/Content/Levels/**/*.uexp
 !/randomizer/Content/Levels/fz/fz_03/umap/fz_03_gimmick_Avalanche.umap
@@ -53,13 +62,17 @@
 !/LICENSE
 !/COPYRIGHT.txt
 !/LICENSE-Archipelago.txt
+!/LICENSE-02-GoA.txt
+!/LICENSE-UE4SS.txt
 !/LICENSE-KH3RandomizerClient.txt
 !/THIRD_PARTY_NOTICES.txt
 !/UPSTREAM-KH3RandomizerClient-CREDITS.txt
-!/runtime/THIRD_PARTY_NOTICES.md
-!/runtime/Mods/KH3APProbeCpp/THIRD_PARTY_NOTICES.md
-!/runtime/Win64/KH3AP-Licenses/**
-!/runtime/KH02/02-GoA-Licenses/**
+# The installers obtain binary notices from each pinned GitHub release.
+# Only the release pin belongs in the packaged native mod directory.
+/runtime/Mods/KH3APProbeCpp/**
+!/runtime/Mods/KH3APProbeCpp/runtime-release.json
+/runtime/Win64/KH3AP-Licenses
+/runtime/KH02/02-GoA-Licenses
 /runtime/MoM
 !/docs/en_Kingdom Hearts III.md
 !/docs/setup_en.md
@@ -90,3 +103,8 @@ __pycache__
 !/docs/music.md
 !/docs/stat-options.md
 !/docs/melody-of-memory.md
+
+# Installed clients fetch the verified seed templates on first pak generation.
+/randomizer/Content/**
+/randomizer/Content.tar.xz
+/randomizer/KH3-SeedTemplates.zip

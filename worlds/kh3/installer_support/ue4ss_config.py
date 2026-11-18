@@ -19,6 +19,7 @@ from .paths import (
     kh3_executable_contains_signature,
     kh3_win64_dir,
     legacy_lua_probe_path,
+    ue4ss_game_specific_config_name,
     ue4ss_path_specific_config_dir,
     wine_visible_path_text,
 )
@@ -54,13 +55,6 @@ UE4SS_STALE_RUNTIME_FILES = (
 
 
 UE4SS_MANAGED_FILES = (*UE4SS_REQUIRED_FILES, *UE4SS_PROXY_FILES)
-
-
-UE4SS_SETTINGS_RELATIVE_PATHS = (
-    Path("UE4SS-settings.ini"),
-    Path("CustomGameConfigs") / "Kingdom Hearts 3" / "UE4SS-settings.ini",
-    Path("KINGDOM HEARTS III") / "UE4SS-settings.ini",
-)
 
 
 UE4SS_REQUIRED_SETTINGS = {
@@ -115,15 +109,13 @@ def _settings_file_compliant(settings_path: Path, win64: Path) -> bool:
 
 
 def ue4ss_settings_relative_paths(win64: Path) -> tuple[Path, ...]:
-    relative_paths = list(UE4SS_SETTINGS_RELATIVE_PATHS)
-    children = sorted(win64.iterdir(), key=lambda path: path.name) if win64.is_dir() else ()
-    for child in children:
-        if not child.is_dir():
-            continue
-        relative_path = Path(child.name) / "UE4SS-settings.ini"
-        if (child / "MemberVariableLayout.ini").is_file() and relative_path not in relative_paths:
-            relative_paths.append(relative_path)
-    return tuple(relative_paths)
+    # The global settings are managed separately. UE4SS v3.0.4 selects a
+    # game override only from a direct child named for the outer install folder.
+    default = Path("UE4SS-settings.ini")
+    name = ue4ss_game_specific_config_name(win64.parent.parent)
+    if name and (win64 / name).is_dir():
+        return default, Path(name) / default
+    return (default,)
 
 
 def ue4ss_settings_status(win64: Path) -> dict[str, Any]:
@@ -212,7 +204,13 @@ def install_path_specific_ue4ss_game_config(kh3_root_dir: Path, timestamp: str) 
     backups: list[str] = []
     errors: list[str] = []
 
-    target_dir = active_ue4ss_path_specific_config_dir(kh3_root_dir)
+    win64 = kh3_win64_dir(kh3_root_dir)
+    egs_dir = active_ue4ss_path_specific_config_dir(kh3_root_dir)
+    target_dir = egs_dir
+    if target_dir is None:
+        name = ue4ss_game_specific_config_name(kh3_root_dir)
+        if name and (name == "KINGDOM HEARTS III" or (win64 / name).is_dir()):
+            target_dir = win64 / name
     if target_dir is None:
         return {
             "copied": copied,
@@ -223,29 +221,29 @@ def install_path_specific_ue4ss_game_config(kh3_root_dir: Path, timestamp: str) 
 
     source_win64 = _runtime_win64_source()
     source_config_dir = source_win64.joinpath("KINGDOM HEARTS III")
-    source_signature_dir = source_win64.joinpath("UE4SS_Signatures")
-    win64 = kh3_win64_dir(kh3_root_dir)
 
     config_result = _copy_tree_contents(source_config_dir, target_dir, timestamp)
     copied.extend(str((target_dir.relative_to(win64) / Path(path)).as_posix()) for path in config_result["copied"])
     skipped.extend(str((target_dir.relative_to(win64) / Path(path)).as_posix()) for path in config_result["skipped"])
     backups.extend(config_result["backups"])
-    errors.extend(f"{target_dir.relative_to(win64).as_posix()}/{error}" for error in config_result.get("errors", []))
+    errors.extend(config_result["missing"])
+    errors.extend(f"{target_dir.relative_to(win64).as_posix()}/{error}" for error in config_result["errors"])
 
-    signature_result = _copy_tree_contents(source_signature_dir, target_dir / "UE4SS_Signatures", timestamp)
-    copied.extend(
-        str((target_dir.relative_to(win64) / "UE4SS_Signatures" / Path(path)).as_posix())
-        for path in signature_result["copied"]
-    )
-    skipped.extend(
-        str((target_dir.relative_to(win64) / "UE4SS_Signatures" / Path(path)).as_posix())
-        for path in signature_result["skipped"]
-    )
-    backups.extend(signature_result["backups"])
-    errors.extend(
-        f"{target_dir.relative_to(win64).as_posix()}/UE4SS_Signatures/{error}"
-        for error in signature_result.get("errors", [])
-    )
+    if egs_dir is not None:
+        signature_result = _copy_tree_contents(source_win64.joinpath("UE4SS_Signatures"), target_dir / "UE4SS_Signatures", timestamp)
+        copied.extend(
+            str((target_dir.relative_to(win64) / "UE4SS_Signatures" / Path(path)).as_posix())
+            for path in signature_result["copied"]
+        )
+        skipped.extend(
+            str((target_dir.relative_to(win64) / "UE4SS_Signatures" / Path(path)).as_posix())
+            for path in signature_result["skipped"]
+        )
+        backups.extend(signature_result["backups"])
+        errors.extend(
+            f"{target_dir.relative_to(win64).as_posix()}/UE4SS_Signatures/{error}"
+            for error in signature_result.get("errors", [])
+        )
 
     return {
         "copied": copied,
