@@ -249,6 +249,8 @@ def resolve_kh3_save_dir_input(save_dir: Path | str) -> Path:
         return normalize_save_directory(path)
     if path.name.casefold() == "savegames":
         return path.resolve()
+    if path.name.casefold() == "epic games store" and _looks_like_kh3_account_parent_save_root(path):
+        return _choose_active_savegames_dir(path)
     if _path_has_direct_savegames_child(path) or _looks_like_kh3_account_save_root(path):
         return (path / "SaveGames").resolve()
     if _looks_like_kh3_account_parent_save_root(path):

@@ -71,15 +71,16 @@ def _savegames_activity_key(save_dir: Path) -> tuple[int, int, int, int, str]:
 
 
 def choose_active_savegames_dir(save_root: Path) -> Path:
-    candidates: list[Path] = []
     if save_root.is_dir():
-        candidates = [
-            path / "SaveGames"
-            for path in save_root.iterdir()
-            if path.is_dir() and (path / "SaveGames").is_dir()
-        ]
-    if candidates:
-        return max(candidates, key=_savegames_activity_key).resolve()
+        children = [path for path in save_root.iterdir() if path.is_dir()]
+        candidates = [path / "SaveGames" for path in children if (path / "SaveGames").is_dir()]
+        if candidates:
+            return max(candidates, key=_savegames_activity_key).resolve()
+        if save_root.name.casefold() == "epic games store":
+            # An Epic account can exist before KH3 writes its first save.
+            accounts = [path for path in children if re.fullmatch(r"[0-9a-fA-F]{32}", path.name)]
+            if len(accounts) == 1:
+                return (accounts[0] / "SaveGames").resolve()
     return (save_root / "SaveGames").resolve()
 
 

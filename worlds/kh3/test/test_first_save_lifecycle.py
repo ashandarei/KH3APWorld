@@ -9,6 +9,7 @@ from ..client_support.save_management import vanilla_save_backup_dir
 from ..client_support.save_service import SaveManagementService
 from ..client_support.seed_guard import KH3_SAVE_SEED_GUARD_VERSION, SeedGuardService
 from ..client_support.seed_policy_service import KH3_MINIMUM_SEED_PAK_SIZE_BYTES
+from ..platform_support.save_discovery import resolve_kh3_save_dir_input
 
 
 SEED = "22949505740782083774"
@@ -64,9 +65,17 @@ def test_patch_game_still_preserves_unassociated_vanilla_saves(tmp_path, monkeyp
 
 
 @pytest.mark.parametrize("server_address", ["localhost:38281", "localhost:38282"])
-def test_first_save_without_snapshot_survives_manager_restart(tmp_path, server_address):
+@pytest.mark.parametrize("existing_store_save_dir", [False, True])
+def test_first_save_without_snapshot_survives_manager_restart(tmp_path, server_address, existing_store_save_dir):
+    epic_root = tmp_path / "KINGDOM HEARTS III" / "Epic Games Store"
+    account = epic_root / ("a" * 32)
+    account.mkdir(parents=True)
+    (epic_root / "Logs").mkdir()
+    # Older clients could also have created this folder before the first launch.
+    if existing_store_save_dir:
+        (epic_root / "SaveGames").mkdir()
     options = dict(run_root=tmp_path / "runs", bridge_root=tmp_path / "bridge",
-                   mods_dir=tmp_path / "mods", save_dir=tmp_path / "SaveGames",
+                   mods_dir=tmp_path / "mods", save_dir=resolve_kh3_save_dir_input(epic_root),
                    process_running=lambda: False, platform="egs")
     manager = KH3RunManagerService(**options)
     downloads = tmp_path / "downloads"
@@ -75,14 +84,37 @@ def test_first_save_without_snapshot_survives_manager_restart(tmp_path, server_a
     pak.write_bytes(b"P" * KH3_MINIMUM_SEED_PAK_SIZE_BYTES)
     run = manager.import_pak(pak, server_address="localhost:38281", connection_slot_name="FirstSaveRepro")
     manager.activate(run.run_id)
-    first_save = manager.save_dir / "KHIII_slot0.bin"
+    persistent = {"save_seed_associations": {
+        SeedGuardService.save_seed_scope_key(manager.save_dir): {
+            "seed_id": SEED, "run_id": run.run_id, "guard_version": KH3_SAVE_SEED_GUARD_VERSION,
+        },
+    }}
+    game_save_dir = account / "SaveGames"
+    game_save_dir.mkdir(exist_ok=True)
+    first_save = game_save_dir / "KHIII_slot0.bin"
     first_save.write_bytes(b"first AP progress")
 
+    options["save_dir"] = resolve_kh3_save_dir_input(epic_root)
     restarted = KH3RunManagerService(**options)
+    assert manager.save_dir == restarted.save_dir == game_save_dir
+    guard = SeedGuardService(SimpleNamespace())
+    owner_seed, _ = guard.save_seed_association_for_dir(restarted.save_dir, persistent)
+    owner_run = guard.save_run_association_for_dir(restarted.save_dir, persistent)
+    assert (owner_seed, owner_run) == (SEED, run.run_id)
     enrolled = restarted.ensure_pak_managed(manager.mods_dir / pak.name,
         expected_seed_id=SEED, server_address=server_address, connection_slot_name="FirstSaveRepro").run
     assert not enrolled.has_save  # No switch has created a stored snapshot yet.
-    result = restarted.activate(enrolled.run_id, active_save_seed_id=SEED, active_save_run_id=run.run_id)
+    result = restarted.activate(enrolled.run_id, active_save_seed_id=owner_seed, active_save_run_id=owner_run)
 
     assert not result.switched
+    assert first_save.read_bytes() == b"first AP progress"
+
+    suspended = restarted.suspend_installed_run(active_save_seed_id=owner_seed, active_save_run_id=owner_run)
+    assert suspended.saved_current_files == 1
+    next_pak = downloads / pak.name.replace(SEED, "33333333333333333333")
+    next_pak.write_bytes(b"N" * KH3_MINIMUM_SEED_PAK_SIZE_BYTES)
+    next_run = restarted.import_pak(next_pak, server_address="localhost:38283", connection_slot_name="FirstSaveRepro")
+    restarted.activate(next_run.run_id, active_save_seed_id=owner_seed, active_save_run_id=owner_run)
+    assert not first_save.exists()
+    restarted.activate(run.run_id, active_save_seed_id=next_run.seed_id, active_save_run_id=next_run.run_id)
     assert first_save.read_bytes() == b"first AP progress"
