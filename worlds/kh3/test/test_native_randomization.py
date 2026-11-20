@@ -61,6 +61,28 @@ def test_native_matches_reference_and_is_independent_of_request_order(native):
     assert len({json.dumps(row, sort_keys=True) for row in actual}) > 16
 
 
+@pytest.mark.parametrize(("seed", "chaos"), [
+    ("AP_71072276582711776305_P1_Titan", True),
+    ("accessway-shuffle-85", False),
+])
+def test_accessway_flame_core_excludes_air_soldier(native, seed, chaos):
+    options = {"Enemy Chaos": chaos, "Default Data Battles": True,
+               "Default End Game Battles": True, "Default Yozora Battle": True}
+    remap = native([settings(seed, options)])[0]["enemy_runtime_remap"]
+    package = "/Game/Levels/mi/mi_03/umap/mi_03_enemy_01.mi_03_enemy_01:PersistentLevel"
+    index = remap["enemy_runtime_packages"].index(package)
+    actors = {}
+    for entry in remap["enemy_runtime_entries"]:
+        package_index, actor, class_index = entry.split("|")
+        if int(package_index) == index:
+            actors[actor] = remap["enemy_runtime_classes"][int(class_index)].split("/")[-2]
+    assert actors["e_ex003_Pawn66"] == "e_ex003"
+    if chaos:
+        assert actors["e_ex003_Pawn62"] == actors["e_ex003_Pawn68"] == "e_ex114"
+    else:
+        assert {actors[f"e_ex003_Pawn{n}"] for n in (62, 66, 68, 69)} == {"e_ex003"}
+
+
 def test_generation_works_from_pak_without_loose_metadata(native, tmp_path):
     payload = tmp_path / "payload"
     record = payload / RECORD

@@ -1,7 +1,7 @@
 # Includes code ported and adapted from WaterKH/KH3RandomizerClient (Apache-2.0).
 # Modified for the KH3 Archipelago Python seed generator.
 # See ../LICENSE-KH3RandomizerClient.txt and ../THIRD_PARTY_NOTICES.txt.
-"""Frozen pre-port generator oracle for native parity tests. Never used in production."""
+"""Pre-port generator oracle with encounter safety corrections for native parity tests."""
 
 from __future__ import annotations
 
@@ -152,11 +152,16 @@ def enemy_remap(root, seed, exceptions):
             packages.append(package)
         source = group["EnemyPath"].rstrip("\0")
         for actor in target["actors"]:
+            assigned = replacement
             if exceptions.get("Enemy Chaos", False) and source in rules and not rules[source][2]:
-                replacement = chaos_rng.choice(chaos_pools[rules[source][:2]])
-            class_index = class_indices.setdefault(replacement, len(classes))
+                assigned = chaos_rng.choice(chaos_pools[rules[source][:2]])
+            if (package == "/Game/Levels/mi/mi_03/umap/mi_03_enemy_01.mi_03_enemy_01:PersistentLevel"
+                    and source == "/Game/Blueprints/Enemy/e_ex003/e_ex003_Pawn.e_ex003_Pawn_C"
+                    and assigned == "/Game/Blueprints/Enemy/e_ex010/e_ex010_Pawn.e_ex010_Pawn_C"):
+                assigned = source
+            class_index = class_indices.setdefault(assigned, len(classes))
             if class_index == len(classes):
-                classes.append(replacement)
+                classes.append(assigned)
             if "|" in actor or "|" in package:
                 raise ValueError("Invalid runtime enemy target")
             entries.append(f"{package_index}|{actor}|{class_index}")
