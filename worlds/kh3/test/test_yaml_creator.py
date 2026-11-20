@@ -3,6 +3,7 @@
 
 from copy import deepcopy
 import os
+import socket
 import subprocess
 import sys
 import textwrap
@@ -206,6 +207,136 @@ def test_launcher_registration_and_scope_restoration():
     assert os.environ.get("AP_WORLD_LOAD_PATHS") == before
 
 
+@pytest.mark.parametrize("include_current", [True, False])
+def test_generation_stages_only_selected_files(tmp_path, monkeypatch, include_current):
+    from .. import yaml_generation
+
+    first = tmp_path / "meta.yaml"
+    second = tmp_path / "subdir" / first.name
+    second.parent.mkdir()
+    first.write_text("name: Friend", encoding="utf-8")
+    second.write_text("name: Other", encoding="utf-8")
+    content = PlayerOptions().export_text() if include_current else None
+    monkeypatch.setenv("AP_WORLD_LOAD_PATHS", '["kh3"]')
+    component = tmp_path / "Generate"
+    component.touch()
+
+    def generate(argv, *, cwd, env, **kwargs):
+        assert argv[0] == str(component)
+        assert cwd == yaml_generation.Utils.local_path()
+        assert "AP_WORLD_LOAD_PATHS" not in env
+        players = Path(argv[argv.index("--player_files_path") + 1])
+        expected = {"name: Friend", "name: Other"}
+        if include_current:
+            expected.add(content)
+        assert {p.read_text(encoding="utf-8") for p in players.iterdir()} == expected
+        for flag in ("--weights_file_path", "--meta_file_path"):
+            assert not Path(argv[argv.index(flag) + 1]).exists()
+        (Path(argv[argv.index("--outputpath") + 1]) / "AP_1.zip").touch()
+        return subprocess.CompletedProcess(argv, 0)
+
+    with patch.object(yaml_generation, "get_exe", return_value=[str(component)]) as resolve, \
+            patch.object(yaml_generation.Utils, "output_path", return_value=str(tmp_path)), \
+            patch.object(subprocess, "run", side_effect=generate):
+        assert yaml_generation.generate_archive(content, [first, second]).is_file()
+    resolve.assert_called_once_with("Generate")
+    assert os.environ["AP_WORLD_LOAD_PATHS"] == '["kh3"]'
+
+
+def test_local_server_uses_a_free_port_when_another_room_is_on_loopback():
+    from ..yaml_generation import _available_port
+
+    with socket.socket() as existing:
+        existing.bind(("127.0.0.1", 0))
+        existing.listen()
+        occupied = existing.getsockname()[1]
+        assert _available_port("", occupied) != occupied
+
+
+def test_advanced_settings_only_override_the_current_run(tmp_path, monkeypatch):
+    from types import SimpleNamespace
+    from .. import yaml_generation as generation
+
+    source = tmp_path / "options.yaml"
+    source.write_text("server_options:\n  hint_cost: 20\n  location_check_points: 3\nother_world: {enabled: true}\n")
+    before = source.read_bytes()
+    server = SimpleNamespace(hint_cost=20, release_mode="auto", collect_mode="auto", remaining_mode="goal")
+    installation = SimpleNamespace(filename=str(source), generator=SimpleNamespace(spoiler=3), server_options=server)
+    monkeypatch.setattr(generation.Utils, "get_settings", lambda: installation)
+    monkeypatch.setattr(generation.Utils, "output_path", lambda: str(tmp_path))
+    monkeypatch.setattr(generation, "_command", lambda _: ["Generate"])
+    selected = generation.GenerationSettings(0, 0, "disabled", "enabled", "goal")
+
+    def generate(argv, *, cwd, **kwargs):
+        assert argv[argv.index("--spoiler") + 1] == "0"
+        config = yaml.safe_load((Path(cwd) / "host.yaml").read_text(encoding="utf-8"))
+        assert config["server_options"] == {"location_check_points": 3, **selected.server_options()}
+        assert config["other_world"] == {"enabled": True}
+        (Path(argv[argv.index("--outputpath") + 1]) / "AP_1.zip").touch()
+        return subprocess.CompletedProcess(argv, 0)
+
+    monkeypatch.setattr(subprocess, "run", generate)
+    assert generation.generate_archive(PlayerOptions().export_text(), [], selected).is_file()
+    assert source.read_bytes() == before
+
+
+@pytest.mark.skipif(sys.platform != "win32", reason="Requires a desktop")
+def test_posted_windows_file_drops_survive_the_tk_mainloop(tmp_path):
+    root = Path(__file__).resolve().parents[3]
+    result = subprocess.run([sys.executable, "-X", "utf8", "-c", textwrap.dedent(r'''
+        import ctypes as ct
+        from ctypes import wintypes as wt
+        from pathlib import Path
+        import runpy
+        import struct
+        import sys
+        import tkinter as tk
+
+        bind = runpy.run_path("worlds/kh3/gui/file_drop.py")["bind_file_drop"]
+        kernel = ct.WinDLL("kernel32", use_last_error=True)
+        user = ct.WinDLL("user32", use_last_error=True)
+        kernel.GlobalAlloc.argtypes = (wt.UINT, ct.c_size_t)
+        kernel.GlobalAlloc.restype = wt.HGLOBAL
+        kernel.GlobalLock.argtypes = (wt.HGLOBAL,)
+        kernel.GlobalLock.restype = ct.c_void_p
+        kernel.GlobalUnlock.argtypes = (wt.HGLOBAL,)
+        user.PostMessageW.argtypes = (wt.HWND, wt.UINT, wt.WPARAM, wt.LPARAM)
+        root = tk.Tk()
+        root.withdraw()
+        paths = [str(Path(sys.argv[1]) / name) for name in ("Sora and Riku.yaml", "雪.yml")]
+        raw = struct.pack("<IiiII", 20, 0, 0, 0, 1) + ("\0".join(paths) + "\0\0").encode("utf-16-le")
+        received = []
+
+        def post_drop(hwnd):
+            handle = kernel.GlobalAlloc(0x42, len(raw))
+            assert handle
+            ct.memmove(kernel.GlobalLock(handle), raw, len(raw))
+            kernel.GlobalUnlock(handle)
+            # Explorer posts WM_DROPFILES. Synchronous SendMessage from Python
+            # bypasses the native Tk dispatch that triggered the original abort.
+            assert user.PostMessageW(hwnd, 0x233, handle, 0)
+
+        def open_dialog():
+            window = tk.Toplevel(root)
+            def receive(files):
+                received.append(files)
+                if len(received) % 2:
+                    window.after_idle(post_drop, window.winfo_id())
+                else:
+                    window.destroy()
+                    root.after_idle(open_dialog if len(received) < 4 else root.quit)
+            assert bind(window, receive)
+            window.after(10, post_drop, window.winfo_id())
+
+        root.after_idle(open_dialog)
+        root.after(5000, root.quit)
+        root.mainloop()
+        root.destroy()
+        assert received == [paths] * 4, received
+    '''), str(tmp_path)], cwd=root, capture_output=True, text=True, timeout=15)
+    assert result.returncode == 0, result.stdout + result.stderr
+
+
 @pytest.mark.skipif(sys.platform != "win32", reason="Requires a desktop")
 def test_native_creator_categories_search_and_editor_callbacks():
     root = Path(__file__).resolve().parents[3]
@@ -319,6 +450,73 @@ def test_native_creator_categories_search_and_editor_callbacks():
                 app.import_file()
             assert app.model.name == 'Player'
             assert app.model.values['start_inventory'] == {first_item: 1}
+            from worlds.kh3.gui.yaml_generation import GenerationDialog
+            dialog = GenerationDialog(app, app.model.export_text(), app.model.name)
+            assert dialog.listing.get(0, 'end') == ('Player (Kingdom Hearts III)',)
+            assert dialog.listing.cget('activestyle') == 'none'
+            other = Path(directory) / 'friend.yml'
+            other.write_text('name: Riku\\ngame: ChecksFinder', encoding='utf-8')
+            first = Path(directory) / 'zzz.yml'
+            first.write_text('name: aqua\\ngame: Timespinner', encoding='utf-8')
+            dialog.listing.selection_set(0)
+            dialog.add_files([other, first, other])
+            assert dialog.listing.get(0, 'end') == (
+                'aqua (Timespinner)', 'Player (Kingdom Hearts III)', 'Riku (ChecksFinder)')
+            dialog.remove_selected()
+            assert dialog.listing.get(0, 'end') == ('aqua (Timespinner)', 'Riku (ChecksFinder)')
+            dialog.listing.selection_set(0, 'end')
+            dialog.remove_selected()
+            assert dialog.listing.size() == 0
+            assert all(b.cget('state') == 'disabled' for b in (dialog.generate, dialog.host))
+            dialog.add_files([other, other])
+            assert dialog.listing.get(0, 'end') == ('Riku (ChecksFinder)',)
+            from worlds.kh3.yaml_generation import GenerationSettings
+            advanced = dialog.advanced
+            assert not advanced.panel.winfo_manager()
+            assert advanced.values() == GenerationSettings.from_installation()
+            advanced.toggle.invoke()
+            assert advanced.panel.winfo_manager()
+            ticker = advanced.hint_cost
+            assert ticker.winfo_class() == 'TSpinbox'
+            app.root.update_idletasks()
+            ticker.delete(0, 'end')
+            ticker.insert(0, '24')
+            ticker.event_generate('<<Increment>>')
+            assert advanced.values().hint_cost == 25
+            ticker.event_generate('<<Decrement>>')
+            assert advanced.values().hint_cost == 24
+            ticker.set('')
+            with patch.object(dialog, 'run_task') as run:
+                dialog.host.invoke()
+                run.assert_not_called()
+            assert not dialog.busy and 'whole number' in dialog.status.get()
+            ticker.set(str(advanced.hint_min - 1))
+            ticker.event_generate('<FocusOut>')
+            assert ticker.get() == str(advanced.hint_min)
+            ticker.set(0)
+            expected = GenerationSettings(0, 0, "disabled", "goal", "enabled")
+            for key, (combo, choices) in advanced.choices.items():
+                combo.current(choices.index(getattr(expected, key)))
+            advanced.toggle.invoke()
+            assert advanced.values() == expected
+            with patch.object(dialog, 'run_task') as run:
+                dialog.generate.invoke()
+                assert run.call_args.args[1] == (None, (other,), expected)
+            dialog.show_result('Could not finish generation', 'Generation failed', retry=True)
+            dialog.result_action.invoke()
+            assert dialog.form.winfo_manager() and dialog.listing.get(0, 'end') == ('Riku (ChecksFinder)',)
+            with patch.object(dialog, 'run_task') as run:
+                dialog.host.invoke()
+                run.call_args.args[2](Path(directory) / 'test.zip')
+                assert dialog.status.get() == 'Starting local server…'
+                assert run.call_args.args[1] == (Path(directory) / 'test.zip', expected)
+                with patch('tkinter.messagebox.showinfo', side_effect=AssertionError('unexpected popup')):
+                    run.call_args.args[2]('127.0.0.1:38281')
+            assert dialog.result.winfo_manager() and not dialog.form.winfo_manager()
+            assert dialog.result_title.cget('text') == 'Local server started'
+            assert '127.0.0.1:38281' in dialog.details.get('1.0', 'end')
+            dialog.result_action.invoke()
+            assert not dialog.window.winfo_exists()
         app.preview()
         app.root.update()
         assert not errors, errors

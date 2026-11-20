@@ -33,6 +33,18 @@ in the editor. **Export YAML** writes the player file to share with your host;
 an empty player name defaults to **Player**. The **− Zoom +** controls at the
 bottom left adjust the text size one point at a time.
 
+Choose **Start Generation** to see your current settings in the player list.
+Drop in other YAMLs or choose **Add files…**. Select any row and choose **Remove**
+to leave that player file out of this generation.
+Expand **Advanced settings** to change the hint cost, spoiler detail, or when
+players can release items, collect items, and use `!remaining`. The controls
+start with your Archipelago settings. Changes apply to this run.
+**Generate Zip** opens the folder containing the finished archive.
+**Start Local Server** generates the archive and shows the connection address in the
+same window. On Windows and Linux it also opens the server console in a terminal.
+Closing the YAML Creator leaves the room running. Enter `/exit` in the terminal
+or close the terminal window to stop the server.
+
 1. Close Kingdom Hearts III.
 2. Open **KH3 Client** from the Archipelago Launcher.
 3. Open **KH3 Config**.

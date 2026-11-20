@@ -216,7 +216,8 @@ class YamlCreator:
         player_name = Entry(actions, textvariable=self.name, placeholder="Player name", width=22)
         player_name.placeholder_label.configure(background=FIELD)
         player_name.pack(side="left")
-        self.button(actions, "Export YAML", self.export_file, primary=True).pack(side="right")
+        self.button(actions, "Start Generation", self.start_generation, primary=True).pack(side="right", padx=(8, 0))
+        self.button(actions, "Export YAML", self.export_file).pack(side="right")
         self.button(actions, "Preview", self.preview).pack(side="right", padx=8)
         self.button(actions, "Import YAML", self.import_file).pack(side="right")
         self.button(actions, "Reset", self.reset).pack(side="right", padx=8)
@@ -803,6 +804,12 @@ class YamlCreator:
             messagebox.showerror("Could not save YAML", str(exc), parent=self.root)
             return
         self.status.set(f"Saved {Path(path).name}")
+
+    def start_generation(self):
+        content = self._export_text()
+        if content is not None:
+            from .yaml_generation import GenerationDialog
+            GenerationDialog(self, content, self.model.name.strip() or "Player")
 
     def _refresh_presets(self):
         try:
