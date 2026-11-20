@@ -67,7 +67,17 @@ def endgame(name):
     return any(part in name for part in ("Replica Xehanort", "Armored Xehanort", "Master Xehanort "))
 
 
+# Simultaneous Titans and the shared Graveyard/Re Mind Organization encounters.
+# Solo Terra-Xehanort (078) and the individual Data battles remain eligible.
+YOZORA_MULTI_BOSS_SLOTS = frozenset(
+    f"BOSS_{row:03}" for row in (2, 3, 4, 21, 22, 23, 24, 26, 27, 28, 54, 55, 56,
+                                 63, 64, 65, 66, 68, 69, 70)
+)
+
+
 def boss_compatible(boss, pawn):
+    if pawn == "e_ex781_Pawn" and boss in YOZORA_MULTI_BOSS_SLOTS:
+        return False
     if boss == "BOSS_0106" and pawn in ("e_ex305_Pawn", "e_ex305_Pawn_s10", "e_ex354_Pawn"):
         return False
     if pawn == "e_ex711_Pawn" and boss in {

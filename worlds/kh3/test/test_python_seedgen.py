@@ -562,6 +562,15 @@ def test_marshmallow_excludes_all_data_bosses(data_id):
     assert boss_compatible("BOSS_021", pawn)
 
 
+def test_yozora_uses_only_solo_boss_slots(templates):
+    from ..seedgen.remaps import boss_compatible as generator_compatible
+
+    originals = json.loads((templates / "wwwroot/DefaultBosses.json").read_text(encoding="utf-8-sig"))
+    shared = {2, 3, 4, 21, 22, 23, 24, 26, 27, 28, 54, 55, 56, 63, 64, 65, 66, 68, 69, 70}
+    for row in originals:
+        assert generator_compatible(row, "e_ex781_Pawn") == (int(row[5:]) not in shared)
+
+
 def test_boss_arena_bans_preserve_generated_boss_pool(templates):
     originals = json.loads((templates / "wwwroot/DefaultBosses.json").read_text(encoding="utf-8-sig"))
     originals = {boss: pawn.rstrip("\0") for boss, pawn in originals.items()}
