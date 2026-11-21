@@ -1,10 +1,10 @@
 {
   "repository": "ashandarei/KH3Runtime",
-  "release_tag": "2.0.0-beta.3",
+  "release_tag": "2.0.0-beta.4",
   "version": "2.0.0",
-  "asset": "KH3Runtime-2.0.0-a3cc0a061e60.zip",
-  "archive_sha256": "e9491b4c5733d1962df905aa81112a93e54b4f740b5b4bf01fe390e48a336bb7",
-  "archive_size": 3701189,
-  "sha256": "a3cc0a061e60a58f6448439b7183820106ffa417f4871a72e2c68e6e808ae55d",
-  "size": 10917376
+  "asset": "KH3Runtime-2.0.0-99f69a26acd8.zip",
+  "archive_sha256": "5bf60aad745ae2a4eb00411999abdf530032a9306b13a443ec471f0e7d647e86",
+  "archive_size": 3735106,
+  "sha256": "99f69a26acd81359dae770d367c97b1d2b19ad5a4511c46eb50e16c24715ade1",
+  "size": 10978304
 }

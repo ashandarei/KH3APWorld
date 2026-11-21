@@ -129,9 +129,9 @@ Do not place local UE4SS logs, object dumps, crash dumps, or backup DLLs here.
 
 ## Garden of Assemblage pak compatibility
 
-The client explicitly selects GoA release `2.0.2` and
-`pakchunk99-GardenOfAssemblageRandomizer_99_P.pak` (27,463,653 bytes, SHA256
-`767c17b3c85970e61d3d5f56dec3ed1ef8e7ca007721ea0fd22f046178b1fd86`).
+The client explicitly selects GoA release `2.0.3` and
+`pakchunk99-GardenOfAssemblageRandomizer_99_P.pak` (27,542,742 bytes, SHA256
+`7fef1c79751896494ba127991ec235faee8f769c14c6b29894908a5e92ef2489`).
 These compatibility pins live in `client_support/goa_download.py`; they are
 independent of the APWorld's display version. Do not infer pak compatibility
 by searching for lower tags. Update the pins deliberately after testing a new pak.
