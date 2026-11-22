@@ -19,6 +19,7 @@ class BridgeRefreshInput:
     slot_data: dict[str, Any]
     owner_seed: Mapping[str, Any] | None
     room_seed: str | None
+    run_affinity: str = ""
 
 
 @dataclass(frozen=True)
@@ -47,6 +48,7 @@ class BridgePublicationService:
                 status_payload=self._client.build_status(items),
                 items_payload=items,
                 on_success=on_success,
+                run_affinity=source.run_affinity,
             )
 
     @staticmethod

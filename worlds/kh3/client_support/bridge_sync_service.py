@@ -13,6 +13,7 @@ from typing import Any
 
 from ..bridge_support.files import bridge_exists, file_signature, safe_unlink
 from .json_snapshot import freeze_json
+from .run_check_progress import check_counts, run_check_progress_path
 
 
 @dataclass(frozen=True)
@@ -275,11 +276,26 @@ class BridgeSyncService:
         slot_data: dict[str, Any],
         status_payload: dict[str, Any],
         items_payload: dict[str, Any],
+        run_affinity: str = "",
     ) -> None:
         """Publish the three AP-owned bridge files in established order."""
         self._publish_json_if_changed(bridge_dir / "slot_data.json", slot_data)
         self._publish_json_if_changed(bridge_dir / "ap_status.json", status_payload)
         self._publish_json_if_changed(bridge_dir / "ap_items.json", items_payload)
+        if run_affinity and status_payload.get("connected") is True:
+            counts = check_counts(status_payload)
+            seed_name = status_payload.get("seed_name")
+            slot = status_payload.get("slot")
+            if counts is not None and seed_name and type(slot) is int and slot > 0:
+                checked, total = counts
+                path = run_check_progress_path(bridge_dir, run_affinity)
+                try:
+                    self._publish_json_if_changed(path, {
+                        "seed_name": seed_name, "slot": slot,
+                        "checked_location_count": checked, "total_location_count": total,
+                    })
+                except (OSError, UnicodeError) as exc:
+                    self.log_warning("Could not store KH3 run check progress in %s: %s", path, exc)
 
     def _publish_json_if_changed(self, path: Path, payload: dict[str, Any]) -> bool:
         signature = file_signature(path)

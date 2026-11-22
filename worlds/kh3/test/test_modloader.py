@@ -5,7 +5,7 @@ from unittest.mock import Mock
 import pytest
 
 from .. import Client as client
-from ..client_support import startup_video, static_chest_tables
+from ..client_support import static_chest_tables
 from ..platform_support.modloader import MODLOADER_PAK_NAME, fix_modloader_pak_priority
 
 
@@ -83,8 +83,7 @@ def test_patch_and_launch_check_loader_before_proceeding(tmp_path, monkeypatch, 
         assert not source.exists()
         proceed()
 
-    monkeypatch.setattr(startup_video, "install_short_copyright_video", Mock(side_effect=check_ready))
-    monkeypatch.setattr(static_chest_tables, "validate_static_chest_tables", Mock())
+    monkeypatch.setattr(static_chest_tables, "validate_static_chest_tables", Mock(side_effect=check_ready))
     ctx = SimpleNamespace(
         kh3_dir=tmp_path,
         kh3_mods_dir=tmp_path,

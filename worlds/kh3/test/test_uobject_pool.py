@@ -133,13 +133,6 @@ def test_reader_rejects_unstable_snapshot():
         pool.read_pool_header(unstable, base)
 
 
-def test_display_identifies_snapshot_and_low_capacity():
-    text = pool.format_uobject_snapshot(dict(status="ok", current=411727, capacity=1000000, at="now", pid=42))
-    assert "411,727 / 1,000,000" in text
-    assert "Snapshot now" in text
-    assert "restart" in text
-
-
 def test_patch_action_installs_configuration_for_selected_account(save_dir):
     from types import SimpleNamespace
     from unittest.mock import Mock
@@ -160,7 +153,7 @@ def test_patch_action_installs_configuration_for_selected_account(save_dir):
     assert config.inspect_uobject_config(save_dir)["status"] == "ready"
 
 
-def test_bundle_records_live_capacity_config_and_last_button_snapshot(save_dir, tmp_path):
+def test_bundle_records_live_capacity_and_config(save_dir, tmp_path):
     import json
     import zipfile
 
@@ -181,4 +174,5 @@ def test_bundle_records_live_capacity_config_and_last_button_snapshot(save_dir, 
         assert summary["uobject_pool"] == snapshot
         assert summary["uobject_config"]["configured_capacity"] == 2097152
         assert archive.read("config/Engine.ini") == config.engine_ini_path(save_dir).read_bytes()
-        assert any(name.endswith("/uobject_pool_snapshot.json") for name in archive.namelist())
+        assert "uobject_pool_snapshot.json" not in summary["bridge_files"]
+        assert archive.read("bridge/bridge/uobject_pool_snapshot.json") == b'{"status":"ok","current":123}'

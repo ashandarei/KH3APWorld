@@ -85,6 +85,9 @@ class ClientRunLibraryMixin:
         self._observe_active_kh3_run_connection_profile(runs)
         return runs
 
+    def kh3_run_check_counts(self, runs: list[KH3RunInfo]) -> dict[str, tuple[int, int]]:
+        return self._get_run_manager_service().run_check_counts(runs)
+
     def import_kh3_run_source(
         self,
         source_path: Path | str,

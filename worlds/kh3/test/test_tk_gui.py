@@ -23,6 +23,7 @@ def test_native_window_tabs_dialogs_and_shutdown():
             import sys
             from pathlib import Path
             from tempfile import TemporaryDirectory
+            from types import SimpleNamespace
             from unittest.mock import AsyncMock, Mock, patch
             import KH3Client
             from worlds.kh3.Client import KH3Context
@@ -61,17 +62,38 @@ def test_native_window_tabs_dialogs_and_shutdown():
                         assert app.connect_button.instate(["active"])
                         assert app.launch_button.instate(["active"])
                         config = app.views["KH3 Config"]
-                        def button_texts(widget):
+                        def widget_texts(widget, widget_class):
                             texts = []
-                            if widget.winfo_class() == "TButton":
+                            if widget.winfo_class() == widget_class:
                                 texts.append(widget.cget("text"))
                             for child in widget.winfo_children():
-                                texts.extend(button_texts(child))
+                                texts.extend(widget_texts(child, widget_class))
                             return texts
+                        debug = app.views["KH3 Debug"].frame
+                        debug_labels = set(widget_texts(debug, "TLabel"))
+                        assert {"Saves", "Highest AP Index", "Received / Pending / Applied",
+                                "Special Battle"} <= debug_labels
+                        assert {"Checks", "Current Map", "Sora State", "Map Safe?",
+                                "Last Ingredient Spot"}.isdisjoint(debug_labels)
+                        assert not any("UObjects" in label for label in debug_labels)
+                        assert widget_texts(debug, "TButton") == []
+                        save_manager = app.views["Save Manager"]
+                        assert save_manager.tree.heading("checks", "text") == "Checks"
+                        runs = [SimpleNamespace(run_id=name, slot_name=name, seed_id=seed,
+                                                server_address="", active=False, managed=True)
+                                for name, seed in (("Sora", "100"), ("Riku", "200"), ("Aqua", "300"))]
+                        with patch.object(ctx, "list_kh3_runs", return_value=runs), patch.object(
+                            ctx, "kh3_run_check_counts", return_value={"Sora": (12, 20), "Riku": (0, 40)}
+                        ):
+                            await save_manager.refresh()
+                        assert save_manager.tree.set("Sora", "checks") == "12/20"
+                        assert save_manager.tree.set("Riku", "checks") == "0/40"
+                        assert save_manager.tree.set("Aqua", "checks") == "—"
                         for key in ("KH0.2 Dir", "MoM Dir"):
                             row = config.detect_buttons[key].master
-                            assert button_texts(row).count("Install Mod") == 1
-                            assert "Uninstall Mod" not in button_texts(row)
+                            buttons = widget_texts(row, "TButton")
+                            assert buttons.count("Install Mod") == 1
+                            assert "Uninstall Mod" not in buttons
                             assert config.mod_buttons[key].instate(["disabled"])
                         assert config.patch_button.cget("style") == "Alert.TButton"
                         assert config.patch_tooltip.text
@@ -135,7 +157,7 @@ def test_native_window_tabs_dialogs_and_shutdown():
                         from worlds.kh3.gui.widgets import Dropdown
                         from worlds.kh3.client_support import fast_new_game
                         preferences = dict(fast_new_game.DEFAULTS)
-                        def save_preferences(value, bridge, kh3_dir=None):
+                        def save_preferences(value, bridge):
                             preferences.update(value)
                             return dict(preferences)
                         with patch.object(fast_new_game, "read_settings", side_effect=lambda: dict(preferences)), patch.object(

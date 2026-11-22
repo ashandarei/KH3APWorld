@@ -31,8 +31,6 @@ def ensure_modloader_priority(mods_dir: Path, *, game_running: Callable[[], bool
 
 def prepare_launch_files(kh3_dir: Path) -> bool:
     from .custom_music import sync_runtime
-    from .fast_new_game import read_settings
-    from .startup_video import install_short_copyright_video
     from .static_chest_tables import validate_static_chest_tables
 
     try:
@@ -50,11 +48,6 @@ def prepare_launch_files(kh3_dir: Path) -> bool:
         sync_kh02_runtime(kh3_dir)
     except (OSError, ValueError) as exc:
         logger.error("Could not configure the KH0.2 source: %s", exc)
-        return False
-    try:
-        install_short_copyright_video(kh3_dir, enabled=read_settings()["enabled"])
-    except OSError as exc:
-        logger.error("Could not install the short copyright video: %s", exc)
         return False
     return True
 

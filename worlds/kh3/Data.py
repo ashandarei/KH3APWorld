@@ -5,7 +5,7 @@ from collections import Counter
 from functools import lru_cache
 from typing import Iterable
 
-from .Ingredients import append_ingredient_locations, ingredient_spot_is_junk
+from .Ingredients import CARIBBEAN_INGREDIENT_SPOT_IDS, append_ingredient_locations, ingredient_spot_is_junk
 from .Adversaries import append_adversary_locations
 from .Battlegates import BATTLEGATE_ZERO_LOCATION
 from .CharacterUnlocks import (
@@ -16,8 +16,11 @@ from .CharacterUnlocks import (
 from .Logic import (
     LOGIC_REQUIREMENT_ITEM_NAMES,
     MAGIC_UNLOCK_ITEM,
+    LocationDependency,
     RequirementAlternatives,
+    SourceKey,
     parse_requirement_summary,
+    require_any_location,
 )
 from .LogicData import (
     CHEST_LOGIC_REQUIREMENTS as CHEST_LOGIC_REQUIREMENTS,
@@ -1589,7 +1592,25 @@ def build_item_name_to_id(data: dict) -> dict[str, int]:
     return item_name_to_id
 
 
+def location_logic_dependencies_for_options(options) -> dict[SourceKey, LocationDependency]:
+    if not _option_value(options, "exclude_caribbean_ingredients") or _option_value(options, "ingredients") != 1:
+        return LOCATION_LOGIC_DEPENDENCIES
+    dependencies = LOCATION_LOGIC_DEPENDENCIES.copy()
+    for key, dependency in LOCATION_LOGIC_DEPENDENCIES.items():
+        if key[0] != "Ingredient":
+            continue
+        sources = tuple(source for source in dependency.source_keys if source[1] not in CARIBBEAN_INGREDIENT_SPOT_IDS)
+        if sources:
+            dependencies[key] = require_any_location(*sources)
+        else:
+            del dependencies[key]
+    return dependencies
+
+
 def filter_locations_for_options(locations: list[dict], options) -> list[dict]:
+    ingredient_mode = _option_value(options, "ingredients")
+    exclude_caribbean_ingredients = _option_value(options, "exclude_caribbean_ingredients")
+    location_dependencies = location_logic_dependencies_for_options(options)
     filtered: list[dict] = []
     for location in locations:
         workshop_option = WORKSHOP_OPTIONS.get(location.get("type"))
@@ -1609,9 +1630,15 @@ def filter_locations_for_options(locations: list[dict], options) -> list[dict]:
         if location.get("ap_enabled") is False:
             continue
         if location.get("type") == "ingredient":
-            required_mode = 2 if location["source_table"] == "IngredientSpot" else 1
-            if _option_value(options, "ingredients") != required_mode:
+            source_table, source_id = location["source_table"], location["source_id"]
+            required_mode = 2 if source_table == "IngredientSpot" else 1
+            if ingredient_mode != required_mode:
                 continue
+            if exclude_caribbean_ingredients:
+                if source_table == "IngredientSpot" and source_id in CARIBBEAN_INGREDIENT_SPOT_IDS:
+                    continue
+                if source_table == "Ingredient" and (source_table, source_id) not in location_dependencies:
+                    continue
         if is_always_on_location(location):
             continue
         classic_kingdom_check_kind = location.get("classic_kingdom_check_kind")

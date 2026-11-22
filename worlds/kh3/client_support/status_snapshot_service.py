@@ -3,7 +3,7 @@
 from __future__ import annotations
 
 from collections.abc import Callable, Mapping
-from dataclasses import dataclass, field
+from dataclasses import dataclass
 from typing import Any
 
 from .presentation import (
@@ -36,7 +36,6 @@ class StatusSnapshotInputs:
     runtime_display_save_slot: Payload
     last_runtime_save_load_event: Payload
     runtime_status: Payload
-    runtime_ingredient_state: Payload = field(default_factory=dict)
 
     def as_presenter_payloads(self) -> dict[str, Payload]:
         payloads = {
@@ -46,7 +45,6 @@ class StatusSnapshotInputs:
             "runtime_display_save_slot": self.runtime_display_save_slot,
             "last_runtime_save_load_event": self.last_runtime_save_load_event,
             "runtime_status": self.runtime_status,
-            "runtime_ingredient_state": self.runtime_ingredient_state,
         }
         return payloads
 
@@ -95,7 +93,6 @@ class ClientStatusSnapshotService:
             runtime_display_save_slot=normalized("runtime_display_save_slot"),
             last_runtime_save_load_event=normalized("last_runtime_save_load_event"),
             runtime_status=normalized("runtime_status"),
-            runtime_ingredient_state=normalized("runtime_ingredient_state"),
         )
 
     def load_inputs(self) -> StatusSnapshotInputs:
@@ -109,7 +106,6 @@ class ClientStatusSnapshotService:
             "runtime_display_save_slot": sidecar(self.display_save_slot_file),
             "last_runtime_save_load_event": self.latest_save_load_reader(),
             "runtime_status": sidecar("runtime_status.json"),
-            "runtime_ingredient_state": sidecar("runtime_ingredient_state.json"),
         }
         return self.inputs_from_payloads(payloads)
 

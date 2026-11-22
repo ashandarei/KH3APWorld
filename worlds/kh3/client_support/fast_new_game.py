@@ -47,10 +47,8 @@ def sync_bridge(bridge: Path | None, settings: dict | None = None) -> None:
                           {"schema_version": 1, **normalize(settings if settings is not None else read_settings())})
 
 
-def save_settings(settings: dict, bridge: Path | None, kh3_dir: Path | None = None) -> dict:
+def save_settings(settings: dict, bridge: Path | None) -> dict:
     settings = normalize(settings)
-    from .startup_video import install_short_copyright_video
-    install_short_copyright_video(kh3_dir, enabled=settings["enabled"])
     sync_bridge(bridge, settings)
     Utils.persistent_store("kh3_client", "fast_new_game", settings)
     return settings

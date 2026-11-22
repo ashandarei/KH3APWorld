@@ -216,6 +216,9 @@ class ClientBridgeSyncMixin:
                 slot_data=getattr(self, "slot_data", {}),
                 owner_seed=getattr(self, "_kh3_bridge_seed_scope", None),
                 room_seed=getattr(self, "seed_name", None),
+                run_affinity=self._client_api.kh3_run_connection_affinity(
+                    getattr(self, "server_address", None), getattr(self, "auth", None),
+                ),
             )
         )
 

@@ -242,7 +242,7 @@ class ConfigView(View):
             updated["direct_new_game"] = direct.get()
             updated["difficulty"] = DIFFICULTIES[difficulty.get()]
             try:
-                save_settings(updated, self.ctx.bridge_dir, self.ctx.kh3_dir)
+                save_settings(updated, self.ctx.bridge_dir)
             except Exception as exc:
                 error.set(f"Could not save settings: {exc}")
                 return

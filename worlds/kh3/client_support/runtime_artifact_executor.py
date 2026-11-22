@@ -131,8 +131,7 @@ class RuntimeArtifactExecutor:
         try:
             pool_config = install_uobject_config(self._client.saves())
             logger.info(
-                "KH3 UObject capacity configured to %s in %s. "
-                "Applies on next game start; use Read UObjects in KH3 Debug to verify.",
+                "KH3 UObject capacity configured to %s in %s. Applies on the next game start.",
                 f"{pool_config['configured_capacity']:,}",
                 pool_config["path"],
             )

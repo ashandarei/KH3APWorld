@@ -36,7 +36,6 @@ from .Data import (
     LEVEL_UP_XP_SOURCE_KEYBLADE_ITEM_NAMES,
     LEVEL_UP_XP_SOURCE_LOGIC_REQUIREMENTS,
     LEVEL_UP_XP_SOURCE_REGION_NAMES,
-    LOCATION_LOGIC_DEPENDENCIES,
     LUCKY_EMBLEM_LOGIC_REQUIREMENTS_BY_WORLD,
     PORTAL_KEYBLADE_REGION_LOCKS,
     PORTAL_PARTY_ITEM_NAMES,
@@ -244,7 +243,7 @@ def set_rules(world) -> None:
         if routes is not None:
             rule &= requirement_rule(routes, starting_logic_item_names)
 
-        dependency = LOCATION_LOGIC_DEPENDENCIES.get(source_key)
+        dependency = world.location_logic_dependencies.get(source_key)
         if dependency is not None:
             missing = tuple(key for key in dependency.source_keys if key not in rows_by_source_key)
             if missing:

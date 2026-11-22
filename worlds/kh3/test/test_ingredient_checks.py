@@ -23,6 +23,7 @@ from ..Locations import BASE_LOCATION_ID, location_name_to_id
 from ..Logic import require_all_locations, require_any_location
 from ..LogicData import LOCATION_LOGIC_DEPENDENCIES
 from ..Options import Ingredients
+from ..SlotData import decode_slot_data, encode_slot_data
 from . import KH3TestBase
 from .test_helpers import KH3WorldIntegrityMixin
 
@@ -30,6 +31,33 @@ from .test_helpers import KH3WorldIntegrityMixin
 def authored_ingredient_spots():
     source = Path(__file__).resolve().parents[1] / "data/ingredient_spots.json"
     return json.loads(source.read_text(encoding="utf-8"))["spots"]
+
+
+class TestExcludeCaribbeanIngredients(KH3TestBase):
+    def test_checks_and_logic_exclude_caribbean_sources(self):
+        caribbean_spots = {spot["id"] for spot in INGREDIENT_SPOTS if spot["world"] == "The Caribbean"}
+        non_caribbean_ingredients = {
+            ingredient_id for ingredient_id, worlds in INGREDIENT_WORLD_SOURCES.items()
+            if worlds.keys() - {"The Caribbean"}
+        }
+        for mode, expected in (
+            ("off", set()),
+            ("ingredientsanity", non_caribbean_ingredients),
+            ("ingredientsanity_plus", {spot["id"] for spot in INGREDIENT_SPOTS} - caribbean_spots),
+        ):
+            with self.subTest(mode=mode):
+                self.options = {"ingredients": mode, "exclude_caribbean_ingredients": "on"}
+                self.world_setup(seed=183)
+                slot_data = decode_slot_data(encode_slot_data(self.world.build_runtime_slot_data()))
+                self.assertEqual(slot_data["exclude_caribbean_ingredients"], 1)
+                self.assertEqual(slot_data["universal_tracker"]["options"]["exclude_caribbean_ingredients"], 1)
+                self.assertEqual({row["source_id"] for row in slot_data["bridge"]["locations"]
+                                  if row["type"] == "ingredient"}, expected)
+                self.assertFalse(caribbean_spots & {
+                    row["source_id"] for row in self.world.logic_reference_locations
+                    if row["source_table"] == "IngredientSpot"
+                })
+                self.assertEqual(len(self.multiworld.itempool), len(self.multiworld.get_unfilled_locations()))
 
 
 class TestIngredientChecks(KH3WorldIntegrityMixin, KH3TestBase):

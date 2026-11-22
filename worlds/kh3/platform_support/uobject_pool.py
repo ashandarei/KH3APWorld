@@ -112,23 +112,7 @@ def snapshot_uobject_pool(kh3_dir: Path) -> dict:
             return {"status": "unsupported_platform", "at": at, "error": "UObject reading currently requires Windows."}
         process = get_process_status(KH3_EXECUTABLE_NAME)
         if not process.get("running") or not process.get("pid"):
-            return {"status": "not_running", "at": at, "error": "Launch KH3, then click Read UObjects."}
+            return {"status": "not_running", "at": at, "error": "KH3 is not running."}
         return {**_read_windows_pool(int(process["pid"]), resolve_kh3_executable_path(Path(kh3_dir))), "at": at}
     except (OSError, ValueError, struct.error) as exc:
         return {"status": "unavailable", "at": at, "error": str(exc)}
-
-
-def format_uobject_snapshot(snapshot: dict | None) -> str:
-    if not snapshot:
-        return "Click Read UObjects while KH3 is running."
-    if snapshot.get("status") != "ok":
-        return str(snapshot.get("error") or "UObject count unavailable.")
-    current, capacity = snapshot["current"], snapshot["capacity"]
-    note = ""
-    if capacity < MIN_UOBJECT_CAPACITY:
-        note = " | Below patch minimum: run Patch Game with KH3 closed, then restart."
-    elif current / capacity >= 0.9:
-        note = " | Pool above 90%; export a debug bundle."
-    at = str(snapshot["at"]).split(".")[0].replace("T", " ")
-    return (f"{current:,} / {capacity:,} ({current / capacity:.1%})"
-            f"\nSnapshot {at}{note}")

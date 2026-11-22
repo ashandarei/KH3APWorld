@@ -20,9 +20,12 @@ from typing import Any
 import Utils
 
 from ..Bridge import BridgeProtocolError
-from ..bridge_support.files import atomic_write_json, load_optional_json_file
+from ..bridge_support.files import (
+    atomic_write_json, file_signature, load_optional_json_file, load_optional_json_file_once,
+)
 from ..RuntimeSeed import encode_document, metadata_payload
 from .platform_seed_download import kh3_room_page_url_from_slot_data, normalize_kh3_room_page_url
+from .run_check_progress import check_counts, run_check_progress_path
 from .save_file_policy import (
     check_save_transfer, checked_path, checked_root, checked_save,
     inspect_save_tree, remove_empty_save_directories, transfer_save,
@@ -202,6 +205,7 @@ class KH3RunManagerService:
         self._inventory_cache: tuple[KH3RunInfo, ...] | None = None
         self._inventory_cache_signature: tuple[Any, ...] | None = None
         self._inventory_cache_lock = threading.RLock()
+        self._check_progress_cache: dict[Path, tuple[Any, dict[str, Any] | None]] = {}
 
     @staticmethod
     def _resolve_path(source: PathSource) -> Path:
@@ -862,6 +866,58 @@ class KH3RunManagerService:
             self._inventory_cache = runs
             self._inventory_cache_signature = signature
             return list(runs)
+
+    def _read_check_progress(self, path: Path) -> dict[str, Any] | None:
+        try:
+            signature = file_signature(path)
+            if signature == (None, None):
+                self._check_progress_cache.pop(path, None)
+                return None
+            cached = self._check_progress_cache.get(path)
+            if cached is not None and cached[0] == signature:
+                return cached[1]
+            payload = load_optional_json_file_once(path)
+        except (OSError, UnicodeError):
+            return None
+        if isinstance(payload, dict):
+            self._check_progress_cache[path] = (signature, payload)
+            return payload
+        return None
+
+    def run_check_counts(self, runs: list[KH3RunInfo]) -> dict[str, tuple[int, int]]:
+        """Resolve seed and slot progress for the Save Manager rows."""
+        bridge_profiles: dict[Path, set[str]] = {}
+        for run in runs:
+            affinity = kh3_run_connection_affinity(run.server_address, run.effective_slot_name)
+            for bridge_dir in run.bridge_dirs:
+                bridge_profiles.setdefault(bridge_dir, set()).add(affinity)
+
+        result = {}
+        for run in runs:
+            affinity = kh3_run_connection_affinity(run.server_address, run.effective_slot_name)
+            host = normalize_kh3_run_server_host(run.server_address)
+            slot_name = normalize_kh3_connection_slot_name(run.effective_slot_name)
+            for bridge_dir in run.bridge_dirs:
+                payload = self._read_check_progress(run_check_progress_path(bridge_dir, affinity)) if affinity else None
+                if payload is None:
+                    # A run may only have the ordinary bridge status. Check its
+                    # connection identity. Offline setup can copy the previous
+                    # profile's check count into the currently selected profile.
+                    payload = self._read_check_progress(bridge_dir / "ap_status.json")
+                    if payload is None or (
+                        (payload.get("connected") is not True and len(bridge_profiles[bridge_dir]) > 1)
+                        or normalize_kh3_run_server_host(payload.get("server_address")) != host
+                        or normalize_kh3_connection_slot_name(payload.get("player_name")) != slot_name
+                    ):
+                        continue
+                if (SeedGuardService.extract_seed_id(payload.get("seed_name")) != run.seed_id
+                        or type(payload.get("slot")) is not int or payload["slot"] != run.player):
+                    continue
+                counts = check_counts(payload)
+                if counts is not None:
+                    result[run.run_id] = counts
+                    break
+        return result
 
     def get_run(self, run_id: str) -> KH3RunInfo:
         for run in self.list_runs():

@@ -8,7 +8,7 @@ import pytest
 from ..client_support import launch_preparation as preparation
 
 
-@pytest.mark.parametrize("failure", [None, "garden", "music", "video"])
+@pytest.mark.parametrize("failure", [None, "garden", "music"])
 def test_launch_assets_preserve_order_and_only_required_failures_block_launch(tmp_path, caplog, failure):
     from ..Client import KH3Context
 
@@ -32,27 +32,16 @@ def test_launch_assets_preserve_order_and_only_required_failures_block_launch(tm
         if failure == "music":
             raise PermissionError(13, "Permission denied", "custom_music_directory.txt.tmp")
 
-    def video(root, *, enabled):
-        assert root == tmp_path and enabled
-        events.append("video")
-        if failure == "video":
-            raise OSError("video file")
-
     with (
         patch("worlds.kh3.client_support.static_chest_tables.validate_static_chest_tables", side_effect=garden),
         patch("worlds.kh3.client_support.custom_music.sync_runtime", side_effect=music),
-        patch("worlds.kh3.client_support.fast_new_game.read_settings", return_value={"enabled": True}),
-        patch("worlds.kh3.client_support.startup_video.install_short_copyright_video", side_effect=video),
     ):
         ctx._launch_kh3_game_now()
     expected = ["loader", "garden"]
     if failure == "garden":
         assert events == expected
         return
-    expected.append("music")
-    expected.append("video")
-    if failure in {None, "music"}:
-        expected.extend(["companion", "launch"])
+    expected.extend(["music", "companion", "launch"])
     if failure == "music":
         assert "continuing KH3 launch" in caplog.text
         assert "Permission denied" in caplog.text

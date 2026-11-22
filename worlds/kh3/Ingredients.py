@@ -26,6 +26,9 @@ INGREDIENT_WORLD_SOURCES = json.loads(read_package_text(
 INGREDIENT_SPOTS = json.loads(read_package_text(
     "data/ingredient_checks.json", module_file=__file__))
 INGREDIENT_SPOTS_BY_ID = {spot["id"]: spot for spot in INGREDIENT_SPOTS}
+CARIBBEAN_INGREDIENT_SPOT_IDS = frozenset(
+    spot["id"] for spot in INGREDIENT_SPOTS if spot["world"] == "The Caribbean"
+)
 
 
 def ingredient_location_description(location: dict) -> str | None:

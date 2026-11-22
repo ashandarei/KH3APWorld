@@ -17,6 +17,7 @@ class BridgePublication:
     slot_data: dict[str, Any]
     status_payload: dict[str, Any]
     items_payload: dict[str, Any]
+    run_affinity: str = ""
 
 
 @dataclass
@@ -54,15 +55,19 @@ class OrderedBridgePublisher:
         status_payload: dict[str, Any],
         items_payload: dict[str, Any],
         on_success: Callable[[], None] | None = None,
+        run_affinity: str = "",
     ) -> asyncio.Future[None] | None:
         if slot_data is not self._slot_source:
             self._slot_snapshot = freeze_json(slot_data)
             self._slot_source = slot_data
+        if status_payload.get("connected") is not True or status_payload.get("check_reporting_blocked"):
+            run_affinity = ""
         snapshot = BridgePublication(
             bridge_dir,
             self._slot_snapshot,
             freeze_json(status_payload),
             freeze_json(items_payload),
+            run_affinity,
         )
         return self._enqueue(snapshot, [on_success] if on_success is not None else [], self._generation)
 
@@ -91,6 +96,7 @@ class OrderedBridgePublisher:
             and pending.generation == generation
             and pending.snapshot.bridge_dir == snapshot.bridge_dir
             and pending.snapshot.slot_data is snapshot.slot_data
+            and pending.snapshot.run_affinity == snapshot.run_affinity
         ):
             # Every waiter observes the newest full snapshot, with all completion
             # callbacks retained. Started writes and intervening run/reset batches
@@ -124,6 +130,7 @@ class OrderedBridgePublisher:
             slot_data=snapshot.slot_data,
             status_payload=snapshot.status_payload,
             items_payload=snapshot.items_payload,
+            **({"run_affinity": snapshot.run_affinity} if snapshot.run_affinity else {}),
         )
 
     async def _run(

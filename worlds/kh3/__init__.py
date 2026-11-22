@@ -49,7 +49,6 @@ from .Data import (
     KEYBLADE_STYLE_ITEM_NAMES,
     LARGE_MUNNY_POUCH_ITEM_NAME,
     LARGE_MUNNY_POUCH_MUNNY_AMOUNT,
-    LOCATION_LOGIC_DEPENDENCIES,
     LUCKY_EMBLEM_LOGIC_REQUIREMENTS_BY_WORLD,
     MUNNY_POUCH_ITEM_NAMES,
     MUNNY_POUCH_MUNNY_AMOUNT_BY_NAME,
@@ -81,6 +80,7 @@ from .Data import (
     is_always_on_location,
     load_extracted_data,
     local_seeded_reward_requires_bridge_delivery,
+    location_logic_dependencies_for_options,
     normalize_locations,
     resolve_item_runtime_token,
     uses_replace_location_pool,
@@ -113,7 +113,7 @@ from .Locations import (
 from .Locations import (
     KH3Location as KH3Location,
 )
-from .Logic import LOGIC_REQUIREMENT_ITEM_ALIASES, inactive_location_dependency_records
+from .Logic import LOGIC_REQUIREMENT_ITEM_ALIASES, LocationDependency, SourceKey, inactive_location_dependency_records
 from .Options import (
     KeybladeLevels,
     KH3Options,
@@ -382,6 +382,7 @@ class KH3World(World):
     extracted_data: dict
     active_locations: list[dict]
     logic_reference_locations: list[dict]
+    location_logic_dependencies: dict[SourceKey, LocationDependency]
     starting_inventory_locations: list[dict]
     kh3_starting_inventory_items: list[str]
     extra_vbonus_locations: list[dict]
@@ -420,6 +421,7 @@ class KH3World(World):
             for location in normalized_locations
             if is_always_on_location(location)
         ]
+        self.location_logic_dependencies = location_logic_dependencies_for_options(self.options)
         self.active_locations = filter_locations_for_options(normalized_locations, self.options)
         from .kh02.locations import kh02_locations
         kh02_checks = kh02_locations(
@@ -466,7 +468,9 @@ class KH3World(World):
                 self.active_locations.append(yozora_location)
         validate_locations(self.active_locations)
         self.logic_reference_locations = inactive_location_dependency_records(
-            self.active_locations, normalized_locations + mom_locations + bonus_locations + space_checks + kh02_checks, LOCATION_LOGIC_DEPENDENCIES)
+            self.active_locations, normalized_locations + mom_locations + bonus_locations + space_checks + kh02_checks,
+            self.location_logic_dependencies,
+        )
         self.extra_vbonus_locations = extra_vbonus_locations(self.active_locations, tracker_slot_data)
         self.active_locations.extend(self.extra_vbonus_locations)
         from .CharacterUnlocks import character_unlock_locations
@@ -1458,6 +1462,7 @@ class KH3World(World):
             "flash_tracer_course_a_max_rank",
             "flash_tracer_course_b_max_rank",
             "ingredients",
+            "exclude_caribbean_ingredients",
             "olympus_coliseum_pool",
             "music_chest_count",
             "music_chest_vanilla_conversion",

@@ -2,8 +2,6 @@
 
 from __future__ import annotations
 
-from typing import Any
-
 from ..client_command_service import ClientCommandPlan, ClientCommandService
 from ..presentation import ClientStatusPresenter
 from ..status_snapshot_service import ClientStatusSnapshotService
@@ -34,11 +32,6 @@ class ClientPresentationMixin:
             service = self._create_status_snapshot_service()
             self.status_snapshot_service = service
         return service
-
-    def _load_gui_status_payloads(self) -> dict[str, dict[str, Any]]:
-        return dict(
-            self._get_status_snapshot_service().load_inputs().as_presenter_payloads()
-        )
 
     def _get_client_status_presenter(self) -> ClientStatusPresenter:
         presenter = getattr(self, "client_status_presenter", None)

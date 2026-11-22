@@ -22,7 +22,7 @@ ingredient-type IDs. Neither mode alters the native ingredient reward.
 
 The client displays Ingredientsanity+ spots with world, friendly map name,
 pickup number, and possible vanilla ingredient drops. These descriptions appear
-in AP location messages, bridge item metadata, and Debug's Last Ingredient Spot.
+in AP location messages and bridge item metadata.
 Drop names come from the reviewed ingredient journal's exact actor sources;
 multiple names describe possible drops, not guaranteed rewards. The two spots
 without journal drop records display `Drop unknown`. Map labels describe the

@@ -300,7 +300,6 @@ def _summarize_item_delivery_ledger(payload: Any) -> dict[str, Any] | None:
 def _bridge_file_names() -> list[str]:
     return [
         "ap_status.json",
-        "uobject_pool_snapshot.json",
         "item_delivery_ledger.json",
         "item_delivery_state.json",
         "item_delivery.json",

@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import asyncio
 import json
 import os
 import tempfile
@@ -1014,6 +1015,55 @@ class KH3RunManagerTest(unittest.TestCase):
             self.assertTrue(second.removed_run)
             self.assertEqual(second.removed_bridge_dirs, 1)
             self.assertFalse(bridge_dir.exists())
+
+    def test_run_checks_preserve_separate_progress_for_shared_bridges(self) -> None:
+        from ..client_support.bridge_publisher import OrderedBridgePublisher
+        from .test_client_status import TestBridgeSyncService
+
+        with tempfile.TemporaryDirectory() as temp_dir:
+            root = Path(temp_dir)
+            service = self._service(root)
+            seed = "78815585780120999120"
+            source = _write_seed_pak(root / "downloads", seed=seed, player=1, slot="Sora")
+            first = service.import_pak(source, server_address="wss://example.org:12345", connection_slot_name="Sora")
+            second = service.import_pak(source, server_address="localhost:38281", connection_slot_name="Sora")
+            bridge = service.bridge_root / first.bridge_dir_name
+            bridge.mkdir(parents=True)
+            first_status = {
+                "seed_name": f"AP_{seed}", "slot": 1, "player_name": "Sora",
+                "server_address": "example.org:23456", "connected": True,
+                "checked_location_count": 12, "total_location_count": 100,
+            }
+            (bridge / "ap_status.json").write_text(json.dumps(first_status), encoding="utf-8")
+            runs = service.list_runs()
+            self.assertEqual(service.run_check_counts(runs), {first.run_id: (12, 100)})
+            offline_status = {**first_status, "connected": False, "server_address": second.server_address}
+            (bridge / "ap_status.json").write_text(json.dumps(offline_status), encoding="utf-8")
+            self.assertEqual(service.run_check_counts(runs), {})
+
+            publisher = OrderedBridgePublisher(TestBridgeSyncService.build_service().publish, Mock())
+
+            async def publish_progress() -> None:
+                slot_data = {}
+                for run, checked in ((first, 15), (second, 23), (first, 16)):
+                    publisher.submit(
+                        bridge, slot_data=slot_data, items_payload={},
+                        status_payload={**first_status, "checked_location_count": checked,
+                                        "server_address": run.server_address},
+                        run_affinity=kh3_run_connection_affinity(run.server_address, run.effective_slot_name),
+                    )
+                publisher.submit(
+                    bridge, slot_data=slot_data, items_payload={},
+                    status_payload={**first_status, "connected": False, "checked_location_count": 0},
+                    run_affinity=kh3_run_connection_affinity(first.server_address, first.effective_slot_name),
+                )
+                await publisher.flush()
+
+            asyncio.run(publish_progress())
+            expected = {first.run_id: (16, 100), second.run_id: (23, 100)}
+            self.assertEqual(service.run_check_counts(runs), expected)
+            restarted = self._service(root)
+            self.assertEqual(restarted.run_check_counts(restarted.list_runs()), expected)
 
     def test_delete_unmanaged_installed_conflict_removes_exact_pak_and_bridge_only(self) -> None:
         with tempfile.TemporaryDirectory() as temp_dir:

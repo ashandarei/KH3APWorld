@@ -742,6 +742,11 @@ class Ingredients(Choice):
         return {0: "Off", 1: "Ingredientsanity", 2: "Ingredientsanity+"}[value]
 
 
+class ExcludeCaribbeanIngredients(Toggle):
+    """Exclude The Caribbean's ingredient pickups from Ingredientsanity and Ingredientsanity+."""
+    display_name = "Exclude Caribbean Ingredients"
+
+
 class ClassicKingdomChecks(Choice):
     """
     High Score adds one check per Classic Kingdom game (23 total). Record a
@@ -1702,6 +1707,7 @@ class KH3Options(PerGameCommonOptions):
     flash_tracer_course_b_max_rank: FlashTracerCourseBMaxRank
     classic_kingdom_checks: ClassicKingdomChecks
     ingredients: Ingredients
+    exclude_caribbean_ingredients: ExcludeCaribbeanIngredients
     adversary_checks: AdversaryChecks
     ally_characters: AllyCharacters
     kh02_enabled: KH02Enabled
@@ -1946,6 +1952,7 @@ option_groups = [
         DataBattleRewardsPool,
         FullcourseAbilitiesPool,
         Ingredients,
+        ExcludeCaribbeanIngredients,
         AdversaryChecks,
         BattlegatesPool,
     ]),

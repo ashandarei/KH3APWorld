@@ -20,7 +20,8 @@ class SaveManagerView(View):
         self.auto_delete = tk.BooleanVar(value=self.ctx.auto_delete_old_kh3_runs)
         Switch(frame, text="Automatically delete old seeds when starting a new run", variable=self.auto_delete,
                         command=lambda: self.ctx.set_auto_delete_old_kh3_runs(self.auto_delete.get())).pack(anchor="w", pady=8)
-        self.tree = ttk.Treeview(frame, columns=("slot", "seed", "server", "status"), show="headings", selectmode="extended")
+        self.tree = ttk.Treeview(frame, columns=("slot", "seed", "server", "checks", "status"),
+                                 show="headings", selectmode="extended")
         from .theme import RUN_PLATFORM_COLORS
         for platform, color in RUN_PLATFORM_COLORS.items():
             self.tree.tag_configure(f"platform:{platform}", background=color)
@@ -31,6 +32,7 @@ class SaveManagerView(View):
             self.tree.bind(event, self.hide_platform_tooltip, add="+")
         for key in self.tree["columns"]:
             self.tree.heading(key, text=key.title())
+        self.tree.column("checks", width=90, minwidth=70, anchor="center", stretch=False)
         self.tree.pack(fill="both", expand=True)
         self.tree.bind("<Button-3>", self.show_context_menu)
         self.context_menu = ContextMenu(app.root, app.theme.family)
@@ -195,15 +197,23 @@ class SaveManagerView(View):
     async def refresh(self):
         from ..ExternalBridge import KH3_PROCESS_NAME
         from ..platform_support.process_status import is_process_running
-        self.game_running = await asyncio.to_thread(is_process_running, KH3_PROCESS_NAME)
         runs = self.ctx.list_kh3_runs()
+        self.game_running, check_counts = await asyncio.gather(
+            asyncio.to_thread(is_process_running, KH3_PROCESS_NAME),
+            asyncio.to_thread(self.ctx.kh3_run_check_counts, runs),
+        )
         self.runs = {run.run_id: run for run in runs}
         for existing in self.tree.get_children():
             if existing not in self.runs:
                 self.tree.delete(existing)
         for run in runs:
             tags = (f"platform:{getattr(run, 'platform', '')}",)
-            values = (run.slot_name, run.seed_id, run.server_address,
+            counts = check_counts.get(run.run_id)
+            checks = "—"
+            if counts is not None:
+                checked, total = counts
+                checks = f"{checked}/{total}" if total else str(checked)
+            values = (run.slot_name, run.seed_id, run.server_address, checks,
                       "Needs activation" if run.active and self.needs_activation(run) else "Active" if run.active else
                       "Stored" if run.managed else "Unmanaged")
             if self.tree.exists(run.run_id):

@@ -3659,7 +3659,6 @@ class TestClientStatusSnapshotService(unittest.TestCase):
                 ("sidecar", "runtime_display_save_slot.json"),
                 ("latest", "load"),
                 ("sidecar", "runtime_status.json"),
-                ("sidecar", "runtime_ingredient_state.json"),
             ],
         )
         with self.assertRaises(FrozenInstanceError):
@@ -3692,7 +3691,6 @@ class TestClientStatusSnapshotService(unittest.TestCase):
         replay_slots = service.build_replay_slots_from_inputs(inputs)
 
         self.assertIsInstance(snapshot, ClientStatusSnapshot)
-        self.assertEqual(snapshot.as_legacy_dict()["checks"], "0")
         slot_one = next(entry for entry in replay_slots if entry.label == "S1")
         self.assertEqual(slot_one.text, "S1: AP2")
         self.assertIn("#3 Blizzard", slot_one.tooltip)
@@ -4214,7 +4212,7 @@ class TestKH3ClientStatus(unittest.TestCase):
             "runtime_sora_state": {"special_battle_mode_active": False, "safety": "ok"},
         }
         payloads["runtime_status"] = {"presentation": {
-            "current_map": "tt/tt_01/tt_01 (probe)", "ap_items_grantable": "DLL",
+            "special_battle_mode": "false", "ap_items_grantable": "DLL",
         }}
         presenter = ClientStatusPresenter(StatusSource())
 
@@ -4224,7 +4222,7 @@ class TestKH3ClientStatus(unittest.TestCase):
         self.assertIsInstance(snapshot.runtime_grant, RuntimeGrantSummary)
         self.assertTrue(all(isinstance(entry, ReplaySlotSummary) for entry in snapshot.replay_slots))
         self.assertEqual(snapshot.replay_slots[0].replay_index, 1)
-        self.assertEqual(snapshot.value_for("current_map"), "tt/tt_01/tt_01 (probe)")
+        self.assertEqual(snapshot.value_for("special_battle_mode"), "false")
         self.assertEqual(snapshot.value_for("ap_items_grantable"), "DLL")
         self.assertEqual(snapshot.value_for("item_counts"), "- / Waiting for KH3 / -")
         self.assertEqual(snapshot.as_legacy_dict()["slot_replay_indices"], "AUTO: AP1")
@@ -4400,7 +4398,7 @@ class TestKH3ClientStatus(unittest.TestCase):
 
             self.assertFalse(status["running"])
 
-    def test_gui_status_snapshot_displays_native_status_without_reading_sora_sidecar(self) -> None:
+    def test_gui_status_snapshot_displays_special_battle_from_native_status(self) -> None:
         ctx = KH3Context.__new__(KH3Context)
         ctx.checked_locations = set()
         ctx.locations_checked = set()
@@ -4416,15 +4414,12 @@ class TestKH3ClientStatus(unittest.TestCase):
         ctx.installed_kh3_ap_seed_paks = lambda: []
         ctx._load_bridge_payload = lambda name: {}
         ctx._load_bridge_sidecar_payload = Mock(side_effect=lambda name: {
-            "presentation": {"sora_state": "TresCharStateMagic (id=7, runtime_sora_state_sidecar, 2026-05-30T12:00:00Z)"}
+            "presentation": {"special_battle_mode": "true"}
         } if name == "runtime_status.json" else {})
 
         snapshot = ctx._get_status_snapshot_service().build_snapshot().as_legacy_dict()
 
-        self.assertEqual(
-            snapshot["sora_state"],
-            "TresCharStateMagic (id=7, runtime_sora_state_sidecar, 2026-05-30T12:00:00Z)",
-        )
+        self.assertEqual(snapshot["special_battle_mode"], "true")
         self.assertNotIn(unittest.mock.call("runtime_sora_state.json"), ctx._load_bridge_sidecar_payload.call_args_list)
 
     def test_gui_status_snapshot_includes_last_save_loaded_from_native_slot_projection(self) -> None:

@@ -8,7 +8,6 @@ from dataclasses import dataclass
 from pathlib import Path
 from typing import Any
 
-from ..Ingredients import INGREDIENT_SPOTS_BY_ID, INGREDIENT_SPOT_DESCRIPTIONS, INGREDIENT_STATE_SCHEMA
 from .replay_slot_presentation import (
     ReplaySlotSelectionInput,
     ReplaySlotSummary,
@@ -17,16 +16,16 @@ from .replay_slot_presentation import (
 
 logger = logging.getLogger(__name__)
 Payload = Mapping[str, Any]
-CLIENT_STATUS_KEYS = "slot_replay_indices checks received_items highest_ap_index pending_items applied_items runtime_blocking_ui special_battle_mode sora_state current_map map_safe runtime_safe_context ap_items_grantable last_ingredient_pickup".split()
+CLIENT_STATUS_KEYS = (
+    "slot_replay_indices received_items highest_ap_index pending_items applied_items "
+    "runtime_blocking_ui special_battle_mode runtime_safe_context ap_items_grantable"
+).split()
 
 
 @dataclass(frozen=True, slots=True)
 class RuntimeGrantSummary:
     blocking_ui: str
     special_battle_mode: str
-    sora_state: str
-    current_map: str
-    map_safe: str
     safe_context: str
     ap_items_grantable: str
 
@@ -34,13 +33,11 @@ class RuntimeGrantSummary:
 @dataclass(frozen=True, slots=True)
 class ClientStatusSnapshot:
     replay_slots: tuple[ReplaySlotSummary, ...]
-    checks: str
     received_items: str
     highest_ap_index: str
     pending_items: str
     applied_items: str
     runtime_grant: RuntimeGrantSummary
-    last_ingredient_pickup: str = "-"
 
     @property
     def item_counts(self) -> str:
@@ -54,9 +51,6 @@ class ClientStatusSnapshot:
         runtime_fields = {
             "runtime_blocking_ui": self.runtime_grant.blocking_ui,
             "special_battle_mode": self.runtime_grant.special_battle_mode,
-            "sora_state": self.runtime_grant.sora_state,
-            "current_map": self.runtime_grant.current_map,
-            "map_safe": self.runtime_grant.map_safe,
             "runtime_safe_context": self.runtime_grant.safe_context,
             "ap_items_grantable": self.runtime_grant.ap_items_grantable,
         }
@@ -85,25 +79,6 @@ class InstalledRuntimeSummary:
     goa_status: str
     patch_tooltip: str
     goa_version: str
-
-
-def describe_last_ingredient_pickup(payload: Any, slot_data: Any) -> str:
-    """Display only the latest native field event for this seed, never stock."""
-    if not isinstance(payload, Mapping) or not isinstance(slot_data, Mapping):
-        return "-"
-    seed = slot_data.get("kh3_seed", {})
-    if (not isinstance(seed, Mapping) or not seed.get("seed_name")
-            or payload.get("schema") != INGREDIENT_STATE_SCHEMA
-            or payload.get("source") != "food_prize"
-            or payload.get("seed_name") != seed["seed_name"]
-            or type(payload.get("slot")) is not int or payload["slot"] != seed.get("slot")):
-        return "-"
-    spot = payload.get("last_pickup_spot")
-    record = INGREDIENT_SPOTS_BY_ID.get(spot) if isinstance(spot, str) else None
-    if not record:
-        return "-"
-    location = INGREDIENT_SPOT_DESCRIPTIONS[spot].removeprefix("Ingredients+ - ")
-    return spot + " | " + location
 
 
 def describe_highest_ap_index(payload: Any) -> str:
@@ -313,36 +288,9 @@ class ClientStatusPresenter:
         self._goa_status_revision += 1
         self._cached_goa_status = None
 
-    def build_status_snapshot_with_replay_slots(self) -> tuple[ClientStatusSnapshot, tuple[ReplaySlotSummary, ...]]:
-        payloads = self.source._load_gui_status_payloads()
-        snapshot = self.build_status_snapshot_from_payloads(payloads)
-        summaries = build_replay_slot_summaries(
-            ReplaySlotSelectionInput(
-                native_save_receipts=payloads["native_save_receipts"],
-                runtime_current_save_slot=payloads["runtime_current_save_slot"],
-                runtime_display_save_slot=payloads["runtime_display_save_slot"],
-                last_runtime_save_load_event=payloads["last_runtime_save_load_event"],
-            )
-        )
-        return snapshot, summaries
-
-    def build_replay_slot_summaries(self) -> tuple[ReplaySlotSummary, ...]:
-        payloads = self.source._load_gui_status_payloads()
-        return build_replay_slot_summaries(
-            ReplaySlotSelectionInput(
-                native_save_receipts=payloads["native_save_receipts"],
-                runtime_current_save_slot=payloads["runtime_current_save_slot"],
-                runtime_display_save_slot=payloads["runtime_display_save_slot"],
-                last_runtime_save_load_event=payloads["last_runtime_save_load_event"],
-            )
-        )
-
     def build_status_snapshot_from_payloads(self, payloads: Mapping[str, Payload]) -> ClientStatusSnapshot:
-        source = self.source
         delivery = payloads["item_delivery_payload"]
         native_summary = delivery.get("native_delivery_summary")
-        checked_count = len(source.checked_locations | source.locations_checked)
-        total_locations = source.total_locations or len(source.location_key_to_id)
         native_status = payloads["runtime_status"].get("presentation", {})
         def status_text(key: str) -> str:
             value = native_status.get(key) if isinstance(native_status, Mapping) else None
@@ -351,9 +299,6 @@ class ClientStatusPresenter:
         runtime = RuntimeGrantSummary(
             blocking_ui=status_text("blocking_ui"),
             special_battle_mode=status_text("special_battle_mode"),
-            sora_state=status_text("sora_state"),
-            current_map=status_text("current_map"),
-            map_safe=status_text("map_safe"),
             safe_context=status_text("safe_context"),
             ap_items_grantable=status_text("ap_items_grantable"),
         )
@@ -367,15 +312,12 @@ class ClientStatusPresenter:
         )
         return ClientStatusSnapshot(
             replay_slots=replay_slots,
-            checks=f"{checked_count}/{total_locations}" if total_locations else str(checked_count),
             received_items=str(native_summary["received_count"]) if native_summary is not None else "-",
             highest_ap_index=describe_highest_ap_index(delivery),
             pending_items=display_pending_item_count(delivery),
             applied_items=(str(native_summary["applied_count"]) if native_summary is not None
                            else "-"),
             runtime_grant=runtime,
-            last_ingredient_pickup=describe_last_ingredient_pickup(
-                payloads.get("runtime_ingredient_state"), getattr(source, "slot_data", {})),
         )
 
     def build_installed_runtime_summary(self, *, now: float) -> InstalledRuntimeSummary:
