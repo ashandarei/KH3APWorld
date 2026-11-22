@@ -555,6 +555,26 @@ def test_king_of_toys_accepts_titans(pawn):
     assert runtime_boss_compatible("BOSS_008", pawn)
 
 
+def test_remind_trio_allows_titan_replacements():
+    from ..seedgen.remaps import boss_compatible as generator_compatible
+
+    for compatible in (generator_compatible, boss_compatible):
+        assert compatible("BOSS_064", "e_he902_Pawn")
+        assert compatible("BOSS_064", "e_he904_Pawn")
+        assert compatible("BOSS_063", "e_he904_Pawn")
+        assert compatible("BOSS_022", "e_he902_Pawn")
+
+
+@pytest.mark.parametrize("pawn", ["e_he902_Pawn", "e_he904_Pawn"])
+def test_luxord_fights_exclude_titans(pawn):
+    from ..seedgen.remaps import boss_compatible as generator_compatible
+
+    for compatible in (generator_compatible, boss_compatible):
+        assert all(not compatible(slot, pawn) for slot in ("BOSS_023", "BOSS_024", "BOSS_065", "BOSS_066"))
+        assert all(compatible(slot, pawn) for slot in ("BOSS_021", "BOSS_022", "BOSS_026", "BOSS_027",
+                                                        "BOSS_063", "BOSS_064", "BOSS_068", "BOSS_069"))
+
+
 @pytest.mark.parametrize("data_id", [*range(351, 363), 367])
 def test_marshmallow_excludes_all_data_bosses(data_id):
     pawn = f"e_ex{data_id}_Pawn"

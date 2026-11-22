@@ -18,6 +18,10 @@ from .MoMSongCatalog import MOM_SELECTOR_KEYS, MOM_SONG_CATALOG
 
 from .Data import (
     ALL_GOAL_KEY_ITEM_NAMES,
+    CHARACTER_STYLE_ITEM_NAMES,
+    KEYBLADE_STYLE_ITEM_NAMES,
+    PORTAL_KEYBLADE_ITEM_NAMES,
+    PORTAL_PARTY_ITEM_NAMES,
     VANILLA_LOCATION_POOL_VALUE,
     goal_key_item_counts,
 )
@@ -172,6 +176,13 @@ DEFAULT_HINT_CHECKS = (
     "Ability: Second Chance",
     "Ability: Withstand Combo",
     "Ability: Doubleflight",
+    *sorted(PORTAL_KEYBLADE_ITEM_NAMES),
+    *sorted(PORTAL_PARTY_ITEM_NAMES),
+    *(
+        name for name in KEYBLADE_STYLE_ITEM_NAMES
+        if name.removeprefix("Unlock Style: ") in PORTAL_KEYBLADE_ITEM_NAMES
+    ),
+    *CHARACTER_STYLE_ITEM_NAMES,
 )
 
 GOAL_MANAGED_HINT_CHECKS = frozenset(ALL_GOAL_KEY_ITEM_NAMES)
@@ -1835,6 +1846,10 @@ def build_randomizer_runtime_config(options: KH3Options) -> dict[str, bool]:
 def build_randomizer_hint_config(options: KH3Options) -> dict[str, object]:
     checks = set(options.important_hint_checks.value)
     checks.difference_update(GOAL_MANAGED_HINT_CHECKS)
+    if options.portal_unlocks.value == PortalUnlocks.option_party_members:
+        checks.difference_update(PORTAL_KEYBLADE_ITEM_NAMES)
+    else:
+        checks.difference_update(PORTAL_PARTY_ITEM_NAMES)
     checks.update(goal_key_item_counts(int(options.heart_piece_count.value)))
     return {
         "type": HintSelectionType.get_option_name(int(options.hint_selection_type.value)),

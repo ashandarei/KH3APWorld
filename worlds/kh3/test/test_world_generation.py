@@ -107,6 +107,7 @@ from ..Options import (
     KH3Options,
     LuckyEmblemsPerCheck,
     LuckyEmblemsPool,
+    PortalUnlocks,
     Stylesanity,
     UltimaWeaponMode,
     UltimaWeaponShardCount,
@@ -115,6 +116,7 @@ from ..Options import (
 )
 from ..PakGenerator import generate_kh3_pak_from_container, generate_kh3_paks_from_ap_zip, load_kh3_container_data
 from ..SlotData import decode_slot_data
+from ..seedgen.localization import make_hints
 from . import KH3TestBase
 from .test_helpers import KH3WorldIntegrityMixin
 
@@ -897,6 +899,31 @@ battle_level_mode: "{battle}"
         config = build_randomizer_generation_config(self.world.options)
         self.assertTrue(PROOF_ITEMS.isdisjoint(config["hint"]["checks"]))
         self.assertNotIn(STYLE_CHANGE_UNLOCK_ITEM, config["hint"]["checks"])
+
+    def test_secret_reports_hint_the_selected_portal_unlocks_and_shuffled_styles(self) -> None:
+        self.world_setup()
+        styles = {
+            "Unlock Style: Hero's Origin",
+            "Style Change: Spellweaver",
+            "Style Change: Seven Wishes",
+        }
+        unlocks = {"keyblades": "Hero's Origin", "party_members": "Party Member: Hercules"}
+        locations = [
+            {"ap_location_id": code, "location_player_slot": 1, "item_name": name}
+            for code, name in enumerate(sorted(styles | set(unlocks.values()) | {"Unlock Style: Grand Chef"}), 1)
+        ]
+
+        for mode, unlock in unlocks.items():
+            with self.subTest(portal_unlocks=mode):
+                self.world.options.portal_unlocks = PortalUnlocks.from_text(mode)
+                config = build_randomizer_generation_config(self.world.options)
+                metadata = {"slot": 1, "placement_summary": {"locations": locations}}
+
+                make_hints("portal-unlocks", config, metadata)
+
+                reports = metadata["secret_report_hints"]["reports"]
+                hinted_items = {target["item_name"] for report in reports.values() for target in report}
+                self.assertEqual(hinted_items, styles | {unlock})
 
     def test_slot_data_includes_placed_item_metadata_when_available(self) -> None:
         self.world_setup()

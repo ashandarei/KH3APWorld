@@ -205,6 +205,8 @@ def boss_compatible(boss, pawn):
         return False
     if boss == "BOSS_010" and pawn in ("e_ex721_Pawn", "e_ex352_Pawn", "e_ex357_Pawn"):
         return False
+    if boss in ("BOSS_023", "BOSS_024", "BOSS_065", "BOSS_066") and pawn in ("e_he902_Pawn", "e_he904_Pawn"):
+        return False
     if boss in ("BOSS_006", "BOSS_007") and pawn in ("e_he902_Pawn", "e_he904_Pawn"):
         return False
     return boss != "BOSS_007" or pawn != "e_ex731_Pawn"
