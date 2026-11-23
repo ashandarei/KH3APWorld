@@ -13,13 +13,13 @@ OBJECTIVE_TITLES = (
     "World Within All Treasures", "World Within Secret", "Phantom Aqua No Damage", "Boss Rush",
     "Collect All Zodiac Relics", "Forest of Thorns All Treasures", "Forest of Thorns Secret",
     "Forest Rail No Damage", "Darkside No Damage", "Depths of Darkness All Treasures",
-    "Depths of Darkness Secret", "Demon Tower Team Finish", "Demon Tide on Critical",
+    "Depths of Darkness Secret", "Demon Tower Team Finish",
 )
 
 
 def objective_name(number: int) -> str:
-    if not 1 <= number <= 51:
-        raise ValueError("Objective number must be 1 through 51")
+    if not 1 <= number <= len(OBJECTIVE_TITLES):
+        raise ValueError(f"Unsupported KH0.2 objective number: {number}")
     return f"0.2 - Objective {number:02}: {OBJECTIVE_TITLES[number - 1]}"
 
 

@@ -4,7 +4,7 @@ All checks use the Dark World portal unlock; magic-dependent checks also require
 Aqua supplies the chapter's combat and movement.
 Native progress supplies their completion; the standalone 0.2 bridge is unused.
 """
-from .objectives import KH02_OBJECTIVE_ID_BASE, objective_name
+from .objectives import KH02_OBJECTIVE_ID_BASE, OBJECTIVE_TITLES, objective_name
 
 KH02_WORLD = "Kingdom Hearts 0.2"
 KH02_LOCATION_TYPES = frozenset({"kh02_chest", "kh02_boss", "kh02_objective"})
@@ -89,7 +89,7 @@ BOSSES = (
 
 # Original one-based objective numbers. Every objective has a native observer;
 # complex combat/movement conditions also need live player validation.
-SUPPORTED_CHALLENGES = frozenset(range(1, 52))
+SUPPORTED_CHALLENGES = frozenset(range(1, len(OBJECTIVE_TITLES) + 1))
 
 
 def _location(name, kind, source_id, address, **condition):

@@ -30,14 +30,16 @@ ENABLED = {"kh02_enabled": 1, "kh02_challenges": 1}
 class TestKH02Catalog(TestCase):
     def test_stable_addresses_groups_and_supported_conditions(self):
         self.assertEqual(Counter(row["type"] for row in ALL_KH02_LOCATIONS),
-                         {"kh02_chest": 40, "kh02_boss": 8, "kh02_objective": 51})
+                         {"kh02_chest": 40, "kh02_boss": 8, "kh02_objective": 50})
         self.assertEqual(len(location_name_to_id), len(set(location_name_to_id.values())))
         self.assertEqual(location_name_groups["Kingdom Hearts 0.2"],
                          {row["name"] for row in ALL_KH02_LOCATIONS})
         for row in ALL_KH02_LOCATIONS:
             self.assertEqual(row["ap_location_id"], location_name_to_id[row["name"]])
             self.assertEqual(("kh02_flag" in row) + ("kh02_challenge" in row), 1)
-        self.assertEqual(SUPPORTED_CHALLENGES, frozenset(range(1, 52)))
+        self.assertEqual(SUPPORTED_CHALLENGES, frozenset(range(1, 51)))
+        self.assertNotIn("0.2 - Objective 51: Demon Tide on Critical", location_name_to_id)
+        self.assertNotIn("0.2 - Objective 52: Defeat Demon Towers", location_name_to_id)
         self.assertTrue(any(row["source_id"] == "Treasure:DW_BOX009" for row in ALL_KH02_LOCATIONS))
         self.assertTrue(any(row["source_id"] == "Treasure:DW_LBOX04" for row in ALL_KH02_LOCATIONS))
 
@@ -134,7 +136,7 @@ class TestKH02World(KH3TestBase):
 
         self.assertEqual(Counter(row["type"] for row in self.world.active_locations
                                  if row["type"] in KH02_LOCATION_TYPES),
-                         {"kh02_chest": 40, "kh02_boss": 8, "kh02_objective": 51})
+                         {"kh02_chest": 40, "kh02_boss": 8, "kh02_objective": 50})
         runtime = self.world.build_runtime_slot_data()
         self.assertEqual({key: runtime[key] for key in ENABLED}, ENABLED)
         self.assertEqual({key for key in KH3Options.type_hints if key.startswith("kh02_")}, set(ENABLED))
@@ -147,7 +149,7 @@ class TestKH02World(KH3TestBase):
                 rows = [row for row in self.world.active_locations if row["type"] in KH02_LOCATION_TYPES]
                 expected = {"kh02_chest": 40, "kh02_boss": 8} if enabled else {}
                 if enabled and challenges:
-                    expected["kh02_objective"] = 51
+                    expected["kh02_objective"] = 50
                 self.assertEqual(Counter(row["type"] for row in rows), expected)
                 self.assertEqual(any(region.name == "Kingdom Hearts 0.2" for region in self.multiworld.regions),
                                  bool(enabled))
@@ -167,7 +169,7 @@ class TestKH02World(KH3TestBase):
                 actual = [row for row in self.world.active_locations if row["type"] in KH02_LOCATION_TYPES]
                 restored = [row for row in tracker.worlds[1].active_locations if row["type"] in KH02_LOCATION_TYPES]
                 self.assertEqual(actual, restored)
-                self.assertEqual(len(actual), (48 + 51 * challenges) if enabled else 0)
+                self.assertEqual(len(actual), (48 + 50 * challenges) if enabled else 0)
 
     def test_kh02_checks_allow_all_item_classes_for_all_players(self):
         self.options = ENABLED
@@ -265,7 +267,7 @@ class TestKH02Generation(TestCase):
                     state = multiworld.get_all_state(False)
                     runtime = multiworld.worlds[1].build_runtime_slot_data()
                     checks = [row for row in runtime["bridge"]["locations"] if row["type"] in KH02_LOCATION_TYPES]
-                    self.assertEqual(len(checks), 99)
+                    self.assertEqual(len(checks), 98)
                     for row in checks:
                         location = multiworld.get_location(row["ap_location_name"], 1)
                         self.assertTrue(location.can_reach(state))
