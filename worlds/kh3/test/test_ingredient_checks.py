@@ -208,11 +208,19 @@ class TestIngredientSpots(KH3WorldIntegrityMixin, KH3TestBase):
             self.assertFalse(dep.require_all)
             self.assertEqual(set(dep.source_keys), expected)
 
+    def test_san_fransokyo_pickups_003_and_016_require_only_world_access(self):
+        self.world_setup()
+        for spot_id in ("BX_02_PF_003", "BX_02_PF_016"):
+            with self.subTest(spot=spot_id):
+                spot = self.get_location_by_source("IngredientSpot", spot_id)
+                state = self._state_without_precollected_items()
+                self.assertFalse(spot.can_reach(state))
+                state.collect(self.world.create_item("Nano Gear"))
+                self.assertTrue(spot.can_reach(state))
+
     def test_reviewed_movement_routes_and_world_entry(self):
         self.world_setup()
         for spot_id, world_items, alternatives in (
-            ("BX_02_PF_003", ("Nano Gear",), ("Unlock: Wall Run",)),
-            ("BX_02_PF_016", ("Nano Gear",), ("Unlock: Wall Run", "Ability: Doubleflight")),
             ("CA_01_PF_013", ("Wheel of Fate", "Ability: Air Slide"),
              ("Unlock: Wall Run", "Ability: Doubleflight")),
             ("CA_02h_F_013", ("Wheel of Fate", "Ability: Air Slide"), ("Unlock: Wall Run",)),
@@ -380,7 +388,7 @@ class TestIngredientSpots(KH3WorldIntegrityMixin, KH3TestBase):
 
 class TestIngredientChestAreaAccess(KH3WorldIntegrityMixin, KH3TestBase):
     options = {"ingredients": "ingredientsanity_plus", "chestsanity": 1,
-               "portal_unlocks": "party_members", "start_with_wall_run": 0}
+               "portal_unlocks": "party_members", "wall_run_mode": "shared"}
 
     def test_rapunzel_opens_ingredients_but_not_chests_without_keyblades(self):
         state = self._state_without_precollected_items()

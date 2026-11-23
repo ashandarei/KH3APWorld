@@ -142,7 +142,7 @@ class TestCharacterUnlocksWithJunkWorlds(KH3TestBase):
 
 
 class TestAllyMovement(KH3TestBase):
-    options = {"default_base_abilities": False, "start_with_wall_run": False}
+    options = {"default_base_abilities": False, "wall_run_mode": "shared"}
 
     def test_ally_unlock_opens_a_chest_requiring_both_movement_abilities(self):
         chest = self.get_location_by_source("TreasureHE", "HE_SBOX_011")

@@ -34,6 +34,7 @@ from ..Bridge import (
 from ..Data import (
     BAD_STATUS_TRAP_RUNTIME_TOKEN_BY_ITEM_NAME,
     CONTROLLER_UNLOCK_ITEM_NAMES,
+    WORLD_WALL_RUN_ITEMS,
     DEFAULT_BASE_ABILITY_CHRINIT_FIELDS,
     DURABLE_SORA_ABILITY_GRANT_METHOD,
     DURABLE_SORA_VBONUS_GRANT_METHOD,
@@ -621,7 +622,7 @@ class TestKH3WorldIntegrity(KH3WorldIntegrityMixin, KH3TestBase):
         self.assertTrue(slot_data["fast_dance_minigame"])
         self.assertTrue(slot_data["fast_beat_of_lead"])
         self.assertEqual(slot_data["lucky_emblems_per_check"], 0)
-        self.assertFalse(slot_data["start_with_wall_run"])
+        self.assertEqual(slot_data["wall_run_mode"], 1)
         self.assertEqual(slot_data["stylesanity"], 1)
         self.assertNotIn("style_change", slot_data)
         self.assertNotIn("keyblade_style_sanity", slot_data)
@@ -1448,7 +1449,7 @@ battle_level_mode: "{battle}"
             self.world.item_name_to_id[ULTIMA_WEAPON_ITEM_NAME],
         )
         for item_name in CONTROLLER_UNLOCK_ITEM_NAMES:
-            if item_name in {"Unlock: Airstep", "Unlock: Style Change"}:
+            if item_name in {"Unlock: Airstep", "Unlock: Style Change", *WORLD_WALL_RUN_ITEMS.values()}:
                 self.assertNotIn(item_name, item_pool_names)
             else:
                 self.assertIn(item_name, item_pool_names)

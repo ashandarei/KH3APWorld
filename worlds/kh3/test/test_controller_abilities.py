@@ -94,6 +94,16 @@ class TestControllerAbilities(unittest.TestCase):
         self.assertEqual(
             {item_name: metadata["ability_id"] for item_name, metadata in CONTROLLER_UNLOCK_ITEMS.items()},
             {
+                "Wall Run: Olympus": 135,
+                "Wall Run: Twilight Town": 136,
+                "Wall Run: Toy Box": 137,
+                "Wall Run: Kingdom of Corona": 138,
+                "Wall Run: Monstropolis": 139,
+                "Wall Run: Arendelle": 140,
+                "Wall Run: The Caribbean": 141,
+                "Wall Run: San Fransokyo": 142,
+                "Wall Run: Keyblade Graveyard": 143,
+                "Wall Run: Re Mind": 144,
                 "Unlock: Wall Run": 113,
                 "Unlock: Style Change": 114,
                 "Unlock: Magic": 115,

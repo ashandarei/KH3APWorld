@@ -815,8 +815,6 @@ for _ingredient_id, _spot_ids in _ingredient_dependencies["ingredients"].items()
 INGREDIENT_LOGIC_REQUIREMENTS = {
     ("IngredientSpot", spot_id): parse_requirement_summary(summary)
     for spot_id, summary in {
-        "BX_02_PF_003": "Wall Run",
-        "BX_02_PF_016": "Wall Run OR Double Flight",
         "CA_01_PF_013": "Wall Run OR Double Flight",
         "CA_02h_F_013": "Wall Run",
         "TS_02_PF_003": "High Jump OR Double Flight OR Wall Run",

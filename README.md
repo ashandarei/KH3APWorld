@@ -12,9 +12,13 @@ Players can start with the [setup guide](worlds/kh3/docs/setup_en.md) and
 
 The world and client live in `worlds/kh3/`; `KH3Client.py` launches the client.
 World and catalog development utilities live in `tools/kh3/`.
-The native DLL source lives in the separate `KH3Runtime` checkout, normally
-beside this repository. Its source is needed for native contract tests and
-local DLL development.
+The DLL source lives in [KH3Runtime](https://github.com/ashandarei/KH3Runtime).
+The UE4SS loader DLL source lives in the [ue4ss-goa fork](https://github.com/ashandarei/ue4ss-goa).
+
+The Kingdom Hearts 0.2 DLL comes from [02-GoA](https://github.com/ashandarei/02-GoA).
+The Melody of Memory DLL comes from [MoM-GoA-AP](https://github.com/ashandarei/MoM-GoA-AP).
+The client downloads the Garden of Assemblage pak from the
+[AP-GOA-KH3 releases](https://github.com/ashandarei/AP-GOA-KH3/releases).
 
 Prepare Python dependencies using `requirements.txt`. Copy `.env.example` to
 `.env` and set local game and source paths as needed. Local settings, bridge

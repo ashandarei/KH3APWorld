@@ -30,6 +30,7 @@ from worlds.LauncherComponents import (
 from .Bridge import BRIDGE_PROTOCOL_NAME, BRIDGE_PROTOCOL_VERSION, KH3_WORLD_VERSION, build_bridge_slot_data
 from .CharacterUnlocks import CHARACTER_UNLOCK_ITEM_ALIASES, CHARACTER_UNLOCK_ITEM_NAMES
 from .ClassicKingdomLogic import record_useful_game
+from .WallRun import WALL_RUN, WORLD_WALL_RUN_ITEMS
 from .Data import (
     TRAP_ITEM_NAMES,
     CHEST_LOGIC_REQUIREMENTS,
@@ -86,9 +87,11 @@ from .Data import (
     uses_replace_location_pool,
     validate_locations,
 )
+from .WallRun import WALL_RUN, WORLD_WALL_RUN_ITEMS
 from .Data import (
     PROGRESSIVE_KEYBLADE_LEVEL_INDIVIDUAL_ITEM_NAMES as PROGRESSIVE_KEYBLADE_LEVEL_INDIVIDUAL_ITEM_NAMES,
 )
+from .WallRun import WALL_RUN, WORLD_WALL_RUN_ITEMS
 from .Data import (
     PROOF_ITEMS as PROOF_ITEMS,
 )
@@ -800,6 +803,8 @@ class KH3World(World):
                     if requirement_routes:
                         add_requirement_item_names(requirement_routes)
 
+        if self.options.wall_run_mode == "split":
+            required_item_names.discard(WALL_RUN)
         required_item_names.difference_update(self._starting_controller_unlock_item_names())
         required_item_names.difference_update(self._starting_default_base_ability_item_names())
         required_item_names.difference_update(FIXED_SORA_CHRINIT_ABILITY_ITEM_NAMES)
@@ -916,9 +921,12 @@ class KH3World(World):
             self.multiworld.push_precollected(self.create_item(item_name))
             self.kh3_starting_inventory_items.append(item_name)
         existing_item_names.update(starting_unlock_items)
+        excluded_wall_runs = ({WALL_RUN} if self.options.wall_run_mode == "split"
+                              else set(WORLD_WALL_RUN_ITEMS.values()))
         controller_unlock_items = [
             item_name
             for item_name in CONTROLLER_UNLOCK_EXTRA_ITEM_POOL_ITEMS
+            if item_name not in excluded_wall_runs
             if item_name not in {STYLE_CHANGE_UNLOCK_ITEM, *CHARACTER_STYLE_ITEM_NAMES}
             if item_name not in starting_unlock_items and item_name not in existing_item_names
         ]
@@ -1038,6 +1046,8 @@ class KH3World(World):
             for option_name, item_name in CONTROLLER_UNLOCK_ITEM_NAMES_BY_OPTION.items()
             if bool(getattr(self.options, option_name).value)
         }
+        if self.options.wall_run_mode == "starting":
+            item_names.add(WALL_RUN)
         item_names.add("Unlock: Airstep")
         if not self.options.stylesanity.value:
             # Mirror the equipped CharInit ability in AP's starting state.
@@ -1371,14 +1381,15 @@ class KH3World(World):
         if self._rock_titan_sequence_break_bonus_enabled():
             from .Locations import ROCK_TITAN_BONUS_BRIDGE_LOCATION
             bridge_data["locations"].append(dict(ROCK_TITAN_BONUS_BRIDGE_LOCATION))
-            bridge_data.setdefault("conditional_checks", []).append({
-                "trigger_bridge_key": ROCK_TITAN_VBONUS_BRIDGE_KEY,
-                "ap_location_id": ROCK_TITAN_NO_WALL_RUN_BONUS_LOCATION_ID,
-                "ap_location_name": ROCK_TITAN_NO_WALL_RUN_BONUS_LOCATION_NAME,
-                "unless_item_id": self.item_name_to_id["Unlock: Wall Run"],
-                "unless_item_name": "Unlock: Wall Run",
-                "unless_start_option": "start_with_wall_run",
-            })
+            if self.options.wall_run_mode != "starting":
+                wall_run = WORLD_WALL_RUN_ITEMS["Olympus"] if self.options.wall_run_mode == "split" else WALL_RUN
+                bridge_data.setdefault("conditional_checks", []).append({
+                    "trigger_bridge_key": ROCK_TITAN_VBONUS_BRIDGE_KEY,
+                    "ap_location_id": ROCK_TITAN_NO_WALL_RUN_BONUS_LOCATION_ID,
+                    "ap_location_name": ROCK_TITAN_NO_WALL_RUN_BONUS_LOCATION_NAME,
+                    "unless_item_id": self.item_name_to_id[wall_run],
+                    "unless_item_name": wall_run,
+                })
         bridge_data["chest_persistence_version"] = 1
         bridge_data["space_version"] = 1 if self.options.include_space.value else 0
         for bridge_location in bridge_data["locations"]:
@@ -1510,7 +1521,7 @@ class KH3World(World):
             "death_link",
             "death_link_amnesty",
             "fast_death_link",
-            "start_with_wall_run",
+            "wall_run_mode",
             "stylesanity",
             "start_with_magic",
             "start_with_links",

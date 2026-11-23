@@ -51,6 +51,7 @@ def settings_for(index: int, player: int = 1) -> dict:
         "color_randomization": choose(["off", "coordinated", "wild"]),
         "music_shuffle": choose(["vanilla", "shuffle_worlds", "shuffle_battle_themes", "chaos"]),
         "battle_level_mode": choose(["off", "sora_level"]),
+        "wall_run_mode": choose(["starting", "shared", "split"]),
         "portal_unlocks": choose(["keyblades", "party_members"]),
     }
     for name in ("base_sora", "level_up", "keyblade_enhance", "equipment", "food_effect"):
@@ -62,7 +63,7 @@ def settings_for(index: int, player: int = 1) -> dict:
     for name in ("hundred_acre_wood", "unreality", "data_battle_rewards", "lucky_emblems", "battlegates",
                  "flantastic_flans", "verum_rex", "festival_dance", "frozen_slider", "flash_tracer_course_a"):
         options[name + "_pool"] = choose(["randomize", "junk"])
-    for name in ("default_base_abilities", "start_with_wall_run", "start_with_magic", "start_with_links",
+    for name in ("default_base_abilities", "start_with_magic", "start_with_links",
                  "start_with_attraction_flow", "allow_all_stats", "allow_negative_stats", "default_data_battles",
                  "default_end_game_battles", "default_yozora_battle", "enemy_chaos", "party_chaos", "chestsanity",
                  "include_space", "include_grindy_space_missions", "include_space_superbosses", "easier_mini_ufo",

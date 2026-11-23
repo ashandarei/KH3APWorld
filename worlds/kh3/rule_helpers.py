@@ -33,13 +33,15 @@ class _ResolvedReachableSources:
     thresholds: dict = field(default_factory=dict)
 
 
-def requirement_rule(requirement_routes, starting_item_names=frozenset()):
+def requirement_rule(requirement_routes, starting_item_names=frozenset(), regional_wall_run=None):
     """Compile alternative routes, counting each owned or starting item once."""
     routes = []
     for route in requirement_routes:
         clauses = []
         for requirement in route:
             names = frozenset(requirement_clause_item_names(requirement))
+            if regional_wall_run and "Unlock: Wall Run" in names:
+                names = (names - {"Unlock: Wall Run"}) | {regional_wall_run}
             count = requirement.count if isinstance(requirement, CountedRequirement) else 1
             count -= len(names & starting_item_names)
             names -= starting_item_names

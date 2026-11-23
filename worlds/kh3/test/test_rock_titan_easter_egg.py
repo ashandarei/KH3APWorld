@@ -116,7 +116,6 @@ class TestRockTitanSequenceBreakWorld(KH3TestBase):
                     "ap_location_name": ROCK_TITAN_NO_WALL_RUN_BONUS_LOCATION_NAME,
                     "unless_item_id": self.world.item_name_to_id["Unlock: Wall Run"],
                     "unless_item_name": "Unlock: Wall Run",
-                    "unless_start_option": "start_with_wall_run",
                 }
             ],
         )
@@ -130,23 +129,6 @@ class TestRockTitanSequenceBreakWorldWithJunkOlympus(TestRockTitanSequenceBreakW
 class TestRockTitanSequenceBreakClient(unittest.TestCase):
     WALL_RUN_ITEM_ID = 9001
     BONUS_LOCATION_ID = 8001
-
-    @classmethod
-    def slot_data(cls, *, start_with_wall_run: bool = False) -> dict:
-        return {
-            "start_with_wall_run": start_with_wall_run,
-            "bridge": {
-                "conditional_checks": [
-                    {
-                        "trigger_bridge_key": ROCK_TITAN_VBONUS_BRIDGE_KEY,
-                        "ap_location_id": cls.BONUS_LOCATION_ID,
-                        "unless_item_id": cls.WALL_RUN_ITEM_ID,
-                        "unless_start_option": "start_with_wall_run",
-                    }
-                ],
-            },
-        }
-
 
     def test_rock_titan_observation_expands_to_normal_and_bonus_checks(self) -> None:
         service = BridgeSyncService.__new__(BridgeSyncService)

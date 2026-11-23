@@ -60,6 +60,7 @@ from .Logic import MAGIC_UNLOCK_ITEM
 from .Regions import HUB_REGION_NAME, KEYBLADE_GRAVEYARD_REMIND_SHARED_REGION_NAME
 from .kh02.locations import KH02_MAGIC_REQUIRED_SOURCE_IDS, KH02_WORLD
 from .rule_helpers import CountReachableRules, CountRules, requirement_rule
+from .WallRun import WALL_RUN, WALL_RUN_REGION_GROUPS, WORLD_WALL_RUN_ITEMS
 from .Workshop import (
     PHOTO_MISSION_ADDITIONAL_SOURCES,
     PHOTO_MISSION_COMPLETION_WORLDS,
@@ -100,6 +101,8 @@ def set_rules(world) -> None:
         for option_name, item_name in CONTROLLER_UNLOCK_ITEM_NAMES_BY_OPTION.items()
         if bool(getattr(world.options, option_name).value)
     )
+    if world.options.wall_run_mode == "starting":
+        starting_controller_unlocks |= {WALL_RUN}
     starting_logic_item_names = starting_controller_unlocks
     if bool(world.options.default_base_abilities.value):
         starting_logic_item_names = starting_logic_item_names | DEFAULT_BASE_ABILITY_ITEM_NAMES
@@ -134,15 +137,23 @@ def set_rules(world) -> None:
             for source_key in COLISEUM_WORLD_COMPLETION_SOURCES[region_name]
         ))
 
+    def world_requirement(routes, region_name):
+        if world.options.wall_run_mode != "split":
+            return requirement_rule(routes, starting_logic_item_names)
+        if region_name in {"100 Acre Wood", "Dark World", KH02_WORLD, "Data Battles"}:
+            return requirement_rule(routes, starting_logic_item_names | {WALL_RUN})
+        group = WALL_RUN_REGION_GROUPS.get(region_name, region_name)
+        return requirement_rule(routes, starting_logic_item_names, WORLD_WALL_RUN_ITEMS.get(group))
+
     xp_source_rules = tuple(
-        CanReachRegion(region_name) & requirement_rule(
-            LEVEL_UP_XP_SOURCE_LOGIC_REQUIREMENTS.get(region_name, ((),)), starting_logic_item_names,
+        CanReachRegion(region_name) & world_requirement(
+            LEVEL_UP_XP_SOURCE_LOGIC_REQUIREMENTS.get(region_name, ((),)), region_name,
         )
         for region_name in sorted(LEVEL_UP_XP_SOURCE_REGION_NAMES)
         if region_name in existing_region_names
     )
     lucky_emblem_rules = tuple(
-        CanReachRegion(region_name) & requirement_rule(routes or ((),), starting_logic_item_names)
+        CanReachRegion(region_name) & world_requirement(routes or ((),), region_name)
         for region_name, spot_requirements in sorted(LUCKY_EMBLEM_LOGIC_REQUIREMENTS_BY_WORLD.items())
         if region_name in existing_region_names
         for routes in spot_requirements
@@ -241,7 +252,9 @@ def set_rules(world) -> None:
                   or EVENT_LOGIC_REQUIREMENTS.get(source_key)
                   or INGREDIENT_LOGIC_REQUIREMENTS.get(source_key))
         if routes is not None:
-            rule &= requirement_rule(routes, starting_logic_item_names)
+            physical_world = (INGREDIENT_SPOTS_BY_ID[row["source_id"]]["world"]
+                              if row["source_table"] == "IngredientSpot" else row["world"])
+            rule &= world_requirement(routes, physical_world)
 
         dependency = world.location_logic_dependencies.get(source_key)
         if dependency is not None:
@@ -307,11 +320,11 @@ def set_rules(world) -> None:
                      if party_portals else HasFromListUnique(
                          *TIER_ONE_PORTAL_KEYBLADE_ITEM_NAMES, count=HIGHER_TIER_TIER_ONE_KEYBLADE_COUNT))
         if region_name == "Twilight Town":
-            rule &= requirement_rule(TWILIGHT_TOWN_PORTAL_LOGIC_REQUIREMENTS, starting_logic_item_names)
+            rule &= world_requirement(TWILIGHT_TOWN_PORTAL_LOGIC_REQUIREMENTS, region_name)
         if region_name == "Keyblade Graveyard":
             rule &= Has("Unlock: Attraction Flow")
         if region_name == "The Caribbean":
-            rule &= requirement_rule(THE_CARIBBEAN_PORTAL_LOGIC_REQUIREMENTS, starting_logic_item_names)
+            rule &= world_requirement(THE_CARIBBEAN_PORTAL_LOGIC_REQUIREMENTS, region_name)
         if region_name == "Olympus Coliseum":
             rule &= can_complete_coliseum_world("Olympus")
         # Rule Builder registers indirect region dependencies for these entrances.

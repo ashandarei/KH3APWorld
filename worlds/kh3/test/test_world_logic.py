@@ -3192,9 +3192,40 @@ class TestKH3SevenHeartPiecesGoalLogic(KH3TestBase):
         self.assertTrue(level_up_location.item_rule(self.world.create_item("Potion")))
 
 
+class TestSplitWallRun(KH3TestBase):
+    options = {"wall_run_mode": "split"}
+
+    def test_regional_wall_run_pool_and_olympus_access(self):
+        from ..WallRun import WORLD_WALL_RUN_ITEMS
+
+        self.world_setup()
+        names = [item.name for item in self.multiworld.itempool]
+        self.assertNotIn("Unlock: Wall Run", names)
+        excluded = {"100 Acre Wood", "Dark World", "Data Battles", "Radiant Garden", "Unreality"}
+        self.assertTrue(excluded.isdisjoint(WORLD_WALL_RUN_ITEMS))
+        self.assertEqual(self.world.build_runtime_slot_data()["wall_run_mode"], 2)
+        for name in WORLD_WALL_RUN_ITEMS.values():
+            self.assertEqual(names.count(name), 1)
+        state = CollectionState(self.multiworld)
+        state.collect(self.world.create_item("Hero's Origin"))
+        chest = self.get_location_by_source("TreasureHE", "HE_SBOX_017")
+        state.collect(self.world.create_item("Wall Run: Toy Box"))
+        self.assertFalse(chest.can_reach(state))
+        state.collect(self.world.create_item("Wall Run: Olympus"))
+        self.assertTrue(chest.can_reach(state))
+        full = self.multiworld.get_all_state()
+        frozen_chest = self.get_location_by_source("TreasureFZ", "FZ_SBOX_012")
+        self.assertTrue(frozen_chest.can_reach(full))
+        full.remove(self.world.create_item("Wall Run: Arendelle"))
+        self.assertFalse(frozen_chest.can_reach(full))
+        self.assertTrue(chest.can_reach(full))
+        rules = self.world.build_runtime_slot_data()["bridge"]["conditional_checks"]
+        self.assertIn("Wall Run: Olympus", [rule.get("unless_item_name") for rule in rules])
+
+
 class TestKH3WorldStartingWallRunLogic(KH3TestBase):
     options = {
-        "start_with_wall_run": 1,
+        "wall_run_mode": "starting",
     }
 
     def test_starting_wall_run_satisfies_csv_logic_without_pool_item(self) -> None:
@@ -3202,6 +3233,8 @@ class TestKH3WorldStartingWallRunLogic(KH3TestBase):
 
         item_pool_names = [item.name for item in self.multiworld.itempool]
         self.assertNotIn("Unlock: Wall Run", item_pool_names)
+        rules = self.world.build_runtime_slot_data()["bridge"].get("conditional_checks", ())
+        self.assertFalse(any(rule.get("unless_item_name") == "Unlock: Wall Run" for rule in rules))
 
         target_location = next(
             self.multiworld.get_location(location_data["name"], self.player)

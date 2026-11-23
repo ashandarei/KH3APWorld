@@ -10,6 +10,7 @@ from pathlib import Path
 from typing import Any
 
 try:
+    from .WallRun import WORLD_WALL_RUN_ITEMS, WORLD_WALL_RUN_ABILITIES
     from .ap_archive import (
         ArchiveValidationError,
         get_slot_game,
@@ -19,6 +20,7 @@ try:
         resolve_kh3_slot,
     )
 except ImportError:
+    from WallRun import WORLD_WALL_RUN_ITEMS, WORLD_WALL_RUN_ABILITIES
     from ap_archive import (
         ArchiveValidationError,
         get_slot_game,
@@ -133,6 +135,7 @@ RAW_ITEM_DISPLAY_NAMES = {
 }
 
 CONTROLLER_UNLOCK_ITEMS = {
+    **{name: WORLD_WALL_RUN_ABILITIES[world][0] for world, name in WORLD_WALL_RUN_ITEMS.items()},
     "Style Change: Spellweaver": "spellweaver",
     "Style Change: Seven Wishes": "seven_wishes",
     "Unlock: Wall Run": "wall_run",

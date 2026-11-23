@@ -42,6 +42,7 @@ from .LogicData import (
 )
 from .Minigames import append_minigame_item_locations, append_minigame_locations, minigame_pool_option
 from .PackageResources import read_package_text
+from .WallRun import WORLD_WALL_RUN_ITEMS, WORLD_WALL_RUN_ABILITIES
 from .Workshop import (PHOTO_MISSION_COMPLETION_WORLDS, WORKSHOP_OPTIONS,
                        append_workshop_locations, synthesis_is_junk)
 
@@ -876,7 +877,7 @@ CONTROLLER_UNLOCK_ITEMS = {
     "Unlock: Wall Run": {
         "key": "wall_run",
         "ability_id": 113,
-        "option_name": "start_with_wall_run",
+        "option_name": None,
         "display_name": "Wall Run",
     },
     STYLE_CHANGE_UNLOCK_ITEM: {
@@ -910,6 +911,10 @@ CONTROLLER_UNLOCK_ITEMS = {
         "display_name": "Links",
     },
 }
+for world_name, (key, ability_id) in WORLD_WALL_RUN_ABILITIES.items():
+    name = WORLD_WALL_RUN_ITEMS[world_name]
+    CONTROLLER_UNLOCK_ITEMS[name] = dict(key=key, ability_id=ability_id, option_name=None, display_name=name)
+
 CONTROLLER_UNLOCK_ITEM_NAMES = tuple(CONTROLLER_UNLOCK_ITEMS)
 CONTROLLER_UNLOCK_ITEM_NAMES_BY_OPTION = {
     metadata["option_name"]: item_name
@@ -1532,7 +1537,7 @@ def build_item_name_to_id(data: dict) -> dict[str, int]:
     next_index = len(reserved_item_name_to_id)
     for item_name in CONTROLLER_UNLOCK_ITEM_NAMES:
         # Links was published after the existing item tails; do not shift IDs.
-        if item_name in {"Unlock: Links", *CHARACTER_STYLE_ITEM_NAMES}:
+        if item_name in {"Unlock: Links", *CHARACTER_STYLE_ITEM_NAMES, *WORLD_WALL_RUN_ITEMS.values()}:
             continue
         if item_name not in item_name_to_id:
             item_name_to_id[item_name] = base_id + next_index
@@ -1587,6 +1592,9 @@ def build_item_name_to_id(data: dict) -> dict[str, int]:
     next_index += 1
     item_name_to_id[SEVEN_WISHES_UNLOCK_ITEM] = base_id + next_index
     next_index += 1
+    for name in WORLD_WALL_RUN_ITEMS.values():
+        item_name_to_id[name] = base_id + next_index
+        next_index += 1
     from .Space import SPACE_ITEM_IDS
     item_name_to_id.update(SPACE_ITEM_IDS)
     return item_name_to_id

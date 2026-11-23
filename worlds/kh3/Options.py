@@ -922,13 +922,16 @@ class DefaultBaseAbilities(Toggle):
     display_name = "Default Base Abilities"
 
 
-class StartWithWallRun(Toggle):
-    """
-    Start with the Wall Run unlock item so Archipelago delivers it at the
-    start of the game.
+class WallRunMode(Choice):
+    """Starting gives Wall Run immediately. Shared shuffles one unlock.
+    Split shuffles separately equippable world unlocks.
     """
 
-    display_name = "Start With Wall Run"
+    display_name = "Wall Run"
+    option_starting = 0
+    option_shared = 1
+    option_split = 2
+    default = option_shared
 
 
 class StartWithMagic(Toggle):
@@ -1733,7 +1736,7 @@ class KH3Options(PerGameCommonOptions):
     party_members_pool: PartyMembersPool
     default_base_abilities: DefaultBaseAbilities
     auto_equip_essential_abilities: AutoEquipEssentialAbilities
-    start_with_wall_run: StartWithWallRun
+    wall_run_mode: WallRunMode
     start_with_magic: StartWithMagic
     start_with_links: StartWithLinks
     start_with_attraction_flow: StartWithAttractionFlow
@@ -1898,6 +1901,7 @@ option_groups = [
         BattleLevelOffset,
         KeybladeLevels,
         Stylesanity,
+        WallRunMode,
         Chestsanity,
         RoxasChestsanity,
         UltimaWeaponMode,
@@ -1910,7 +1914,6 @@ option_groups = [
         GateOpenerCount,
         DefaultBaseAbilities,
         AutoEquipEssentialAbilities,
-        StartWithWallRun,
         StartWithMagic,
         StartWithLinks,
         StartWithAttractionFlow,

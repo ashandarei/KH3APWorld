@@ -22,45 +22,16 @@ KH3 client open and connected while you play.
 3. Choose **Install APWorld** and select the downloaded file.
 4. Restart the launcher. **KH3 Client** should now appear.
 
+If your host asks for a settings file, open **KH3 YAML Creator** in the
+launcher, choose your settings, and send them the file from **Export YAML**.
+
 ## 2. Prepare the game
 
-To create a player YAML, open **KH3 YAML Creator** from the launcher or the
-client's **YAML Creator** button. Use **Save as…** to name a settings preset,
-**Save** (Ctrl+S) to update it, and the **Saved settings** dropdown to load one
-again. Presets stay on this computer and keep your current player name when
-loaded. **Delete** removes the selected preset and leaves your current settings
-in the editor. **Export YAML** writes the player file to share with your host;
-an empty player name defaults to **Player**. The **− Zoom +** controls at the
-bottom left adjust the text size one point at a time.
+1. Close Kingdom Hearts III and open **KH3 Client** from the Archipelago Launcher.
+2. In **KH3 Config**, check **KH3 Dir** and **Save Dir**. Leave save cleanup set to **Backup**.
+3. Click **Patch Game** to install the required mods. Follow any prompts and wait for it to finish.
 
-Choose **Start Generation** to see your current settings in the player list.
-Drop in other YAMLs or choose **Add files…**. Select any row and choose **Remove**
-to leave that player file out of this generation.
-Expand **Advanced settings** to change the hint cost, spoiler detail, or when
-players can release items, collect items, and use `!remaining`. The controls
-start with your Archipelago settings. Changes apply to this run.
-**Generate Zip** opens the folder containing the finished archive.
-**Start Local Server** generates the archive and shows the connection address in the
-same window. On Windows and Linux it also opens the server console in a terminal.
-Closing the YAML Creator leaves the room running. Enter `/exit` in the terminal
-or close the terminal window to stop the server.
-
-1. Close Kingdom Hearts III.
-2. Open **KH3 Client** from the Archipelago Launcher.
-3. Open **KH3 Config**.
-4. On **KH3 Dir**, choose your KH3 installation folder if it was not found automatically.
-5. Check that **Save Dir** points to the folder where your KH3 saves are kept.
-6. Leave save cleanup set to **Backup** to keep a copy of saves when starting another run.
-7. Click **Patch Game** and wait for it to finish.
-
-The client installs the required mods, including Garden of Assemblage. Follow
-any messages it shows. Run **Patch Game** again after updating the KH3 APWorld.
-
-On Steam, the client also tries to turn off Steam Cloud for KH3. Follow its
-message if you need to turn it off yourself.
-
-On Linux, if patching asks you to start KH3 once, open the game through Steam
-or Heroic, close it, and try **Patch Game** again.
+Run **Patch Game** again after updating `kh3.apworld`.
 
 ## 3. Join your room and play
 
@@ -112,10 +83,12 @@ can use the cached ZIP offline. Importing a ready-made `.pak` skips this downloa
 | Problem | What to do |
 | --- | --- |
 | KH3 Client is missing from the launcher. | Install `kh3.apworld` again and restart the launcher. |
+| The client asks you to disable Steam Cloud. | Turn off Steam Cloud for KH3 in the game's Steam properties. |
+| On Steam, KH3 crashes with “expecting 187, received 181.” when entering the data room | Close KH3 and delete the `*_0_P.*` files in `Content/Paks`, one level above `~mods`. |
+| On Linux, patching asks you to start KH3 once. | Launch KH3 through Steam or Heroic, close it, and run **Patch Game** again. |
 | Completed chests or challenges are not showing up. | Close KH3, run **Patch Game**, connect the client, and launch KH3 again. |
 | The client says the room and your saves do not match. | Close KH3, activate the matching run in **Save Manager**, and reconnect. |
 | Old saves are blocking a new run. | Close KH3 and use automatic save cleanup or the trash button for saves in **KH3 Config**. Keep **Backup** selected if you want to return to those saves. |
-| The game still seems to be using the previous run. | Close KH3 completely. Wait for the client to finish preparing the new run, then launch again. |
 
 If you still need help, use **Export Debug Bundle** in **KH3 Config** and share
 it with your support request, along with the error message you saw.
