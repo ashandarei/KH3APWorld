@@ -6666,7 +6666,7 @@
       "world": "Arendelle",
       "source_table": "VBonus",
       "source_id": "Vbonus_048",
-      "location_description": "Frozen Slider Frost Serpents",
+      "location_description": "Frozen Slider (Story) Frost Serpents",
       "vanilla_items": {
         "Sora_Ability1": "ETresAbilityKind::DOUBLEFLIGHT",
         "Sora_Ability2": "ETresAbilityKind::NONE",

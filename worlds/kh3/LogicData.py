@@ -737,7 +737,7 @@ LOCATION_LOGIC_DEPENDENCIES = {
         ("VBonus", "Vbonus_047"),  # Marshmallow
     ),
     ("VBonus", "Vbonus_049"): require_all_locations(
-        ("VBonus", "Vbonus_048"),  # Story Frozen Slider Frost Serpents
+        ("VBonus", "Vbonus_048"),  # Story Frozen Slider (Story) Frost Serpents
     ),
     ("VBonus", "Vbonus_050"): require_all_locations(
         ("VBonus", "Vbonus_049"),  # Valley of Ice Heartless
