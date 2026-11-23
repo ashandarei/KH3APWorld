@@ -1,8 +1,8 @@
 {
   "schema": 1,
   "file": "KH02_CastleTownHost_P.pak",
-  "size": 193271,
-  "sha256": "4dfcbda87c8c6c8a57b3c37b37ac3ca46c8898c477bbd5e620c207514e0e6bd6",
+  "size": 193278,
+  "sha256": "de897d12c5d5f146be27cf9aef9a424266e7acece9c8a1ad5904d9e1a0e292f2",
   "repository": "ashandarei/AP-GOA-KH3",
-  "release_tag": "2.0.3"
+  "release_tag": "2.0.4"
 }

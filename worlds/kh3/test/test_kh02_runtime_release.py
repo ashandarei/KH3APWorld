@@ -43,7 +43,7 @@ def test_source_pin_matches_protocol_and_player_archive_excludes_local_dll_and_c
     config = json.loads((world / "runtime/KH02" / release.CONFIG_NAME).read_text())
     assert config["source"] == "release"
     assert config["repository"] == release.REPOSITORY
-    assert config["release_tag"] == "2.0.1"
+    assert config["release_tag"] == "2.0.2"
     assert config["asset_protocol"] == release.ASSET_PROTOCOL
     assert not list((world / "runtime/KH02").glob("asset-catalog-*"))
     assert not (world / "runtime/KH02/catalog-manifest.json").exists()
