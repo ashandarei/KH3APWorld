@@ -46,6 +46,7 @@ from .run_models import (
     KH3RunSuspensionResult as KH3RunSuspensionResult,
     KH3RunEnrollmentResult as KH3RunEnrollmentResult,
     KH3RunDeleteResult as KH3RunDeleteResult,
+    RunOwnsSaveDirectory,
     _PakIdentity as _PakIdentity,
 )
 
@@ -1246,6 +1247,7 @@ class KH3RunManagerService:
         payload = load_optional_json_file(manifest_path)
         if not isinstance(payload, dict):
             raise KH3RunManagerError(f"Managed KH3 run metadata is missing: {manifest_path}")
+        previous_payload = payload.copy()
         payload["run_id"] = next_run_id
         payload["connection_slot_name"] = connection_slot_name
         payload["server_address"] = server_address
@@ -1266,12 +1268,17 @@ class KH3RunManagerService:
             atomic_write_json(manifest_path, payload)
             if previous_active_run_id == run.run_id:
                 self._write_active_run_id(next_run_id)
+            if moved:
+                SeedGuardService.rename_save_run(run_id, next_run_id)
         except (OSError, KH3RunManagerError) as exc:
             if moved:
                 try:
                     os.replace(next_run_dir, run.run_dir)
-                except OSError:
-                    pass
+                    atomic_write_json(self._manifest_path(run.run_dir), previous_payload)
+                    if previous_active_run_id == run.run_id:
+                        self._write_active_run_id(run_id)
+                except OSError as rollback_exc:
+                    raise KH3RunManagerError(f"Could not roll back the connection profile edit: {rollback_exc}") from exc
             raise KH3RunManagerError(f"Could not store the KH3 run's connection profile: {exc}") from exc
         self.invalidate_inventory_cache()
         return self.get_run(next_run_id)
@@ -1286,12 +1293,9 @@ class KH3RunManagerService:
     ) -> KH3RunInfo:
         """Install a generated pak through the same transactional save switch as a manual activation."""
 
-        if self._installed_paks():
-            raise KH3RunManagerError(
-                "A KH3 AP seed pak appeared while the generated pak was being prepared; no pak was installed."
-            )
         return self.activate(
             run_id,
+            require_no_installed_pak=True,
             save_dir_override=save_dir_override,
             active_save_seed_id=active_save_seed_id,
             active_save_run_id=active_save_run_id,
@@ -1372,30 +1376,22 @@ class KH3RunManagerService:
 
     def _resolve_active_save_run(
         self,
-        current_run: KH3RunInfo,
+        current_run: KH3RunInfo | None,
         active_save_files: list[Path],
         associated_seed_id: str | None,
         associated_run_id: str | None,
         *,
         preferred_run: KH3RunInfo | None = None,
-    ) -> tuple[KH3RunInfo, str | None]:
-        """Select the managed run that owns live saves when the installed pak is stale."""
+    ) -> tuple[KH3RunInfo | None, str | None]:
+        """Resolve live save ownership independently of the currently installed pak."""
 
         if not active_save_files:
             return current_run, None
         normalized_run_id = str(associated_run_id or "").strip()
         if normalized_run_id:
-            try:
-                associated_run = self.get_run(normalized_run_id)
-            except KH3RunManagerError as exc:
-                raise KH3RunManagerError(
-                    f"The active saves are associated with managed run {normalized_run_id}, but that run is missing. "
-                    "Restore or import the exact run before continuing."
-                ) from exc
-            if not associated_run.managed or not associated_run.pak_available:
-                raise KH3RunManagerError(
-                    f"The active saves are associated with {normalized_run_id}, but its managed seed pak is missing."
-                )
+            associated_run = next((run for run in self.list_runs() if run.run_id == normalized_run_id), None)
+            if associated_run is None or not associated_run.managed:
+                return None, None
             if not self.matches_platform(associated_run):
                 raise KH3RunManagerError("The active save association belongs to another platform or an unassigned legacy run.")
             if associated_seed_id and associated_run.seed_id != associated_seed_id:
@@ -1403,11 +1399,16 @@ class KH3RunManagerService:
                     f"The active save association disagrees: run {normalized_run_id} uses seed "
                     f"{associated_run.seed_id}, not {associated_seed_id}."
                 )
-            if associated_run.run_id == current_run.run_id:
-                return current_run, None
+            if current_run is None or associated_run.run_id == current_run.run_id:
+                return associated_run, None
             return associated_run, (
                 f"The installed pak profile was {current_run.run_id}, but the active saves belong to managed run "
                 f"{associated_run.run_id}; stored the saves with their matching server profile."
+            )
+        if current_run is None:
+            raise KH3RunManagerError(
+                "The active save folder contains gameplay saves but no managed server profile identifies them. "
+                "Use Restore Vanilla KH3 before activating a managed AP run."
             )
         if associated_seed_id is None or associated_seed_id == current_run.seed_id:
             return current_run, None
@@ -1424,6 +1425,10 @@ class KH3RunManagerService:
                 for run in self.list_runs()
                 if run.managed and self.matches_platform(run) and run.pak_available and run.seed_id == associated_seed_id
             ]
+            if not matches and preferred_run is not None and preferred_run.run_id == current_run.run_id:
+                # Older save records can identify only the previous seed. The
+                # installed target must not inherit its remaining saves.
+                return None, None
             if len(matches) != 1:
                 detail = "no matching managed run" if not matches else f"{len(matches)} matching managed runs"
                 raise KH3RunManagerError(
@@ -1470,7 +1475,10 @@ class KH3RunManagerService:
             associated_seed_id,
             active_save_run_id,
         )
-        saved_current_files, snapshot_warnings = self._snapshot_current_save(save_run, save_dir)
+        saved_current_files = 0
+        snapshot_warnings = ()
+        if save_run is not None:
+            saved_current_files, snapshot_warnings = self._snapshot_current_save(save_run, save_dir)
         warnings = tuple(([ownership_warning] if ownership_warning else []) + list(snapshot_warnings))
         if self.process_running():
             raise KH3RunManagerError(
@@ -1488,30 +1496,27 @@ class KH3RunManagerService:
                 f"The current run was preserved, but its live seed pak could not be removed: {exc}"
             ) from exc
         try:
-            self._write_active_run_id(save_run.run_id)
+            # A missing owner still owns the live files until activation archives them.
+            self._restore_active_run_id(save_run.run_id if save_run else active_save_run_id)
         except (OSError, KH3RunManagerError) as exc:
             raise KH3RunManagerError(
                 f"The current run was preserved and its live pak removed, but save ownership could not be stored: {exc}"
             ) from exc
         self.invalidate_inventory_cache()
         refreshed_current_run = self.get_run(current_run.run_id)
-        refreshed_save_run = (
-            refreshed_current_run
-            if save_run.run_id == current_run.run_id
-            else self.get_run(save_run.run_id)
-        )
         return KH3RunSuspensionResult(
             run=refreshed_current_run,
             saved_current_files=saved_current_files,
             save_dir=save_dir,
             warnings=warnings,
-            save_run=refreshed_save_run,
+            save_run=self.get_run(save_run.run_id) if save_run else None,
         )
 
     def activate(
         self,
         run_id: str,
         *,
+        require_no_installed_pak: bool = False,
         save_dir_override: Path | str | None = None,
         active_save_seed_id: str | None = None,
         active_save_run_id: str | None = None,
@@ -1530,6 +1535,10 @@ class KH3RunManagerService:
             )
 
         installed = self._installed_paks()
+        if require_no_installed_pak and installed:
+            raise KH3RunManagerError(
+                "A KH3 AP seed pak appeared while the generated pak was being prepared; no pak was installed."
+            )
         if len(installed) > 1:
             names = ", ".join(identity.pak_name for identity in installed)
             raise KH3RunManagerError(
@@ -1552,13 +1561,6 @@ class KH3RunManagerService:
         )
         if current_identity is not None and current_run is None:
             current_run = self.import_pak(current_identity.path)
-        if current_run is None and associated_run_id:
-            try:
-                candidate = self.get_run(associated_run_id)
-            except KH3RunManagerError:
-                candidate = None
-            if candidate is not None and candidate.managed and candidate.pak_available:
-                current_run = candidate
         if (
             current_identity is not None
             and current_run is not None
@@ -1575,24 +1577,13 @@ class KH3RunManagerService:
             self._write_active_run_id(target.run_id)
             refreshed_target = self.get_run(target.run_id)
             return KH3RunActivationResult(refreshed_target, target.run_id, False, 0, 0, save_dir)
-        if current_identity is None and active_save_files and current_run is None:
-            raise KH3RunManagerError(
-                "The active save folder contains gameplay saves but no managed server profile identifies them. "
-                "Use Restore Vanilla KH3 before activating a managed AP run."
-            )
-
-        warnings: list[str] = []
+        save_run, ownership_warning = self._resolve_active_save_run(
+            current_run, active_save_files, associated_seed_id, associated_run_id, preferred_run=target,
+        )
+        warnings = [ownership_warning] if ownership_warning else []
+        recover_missing_owner = bool(active_save_files and save_run is None)
         saved_current_files = 0
-        if current_run is not None:
-            save_run, ownership_warning = self._resolve_active_save_run(
-                current_run,
-                active_save_files,
-                associated_seed_id,
-                associated_run_id,
-                preferred_run=target,
-            )
-            if ownership_warning:
-                warnings.append(ownership_warning)
+        if save_run is not None:
             saved_current_files, snapshot_warnings = self._snapshot_current_save(save_run, save_dir)
             warnings.extend(snapshot_warnings)
 
@@ -1604,8 +1595,11 @@ class KH3RunManagerService:
             prefix=f".{save_dir.name}-kh3-run-target-{token}-",
             dir=save_dir.parent,
         ))
+        rollback_prefix = f".{save_dir.name}-kh3-run-rollback-{token}-"
+        if recover_missing_owner:
+            rollback_prefix = f"{save_dir.name}-Recovered-{associated_seed_id or 'AP'}-"
         save_rollback = Path(tempfile.mkdtemp(
-            prefix=f".{save_dir.name}-kh3-run-rollback-{token}-",
+            prefix=rollback_prefix,
             dir=save_dir.parent,
         ))
         target_pak_stage = mods_dir / f".{target.pak_name}.{token}.stage"
@@ -1627,7 +1621,7 @@ class KH3RunManagerService:
                     "KINGDOM HEARTS III started while the run switch was being prepared; no files changed."
                 )
 
-            self._move_gameplay_save_files(save_dir, save_rollback)
+            moved_current_files = self._move_gameplay_save_files(save_dir, save_rollback)
             active_saves_archived = True
             if current_identity is not None and current_pak_rollback is not None:
                 os.replace(current_identity.path, current_pak_rollback)
@@ -1697,7 +1691,11 @@ class KH3RunManagerService:
                 current_pak_rollback.unlink()
             except OSError as exc:
                 warnings.append(f"Could not remove temporary previous seed pak {current_pak_rollback}: {exc}")
-        if save_rollback.exists():
+        if recover_missing_owner and moved_current_files:
+            saved_current_files = moved_current_files
+            previous_owner = associated_run_id or associated_seed_id
+            warnings.append(f"Saved {moved_current_files} file(s) from missing run {previous_owner} at {save_rollback}.")
+        elif save_rollback.exists():
             try:
                 shutil.rmtree(save_rollback)
             except OSError as exc:
@@ -1718,7 +1716,7 @@ class KH3RunManagerService:
             )
         return KH3RunActivationResult(
             run=activated,
-            previous_run_id=current_run.run_id if current_run is not None else None,
+            previous_run_id=current_run.run_id if current_run is not None else associated_run_id,
             switched=True,
             saved_current_files=saved_current_files,
             restored_target_files=restored_target_files,
@@ -1760,6 +1758,19 @@ class KH3RunManagerService:
             raise KH3RunManagerError("The unmanaged KH3 run is no longer installed.")
         if run.managed and run.run_dir is None:
             raise KH3RunManagerError("The managed KH3 run storage path is missing.")
+        deleting_scope = (
+            SeedGuardService.save_seed_scope_key(save_dir_override or self.save_dir)
+            if run.active and allow_active else None
+        )
+        associations = SeedGuardService.stored_save_associations()
+        for scope, record in associations.items():
+            owner = record.get("run_id")
+            owns_scope = owner == run_id if owner else record["seed_id"] == run.seed_id
+            if owns_scope and scope != deleting_scope:
+                raise RunOwnsSaveDirectory(
+                    f"Kept KH3 run {run_id} because it owns saves in {scope}. "
+                    "Activate the new run for that folder before deleting the old run."
+                )
         active_marker_id = self._read_active_run_id()
         marker_matches = active_marker_id == run_id
         # A remembered marker can outlive its installed pak. It identifies a
@@ -1839,15 +1850,21 @@ class KH3RunManagerService:
                 if save_dir_override is not None
                 else self.save_dir
             )
-            active_save_files = self._iter_gameplay_save_files(save_dir)
-            associated_seed_id = SeedGuardService.extract_seed_id(active_save_seed_id)
-            associated_run_id = str(active_save_run_id or "").strip()
-            if associated_run_id and associated_run_id != run.run_id:
+            record = associations.get(SeedGuardService.save_seed_scope_key(save_dir), {})
+            associated_seed_id = SeedGuardService.extract_seed_id(record.get("seed_id") or active_save_seed_id)
+            associated_run_id = str(record.get("run_id") or active_save_run_id or "").strip()
+            other_seed_owner = (
+                associated_seed_id and associated_seed_id != run.seed_id
+                and associated_run_id and associated_run_id != run.run_id
+            )
+            if not other_seed_owner:
+                active_save_files = self._iter_gameplay_save_files(save_dir)
+            if active_save_files and associated_run_id and associated_run_id != run.run_id:
                 raise KH3RunManagerError(
                     f"The active saves belong to managed run {associated_run_id}, not {run.run_id}; no files "
                     "were removed."
                 )
-            if associated_seed_id and associated_seed_id != run.seed_id:
+            if active_save_files and associated_seed_id and associated_seed_id != run.seed_id:
                 raise KH3RunManagerError(
                     f"The active saves belong to seed {associated_seed_id}, not {run.seed_id}; no files were removed."
                 )

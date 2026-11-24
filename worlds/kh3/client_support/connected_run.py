@@ -97,8 +97,11 @@ class ConnectedRunService:
                 **suspension_kwargs,
             )
             suspension.apply(result, selected_save_dir)
-            save_run = result.save_run or result.run
-            if save_run.run_id == result.run.run_id:
+            save_run = result.save_run
+            if save_run is None:
+                logger.info("Preserved the installed pak in Save Manager. The missing run's saves will be "
+                            "archived when the new run activates.")
+            elif save_run.run_id == result.run.run_id:
                 logger.info(
                     "Preserved KH3 run %s (seed %s), stored %s current save file(s), and moved its live pak out "
                     "of ~mods because %s.",
