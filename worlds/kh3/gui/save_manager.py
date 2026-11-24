@@ -83,6 +83,18 @@ class SaveManagerView(View):
         # an externally copied pak, even if inventory calls that run active.
         return not run.active or bool(getattr(self.ctx, "save_seed_mismatch_active", False))
 
+    def activation_menu_options(self, run, busy):
+        if self.needs_activation(run):
+            label = "Activate"
+            enabled = not run.managed or run.pak_available
+        elif getattr(run, "has_save", False):
+            label = "Restore backup if saves are missing"
+            enabled = True
+        else:
+            label = "Activated"
+            enabled = False
+        return {"label": label, "state": "normal" if enabled and not busy else "disabled"}
+
     def show_context_menu(self, event):
         run_id = self.tree.identify_row(event.y)
         run = self.runs.get(run_id)
@@ -97,8 +109,7 @@ class SaveManagerView(View):
         delete_run_ids = tuple(self.tree.selection())
         self.context_delete_run_ids = delete_run_ids
         busy = self.app.action_running or self.ctx.kh3_run_action_running
-        menu.add_command(label="Activate" if self.needs_activation(run) else "Activated",
-                         state="disabled" if busy or not self.needs_activation(run) or (run.managed and not run.pak_available) else "normal",
+        menu.add_command(**self.activation_menu_options(run, busy),
                          command=lambda: self.activate(run_id))
         menu.add_command(label="Edit", state="disabled" if busy else "normal",
                          command=lambda: self.app.spawn(self.edit(run_id)))
@@ -131,6 +142,8 @@ class SaveManagerView(View):
                 self.app.spawn(self.edit(run.run_id))
             elif self.needs_activation(run) and run.pak_available:
                 self.ctx.request_activate_kh3_run(run.run_id)
+            elif run.active and getattr(run, "has_save", False):
+                self.ctx.restore_installed_backup_if_empty(expected_run_id=run.run_id)
 
     async def edit(self, run_id=None):
         from ..client_support.run_manager import split_kh3_run_server_address
@@ -227,8 +240,7 @@ class SaveManagerView(View):
                 self.context_menu.unpost()
             else:
                 busy = self.app.action_running or self.ctx.kh3_run_action_running
-                self.context_menu.entryconfigure(0, label="Activate" if self.needs_activation(run) else "Activated",
-                    state="disabled" if busy or not self.needs_activation(run) or (run.managed and not run.pak_available) else "normal")
+                self.context_menu.entryconfigure(0, **self.activation_menu_options(run, busy))
                 self.context_menu.entryconfigure(1, state="disabled" if busy else "normal")
                 self.context_menu.entryconfigure(2, state="disabled" if busy or not (run.room_url or "").strip() else "normal")
                 self.context_menu.entryconfigure(3, state="disabled" if busy or not self.can_delete_runs(self.context_delete_run_ids) else "normal")

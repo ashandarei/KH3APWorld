@@ -942,6 +942,37 @@ class KH3RunManagerService:
             bridge_dir_name=run.bridge_dir_name,
         )
 
+    def restore_installed_backup_if_empty(
+        self, remember_owner: Callable[[KH3RunInfo, Path], None], *, expected_run_id: str | None = None,
+    ) -> int:
+        """Resume the installed run in an empty folder without replacing its pak or snapshot."""
+        runs = self.list_runs()
+        run = next((candidate for candidate in runs if candidate.active and candidate.managed), None)
+        if expected_run_id is not None and (run is None or run.run_id != expected_run_id):
+            raise KH3RunManagerError("The installed run changed. Select the current run in Save Manager.")
+        if run is None or not run.has_save or run.save_snapshot_dir is None:
+            return 0
+        save_dir = self.save_dir
+        if self._has_gameplay_save_files(save_dir):
+            return 0
+        if expected_run_id is None and self._read_active_run_id() != run.run_id:
+            if any(other.run_id != run.run_id and other.managed and self.matches_platform(other)
+                   and self._pak_key_for_run(other) == self._pak_key_for_run(run) for other in runs):
+                raise KH3RunManagerError("Select the server profile to restore in Save Manager.")
+        if self.process_running():
+            raise KH3RunManagerError("Close KH3 to restore its backed-up progress from Save Manager.")
+        save_dir.parent.mkdir(parents=True, exist_ok=True)
+        with tempfile.TemporaryDirectory(prefix=".kh3-restore-", dir=save_dir.parent) as temp:
+            stage = Path(temp)
+            if not self._copy_gameplay_save_files(run.save_snapshot_dir, stage):
+                raise KH3RunManagerError("The stored KH3 backup changed during restore.")
+            if (self.process_running() or self.save_dir != save_dir or not self.get_run(run.run_id).active
+                    or self._has_gameplay_save_files(save_dir)):
+                raise KH3RunManagerError("The game, selected run, or live saves changed during restore.")
+            # Persist ownership while the folder is still empty. A failed write or transfer is retryable.
+            remember_owner(run, save_dir)
+            return self._move_gameplay_save_files(stage, save_dir)
+
     def _managed_run_for_connection(
         self,
         identity: _PakIdentity,
@@ -1405,38 +1436,31 @@ class KH3RunManagerService:
                 f"The installed pak profile was {current_run.run_id}, but the active saves belong to managed run "
                 f"{associated_run.run_id}; stored the saves with their matching server profile."
             )
-        if current_run is None:
+        if current_run is None and associated_seed_id is None:
             raise KH3RunManagerError(
                 "The active save folder contains gameplay saves but no managed server profile identifies them. "
                 "Use Restore Vanilla KH3 before activating a managed AP run."
             )
-        if associated_seed_id is None or associated_seed_id == current_run.seed_id:
+        if current_run is not None and associated_seed_id in {None, current_run.seed_id}:
             return current_run, None
-        if (
-            preferred_run is not None
-            and preferred_run.managed
-            and preferred_run.pak_available
-            and preferred_run.seed_id == associated_seed_id
+        matches = [
+            run for run in self.list_runs()
+            if run.managed and self.matches_platform(run) and run.seed_id == associated_seed_id
+        ]
+        if not matches and (
+            current_run is None or (preferred_run is not None and current_run.run_id == preferred_run.run_id)
         ):
-            save_run = preferred_run
-        else:
-            matches = [
-                run
-                for run in self.list_runs()
-                if run.managed and self.matches_platform(run) and run.pak_available and run.seed_id == associated_seed_id
-            ]
-            if not matches and preferred_run is not None and preferred_run.run_id == current_run.run_id:
-                # Older save records can identify only the previous seed. The
-                # installed target must not inherit its remaining saves.
-                return None, None
-            if len(matches) != 1:
-                detail = "no matching managed run" if not matches else f"{len(matches)} matching managed runs"
-                raise KH3RunManagerError(
-                    f"The active saves are associated with seed {associated_seed_id}, but the installed pak is for "
-                    f"{current_run.seed_id}, and Save Manager found {detail} for those saves. Import or activate the "
-                    "exact matching run before continuing."
-                )
-            save_run = matches[0]
+            # Activation archives the files separately when their recorded seed has no owner.
+            return None, None
+        if len(matches) != 1:
+            detail = "no matching managed run" if not matches else f"{len(matches)} matching managed runs"
+            raise KH3RunManagerError(
+                f"The active saves are associated with seed {associated_seed_id}. Save Manager found {detail} "
+                "for those saves and could not identify their server profile."
+            )
+        save_run = matches[0]
+        if current_run is None:
+            return save_run, None
         return save_run, (
             f"The installed pak was for seed {current_run.seed_id}, but the active saves belong to managed run "
             f"{save_run.slot_name} (seed {save_run.seed_id}); stored the saves with their matching run."
@@ -1621,6 +1645,8 @@ class KH3RunManagerService:
                     "KINGDOM HEARTS III started while the run switch was being prepared; no files changed."
                 )
 
+            if not active_save_files and self._has_gameplay_save_files(save_dir):
+                raise KH3RunManagerError("Gameplay saves appeared while preparing the run switch. Retry activation.")
             moved_current_files = self._move_gameplay_save_files(save_dir, save_rollback)
             active_saves_archived = True
             if current_identity is not None and current_pak_rollback is not None:

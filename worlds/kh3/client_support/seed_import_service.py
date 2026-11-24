@@ -147,7 +147,7 @@ class KH3SeedImportService:
             matching_runs = [
                 run
                 for run in self.run_manager.list_runs()
-                if run.managed and self.run_manager.matches_platform(run) and run.pak_available and run.seed_id == associated_seed_id
+                if run.managed and self.run_manager.matches_platform(run) and run.seed_id == associated_seed_id
             ]
             if len(matching_runs) == 1:
                 matching_run = matching_runs[0]

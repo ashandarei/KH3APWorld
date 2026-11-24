@@ -8,7 +8,8 @@ from unittest.mock import AsyncMock, Mock
 
 import pytest
 
-from ..client_support.offline_bridge_service import OfflineBridgeInitializationInput
+from ..client_support.offline_bridge_service import OfflineBridgeInitializationInput, OfflineBridgeInitializationResult
+from ..client_support.run_models import KH3RunConnectionProfile
 from ..client_support.offline_startup import OfflineStartupCallbacks, OfflineStartupService
 from ..Bridge import BridgeProtocolError
 
@@ -17,8 +18,8 @@ from ..Bridge import BridgeProtocolError
 def startup(tmp_path):
     state = SimpleNamespace(current=True)
     source = OfflineBridgeInitializationInput(None, tmp_path / "bridge", tmp_path / "mods", None, None, None, None)
-    result = SimpleNamespace(pak_path=tmp_path / "seed.pak", offline_seed_name="AP_new")
-    profile = SimpleNamespace(run_id="new-run")
+    result = OfflineBridgeInitializationResult(source.bridge_root, "AP_new", "Player", {}, {}, {}, {}, tmp_path / "seed.pak")
+    profile = KH3RunConnectionProfile("new-run", "Player")
     metadata, reader = Mock(return_value=result), Mock(return_value=profile)
     callbacks = OfflineStartupCallbacks(
         metadata_reader=Mock(return_value=metadata),
@@ -78,14 +79,12 @@ def test_replaced_pak_stops_before_enrollment(startup):
     callbacks.apply_profile.assert_not_called()
 
 
-def test_missing_profile_is_reloaded_after_enrollment(startup):
-    _, callbacks, _, _, _, profile, _, first_reader = startup
-    first_reader.return_value = None
-    second_reader = Mock(return_value=profile)
-    callbacks.profile_reader.side_effect = [first_reader, second_reader]
+def test_newly_enrolled_owner_is_selected_before_the_bridge_observes_saves(startup):
+    _, callbacks, _, _, _, profile, _, reader = startup
+    reader.side_effect = lambda: profile if callbacks.enroll.await_count else None
+    callbacks.apply_bridge.side_effect = lambda result: callbacks.apply_profile.call_count == 1
     assert initialize(startup)
-    assert callbacks.profile_reader.call_count == 2
-    second_reader.assert_called_once()
+    reader.assert_called_once()
     callbacks.apply_profile.assert_called_once_with(profile)
 
 

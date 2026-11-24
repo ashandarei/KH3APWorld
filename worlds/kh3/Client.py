@@ -647,6 +647,11 @@ class KH3Context(
         return SaveManagementService.steam_sibling_save_dirs(save_dir)
 
     def _launch_kh3_game_now(self) -> None:
+        if self.kh3_run_action_running:
+            logger.info("Finish the current Save Manager action before launching KH3.")
+            return
+        if not self.restore_installed_backup_if_empty():
+            return
         if not self._ensure_modloader_pak_priority():
             return
         if not launch_preparation_support.prepare_launch_files(self.kh3_dir):

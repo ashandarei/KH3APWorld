@@ -1,7 +1,7 @@
 """Save Manager handoffs between a copied seed pak and the previous seed's save folder."""
 import asyncio
 from types import SimpleNamespace
-from unittest.mock import patch
+from unittest.mock import Mock, patch
 
 import pytest
 import Utils
@@ -28,6 +28,76 @@ NEW = "04234211236097921587"
 
 def import_run(manager, folder, seed):
     return manager.import_pak(fixtures._write_seed_pak(folder, seed=seed, player=1, slot="Violin"))
+
+
+def test_seed_only_owner_without_installed_pak_survives_a_round_trip(manager, tmp_path):
+    old = import_run(manager, tmp_path / "downloads", OLD)
+    new = import_run(manager, tmp_path / "downloads", NEW)
+    live = manager.save_dir / "RandomizerLevelUp.sav"
+    live.parent.mkdir(parents=True)
+    live.write_bytes(b"first run")
+
+    manager.activate(new.run_id, active_save_seed_id=OLD)
+    assert not live.exists()
+    assert (old.save_snapshot_dir / live.name).read_bytes() == b"first run"
+    manager.activate(old.run_id, active_save_seed_id=NEW, active_save_run_id=new.run_id)
+    assert live.read_bytes() == b"first run"
+
+
+def test_seed_only_owner_with_multiple_players_is_not_assigned_to_selected_run(manager, tmp_path):
+    target = import_run(manager, tmp_path / "downloads", OLD)
+    other = manager.import_pak(fixtures._write_seed_pak(tmp_path / "downloads", seed=OLD, player=2, slot="Other"))
+    live = manager.save_dir / "RandomizerLevelUp.sav"
+    live.parent.mkdir(parents=True)
+    live.write_bytes(b"unknown player")
+
+    with pytest.raises(KH3RunManagerError, match="2 matching managed runs"):
+        manager.activate(target.run_id, active_save_seed_id=OLD)
+    assert live.read_bytes() == b"unknown player"
+    assert all(not (run.save_snapshot_dir / live.name).exists() for run in (target, other))
+
+
+@pytest.mark.parametrize("interrupt", ["none", "running", "new_save", "owner_write"])
+def test_restore_installed_backup_on_empty_folder_and_retry(manager, interrupt):
+    run = import_run(manager, manager.mods_dir, OLD)
+    backup = run.save_snapshot_dir / "RandomizerLevelUp.sav"
+    backup.parent.mkdir(parents=True)
+    backup.write_bytes(b"original")
+    manager.save_dir.mkdir(parents=True)
+    live = manager.save_dir / backup.name
+    settings = manager.save_dir / "settings.ini"
+    settings.write_bytes(b"keep")
+    owner = Mock()
+    copy_files = manager._copy_gameplay_save_files
+
+    def stage(source, target):
+        count = copy_files(source, target)
+        if interrupt == "new_save":
+            live.write_bytes(b"new progress")
+        return count
+
+    if interrupt == "owner_write":
+        owner.side_effect = OSError("owner write failed")
+    if interrupt != "none":
+        with patch.object(manager, "_copy_gameplay_save_files", side_effect=stage), \
+                patch.object(manager, "process_running", side_effect=[False, interrupt == "running"]), \
+                pytest.raises((KH3RunManagerError, OSError)):
+            manager.restore_installed_backup_if_empty(owner)
+        if interrupt == "new_save":
+            owner.assert_not_called()
+            assert manager.restore_installed_backup_if_empty(owner) == 0
+            assert live.read_bytes() == b"new progress"
+            live.unlink()
+        else:
+            assert not live.exists()
+        owner.reset_mock(side_effect=True)
+    assert manager.restore_installed_backup_if_empty(owner) == 1
+    restored_run, directory = owner.call_args.args
+    assert restored_run.run_id == run.run_id and directory == manager.save_dir
+    assert manager.restore_installed_backup_if_empty(owner) == 0
+    assert owner.call_count == 1
+    assert live.read_bytes() == backup.read_bytes() == b"original"
+    assert settings.read_bytes() == b"keep"
 
 
 @pytest.mark.parametrize("automatic", [True, False])

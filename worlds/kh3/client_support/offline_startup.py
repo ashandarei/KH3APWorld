@@ -5,7 +5,7 @@ from __future__ import annotations
 import asyncio
 import logging
 from collections.abc import Awaitable, Callable
-from dataclasses import dataclass
+from dataclasses import dataclass, replace
 from pathlib import Path
 
 from ..Bridge import BridgeProtocolError
@@ -42,14 +42,10 @@ class OfflineStartupService:
             return False
 
     async def _initialize(self, source: OfflineBridgeInitializationInput) -> bool:
-        result, active_profile = await asyncio.gather(
-            asyncio.to_thread(self._client.metadata_reader(), source),
-            asyncio.to_thread(self._client.profile_reader()),
-        )
+        result = await asyncio.to_thread(self._client.metadata_reader(), source)
         if not self._client.still_current(source):
             logger.info("Skipped deferred KH3 offline bridge setup because client state changed during startup.")
             return False
-        initialized = False
         if result is not None:
             if result.pak_path.expanduser().resolve() not in self._client.installed_paths():
                 logger.info("Skipped deferred KH3 offline bridge setup because the installed seed pak changed.")
@@ -58,9 +54,15 @@ class OfflineStartupService:
             if not self._client.still_current(source):
                 logger.info("Skipped offline setup because client state changed while storing the seed.")
                 return False
-            if active_profile is None:
-                active_profile = await asyncio.to_thread(self._client.profile_reader())
-            initialized = self._client.apply_bridge(result)
+        # Enrollment can create the first profile. Its exact ID must be available
+        # before the offline bridge records ownership of this save folder.
+        active_profile = await asyncio.to_thread(self._client.profile_reader())
+        if not self._client.still_current(source):
+            return False
+        if result is not None and result.pak_path.resolve() not in self._client.installed_paths():
+            return False
         if active_profile is not None:
             self._client.apply_profile(active_profile)
-        return initialized
+            if result is not None:
+                result = replace(result, auth=active_profile.effective_slot_name)
+        return result is not None and self._client.apply_bridge(result)

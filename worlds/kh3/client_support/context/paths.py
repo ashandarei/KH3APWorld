@@ -129,13 +129,17 @@ class ClientPathsMixin:
         self._schedule_integrated_bridge_restart_for_save_directory_change()
 
     def _schedule_integrated_bridge_restart_for_save_directory_change(self) -> None:
+        def start_with_selected_saves() -> None:
+            if not self.kh3_run_action_running and self.restore_installed_backup_if_empty():
+                self.start_integrated_bridge()
+
         self._get_lifecycle_service().request_save_directory_restart(
             self._client_api.SaveDirectoryRestartCallbacks(
                 enabled=lambda: self.integrated_bridge_enabled,
                 bridge=lambda: self.bridge_dir,
                 game_running=lambda: self._client_api.is_process_running(self._client_api.KH3_PROCESS_NAME),
                 wait_shutdown=self.wait_for_integrated_bridge_shutdown,
-                start_bridge=self.start_integrated_bridge,
+                start_bridge=start_with_selected_saves,
                 save_dir=lambda: self.bridge_save_dir,
                 schedule=lambda coro: self._client_api.Utils.async_start(coro, name="KH3SaveDirectoryBridgeRestart"),
             )
