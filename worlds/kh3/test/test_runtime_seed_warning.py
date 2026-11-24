@@ -12,7 +12,7 @@ from ..client_support.runtime_seed_warning import read_seed_startup_mismatch
 
 
 STARTED = "2026-11-24T15:39:30.218Z"
-REJECTED = "[KH3APProbeCpp] Native seed settings unavailable: seed_location_catalog_mismatch"
+REJECTED = "[KH3APProbeCpp] Native seed settings unavailable: seed_location_records_required"
 READY = "[KH3APProbeCpp] Native seed settings/catalog loaded from pak=seed.pak locations=848 loose_files=false"
 
 
@@ -58,6 +58,6 @@ def test_watcher_warns_once_across_pipe_reconnections(tmp_path, monkeypatch):
         context.gui_error.assert_called_once()
         title, message = context.gui_error.call_args.args
         assert title == "KH3 update required"
-        assert message == "KH3 version mismatch. Close KH3, click Patch Game, then relaunch."
+        assert message == "KH3 version mismatch. Close KH3, click Patch Game, use a newly generated seed, then relaunch."
 
     asyncio.run(run())

@@ -5,7 +5,7 @@ import argparse
 import json
 from pathlib import Path
 
-from generate_native_catalog import catalog_data, chest_data, location_data
+from generate_native_catalog import catalog_data, chest_data, chest_journal_data
 from generate_randomization_catalog import catalog_data as randomization_data
 from local_environment import local_path
 
@@ -15,10 +15,10 @@ ROOT = Path(__file__).resolve().parents[2]
 
 def runtime_inputs() -> dict:
     return {
-        "schema": "kh3ap.runtime_inputs.v1",
+        "schema": "kh3ap.runtime_inputs.v2",
         "catalog": catalog_data(),
         "chests": chest_data(),
-        "locations": location_data(),
+        "chest_journal": chest_journal_data(),
         "randomization": randomization_data(),
         "limits": json.loads((ROOT / "worlds/kh3/data/runtime_json_limits.json").read_text(encoding="utf-8")),
         "ui": ui_inputs(),

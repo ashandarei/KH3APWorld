@@ -116,10 +116,17 @@ class TestCompactSlotData(unittest.TestCase):
         self.assertIn("location_catalog", json.loads(encoded)["slot_data"])
         self.assertEqual(_decode_kh3_ap_seed_metadata(encoded, source="test"), metadata_payload(metadata))
 
+    def test_pak_runtime_record_contains_resolved_locations(self):
+        from ..RuntimeSeed import encode_document, runtime_documents, slot_payload
+        slot = runtime_documents({"slot_data": self.runtime})["slot_data.json"]
+        stored = json.loads(encode_document("slot_data.json", slot))
+        self.assertNotIn("location_catalog", stored)
+        self.assertEqual(stored, slot_payload(self.runtime))
+
     def test_local_catalog_mismatch_fails_read_without_partial_rows(self):
         from ..bridge_support.files import load_json_file
-        from ..RuntimeSeed import encode_document
-        wire = json.loads(encode_document("slot_data.json", self.runtime))
+        from ..RuntimeSeed import slot_payload
+        wire = encode_slot_data(slot_payload(self.runtime))
         wire["location_catalog"]["sha256"] = "wrong"
         with tempfile.TemporaryDirectory() as directory:
             path = Path(directory) / "slot_data.json"

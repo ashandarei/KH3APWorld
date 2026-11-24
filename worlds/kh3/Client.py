@@ -861,7 +861,7 @@ async def bridge_watcher(ctx: KH3Context) -> None:
             return
         checked_seed_startup = launch
         if mismatch:
-            logger.warning("KH3 runtime rejected the seed's location catalog. %s", WARNING_MESSAGE)
+            logger.warning("KH3 runtime rejected the seed's location data. %s", WARNING_MESSAGE)
             ctx.gui_error(WARNING_TITLE, WARNING_MESSAGE)
 
     async def observe_seed_startup() -> None:

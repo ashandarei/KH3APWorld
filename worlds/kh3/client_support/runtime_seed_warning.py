@@ -10,11 +10,11 @@ from pathlib import Path
 from ..platform_support.game_discovery import kh3_ue4ss_log_from_root
 
 WARNING_TITLE = "KH3 update required"
-WARNING_MESSAGE = "KH3 version mismatch. Close KH3, click Patch Game, then relaunch."
+WARNING_MESSAGE = "KH3 version mismatch. Close KH3, click Patch Game, use a newly generated seed, then relaunch."
 
 _SEED_READY = b"[KH3APProbeCpp] Native seed settings/catalog loaded from pak="
 _SEED_REJECTED = b"[KH3APProbeCpp] Native seed settings unavailable: "
-_CATALOG_MISMATCH = _SEED_REJECTED + b"seed_location_catalog_mismatch"
+_SEED_MISMATCH = _SEED_REJECTED + b"seed_location_records_required"
 _STARTUP_LOG_LIMIT = 512 * 1024
 
 
@@ -35,7 +35,7 @@ def read_seed_startup_mismatch(log_path: Path, process_started_at: datetime) -> 
             continue
         message = message.rstrip(b"\r\n")
         if message.startswith((_SEED_READY, _SEED_REJECTED)):
-            return message == _CATALOG_MISMATCH
+            return message == _SEED_MISMATCH
     return None
 
 

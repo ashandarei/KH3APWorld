@@ -9,9 +9,11 @@ import pytest
 
 from .. import Client, PakGenerator
 from ..Pak import pack_directory
-from ..client_support.seed_paks import KH3_AP_SEED_METADATA_PAK_PATH, deactivate_incompatible_seed_paks
-from ..Bridge import BRIDGE_PROTOCOL_NAME, BRIDGE_PROTOCOL_VERSION
-from ..SlotData import encode_slot_data
+from ..client_support.seed_paks import (
+    KH3_AP_SEED_METADATA_PAK_PATH, KH3_RUNTIME_SLOT_DATA_PAK_PATH, deactivate_incompatible_seed_paks,
+)
+from ..Bridge import BRIDGE_PROTOCOL_NAME, BRIDGE_PROTOCOL_VERSION, BridgeProtocolError
+from ..SlotData import decode_slot_data, encode_slot_data
 
 
 def compatible_metadata():
@@ -23,11 +25,17 @@ def compatible_metadata():
                                                kh3_seed={"seed_name": "12345678", "slot": 1})))
 
 
-def seed_pak(tmp_path, metadata, name="pakchunk9-Sora-randomizer-AP_12345678-1_99_P.pak"):
+def seed_pak(tmp_path, metadata, name="pakchunk9-Sora-randomizer-AP_12345678-1_99_P.pak", *, compact_runtime=False):
     source = tmp_path / "source"
     target = source / KH3_AP_SEED_METADATA_PAK_PATH
     target.parent.mkdir(parents=True, exist_ok=True)
     target.write_text(json.dumps(metadata))
+    try:
+        runtime = metadata["slot_data"] if compact_runtime else decode_slot_data(metadata["slot_data"])
+    except (BridgeProtocolError, KeyError):
+        pass
+    else:
+        (source / KH3_RUNTIME_SLOT_DATA_PAK_PATH).write_text(json.dumps(runtime))
     mods = tmp_path / "mods"
     mods.mkdir(exist_ok=True)
     pak = mods / name
@@ -68,6 +76,14 @@ def test_compatible_seed_and_unrelated_mod_stay_active_regardless_of_version(tmp
     assert deactivate_incompatible_seed_paks(pak.parent)
     assert pak.read_bytes() == original
     assert unrelated.read_bytes() == b"not a seed"
+
+
+def test_old_compact_runtime_record_is_preserved_and_disabled(tmp_path):
+    pak = seed_pak(tmp_path, compatible_metadata(), compact_runtime=True)
+    original = pak.read_bytes()
+    assert deactivate_incompatible_seed_paks(pak.parent)
+    assert not pak.exists()
+    assert pak.with_name(pak.name + ".disabled").read_bytes() == original
 
 
 def test_failed_disable_blocks_offline_startup(tmp_path):
