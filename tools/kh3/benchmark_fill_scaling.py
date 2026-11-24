@@ -126,7 +126,7 @@ def worker(args):
     result['games'] = dict(Counter(mw.game.values()))
     result['python'] = sys.version
     result['kh3_version'] = json.loads((REPO / 'worlds/kh3/archipelago.json').read_text())['world_version']
-    result['overflow_source_sha256'] = hashlib.sha256((REPO / 'worlds/kh3/StartingInventory.py').read_bytes()).hexdigest()
+    result['pre_fill_source_sha256'] = hashlib.sha256((REPO / 'worlds/kh3/PreFill.py').read_bytes()).hexdigest()
     result['profiled'] = args.profile
     result['stack_interval'] = args.stack_interval
     result['core_root'] = str(args.core_root)
@@ -152,9 +152,7 @@ def worker(args):
                 raise RuntimeError(f'Full fill validation failed: {result}')
         else:
             result['stage_pre_fill_seconds'] = timings.get('kh3.stage_pre_fill', 0)
-        result['starting_overflow'] = getattr(mw, '_kh3_starting_overflow_report', {})
         result['precollected'] = sum(len(items) for items in mw.precollected_items.values())
-        result['capacity_grants'] = result['precollected'] - result['initial_precollected']
 
     if args.stack_interval:
         faulthandler.dump_traceback_later(min(args.stack_interval, args.timeout / 2), repeat=True)

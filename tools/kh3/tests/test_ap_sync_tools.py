@@ -17,7 +17,7 @@ if str(TOOLS_KH3_ROOT) not in sys.path:
 from ap_archive import (  # noqa: E402
     ArchiveValidationError,
     find_archipelago_entry_name,
-    require_bridge_locations,
+    require_kh3_slot_data,
     resolve_kh3_slot,
 )
 from export_ap_kh3_randomized_options import (  # noqa: E402
@@ -104,16 +104,16 @@ class TestApArchiveHelpers(unittest.TestCase):
         multidata = make_multidata()
         self.assertEqual(resolve_kh3_slot(multidata, 3), 3)
 
-    def test_require_bridge_locations_rejects_missing_bridge_metadata(self) -> None:
+    def test_require_kh3_slot_data_rejects_invalid_slot_data(self) -> None:
         multidata = make_multidata()
         multidata["slot_data"][1] = {}
         with self.assertRaises(ArchiveValidationError):
-            require_bridge_locations(multidata, 1)
+            require_kh3_slot_data(multidata, 1)
 
-    def test_require_bridge_locations_returns_locations(self) -> None:
+    def test_require_kh3_slot_data_reconstructs_locations(self) -> None:
         multidata = make_multidata()
         multidata["slot_data"][1]["bridge"]["locations"] = tuple(multidata["slot_data"][1]["bridge"]["locations"])
-        locations = require_bridge_locations(wire_multidata(multidata), 1)
+        locations = require_kh3_slot_data(wire_multidata(multidata), 1)["bridge"]["locations"]
         self.assertEqual(len(locations), 1)
         self.assertEqual(locations[0]["bridge_key"], "TreasureTS:TS_SBOX_002")
 

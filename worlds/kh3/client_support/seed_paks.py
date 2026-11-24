@@ -13,7 +13,7 @@ from typing import Any
 
 import Utils
 
-from ..Bridge import BridgeProtocolError, KH3_WORLD_VERSION
+from ..Bridge import BridgeProtocolError, KH3_WORLD_VERSION, validate_slot_data_payload
 from ..bridge_support.files import atomic_write_json, load_optional_json_file
 
 logger = logging.getLogger("Client")
@@ -40,6 +40,7 @@ KH3_AP_SEED_PAK_PATTERN = re.compile(
 KH3_AP_SEED_PAK_SLOT_PREFIX = "pakchunk9-"
 KH3_AP_SEED_PAK_SLOT_SUFFIX = "-randomizer-"
 KH3_AP_SEED_METADATA_PAK_PATH = Path("KINGDOM HEARTS III/Content/Archipelago/kh3_ap_seed_metadata.json")
+KH3_RUNTIME_SLOT_DATA_PAK_PATH = "KINGDOM HEARTS III/Content/Archipelago/slot_data.json"
 KH3_SEED_PAK_METADATA_CACHE_FORMAT = "kh3_seed_pak_metadata_cache"
 KH3_SEED_PAK_METADATA_CACHE_VERSION = 1
 
@@ -51,6 +52,7 @@ def deactivate_incompatible_seed_paks(mods_dir: Path) -> bool:
     A failed read or rename blocks offline initialization without closing the UI.
     """
     from ..Pak import PakReader
+    from ..RuntimeSeed import LIMITS
     from ..SlotData import decode_slot_data
 
     safe = True
@@ -58,13 +60,23 @@ def deactivate_incompatible_seed_paks(mods_dir: Path) -> bool:
         if KH3_AP_SEED_PAK_PATTERN.fullmatch(pak_path.name) is None:
             continue
         try:
-            raw = PakReader(pak_path).read(KH3_AP_SEED_METADATA_PAK_PATH.as_posix())
+            pak = PakReader(pak_path)
+            raw = pak.read(KH3_AP_SEED_METADATA_PAK_PATH.as_posix())
             metadata = json.loads(raw.decode("utf-8-sig"))
             if not kh3_ap_seed_metadata_matches_pak(metadata, pak_path):
                 raise BridgeProtocolError("Seed metadata format or seed/player identity is invalid.")
             if metadata.get("format_version") != 1:
                 raise BridgeProtocolError("Unsupported KH3 seed metadata format version.")
-            decode_slot_data(metadata.get("slot_data"))
+            slot = decode_slot_data(metadata.get("slot_data"))
+            entry = pak.entries.get(KH3_RUNTIME_SLOT_DATA_PAK_PATH)
+            if entry is None or entry.codec != 0:
+                raise BridgeProtocolError("Seed pak is missing the stored runtime slot data.")
+            runtime = json.loads(pak.read(KH3_RUNTIME_SLOT_DATA_PAK_PATH, max_size=LIMITS["seed_bytes"]))
+            if isinstance(runtime, dict) and "location_catalog" in runtime:
+                raise BridgeProtocolError("Seed pak requires resolved runtime locations.")
+            validate_slot_data_payload(runtime, "Seed pak runtime slot data")
+            if runtime.get("kh3_seed") != slot.get("kh3_seed"):
+                raise BridgeProtocolError("Seed pak runtime slot identity does not match its metadata.")
         except OSError as exc:
             safe = False
             logger.warning("Could not read KH3 seed %s: %s. Offline startup is blocked.", pak_path, exc)

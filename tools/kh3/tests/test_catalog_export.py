@@ -32,7 +32,7 @@ def test_player_journal_catalogs_match_authoring_inputs():
 @pytest.mark.parametrize("module,builder,section", [
     ("generate_native_catalog", "chest_data", "chests"),
     ("generate_native_catalog", "catalog_data", "catalog"),
-    ("generate_native_catalog", "location_data", "locations"),
+    ("generate_native_catalog", "chest_journal_data", "chest_journal"),
     ("generate_randomization_catalog", "catalog_data", "randomization"),
 ])
 @pytest.mark.parametrize("scope", [None, '["caller-owned-setting"]'])
@@ -79,8 +79,11 @@ def test_export_cli_checks_content_and_preserves_matching_output(tmp_path):
     assert result.returncode == 0, result.stdout + result.stderr
     original = output.read_bytes()
     payload = json.loads(original)
-    assert set(payload) == {"schema", "catalog", "chests", "locations", "randomization", "limits", "ui"}
-    assert payload["schema"] == "kh3ap.runtime_inputs.v1"
+    assert set(payload) == {"schema", "catalog", "chests", "chest_journal", "randomization", "limits", "ui"}
+    assert payload["schema"] == "kh3ap.runtime_inputs.v2"
+    assert payload["chest_journal"]
+    assert all(set(row) == {"id", "name", "world", "description", "requires_map_source"}
+               for row in payload["chest_journal"])
     before = output.stat().st_mtime_ns
     for arguments in (command, [*command, "--check"]):
         result = run_python(arguments, tmp_path)

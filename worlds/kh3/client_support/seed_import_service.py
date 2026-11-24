@@ -23,6 +23,7 @@ from ..PakGenerator import (
     load_multidata_from_ap_zip,
     safe_file_fragment,
 )
+from ..SlotData import SERVER_SEED_FORMAT_VERSION
 from .run_manager import KH3RunInfo, KH3RunManagerError, KH3RunManagerService
 from .save_file_policy import checked_root
 from .seed_guard import SeedGuardService
@@ -376,7 +377,7 @@ class KH3SeedImportService:
                 "This room does not include a KH3 client-generation payload. "
                 "Generate it with a KH3 world version that supports seed-pak creation after connecting."
             )
-        if seed_data.get("format_version") != 1:
+        if seed_data.get("format_version") != SERVER_SEED_FORMAT_VERSION:
             raise KH3SeedImportError(
                 f"Unsupported KH3 server seed payload version: {seed_data.get('format_version')!r}."
             )
@@ -389,7 +390,6 @@ class KH3SeedImportService:
         seed_name = str(seed_data.get("seed_name") or "").strip()
         pak_seed = str(seed_data.get("pak_seed") or "").strip()
         all_players = seed_data.get("all_players")
-        remote_hint_placements = seed_data.get("remote_hint_placements")
         randomizer_config = slot_data.get("kh3_randomizer")
         bridge = slot_data.get("bridge")
         if (
@@ -397,7 +397,7 @@ class KH3SeedImportService:
             or not seed_name
             or not pak_seed
             or not isinstance(all_players, list)
-            or not isinstance(remote_hint_placements, list)
+            or (not slot_data.get("race_mode") and not isinstance(seed_data.get("secret_reports"), dict))
             or not isinstance(randomizer_config, dict)
             or not isinstance(bridge, dict)
             or not isinstance(bridge.get("locations"), list)
@@ -419,7 +419,9 @@ class KH3SeedImportService:
                 f"The room returned KH3 seed {seed_name!r}, not the connected seed {expected_seed_name!r}."
             )
 
-        from ..SlotData import encode_slot_data
+        from ..SlotData import encode_slot_data, needs_seed_rewards
+        if needs_seed_rewards(slot_data):
+            raise KH3SeedImportError("The KH3 seed rewards have not been fetched from the server.")
         copied_slot_data = encode_slot_data(slot_data)
         return {
             "format": "kh3_ap_seed",
@@ -431,7 +433,6 @@ class KH3SeedImportService:
             "all_players": copy.deepcopy(all_players),
             "pak_seed": pak_seed,
             "randomizer_config": copy.deepcopy(randomizer_config),
-            "remote_hint_placements": copy.deepcopy(remote_hint_placements),
             "slot_data": copied_slot_data,
         }
 

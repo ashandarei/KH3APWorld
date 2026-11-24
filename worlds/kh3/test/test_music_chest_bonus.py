@@ -15,7 +15,7 @@ from ..Bridge import build_bridge_slot_data
 from ..client_support.mom_challenges import MoMChallengeService
 from ..Data import load_extracted_data, local_seeded_reward_requires_bridge_delivery, normalize_locations
 from ..export_ap_kh3_randomized_options import ALWAYS_ON_EVENT_IDS, export_randomized_options_from_bridge_data
-from ..Locations import ROCK_TITAN_VBONUS_BRIDGE_KEY, location_name_to_id
+from ..Locations import location_name_to_id
 from ..MelodyOfMemory import (
     MUSIC_CHEST_BONUS_ID_OFFSET,
     MUSIC_CHEST_PLACEMENTS,
@@ -130,11 +130,9 @@ class TestMusicChestBonusWorld(KH3TestBase):
         self.assertEqual(len(self.multiworld.get_unfilled_locations()), len(self.multiworld.itempool))
         slot = json.loads(json.dumps(self.world.build_runtime_slot_data()))
         self.assertEqual(slot["music_chest_bonus_checks"], 1)
-        self.assertEqual(len(slot["bridge"]["conditional_checks"]), 129 + len(self.world.extra_vbonus_locations) + sum(
+        self.assertEqual(len(slot["bridge"]["conditional_checks"]), len(bonuses) + len(self.world.extra_vbonus_locations) + sum(
             row["type"] == "character_unlock" and "trigger_bridge_key" in row
             for row in self.world.active_locations))
-        self.assertTrue(any(row["trigger_bridge_key"] == ROCK_TITAN_VBONUS_BRIDGE_KEY
-                            for row in slot["bridge"]["conditional_checks"]))
         tracker = TrackerTests.build_yamlless_tracker_multiworld(self, convert_to_base_types(slot))
         self.assertEqual(bonuses, [row for row in tracker.worlds[1].active_locations
                                   if row["type"] == "music_chest_bonus"])

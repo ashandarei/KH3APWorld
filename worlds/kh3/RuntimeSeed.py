@@ -23,7 +23,7 @@ def slot_payload(payload: dict) -> dict:
     identity = result.get("kh3_seed")
     if isinstance(identity, dict):
         result["kh3_seed"] = {key: value for key, value in identity.items()
-                              if key not in {"remote_hint_placements", "all_players"}}
+                              if key not in {"secret_reports", "all_players"}}
     return result
 
 
@@ -97,8 +97,11 @@ def expand_document(filename: str, payload):
 
 
 def encode_document(filename: str, payload: dict) -> bytes:
-    """Use the same UTF-8 byte and nesting bounds as the native readers."""
-    payload = storage_payload(filename, payload)
+    """Encode a runtime document within the native UTF-8 byte and depth bounds."""
+    # The pak's native slot record carries resolved locations. The metadata
+    # record remains compact for the Python client, as do loose bridge copies.
+    if filename == "kh3_ap_seed_metadata.json":
+        payload = storage_payload(filename, payload)
     def depth(value, level=0):
         if isinstance(value, (dict, list, tuple)):
             if level >= LIMITS["document_depth"]:

@@ -134,6 +134,9 @@ def test_full_seed_pak_drives_native_generation(native, tmp_path):
     assert result["enemy_runtime_remap"]["entry_count"] > 4000
     assert result["boss_runtime_remap"]["boss_runtime_entry_count"] > 20
     assert record["party_randomization_initially_enabled"] is True
+    slot_record = json.loads(PakReader(pak).read("KINGDOM HEARTS III/Content/Archipelago/slot_data.json"))
+    assert "location_catalog" not in slot_record
+    assert native([{"catalog_pak": str(pak)}])[0]["slot_data"] == slot_record
 
 
 def test_pak_reader_rejects_damage_and_ambiguous_install(native, tmp_path):
@@ -168,7 +171,7 @@ def test_randomizer_services_have_no_loose_seed_metadata_dependency():
         assert "installed_pak_seed_settings()" in source
 
 
-def test_pak_catalog_preserves_multiworld_assignments_and_optional_hints(native, tmp_path):
+def test_pak_resolved_locations_preserve_multiworld_assignments_and_optional_hints(native, tmp_path):
     from .test_slot_data import TestCompactSlotData
     from ..RuntimeSeed import encode_document, slot_payload
     TestCompactSlotData.setUpClass()
@@ -187,13 +190,15 @@ def test_pak_catalog_preserves_multiworld_assignments_and_optional_hints(native,
     for name in ("slot_data.json", "runtime_seed_settings.json", "runtime_seed_hints.json"):
         assert reader.entries["KINGDOM HEARTS III/Content/Archipelago/" + name].codec == 0
         (directory / name).unlink()
+    slot_record = "KINGDOM HEARTS III/Content/Archipelago/slot_data.json"
+    assert json.loads(reader.read(slot_record)) == expected
     result = native([{"catalog_pak": str(pak)}])[0]
     assert result == dict(slot_data=expected, hints=hints)
     foreign = [row for row in result["slot_data"]["bridge"]["locations"] if row.get("is_foreign_item")]
     assert foreign and foreign[0]["assigned_item_id"] == 987654321
     assert foreign[0]["assigned_item_player"] == 2
     pristine = pak.read_bytes()
-    entry = reader.entries["KINGDOM HEARTS III/Content/Archipelago/slot_data.json"]
+    entry = reader.entries[slot_record]
     broken = bytearray(pristine)
     broken[entry.offset + entry.header_size + 5] ^= 1
     pak.write_bytes(broken)

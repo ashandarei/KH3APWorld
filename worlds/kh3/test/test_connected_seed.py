@@ -1,11 +1,13 @@
 """Hosted and inline seeds retain the connected room and save association."""
 
+import asyncio
 from pathlib import Path
 from types import SimpleNamespace
 from unittest.mock import Mock
 
 import pytest
 
+from ..Client import KH3Context
 from ..client_support.connected_seed import ConnectedSeedRequest, ConnectedSeedService
 from ..client_support.platform_seed_download import KH3PlatformSeedDownloadError
 from ..client_support.run_actions import ActiveRunSaves
@@ -31,8 +33,12 @@ def prepare(selection):
 
 
 def test_hosted_artifact_is_preferred_and_receives_the_active_save_identity(selection):
-    _, importer, downloader, request, _, fallback, progress = selection
-    assert prepare(selection) is importer.prepare_player_artifact.return_value
+    service, importer, downloader, request, saves, fallback, progress = selection
+    fetch = Mock()
+    result = service.prepare(request, resolve_saves=saves, fallback_room=fallback, progress=progress,
+                             resolve_inline_rewards=fetch)
+    assert result is importer.prepare_player_artifact.return_value
+    fetch.assert_not_called()
     downloader.download_player_artifact.assert_called_once_with(
         request.slot_data, slot_name="Sora", fallback_room_url=fallback.return_value, progress=progress
     )
@@ -99,3 +105,26 @@ def test_save_profile_resolution_failure_does_not_fabricate_a_save_owner(selecti
     prepare(selection)
     options = importer.prepare_player_artifact.call_args.kwargs
     assert not {"save_dir_override", "active_save_seed_id", "active_save_run_id"} & options.keys()
+
+
+def test_disconnect_cancels_pending_scout():
+    async def run():
+        ctx = KH3Context.__new__(KH3Context)
+        ctx.server = SimpleNamespace(socket=SimpleNamespace(closed=False))
+        ctx.server_locations = {123}
+        ctx.slot_data = {"bridge": {"locations": [{"ap_location_id": 123}]}}
+        ctx._set_kh3_run_action_status = Mock()
+        sent = asyncio.Event()
+
+        async def send(_messages):
+            sent.set()
+
+        ctx.send_msgs = send
+        task = asyncio.create_task(ctx._scout_seed_rewards(ctx.server, ctx.slot_data))
+        await sent.wait()
+        ctx.reset_server_state()
+        with pytest.raises(asyncio.CancelledError):
+            await task
+        assert ctx._kh3_seed_scout_reply is None
+
+    asyncio.run(run())

@@ -20,22 +20,10 @@ from .Space import SPACE_LOCATION_IDS, SPACE_LOCATIONS
 class KH3Location(Location):
     game = "Kingdom Hearts III"
     filler_only = False
-    progression_allowed = True
 
 
 BASE_LOCATION_ID = 0x4B483300
 COMPLETION_LOCATION_NAME = "Defeat Master Xehanort"
-ROCK_TITAN_VBONUS_BRIDGE_KEY = "VBonus:Vbonus_010"
-ROCK_TITAN_VBONUS_SOURCE_KEY = ("VBonus", "Vbonus_010")
-ROCK_TITAN_NO_WALL_RUN_BONUS_LOCATION_NAME = "Olympus - Rock Titan Sequence Break Bonus"
-ROCK_TITAN_NO_WALL_RUN_BONUS_LOCATION_ID = BASE_LOCATION_ID + 0xFFFF
-ROCK_TITAN_BONUS_BRIDGE_LOCATION = {
-    "bridge_key": "Conditional:RockTitanSequenceBreak", "source_table": "Conditional",
-    "source_id": "RockTitanSequenceBreak", "type": "sequence_break_bonus", "world": "Olympus",
-    "ap_location_id": ROCK_TITAN_NO_WALL_RUN_BONUS_LOCATION_ID,
-    "ap_location_name": ROCK_TITAN_NO_WALL_RUN_BONUS_LOCATION_NAME,
-    "bridge_delivery_required": True,
-}
 
 # Each existing VBonus has two permanently named and addressed extra rewards.
 EXTRA_VBONUS_LOCATION_ID_BASE = BASE_LOCATION_ID + 0x10000
@@ -64,7 +52,6 @@ location_name_to_id = {
     **_build_location_name_to_id(),
     **{p["name"]: p["ap_location_id"] for p in MUSIC_CHEST_PLACEMENTS},
     **{song_location_name(song): MOM_LOCATION_ID_BASE + song["song_id"] for song in MOM_SONGS},
-    ROCK_TITAN_NO_WALL_RUN_BONUS_LOCATION_NAME: ROCK_TITAN_NO_WALL_RUN_BONUS_LOCATION_ID,
 }
 
 # Universal Tracker adds these user-facing aliases beside the unique check names.
@@ -165,4 +152,3 @@ for row in (*_GROUP_LOCATIONS, *MUSIC_CHEST_PLACEMENTS, *SPACE_LOCATIONS):
                      for number in EXTRA_VBONUS_REWARD_NUMBERS)
     if row.get("type") == "treasure" or "placement_id" in row:
         names.add(music_chest_bonus_name(row["name"]))
-location_name_groups["Olympus"].add(ROCK_TITAN_NO_WALL_RUN_BONUS_LOCATION_NAME)

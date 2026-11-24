@@ -49,17 +49,14 @@ def _classic_kingdom_locations(world) -> list[dict]:
 
 
 class TestClassicKingdomChecks(KH3WorldIntegrityMixin, KH3TestBase):
-    def test_useful_game_receipts_preserve_progression_and_copy_independently(self):
+    def test_game_unlocks_use_progression_inventory_and_copy_independently(self):
         self.world_setup(seed=31)
         names = tuple(CLASSIC_KINGDOM_UNLOCK_ITEM_NAMES_BY_GAME_ID.values())
         state = self._state_without_precollected_items()
-        progression = {player: counts.copy() for player, counts in state.prog_items.items()}
         for name in names:
             item = self.world.create_item(name)
-            self.assertEqual(item.classification, ItemClassification.useful)
-            self.assertIsNone(self.world.collect_item(state, item))
-            self.assertFalse(state.collect(item))
-        self.assertEqual(progression, state.prog_items)
+            self.assertTrue(state.collect(item))
+            self.assertEqual(state.count(name, self.player), 1)
         aggregate = self.multiworld.get_location(CLASSIC_KINGDOM_ALL_GAMES_LOCATION_NAME, self.player)
         self.assertTrue(aggregate.can_reach(state))
         copied = state.copy()
@@ -74,19 +71,6 @@ class TestClassicKingdomChecks(KH3WorldIntegrityMixin, KH3TestBase):
         self.assertTrue(aggregate.can_reach(state))
         state.remove(first)
         self.assertFalse(aggregate.can_reach(state))
-
-    def test_optional_game_rule_serializes_without_losing_its_receipt_semantics(self):
-        from ..ClassicKingdomLogic import HasClassicKingdomGames
-        self.world_setup(seed=31)
-        names = tuple(CLASSIC_KINGDOM_UNLOCK_ITEM_NAMES_BY_GAME_ID.values())
-        rule = HasClassicKingdomGames(*names)
-        restored = self.world.rule_from_dict(rule.to_dict()).resolve(self.world)
-        state = self._state_without_precollected_items()
-        self.assertFalse(restored(state))
-        for name in names:
-            state.collect(self.world.create_item(name))
-        self.assertTrue(restored(state))
-        self.assertEqual(restored.item_names, tuple(sorted(names)))
 
     def test_default_is_off_but_keeps_existing_classic_tone_location(self) -> None:
         self.world_setup(seed=31)
@@ -113,7 +97,7 @@ class TestClassicKingdomChecks(KH3WorldIntegrityMixin, KH3TestBase):
             with self.subTest(item_name=item_name):
                 self.assertEqual(
                     self.world.create_item(item_name).classification,
-                    ItemClassification.useful,
+                    ItemClassification.progression_deprioritized_skip_balancing,
                 )
 
         aggregate = self.multiworld.get_location(
@@ -142,8 +126,10 @@ class TestClassicKingdomChecks(KH3WorldIntegrityMixin, KH3TestBase):
                     )
                     self.assertTrue(set(unlock_names) <= self.world._required_logic_item_names())
                     self.assertFalse(aggregate.can_reach(self._state_without_precollected_items()))
-                    expected_classification = (ItemClassification.progression if check_mode or not junk_reward
-                                               else ItemClassification.useful)
+                    expected_classification = (
+                        ItemClassification.progression if check_mode or not junk_reward
+                        else ItemClassification.progression_deprioritized_skip_balancing
+                    )
                     for missing_game in unlock_names:
                         with self.subTest(missing_game=missing_game):
                             item = self.world.create_item(missing_game)
@@ -238,8 +224,10 @@ class TestClassicKingdomChecks(KH3WorldIntegrityMixin, KH3TestBase):
                                 player_options["classic_kingdom_checks"]
                                 or not player_options["junk_classic_kingdom_reward"]
                             )
-                            expected = (ItemClassification.progression if can_hold_progression
-                                        else ItemClassification.useful)
+                            expected = (
+                                ItemClassification.progression if can_hold_progression
+                                else ItemClassification.progression_deprioritized_skip_balancing
+                            )
                             unlocks = [location.item for location in multiworld.get_filled_locations()
                                        if location.item.player == player and location.item.name in unlock_names]
                             self.assertEqual(Counter(item.name for item in unlocks), Counter(unlock_names))
@@ -248,6 +236,21 @@ class TestClassicKingdomChecks(KH3WorldIntegrityMixin, KH3TestBase):
                                 aggregate = multiworld.get_location(CLASSIC_KINGDOM_ALL_GAMES_LOCATION_NAME, player)
                                 self.assertFalse(aggregate.item.advancement)
                                 self.assertNotIn(aggregate.item.name, unlock_names)
+
+    def test_full_accessibility_counts_unlocks_found_by_minimal_player(self) -> None:
+        multiworld = setup_multiworld(
+            [KH3World, KH3World], seed=20261124,
+            options=[{"accessibility": "full"}, {"accessibility": "minimal"}],
+        )
+        distribute_items_restrictive(multiworld)
+        balance_multiworld_progression(multiworld)
+
+        unlock_names = set(CLASSIC_KINGDOM_UNLOCK_ITEM_NAMES_BY_GAME_ID.values())
+        self.assertTrue(any(
+            location.item.player == 1 and location.item.name in unlock_names
+            for location in multiworld.get_filled_locations(2)
+        ))
+        self.assertTrue(multiworld.fulfills_accessibility())
 
     def test_built_in_game_unlocks_are_registered_as_native_items(self) -> None:
         self.world_setup(seed=43)

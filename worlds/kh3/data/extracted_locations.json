@@ -785,11 +785,6 @@
       "important": true
     },
     {
-      "id": "ETresAbilityKind::AEROGAN",
-      "name": "Ability: Aeroza",
-      "important": true
-    },
-    {
       "id": "ETresAbilityKind::AERO_ASPIR",
       "name": "Ability: Aero Syphon",
       "important": true
@@ -862,11 +857,6 @@
     {
       "id": "ETresAbilityKind::BEST_CONDITION",
       "name": "Ability: Top Condition",
-      "important": true
-    },
-    {
-      "id": "ETresAbilityKind::BLIZZAGAN",
-      "name": "Ability: Blizzaza",
       "important": true
     },
     {
@@ -955,11 +945,6 @@
       "important": true
     },
     {
-      "id": "ETresAbilityKind::CURAGAN",
-      "name": "Ability: Curaza",
-      "important": true
-    },
-    {
       "id": "ETresAbilityKind::DAMAGE_ASPIR",
       "name": "Ability: Damage Syphon",
       "important": true
@@ -1007,11 +992,6 @@
     {
       "id": "ETresAbilityKind::FINAL_HEAVEN",
       "name": "Ability: Last Charge",
-      "important": true
-    },
-    {
-      "id": "ETresAbilityKind::FIRAGAN",
-      "name": "Ability: Firaza",
       "important": true
     },
     {
@@ -1240,11 +1220,6 @@
       "important": false
     },
     {
-      "id": "ETresAbilityKind::NONE",
-      "name": "ETresAbilityKind::NONE",
-      "important": false
-    },
-    {
       "id": "ETresAbilityKind::OVER_TIME",
       "name": "Ability: Overtime",
       "important": true
@@ -1355,11 +1330,6 @@
       "important": true
     },
     {
-      "id": "ETresAbilityKind::THUNDAGAN",
-      "name": "Ability: Thundaza",
-      "important": true
-    },
-    {
       "id": "ETresAbilityKind::THUNDER_ASPIR",
       "name": "Ability: Thunder Syphon",
       "important": true
@@ -1407,11 +1377,6 @@
     {
       "id": "ETresAbilityKind::WALL_KICK",
       "name": "Ability: Wall Kick",
-      "important": true
-    },
-    {
-      "id": "ETresAbilityKind::WATAGAN",
-      "name": "Ability: Waterza",
       "important": true
     },
     {

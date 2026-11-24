@@ -13,7 +13,7 @@ from ..client_support.seed_paks import extract_kh3_ap_seed_metadata_from_pak
 from ..client_support.seed_policy_service import KH3_MINIMUM_SEED_PAK_SIZE_BYTES
 from ..Locations import BASE_LOCATION_ID
 from ..PakGenerator import KH3PakResult
-from ..SlotData import decode_slot_data
+from ..SlotData import SERVER_SEED_FORMAT_VERSION, decode_slot_data
 
 
 def _write_generated_pak(
@@ -386,14 +386,14 @@ class KH3SeedImportServiceTest(unittest.TestCase):
                 },
                 "kh3_seed": {
                     "format": "kh3_server_seed",
-                    "format_version": 1,
+                    "format_version": SERVER_SEED_FORMAT_VERSION,
                     "seed_name": "11111111111111111111",
                     "archive_name": "AP_11111111111111111111.zip",
                     "slot": 1,
                     "slot_name": "Sora",
                     "all_players": ["Sora"],
                     "pak_seed": "AP_11111111111111111111_P1_Sora",
-                    "remote_hint_placements": [],
+                    "secret_reports": {"text": {}, "reports": {}},
                 },
             }
             progress: list[str] = []
@@ -451,9 +451,9 @@ class KH3SeedImportServiceTest(unittest.TestCase):
                     "protocol_name": BRIDGE_PROTOCOL_NAME, "protocol_version": BRIDGE_PROTOCOL_VERSION,
                     "kh3_randomizer": {}, "bridge": {"protocol_name": BRIDGE_PROTOCOL_NAME, "protocol_version": BRIDGE_PROTOCOL_VERSION, "locations": []},
                     "kh3_seed": {
-                        "format": "kh3_server_seed", "format_version": 1,
+                        "format": "kh3_server_seed", "format_version": SERVER_SEED_FORMAT_VERSION,
                         "seed_name": seed, "slot": 2, "slot_name": player_name,
-                        "all_players": [player_name], "remote_hint_placements": [],
+                        "all_players": [player_name], "secret_reports": {"text": {}, "reports": {}},
                         "pak_seed": f"AP_{seed}_P2_Shit_Dom_Fart",
                     },
                 }

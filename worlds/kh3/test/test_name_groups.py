@@ -6,20 +6,21 @@ from Options import LocalItems, StartHints, StartLocationHints, PriorityLocation
 from .. import KH3World
 from ..Data import load_extracted_data, normalize_locations
 from ..Locations import extra_vbonus_location_name
+from ..kh02.locations import ALL_KH02_LOCATIONS
 
 
 class TestNameGroups(TestCase):
     def test_integrated_kh02_checks_have_their_own_groups(self):
         groups = KH3World.location_name_groups
         kh02 = groups["Kingdom Hearts 0.2"]
-        self.assertEqual(len(kh02), 99)
+        self.assertEqual(kh02, {row["name"] for row in ALL_KH02_LOCATIONS})
         self.assertEqual(kh02, groups["0.2 Chests"] | groups["0.2 Bosses"] | groups["0.2 Challenges"])
         for group, names in groups.items():
-            if group != "Kingdom Hearts 0.2" and not group.startswith("0.2 "):
+            if group not in {"Everywhere", "Kingdom Hearts 0.2"} and not group.startswith("0.2 "):
                 self.assertTrue(kh02.isdisjoint(names), group)
         exported = KH3World.get_data_package_data()["location_name_groups"]
         for catalog in (groups, exported):
-            self.assertNotIn("Everywhere", catalog)
+            self.assertEqual(set(catalog["Everywhere"]), KH3World.location_names)
             self.assertNotIn("Synth/Shop Items", catalog)
 
     def test_group_cleanup_preserves_individual_catalog_selection(self):
@@ -31,8 +32,9 @@ class TestNameGroups(TestCase):
             or (row["type"] == "ingredient" and row.get("ap_enabled") is False)
         }
         self.assertEqual(len(excluded_locations), 75)
-        for names in data["location_name_groups"].values():
-            self.assertTrue(excluded_locations.isdisjoint(names))
+        for group, names in data["location_name_groups"].items():
+            if group != "Everywhere":
+                self.assertTrue(excluded_locations.isdisjoint(names), group)
         self.assertTrue(excluded_locations.issubset(data["location_name_to_id"]))
         workshop = StartLocationHints.from_any(["Moogle Workshop"])
         workshop.verify(KH3World, "Group cleanup", PlandoOptions.none)
@@ -40,15 +42,9 @@ class TestNameGroups(TestCase):
         self.assertIn("Moogle Workshop - Ever After Level 4", workshop.value)
         self.assertTrue(any("Photo Mission" in name for name in workshop.value))
 
-        excluded_abilities = {
-            f"Ability: {name}" for name in
-            ("Aeroza", "Blizzaza", "Curaza", "Firaza", "Thundaza", "Waterza")
-        }
-        for names in data["item_name_groups"].values():
-            self.assertTrue(excluded_abilities.isdisjoint(names))
-        hints = StartHints.from_any(excluded_abilities)
-        hints.verify(KH3World, "Group cleanup", PlandoOptions.none)
-        self.assertEqual(hints.value, excluded_abilities)
+        locality = LocalItems.from_any(["Everything"])
+        locality.verify(KH3World, "Group cleanup", PlandoOptions.none)
+        self.assertEqual(locality.value, set(data["item_name_to_id"]))
 
         individual = StartLocationHints.from_any(excluded_locations)
         individual.verify(KH3World, "Group cleanup", PlandoOptions.none)
@@ -91,6 +87,7 @@ class TestNameGroups(TestCase):
         for option_type, group, expected in (
             (PriorityLocations, "Normal Cups", KH3World.location_name_groups["Normal Cups"]),
             (StartLocationHints, "Postgame Cups", KH3World.location_name_groups["Postgame Cups"]),
+            (StartLocationHints, "Everywhere", KH3World.location_names),
             (LocalItems, "Consumables", KH3World.item_name_groups["Consumables"]),
             (StartHints, "Reports", {f"Secret Report {n}" for n in range(1, 14)}),
             (StartHints, "Magic", {f"Magic: {n}" for n in ("Fire", "Blizzard", "Thunder", "Water", "Aero", "Cure")}),

@@ -18,7 +18,6 @@ from worlds.generic.Rules import add_item_rule
 
 from .Battlegates import BATTLEGATE_SOURCE_ID_REGION_LOCKS
 from .CharacterUnlocks import DATA_BATTLE_COMPLETION_SOURCE_KEYS, ROXAS_REQUIRED_KEYBLADES
-from .ClassicKingdomLogic import HasClassicKingdomGames
 from .ColiseumLogic import (
     COLISEUM_CUP_REQUIRED_WORLDS,
     COLISEUM_POSTGAME_CUP_IDS,
@@ -115,7 +114,6 @@ def set_rules(world) -> None:
     )
     if party_portals:
         level_up_forbidden_item_names |= PORTAL_PARTY_ITEM_NAMES
-    world.level_up_forbidden_item_names = level_up_forbidden_item_names
     existing_region_names = {region.name for region in world.multiworld.get_regions(player)}
 
     def can_reach_source(source_key, *, chest_area=False):
@@ -225,9 +223,7 @@ def set_rules(world) -> None:
         if row.get("classic_kingdom_check_kind") or row.get("source_id") == CLASSIC_KINGDOM_ALL_GAMES_SOURCE_ID:
             required_unlock_item = CLASSIC_KINGDOM_UNLOCK_ITEM_NAMES_BY_GAME_ID.get(str(row.get("source_id") or ""))
             if row.get("source_id") == CLASSIC_KINGDOM_ALL_GAMES_SOURCE_ID:
-                predicate = (HasClassicKingdomGames if world.options.junk_classic_kingdom_reward.value
-                             and not world.options.classic_kingdom_checks.value else HasAll)
-                rule &= predicate(*CLASSIC_KINGDOM_UNLOCK_ITEM_NAMES_BY_GAME_ID.values())
+                rule &= HasAll(*CLASSIC_KINGDOM_UNLOCK_ITEM_NAMES_BY_GAME_ID.values())
             elif required_unlock_item is not None:
                 rule &= Has(required_unlock_item)
 
@@ -340,7 +336,6 @@ def set_rules(world) -> None:
                              if row.get("type") == "music_chest_bonus" else source_key)
         if parent_source_key in ARENDELLE_STARTING_CHEST_SOURCE_KEYS:
             add_item_rule(location, lambda item: not item.advancement)
-            location.progression_allowed = False
         location.filler_only = (uses_replace_location_pool(row, world.options)
                 or uses_strict_junk_setting(row, world.options)
                 or (row.get("type") == "keyblade_upgrade" and int(world.options.keyblade_levels.value) == 0)

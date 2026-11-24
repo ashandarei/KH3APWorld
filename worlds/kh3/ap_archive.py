@@ -126,23 +126,15 @@ def get_slot_name(multidata: dict[str, Any], slot: int) -> str:
     return getattr(slot_info, "name", str(slot))
 
 
-def require_bridge_locations(multidata: dict[str, Any], slot: int) -> list[dict[str, Any]]:
-    from worlds.kh3.Bridge import BridgeProtocolError
-    from worlds.kh3.SlotData import decode_slot_data
+def require_kh3_slot_data(multidata: dict[str, Any], slot: int) -> dict[str, Any]:
+    from .Bridge import BridgeProtocolError
+    from .SlotData import decode_slot_data
     slot_data = _require_mapping(multidata, "slot_data")
     slot_entry = slot_data.get(slot)
     if not isinstance(slot_entry, dict):
         raise ArchiveValidationError(f"Archive slot_data is missing KH3 slot {slot}.")
 
     try:
-        bridge = decode_slot_data(slot_entry).get("bridge")
+        return decode_slot_data(slot_entry)
     except BridgeProtocolError as exc:
         raise ArchiveValidationError(str(exc)) from exc
-    if not isinstance(bridge, dict):
-        raise ArchiveValidationError(f"Archive slot_data for KH3 slot {slot} is missing bridge metadata.")
-
-    locations = bridge.get("locations")
-    if not isinstance(locations, (list, tuple)):
-        raise ArchiveValidationError(f"Archive bridge metadata for KH3 slot {slot} is missing bridge locations.")
-
-    return list(locations)

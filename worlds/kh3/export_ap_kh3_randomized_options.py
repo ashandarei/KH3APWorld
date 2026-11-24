@@ -4,86 +4,51 @@ import argparse
 import hashlib
 import json
 import re
-import sys
 from dataclasses import asdict, dataclass
 from pathlib import Path
 from typing import Any
 
-try:
-    from .WallRun import WORLD_WALL_RUN_ITEMS, WORLD_WALL_RUN_ABILITIES
-    from .ap_archive import (
-        ArchiveValidationError,
-        get_slot_game,
-        get_slot_name,
-        load_multidata,
-        require_bridge_locations,
-        resolve_kh3_slot,
-    )
-except ImportError:
-    from WallRun import WORLD_WALL_RUN_ITEMS, WORLD_WALL_RUN_ABILITIES
-    from ap_archive import (
-        ArchiveValidationError,
-        get_slot_game,
-        get_slot_name,
-        load_multidata,
-        require_bridge_locations,
-        resolve_kh3_slot,
-    )
-
 SCRIPT_PATH = Path(__file__).resolve()
 KH3_WORLD_ROOT = SCRIPT_PATH.parent
 ARCH_ROOT = SCRIPT_PATH.parents[2]
+
+from .Data import (
+    TRAP_RUNTIME_TOKEN_BY_ITEM_NAME,
+    CHARACTER_UNLOCK_RUNTIME_TOKEN_BY_ITEM_NAME,
+    CLASSIC_KINGDOM_NATIVE_ITEM_RUNTIME_TOKEN_BY_NAME,
+    DEFAULT_BASE_ABILITY_CHRINIT_FIELDS,
+    FILLER_ITEM_RUNTIME_TOKENS,
+    FIXED_SORA_CHRINIT_ABILITY_FIELDS,
+    GATE_OPENER_ITEM_NAME,
+    GATE_OPENER_RUNTIME_TOKEN,
+    KEYBLADE_STYLE_RUNTIME_TOKEN_BY_ITEM_NAME,
+    LIVE_BONUS_STAT_RUNTIME_TOKENS,
+    MUNNY_POUCH_RUNTIME_TOKEN_BY_NAME,
+    PARTY_MEMBER_UNLOCK_RUNTIME_TOKEN_BY_ITEM_NAME,
+    PROGRESSIVE_KEYBLADE_LEVEL_RUNTIME_TOKEN_BY_ITEM_NAME,
+    ULTIMA_WEAPON_SHARD_ITEM_NAME,
+    ULTIMA_WEAPON_SHARD_RUNTIME_TOKEN,
+    local_seeded_reward_requires_bridge_delivery,
+    resolve_runtime_token_display_name,
+)
+from .WallRun import WORLD_WALL_RUN_ITEMS, WORLD_WALL_RUN_ABILITIES
+from .ap_archive import (
+    ArchiveValidationError,
+    get_slot_game,
+    get_slot_name,
+    load_multidata,
+    require_kh3_slot_data,
+    resolve_kh3_slot,
+)
+
 ARCHIPELAGO_RUNTIME_ROOT = ARCH_ROOT
 EXTRACTED_DATA_PATH = KH3_WORLD_ROOT / "data" / "extracted_locations.json"
 
 BRIDGE_ONLY_LOCATION_TYPES = frozenset({
     "space", "classic_kingdom", "olympus_coliseum", "ingredient", "adversary",
     "melody_of_memory", "kh02_chest", "kh02_boss", "kh02_objective", "music_chest_bonus", "vbonus_extra",
-    "minigame_reward", "sequence_break_bonus", "character_unlock",
+    "minigame_reward", "character_unlock",
 })
-
-try:
-    from .Data import (
-        TRAP_RUNTIME_TOKEN_BY_ITEM_NAME,
-        CHARACTER_UNLOCK_RUNTIME_TOKEN_BY_ITEM_NAME,
-        CLASSIC_KINGDOM_NATIVE_ITEM_RUNTIME_TOKEN_BY_NAME,
-        DEFAULT_BASE_ABILITY_CHRINIT_FIELDS,
-        FILLER_ITEM_RUNTIME_TOKENS,
-        FIXED_SORA_CHRINIT_ABILITY_FIELDS,
-        GATE_OPENER_ITEM_NAME,
-        GATE_OPENER_RUNTIME_TOKEN,
-        KEYBLADE_STYLE_RUNTIME_TOKEN_BY_ITEM_NAME,
-        LIVE_BONUS_STAT_RUNTIME_TOKENS,
-        MUNNY_POUCH_RUNTIME_TOKEN_BY_NAME,
-        PARTY_MEMBER_UNLOCK_RUNTIME_TOKEN_BY_ITEM_NAME,
-        PROGRESSIVE_KEYBLADE_LEVEL_RUNTIME_TOKEN_BY_ITEM_NAME,
-        ULTIMA_WEAPON_SHARD_ITEM_NAME,
-        ULTIMA_WEAPON_SHARD_RUNTIME_TOKEN,
-        local_seeded_reward_requires_bridge_delivery,
-        resolve_runtime_token_display_name,
-    )
-except ImportError:
-    if str(ARCH_ROOT) not in sys.path:
-        sys.path.insert(0, str(ARCH_ROOT))
-    from worlds.kh3.Data import (
-        TRAP_RUNTIME_TOKEN_BY_ITEM_NAME,
-        CHARACTER_UNLOCK_RUNTIME_TOKEN_BY_ITEM_NAME,
-        CLASSIC_KINGDOM_NATIVE_ITEM_RUNTIME_TOKEN_BY_NAME,
-        DEFAULT_BASE_ABILITY_CHRINIT_FIELDS,
-        FILLER_ITEM_RUNTIME_TOKENS,
-        FIXED_SORA_CHRINIT_ABILITY_FIELDS,
-        GATE_OPENER_ITEM_NAME,
-        GATE_OPENER_RUNTIME_TOKEN,
-        KEYBLADE_STYLE_RUNTIME_TOKEN_BY_ITEM_NAME,
-        LIVE_BONUS_STAT_RUNTIME_TOKENS,
-        MUNNY_POUCH_RUNTIME_TOKEN_BY_NAME,
-        PARTY_MEMBER_UNLOCK_RUNTIME_TOKEN_BY_ITEM_NAME,
-        PROGRESSIVE_KEYBLADE_LEVEL_RUNTIME_TOKEN_BY_ITEM_NAME,
-        ULTIMA_WEAPON_SHARD_ITEM_NAME,
-        ULTIMA_WEAPON_SHARD_RUNTIME_TOKEN,
-        local_seeded_reward_requires_bridge_delivery,
-        resolve_runtime_token_display_name,
-    )
 
 
 def first_existing_path(candidates: list[Path]) -> Path:
@@ -399,10 +364,7 @@ def build_item_name_to_token(extracted_data: dict[str, Any]) -> dict[str, str]:
     for item_name, runtime_token in MUNNY_POUCH_RUNTIME_TOKEN_BY_NAME.items():
         mapping.setdefault(item_name, runtime_token)
     mapping.update(CLASSIC_KINGDOM_NATIVE_ITEM_RUNTIME_TOKEN_BY_NAME)
-    try:
-        from .Minigames import MINIGAME_APPENDED_ITEMS
-    except ImportError:
-        from worlds.kh3.Minigames import MINIGAME_APPENDED_ITEMS
+    from .Minigames import MINIGAME_APPENDED_ITEMS
     mapping.update(MINIGAME_APPENDED_ITEMS)
     # Standalone stat bonuses can enter the AP pool without appearing as an
     # individual item in the extracted vanilla reward tables.
@@ -425,13 +387,11 @@ def party_member_unlock_runtime_token(item_name: str) -> str | None:
 
 
 def bridge_only_item_runtime_token(item_name: str) -> str | None:
+    from .Space import SPACE_TOKENS
+
     character_token = CHARACTER_UNLOCK_RUNTIME_TOKEN_BY_ITEM_NAME.get(item_name)
     if character_token is not None:
         return character_token
-    try:
-        from .Space import SPACE_TOKENS
-    except ImportError:
-        from worlds.kh3.Space import SPACE_TOKENS
     if item_name in SPACE_TOKENS:
         return SPACE_TOKENS[item_name]
     if item_name == ULTIMA_WEAPON_SHARD_ITEM_NAME:
@@ -461,10 +421,8 @@ def bridge_delivered_local_reward_token(location_type: str, ap_location_id: int)
 
 
 def build_extracted_location_map(extracted_data: dict[str, Any]) -> dict[LocationKey, dict[str, Any]]:
-    try:
-        from .Minigames import append_minigame_locations
-    except ImportError:
-        from worlds.kh3.Minigames import append_minigame_locations
+    from .Minigames import append_minigame_locations
+
     append_minigame_locations(extracted_data)
     return {
         LocationKey(location["source_table"], location["source_id"]): location
@@ -1161,13 +1119,11 @@ def export_randomized_options_from_bridge_data(
     randomizer_config: dict[str, Any] | None = None,
     chrinit_sora_have_ability: list[str] | str | None = None,
     event_reward_override: list[str] | str | None = None,
-    remote_hint_placements: list[dict[str, Any]] | None = None,
     race_mode: bool = False,
 ) -> ExportResult:
     if race_mode:
-        from worlds.kh3.RaceMode import race_export_location
+        from .RaceMode import race_export_location
         bridge_locations = [race_export_location(row) for row in bridge_locations]
-        remote_hint_placements = []
     default_options = load_default_kh3(default_kh3, default_kh3_overrides)
     suppressed_level_up_path_rewards = suppress_level_up_path_rewards(default_options)
     suppressed_always_on_events = suppress_always_on_event_rewards(default_options)
@@ -1416,12 +1372,7 @@ def export_randomized_options_from_bridge_data(
         lucky_mark_bridge_source_ids,
         seed_material=archive_name,
     )
-    hint_locations = [] if race_mode else build_hint_location_entries(
-        placement_entries,
-        slot,
-        remote_hint_placements,
-    )
-
+    hint_locations = [] if race_mode else build_hint_location_entries(placement_entries, slot)
     foreign_item_manifest = {
         "archive_name": archive_name,
         "kh3_slot": slot,
@@ -1472,14 +1423,10 @@ def export_randomized_options(args: argparse.Namespace) -> ExportResult:
     multidata = load_multidata(args.ap_zip, args.runtime_root)
     slot = resolve_kh3_slot(multidata, args.slot)
 
-    bridge_locations = require_bridge_locations(multidata, slot)
-    slot_data_entry = multidata["slot_data"].get(slot)
-    slot_randomizer_config = (
-        slot_data_entry.get("kh3_randomizer")
-        if isinstance(slot_data_entry, dict)
-        else None
-    )
-    if multidata.get("race_mode") or (isinstance(slot_data_entry, dict) and slot_data_entry.get("race_mode")):
+    slot_data_entry = require_kh3_slot_data(multidata, slot)
+    bridge_locations = slot_data_entry["bridge"]["locations"]
+    slot_randomizer_config = slot_data_entry.get("kh3_randomizer")
+    if multidata.get("race_mode") or slot_data_entry.get("race_mode"):
         return export_randomized_options_from_bridge_data(
             default_kh3=args.default_kh3,
             default_kh3_overrides=args.default_kh3_overrides,
@@ -1755,16 +1702,12 @@ def export_randomized_options(args: argparse.Namespace) -> ExportResult:
         lucky_mark_bridge_source_ids,
         seed_material=args.ap_zip.name,
     )
-    remote_hint_placements = build_remote_hint_placements_from_multidata(
-        multidata,
-        slot,
-        kh3_item_id_to_name,
-    )
-    hint_locations = build_hint_location_entries(
-        placement_entries,
-        slot,
-        remote_hint_placements,
-    )
+    hint_locations = []
+    if not slot_data_entry.get("kh3_seed", {}).get("secret_reports"):
+        # The standalone exporter can still describe archive placements for diagnostics.
+        hint_locations = build_hint_location_entries(
+            placement_entries, slot, build_remote_hint_placements_from_multidata(multidata, slot, kh3_item_id_to_name),
+        )
 
     foreign_item_manifest = {
         "archive_name": args.ap_zip.name,

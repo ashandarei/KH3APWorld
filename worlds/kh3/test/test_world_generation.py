@@ -89,7 +89,7 @@ from ..export_ap_kh3_randomized_options import (
 )
 from ..export_ap_kh3_randomized_options import RAW_ITEM_DISPLAY_NAMES as EXPORT_RAW_ITEM_DISPLAY_NAMES
 from ..Items import ABILITY_ITEM_NAMES, classify_item
-from ..Locations import ROCK_TITAN_NO_WALL_RUN_BONUS_LOCATION_NAME, location_name_to_id
+from ..Locations import location_name_to_id
 from ..Options import (
     DEFAULT_HINT_CHECKS,
     GOAL_MANAGED_HINT_CHECKS,
@@ -116,7 +116,7 @@ from ..Options import (
     option_groups,
 )
 from ..PakGenerator import generate_kh3_pak_from_container, generate_kh3_paks_from_ap_zip, load_kh3_container_data
-from ..SlotData import decode_slot_data
+from ..SlotData import SERVER_SEED_FORMAT_VERSION, decode_slot_data
 from ..seedgen.localization import make_hints
 from . import KH3TestBase
 from .test_helpers import KH3WorldIntegrityMixin
@@ -550,7 +550,7 @@ class TestKH3WorldIntegrity(KH3WorldIntegrityMixin, KH3TestBase):
             for entry in bridge["locations"] if entry["type"] == "treasure"
         ))
 
-        bridge_locations = [row for row in bridge["locations"] if row["type"] != "sequence_break_bonus"]
+        bridge_locations = bridge["locations"]
         self.assertEqual(len(bridge_locations), len(self.world.active_locations))
         self.assertEqual(
             {entry["ap_location_name"] for entry in bridge_locations},
@@ -1040,7 +1040,7 @@ battle_level_mode: "{battle}"
             self.assertEqual(payload["slot_name"], self.multiworld.get_player_name(self.player))
             self.assertEqual(payload["randomizer_config"], payload["slot_data"]["kh3_randomizer"])
             self.assertEqual(payload["slot_data"]["kh3_seed"]["format"], "kh3_server_seed")
-            self.assertEqual(payload["slot_data"]["kh3_seed"]["format_version"], 1)
+            self.assertEqual(payload["slot_data"]["kh3_seed"]["format_version"], SERVER_SEED_FORMAT_VERSION)
             self.assertEqual(payload["slot_data"]["kh3_seed"]["seed_name"], payload["seed_name"])
             self.assertEqual(payload["slot_data"]["kh3_seed"]["slot"], payload["slot"])
             self.assertEqual(payload["slot_data"]["kh3_seed"]["slot_name"], payload["slot_name"])
@@ -2789,17 +2789,12 @@ class TestKH3UltimaWeaponRandomizedPoolWithUpgradeSanity(KH3TestBase):
 class TestKH3UltimaWeaponBanished(KH3TestBase):
     options = {"ultima_weapon_mode": UltimaWeaponMode.option_banished}
 
-    def test_banished_mode_keeps_ultima_out_of_the_normal_pool(self) -> None:
-        names = [item.name for item in self.multiworld.itempool]
+    def test_banished_mode_excludes_ultima(self) -> None:
+        names = {item.name for item in self.multiworld.get_items()}
+        names.update(item.name for item in self.multiworld.precollected_items[self.player])
 
         self.assertNotIn(ULTIMA_WEAPON_ITEM_NAME, names)
         self.assertNotIn(ULTIMA_WEAPON_SHARD_ITEM_NAME, names)
-        hidden_bonus = self.multiworld.get_location(
-            ROCK_TITAN_NO_WALL_RUN_BONUS_LOCATION_NAME,
-            self.player,
-        )
-        self.assertEqual(hidden_bonus.item.name, ULTIMA_WEAPON_ITEM_NAME)
-        self.assertTrue(hidden_bonus.locked)
 
 
 class TestKH3UltimaWeaponBanishedWithUpgradeSanity(TestKH3UltimaWeaponBanished):

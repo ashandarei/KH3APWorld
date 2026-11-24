@@ -140,20 +140,26 @@ class ConnectedRunService:
         *,
         prepare: Callable[[], KH3SeedPreparationResult],
         apply: Callable[[KH3SeedPreparationResult], None],
+        connection_changed: Callable[[], bool] = lambda: False,
     ) -> None:
+        if connection_changed():
+            return
         if not self._client.begin("Preparing the connected KH3 seed pak..."):
             self._client.warn("Could not prepare the connected KH3 seed because another KH3 run action is active.")
             await self._client.disconnect()
             return
 
-        prepared: KH3SeedPreparationResult | None = None
+        ready = False
         try:
             prepared = await asyncio.to_thread(prepare)
             run = prepared.installed_run
             if run is None:
                 raise KH3SeedImportError("The server seed did not produce an installed KH3 run.")
             await asyncio.to_thread(self._client.ensure_companion)
+            if connection_changed() and self._client.connected():
+                return
             apply(prepared)
+            ready = True
             logger.info(
                 "Prepared, managed, and installed the connected KH3 run %s (seed %s, player %s).",
                 run.slot_name,
@@ -165,13 +171,16 @@ class ConnectedRunService:
             if self._client.connected():
                 await self._client.cleanup_old_runs(run.run_id)
         except Exception as exc:
-            self._client.warn(f"Could not prepare the KH3 seed from the server: {exc}")
-            if not isinstance(exc, (KH3SeedImportError, KH3RunManagerError)):
-                logger.debug("Unexpected KH3 connected-seed preparation failure", exc_info=True)
+            if not connection_changed():
+                self._client.warn(f"Could not prepare the KH3 seed from the server: {exc}")
+                if not isinstance(exc, (KH3SeedImportError, KH3RunManagerError)):
+                    logger.debug("Unexpected KH3 connected-seed preparation failure", exc_info=True)
         finally:
             self._client.finish()
 
-        if prepared is None:
+        if connection_changed():
+            return
+        if not ready:
             await self._client.disconnect()
             return
         if not self._client.connected():

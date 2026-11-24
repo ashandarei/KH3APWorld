@@ -55,10 +55,29 @@ def chest_data() -> dict:
     return payload
 
 
-def location_data() -> dict:
-    # Match the catalog and checksum used by server and player seed writers.
-    rows, digest = import_world_module("SlotData")._catalog()
-    return {"sha256": digest, "locations": {str(key): value for key, value in rows.items()}}
+def chest_journal_data() -> list[dict]:
+    rows, _ = import_world_module("SlotData")._catalog()
+    entries = []
+    for row in rows.values():
+        kind = row["type"]
+        if kind not in {"treasure", "kh02_chest", "melody_of_memory"}:
+            continue
+        location_name = row["ap_location_name"]
+        description = row.get("location_description", location_name)
+        name = description.split(" (")[0]
+        world = row["world"]
+        if kind == "kh02_chest":
+            world, name = location_name.rsplit(" - ", 1)
+        elif kind == "melody_of_memory":
+            name = "Melody Chest"
+        entries.append({
+            "id": row["source_id"].removeprefix("Treasure:"),
+            "name": name,
+            "world": world,
+            "description": description,
+            "requires_map_source": kind != "melody_of_memory",
+        })
+    return entries
 
 
 def main() -> None:

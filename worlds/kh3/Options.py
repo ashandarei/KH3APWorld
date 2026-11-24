@@ -357,8 +357,8 @@ class KH3LocationPoolMode(Choice):
     Controls how a KH3 randomizer item pool participates in item placement.
 
     `randomize` uses these checks normally. `junk` allows only filler or traps.
-    Excess KH3 useful and progression items are granted in starting inventory
-    when the normal checks run out.
+    Generation can fail if the room has too few checks for its useful and
+    progression items.
     """
 
     option_randomize = 2
@@ -367,9 +367,7 @@ class KH3LocationPoolMode(Choice):
     default = option_randomize
     choice_descriptions = {
         "randomize": "Shuffle this pool's rewards into the randomized KH3/AP item placement.",
-        "junk": (
-            "Allow only filler or traps; grant excess KH3 items in starting inventory."
-        ),
+        "junk": "Allow only filler or traps. Keep enough normal checks for the room's other rewards.",
     }
 
 
@@ -962,8 +960,9 @@ class StartWithLinks(Toggle):
 
 class JunkClassicKingdomReward(DefaultOnToggle):
     """Allow only filler or traps in the reward for completing all Classic Kingdom games.
-    Game unlocks become useful when high-score checks are off. Enabling high-score
-    checks keeps them progression because those checks can contain progression rewards.
+    Game unlocks count as progression for the all-games check. When high-score
+    checks are off, these unlocks are deprioritized for priority locations and
+    skipped by progression balancing.
     """
 
     display_name = "Junk Classic Kingdom Reward"

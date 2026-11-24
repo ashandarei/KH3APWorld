@@ -5,8 +5,6 @@ from collections import defaultdict
 from BaseClasses import DEFAULT_COLLECTION_RULE, Entrance, Location, Region
 from rule_builder.rules import And, CanReachLocation, Rule
 
-from .Locations import ROCK_TITAN_NO_WALL_RUN_BONUS_LOCATION_NAME, ROCK_TITAN_VBONUS_SOURCE_KEY
-
 
 def required_location_names(rule):
     """Find unconditional location conjuncts; leave alternatives as predicates."""
@@ -61,8 +59,8 @@ def create_logic_regions(world, rules) -> None:
             region.locations.append(location)
             moved.add(location)
 
-    # Extra encounter rewards and Rock Titan's fixed bonus share the actual
-    # encounter region, while retaining their own item/exclusion rules.
+    # Extra rewards share their parent check's region while retaining their
+    # own item and exclusion rules.
     sources = {(row["source_table"], row["source_id"]): row for row in world.active_locations}
     for row in world.extra_vbonus_locations:
         parent_row = sources[tuple(row["trigger_bridge_key"].split(":", 1))]
@@ -72,10 +70,6 @@ def create_logic_regions(world, rules) -> None:
         if row["type"] == "music_chest_bonus":
             inherited.append((multiworld.get_location(row["name"], world.player),
                               multiworld.get_location(row["music_chest_parent_location_name"], world.player)))
-    if ROCK_TITAN_VBONUS_SOURCE_KEY in sources:
-        parent = multiworld.get_location(sources[ROCK_TITAN_VBONUS_SOURCE_KEY]["name"], world.player)
-        inherited.append((multiworld.get_location(ROCK_TITAN_NO_WALL_RUN_BONUS_LOCATION_NAME, world.player),
-                          parent))
     for location, parent in inherited:
         if location.parent_region is not parent.parent_region:
             location.parent_region.locations.remove(location)
@@ -112,12 +106,6 @@ def create_logic_regions(world, rules) -> None:
         chain_parents[region] = parent
         entrance = parent.connect(region, name=f"{base_parent.name} -> {region.name}")
         world.set_rule(entrance, rule)
-    # The fixed bonus inherited the former local encounter predicate directly.
-    # Its shared parent now carries that predicate.
-    for location, _ in inherited:
-        if location.name == ROCK_TITAN_NO_WALL_RUN_BONUS_LOCATION_NAME:
-            location.access_rule = DEFAULT_COLLECTION_RULE
-
     world.logic_region_count = len(gates)
     world.logic_region_location_count = len(moved)
     world.logic_chain_region_count = sum(parent is not base_parents[region]

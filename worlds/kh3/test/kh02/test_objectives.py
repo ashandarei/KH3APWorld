@@ -176,7 +176,6 @@ class TestKH02World(KH3TestBase):
         self.world_setup(seed=353)
         for row in ALL_KH02_LOCATIONS:
             location = self.multiworld.get_location(row["name"], self.player)
-            self.assertTrue(location.progression_allowed)
             for player in (self.player, self.player + 1):
                 for classification in (ItemClassification.filler, ItemClassification.useful,
                                        ItemClassification.trap, ItemClassification.progression,

@@ -38,8 +38,8 @@ def room():
                              Item("RACE_SECRET_MARKER", ItemClassification.progression, 987654321, 3))
     region = Region("Foreign", 3, mw)
     mw.regions.append(region)
-    remote = Location(3, "Remote race check", 900001, region)
-    remote.item = Item("REMOTE_SECRET_MARKER", ItemClassification.progression, 987654322, 1)
+    remote = Location(3, "REMOTE_SECRET_MARKER", 900001, region)
+    remote.item = mw.worlds[1].create_item("Magic: Fire")
     region.locations.append(remote)
     return mw
 
@@ -52,7 +52,7 @@ def race_data(room):
 
 def assert_private(data):
     assert data["race_mode"] is True
-    assert data["kh3_seed"].get("remote_hint_placements", []) == []
+    assert "secret_reports" not in data["kh3_seed"]
     assert data["kh3_randomizer"]["hint"] == {"type": "None", "checks": []}
     for row in data["bridge"]["locations"]:
         assert not set(ASSIGNMENT_FIELDS).intersection(row)
@@ -77,7 +77,7 @@ def test_race_server_and_container_data_hide_rewards_without_changing_fill(room,
     world.generate_output(str(tmp_path))
     with zipfile.ZipFile(next(tmp_path.glob("*.apkh3"))) as archive:
         payload = json.loads(archive.read(KH3_CONTAINER_PAYLOAD))
-    assert payload["remote_hint_placements"] == []
+    assert "remote_hint_placements" not in payload
     assert_private(decode_slot_data(payload["slot_data"]))
     assert "RACE_SECRET_MARKER" not in json.dumps(payload)
 
@@ -131,7 +131,7 @@ def test_race_player_pak_generation_has_no_placements_or_spoilers(room, tmp_path
     runtime_metadata = json.loads(pak.read(METADATA_PATH))
     from ..RuntimeSeed import expand_document
     assert_private(expand_document("kh3_ap_seed_metadata.json", runtime_metadata)["slot_data"])
-    assert "remote_hint_placements" not in runtime_metadata["slot_data"]["kh3_seed"]
+    assert "secret_reports" not in runtime_metadata["slot_data"]["kh3_seed"]
     assert all(not targets for targets in runtime_metadata["secret_report_hints"]["reports"].values())
     for file in output.rglob("*.json"):
         assert b"RACE_SECRET_MARKER" not in file.read_bytes(), file

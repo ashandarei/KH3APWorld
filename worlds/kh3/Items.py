@@ -94,11 +94,6 @@ ABILITY_ITEM_NAMES = frozenset(
     for item_name in item_name_to_id
     if item_name.startswith("Ability: ")
 )
-# These remain registered rewards, but should not be selected through groups.
-ABILITY_GROUP_EXCLUSIONS = frozenset({
-    "Ability: Aeroza", "Ability: Blizzaza", "Ability: Curaza",
-    "Ability: Firaza", "Ability: Thundaza", "Ability: Waterza",
-})
 MAGIC_ITEM_NAMES = frozenset(name for name in item_name_to_id if name.startswith("Magic: "))
 HEARTBINDER_ITEM_NAMES = frozenset(name for name in item_name_to_id if name.endswith("Heartbinder"))
 # Repeatable recovery items, excluding currency pouches and permanent stat boosts.

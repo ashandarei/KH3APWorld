@@ -189,7 +189,6 @@ def run_case(index, args, sample):
         result['junk_before_balancing'] = before_balance
         result['junk_increase_after_post_fill'] = max(0, result['final_junk_progression'] - before_balance)
         result['locations'] = len(locations)
-        result['starting_overflow'] = getattr(mw, '_kh3_starting_overflow_report', {})
         assert result['final_junk_progression'] == 0, 'Progression in junk'
         assert all(is_junk_item(loc.item) for loc in locations
                    if isinstance(loc, KH3Location) and loc.filler_only and loc.address is not None), 'Useful item in junk'
@@ -290,8 +289,6 @@ def main():
                    seconds=time.perf_counter() - started,
                    worker_exit_codes=[p.returncode for p, _ in processes],
                    review_indices=[r['index'] for r in results if r['status'] != 'passed'],
-                   starting_grants=sum(sum(a['pool_overflow_granted'] for a in r.get('starting_overflow', {}).values())
-                                       for r in results),
                    junk_violation_seeds=sum(r.get('final_junk_progression', 0) > 0 for r in results))
     (args.output / 'summary.json').write_text(json.dumps(summary, indent=2), encoding='utf-8')
     print(json.dumps(summary, indent=2), flush=True)
