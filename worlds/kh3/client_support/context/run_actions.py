@@ -118,6 +118,7 @@ class ClientRunActionsMixin:
         return initialized
 
     def _clear_kh3_save_seed_guard_state(self) -> None:
+        self.kh3_pending_save_restore = ""
         self.save_seed_mismatch_active = False
         self.last_save_seed_status_warning = ""
         self.kh3_restart_required_seed_id = None
@@ -240,6 +241,7 @@ class ClientRunActionsMixin:
             self._finish_kh3_run_action()
 
     def _clear_kh3_run_location_state(self) -> None:
+        self.kh3_pending_save_restore = ""
         self.location_key_to_id = {}
         self.location_id_to_bridge_key = {}
         self.location_id_to_display_name = {}

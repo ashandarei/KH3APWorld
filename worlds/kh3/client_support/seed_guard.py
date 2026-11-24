@@ -80,6 +80,25 @@ class SeedGuardService:
                 associations[key] = record
         return associations
 
+    @classmethod
+    def stored_save_associations(cls) -> dict[str, dict[str, Any]]:
+        return cls.load_save_seed_associations(Utils.persistent_load().get("kh3_client", {}))
+
+    @classmethod
+    def rename_save_run(cls, old_id: str, new_id: str) -> None:
+        associations = cls.stored_save_associations()
+        updated = associations.copy()
+        for scope, record in associations.items():
+            if record.get("run_id") == old_id:
+                updated[scope] = {**record, "run_id": new_id}
+        if updated != associations:
+            try:
+                Utils.persistent_store("kh3_client", KH3_SAVE_SEED_ASSOCIATIONS_KEY, updated)
+            except OSError:
+                # Archipelago updates its in-memory cache before writing the file.
+                Utils.persistent_store("kh3_client", KH3_SAVE_SEED_ASSOCIATIONS_KEY, associations)
+                raise
+
     def save_seed_association_for_dir(
         self,
         save_dir: Path | str,
@@ -136,17 +155,22 @@ class SeedGuardService:
     ) -> None:
         persistent_kh3 = Utils.persistent_load().get("kh3_client", {})
         associations = self.load_save_seed_associations(persistent_kh3)
-        normalized_run_id = str(
-            run_id or getattr(self.source, "kh3_active_connection_profile_run_id", "") or ""
-        ).strip()
         for target in targets:
+            scope = self.save_seed_scope_key(target)
+            existing = associations.get(scope, {})
+            # A guard refresh can precede startup's profile selection. Only an
+            # explicit handoff should replace a known owner for the same seed.
+            existing_owner = existing.get("run_id") if existing.get("seed_id") == seed_id else None
+            normalized_run_id = str(
+                run_id or existing_owner or getattr(self.source, "kh3_active_connection_profile_run_id", "") or ""
+            ).strip()
             record = {
                 "seed_id": seed_id,
                 "guard_version": KH3_SAVE_SEED_GUARD_VERSION,
             }
             if normalized_run_id:
                 record["run_id"] = normalized_run_id
-            associations[self.save_seed_scope_key(target)] = record
+            associations[scope] = record
         Utils.persistent_store("kh3_client", KH3_SAVE_SEED_ASSOCIATIONS_KEY, associations)
         # Retain the legacy keys for archive labels and older client versions.
         Utils.persistent_store("kh3_client", "last_save_seed_id", seed_id)

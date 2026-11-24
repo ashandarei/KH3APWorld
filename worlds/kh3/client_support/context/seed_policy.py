@@ -39,7 +39,7 @@ class ClientSeedPolicyMixin:
 
     def set_ignore_unverified_save_seed_warnings(self, enabled: bool, *, persist: bool = False) -> None:
         self.ignore_unverified_save_seed_warnings = bool(enabled)
-        if self.ignore_unverified_save_seed_warnings:
+        if self.ignore_unverified_save_seed_warnings and not getattr(self, "kh3_pending_save_restore", ""):
             self.save_seed_mismatch_active = False
             self.last_save_seed_status_warning = ""
         if persist:
@@ -127,6 +127,35 @@ class ClientSeedPolicyMixin:
         result = self._get_offline_bridge_service().initialize(self._offline_bridge_initialization_input())
         return self._apply_offline_bridge_initialization(result)
 
+    def restore_installed_backup_if_empty(self, *, expected_run_id: str | None = None) -> bool:
+        try:
+            count = self._get_run_manager_service().restore_installed_backup_if_empty(
+                lambda run, directory: self.store_save_seed_associations_for_targets(
+                    [directory], run.seed_id, run_id=run.run_id,
+                ),
+                expected_run_id=expected_run_id,
+            )
+        except (OSError, self._client_api.KH3RunManagerError) as exc:
+            self.kh3_pending_save_restore = str(exc)
+            self.save_seed_mismatch_active = True
+            self._client_api.logger.warning("Could not restore the installed KH3 run's saves: %s", exc)
+            return False
+        retrying = bool(getattr(self, "kh3_pending_save_restore", ""))
+        self.kh3_pending_save_restore = ""
+        if count:
+            self._client_api.logger.info("Restored %s backed-up KH3 save files to %s.", count, self.bridge_save_dir)
+        if retrying:
+            if not self.refresh_save_seed_guard():
+                return False
+            self.start_integrated_bridge()
+        return True
+
+    def _start_offline_bridge_with_installed_saves(self, result: OfflineBridgeInitializationResult) -> bool:
+        # A pending restore pauses observations in the seed guard. Keep the
+        # bridge configured so closing the game and retrying can resume it.
+        self.restore_installed_backup_if_empty()
+        return self._apply_offline_bridge_initialization(result)
+
     def _create_offline_startup_service(self) -> OfflineStartupService:
         return self._client_api.OfflineStartupService(
             self._client_api.OfflineStartupCallbacks(
@@ -136,6 +165,7 @@ class ClientSeedPolicyMixin:
                     self.bridge_dir == source.current_bridge_dir
                     and self.seed_name is None
                     and getattr(self, "server", None) is None
+                    and not getattr(self, "kh3_run_action_running", False)
                 ),
                 installed_paths=lambda: frozenset(
                     self._client_api.Path(str(pak.get("path") or "")).expanduser().resolve()
@@ -145,7 +175,7 @@ class ClientSeedPolicyMixin:
                 enroll=lambda result: self._auto_enroll_connected_kh3_run_action(
                     result.pak_path, result.offline_seed_name, None
                 ),
-                apply_bridge=self._apply_offline_bridge_initialization,
+                apply_bridge=self._start_offline_bridge_with_installed_saves,
                 apply_profile=self._apply_active_kh3_run_connection_profile,
             )
         )
@@ -264,6 +294,8 @@ class ClientSeedPolicyMixin:
         )
 
     def build_save_seed_status(self) -> str:
+        if pending := getattr(self, "kh3_pending_save_restore", ""):
+            return pending
         decision = self._get_seed_policy_service().build_save_seed_decision(
             restart_required_seed=getattr(self, "kh3_restart_required_seed_id", None),
             offline_seed_name=getattr(self, "offline_seed_name", None),
@@ -278,6 +310,9 @@ class ClientSeedPolicyMixin:
         return decision.status
 
     def refresh_save_seed_guard(self) -> bool:
+        if getattr(self, "kh3_pending_save_restore", ""):
+            self.save_seed_mismatch_active = True
+            return False
         result = self._get_seed_policy_service().refresh_save_seed_guard(
             restart_required_seed=getattr(self, "kh3_restart_required_seed_id", None),
             offline_seed_name=getattr(self, "offline_seed_name", None),

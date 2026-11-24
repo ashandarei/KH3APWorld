@@ -7,7 +7,7 @@ import shutil
 import threading
 import unittest
 from contextlib import nullcontext
-from dataclasses import FrozenInstanceError
+from dataclasses import FrozenInstanceError, replace
 from datetime import datetime, timezone
 from io import BytesIO
 from pathlib import Path
@@ -1015,11 +1015,14 @@ class TestOfflineBridgeService(unittest.TestCase):
         )
         run_manager = Mock()
         run_manager.active_connection_profile.return_value = profile
+        run_manager.restore_installed_backup_if_empty.return_value = 0
         ctx._get_offline_bridge_service = Mock(return_value=service)
         ctx._get_run_manager_service = Mock(return_value=run_manager)
         ctx._offline_bridge_initialization_input = Mock(return_value=initialization_input)
         ctx.installed_kh3_ap_seed_paks = Mock(return_value=[{"path": str(pak_path)}])
-        ctx._apply_offline_bridge_initialization = Mock(return_value=True)
+        ctx._apply_offline_bridge_initialization = Mock(
+            side_effect=lambda result: run_manager.restore_installed_backup_if_empty.call_count == 1
+        )
         ctx._apply_active_kh3_run_connection_profile = Mock()
 
         self.assertTrue(asyncio.run(ctx.initialize_offline_bridge_after_startup()))
@@ -1027,7 +1030,7 @@ class TestOfflineBridgeService(unittest.TestCase):
         service.initialize.assert_called_once_with(initialization_input)
         self.assertEqual(len(worker_thread_ids), 1)
         self.assertNotEqual(worker_thread_ids[0], caller_thread_id)
-        ctx._apply_offline_bridge_initialization.assert_called_once_with(result)
+        ctx._apply_offline_bridge_initialization.assert_called_once_with(replace(result, auth="Room Player"))
         ctx._apply_active_kh3_run_connection_profile.assert_called_once_with(profile)
         run_manager.ensure_pak_managed.assert_called_once_with(
             pak_path, expected_seed_id=result.offline_seed_name, server_address=None,

@@ -14,6 +14,8 @@ def test_launch_assets_preserve_order_and_only_required_failures_block_launch(tm
 
     ctx = KH3Context.__new__(KH3Context)
     ctx.kh3_dir = tmp_path
+    ctx.kh3_run_action_running = False
+    ctx.restore_installed_backup_if_empty = Mock(return_value=True)
     events = []
     ctx._ensure_modloader_pak_priority = lambda: events.append("loader") or True
     ctx._reconcile_olympus_coliseum_reward_companion = lambda: events.append("companion")
@@ -46,6 +48,18 @@ def test_launch_assets_preserve_order_and_only_required_failures_block_launch(tm
         assert "continuing KH3 launch" in caplog.text
         assert "Permission denied" in caplog.text
     assert events == expected
+
+
+def test_pending_restore_blocks_game_launch():
+    from ..Client import KH3Context
+
+    ctx = KH3Context.__new__(KH3Context)
+    ctx.kh3_run_action_running = False
+    ctx.restore_installed_backup_if_empty = Mock(return_value=False)
+    ctx._ensure_modloader_pak_priority = Mock()
+    ctx._launch_kh3_game_now()
+    ctx.restore_installed_backup_if_empty.assert_called_once()
+    ctx._ensure_modloader_pak_priority.assert_not_called()
 
 
 def test_launch_file_preparation_does_not_hide_programming_errors(tmp_path):

@@ -9,6 +9,10 @@ class KH3RunManagerError(RuntimeError):
     """A user-actionable run-library or activation failure."""
 
 
+class RunOwnsSaveDirectory(KH3RunManagerError):
+    """Deleting the run would orphan a recorded save directory."""
+
+
 @dataclass(frozen=True, slots=True)
 class KH3RunInfo:
     """One imported or currently installed KH3 AP run."""
@@ -82,6 +86,7 @@ class KH3RunSuspensionResult:
     saved_current_files: int
     save_dir: Path
     warnings: tuple[str, ...] = ()
+    # None leaves the missing owner's files and association in place for activation.
     save_run: KH3RunInfo | None = None
 
 

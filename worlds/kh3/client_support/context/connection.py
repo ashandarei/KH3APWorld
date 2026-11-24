@@ -177,8 +177,10 @@ class ClientConnectionMixin:
         self.kh3_active_connection_profile_run_id = None
         self.kh3_run_connection_slot_name = ""
         self.kh3_auth_inferred_from_installed_pak = False
-        save_run = result.save_run or result.run
-        self.store_save_seed_associations_for_targets([save_dir], save_run.seed_id, run_id=save_run.run_id)
+        if result.save_run is not None:
+            self.store_save_seed_associations_for_targets(
+                [save_dir], result.save_run.seed_id, run_id=result.save_run.run_id,
+            )
 
     async def _suspend_installed_kh3_run_for_server(self, *, reason: str) -> bool:
         return await self._create_connected_run_service().suspend(

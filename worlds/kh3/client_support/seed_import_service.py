@@ -113,31 +113,41 @@ class KH3SeedImportService:
         active_save_run_id: str | None,
         progress: ProgressCallback | None = None,
     ) -> tuple[tuple[str, ...], str | None, str | None]:
+        save_dir = self._activated_save_dir(save_dir_override)
         associated_seed_id = SeedGuardService.extract_seed_id(active_save_seed_id)
         associated_run_id = str(active_save_run_id or "").strip() or None
+        if not associated_seed_id and not associated_run_id:
+            # Launch-time container preparation has no connected client handoff.
+            scope = SeedGuardService.save_seed_scope_key(save_dir)
+            record = SeedGuardService.stored_save_associations().get(scope, {})
+            associated_seed_id = record.get("seed_id")
+            associated_run_id = record.get("run_id")
 
         if associated_run_id:
             try:
                 associated_run = self.run_manager.get_run(associated_run_id)
             except KH3RunManagerError:
                 associated_run = None
-            if (associated_run is not None and associated_run.managed and associated_run.pak_available
-                    and self.run_manager.matches_platform(associated_run)):
-                if associated_seed_id and associated_seed_id != associated_run.seed_id:
-                    logger.warning(
-                        "KH3 active-save seed association %s disagrees with managed run %s (seed %s); "
-                        "using the exact managed run association.",
-                        associated_seed_id,
-                        associated_run.run_id,
-                        associated_run.seed_id,
-                    )
-                return (), associated_run.seed_id, associated_run.run_id
+            if associated_run is None or not associated_run.managed:
+                # Activation archives the missing profile's saves in its file transaction.
+                return (), associated_seed_id, associated_run_id
+            if not self.run_manager.matches_platform(associated_run):
+                raise KH3SeedImportError("The active save association belongs to another platform.")
+            if associated_seed_id and associated_seed_id != associated_run.seed_id:
+                logger.warning(
+                    "KH3 active-save seed association %s disagrees with managed run %s (seed %s); "
+                    "using the exact managed run association.",
+                    associated_seed_id,
+                    associated_run.run_id,
+                    associated_run.seed_id,
+                )
+            return (), associated_run.seed_id, associated_run.run_id
 
         if associated_seed_id:
             matching_runs = [
                 run
                 for run in self.run_manager.list_runs()
-                if run.managed and self.run_manager.matches_platform(run) and run.pak_available and run.seed_id == associated_seed_id
+                if run.managed and self.run_manager.matches_platform(run) and run.seed_id == associated_seed_id
             ]
             if len(matching_runs) == 1:
                 matching_run = matching_runs[0]
@@ -146,11 +156,6 @@ class KH3SeedImportService:
         if self.unidentified_save_preparer is None:
             return (), None, None
 
-        save_dir = (
-            checked_root(Path(save_dir_override))
-            if save_dir_override is not None
-            else self.run_manager.save_dir
-        )
         self._report(progress, "Protecting unidentified active KH3 saves before installing the AP run...")
         result = self.unidentified_save_preparer(save_dir)
         errors = result.get("errors") if isinstance(result.get("errors"), list) else []
@@ -589,8 +594,9 @@ class KH3SeedImportService:
                 )
             )
             self._report(progress, "Installing the generated KH3 seed pak...")
-            installed = self.run_manager.install_managed_pak_when_none(
+            activation = self.run_manager.activate(
                 managed_run.run_id,
+                require_no_installed_pak=True,
                 save_dir_override=save_dir_override,
                 active_save_seed_id=effective_save_seed_id,
                 active_save_run_id=effective_save_run_id,
@@ -601,11 +607,11 @@ class KH3SeedImportService:
             return KH3SeedPreparationResult(
                 status="installed",
                 source_path=source,
-                installed_run=installed,
-                activated_save_dir=self._activated_save_dir(save_dir_override),
+                installed_run=activation.run,
+                activated_save_dir=activation.save_dir,
                 generated_paks=(generated[0].pak_path.resolve(),),
                 archived_source_path=archived_source,
-                warnings=save_warnings + ((cleanup_warning,) if cleanup_warning else ()),
+                warnings=save_warnings + activation.warnings + ((cleanup_warning,) if cleanup_warning else ()),
             )
         except KH3SeedImportError:
             raise
@@ -709,8 +715,9 @@ class KH3SeedImportService:
                 )
             )
             self._report(progress, "Installing the generated KH3 seed pak...")
-            installed = self.run_manager.install_managed_pak_when_none(
+            activation = self.run_manager.activate(
                 run.run_id,
+                require_no_installed_pak=True,
                 save_dir_override=save_dir_override,
                 active_save_seed_id=effective_save_seed_id,
                 active_save_run_id=effective_save_run_id,
@@ -718,10 +725,10 @@ class KH3SeedImportService:
             return KH3SeedPreparationResult(
                 status="installed",
                 source_path=source_path.resolve(),
-                installed_run=installed,
-                activated_save_dir=self._activated_save_dir(save_dir_override),
+                installed_run=activation.run,
+                activated_save_dir=activation.save_dir,
                 generated_paks=(generated[0].pak_path.resolve(),),
-                warnings=save_warnings,
+                warnings=save_warnings + activation.warnings,
             )
         except KH3SeedImportError as exc:
             logger.warning(
@@ -827,8 +834,9 @@ class KH3SeedImportService:
                 )
             )
             self._report(progress, "Installing the downloaded KH3 seed pak...")
-            installed = self.run_manager.install_managed_pak_when_none(
+            activation = self.run_manager.activate(
                 run.run_id,
+                require_no_installed_pak=True,
                 save_dir_override=save_dir_override,
                 active_save_seed_id=effective_save_seed_id,
                 active_save_run_id=effective_save_run_id,
@@ -836,10 +844,10 @@ class KH3SeedImportService:
             return KH3SeedPreparationResult(
                 status="installed",
                 source_path=source,
-                installed_run=installed,
-                activated_save_dir=self._activated_save_dir(save_dir_override),
+                installed_run=activation.run,
+                activated_save_dir=activation.save_dir,
                 generated_paks=tuple(pak_paths),
-                warnings=save_warnings,
+                warnings=save_warnings + activation.warnings,
             )
         except KH3SeedImportError as exc:
             logger.warning(

@@ -335,7 +335,7 @@ class SeedPolicyService:
 
         if decision.expected_seed:
             self.seed_guard.store_save_seed_associations_for_targets(list(decision.targets), decision.expected_seed)
-            offline_seed_name = connected_seed_name
+            offline_seed_name = connected_seed_name or offline_seed_name
         return SaveGuardResult(
             True,
             decision.status,

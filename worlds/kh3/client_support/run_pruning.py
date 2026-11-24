@@ -9,6 +9,7 @@ from dataclasses import dataclass
 
 from .run_actions import RunSelection
 from .run_manager import KH3RunManagerError, KH3RunManagerService
+from .run_models import RunOwnsSaveDirectory
 
 logger = logging.getLogger("Client")
 
@@ -33,13 +34,13 @@ class RunPruningService:
             if [run.run_id for run in runs if run.active] != [active_run_id]:
                 raise KH3RunManagerError("The newly started KH3 run is no longer the active run.")
             targets = [run.run_id for run in runs if run.managed and not run.active and manager.matches_platform(run)]
-            for run_id in targets:
+            for index, run_id in enumerate(targets, 1):
                 if not self._client.auto_enabled():
                     break
                 self._check_selection(active_run_id, "run")
-                self._client.set_status(f"Deleting old run {deleted + 1} of {len(targets)}...")
-                await self._delete(manager, run_id, active_run_id)
-                deleted += 1
+                self._client.set_status(f"Deleting old run {index} of {len(targets)}...")
+                if await self._delete(manager, run_id, active_run_id):
+                    deleted += 1
             if deleted:
                 logger.info("Automatically deleted %s old KH3 run(s); the active run was kept.", deleted)
         except Exception as exc:
@@ -51,12 +52,12 @@ class RunPruningService:
         deleted = 0
         try:
             manager = self._manager()
-            for run_id in dict.fromkeys(run_ids):
+            for index, run_id in enumerate(dict.fromkeys(run_ids), 1):
                 self._check_selection(active_run_id, "profile")
-                self._client.set_status(f"Deleting inactive run {deleted + 1} of {len(run_ids)}...")
-                await self._delete(manager, run_id, active_run_id, current_platform_only=current_platform_only)
-                deleted += 1
-                logger.info("Deleted inactive KH3 run %s.", run_id)
+                self._client.set_status(f"Deleting inactive run {index} of {len(run_ids)}...")
+                if await self._delete(manager, run_id, active_run_id, current_platform_only=current_platform_only):
+                    deleted += 1
+                    logger.info("Deleted inactive KH3 run %s.", run_id)
             logger.info("Deleted %s inactive KH3 run(s). The active run was kept.", deleted)
         except Exception as exc:
             logger.warning("Bulk KH3 run deletion stopped after %s completed deletion(s): %s", deleted, exc)
@@ -68,13 +69,18 @@ class RunPruningService:
 
     async def _delete(
         self, manager: KH3RunManagerService, run_id: str, active_run_id: str, *, current_platform_only: bool = True,
-    ) -> None:
-        result = await asyncio.to_thread(
-            manager.delete_inactive_run,
-            run_id,
-            expected_active_run_id=active_run_id,
-            active_bridge_dir=self._client.selection().bridge_dir,
-            current_platform_only=current_platform_only,
-        )
+    ) -> bool:
+        try:
+            result = await asyncio.to_thread(
+                manager.delete_inactive_run,
+                run_id,
+                expected_active_run_id=active_run_id,
+                active_bridge_dir=self._client.selection().bridge_dir,
+                current_platform_only=current_platform_only,
+            )
+        except RunOwnsSaveDirectory as exc:
+            logger.info("%s", exc)
+            return False
         if result.errors:
             raise KH3RunManagerError(f"Run {run_id} was partially deleted: {'; '.join(result.errors)}")
+        return True

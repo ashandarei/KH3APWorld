@@ -550,6 +550,20 @@ def test_connect_and_game_launch_use_context_and_busy_guard():
     ctx.launch_kh3_game.assert_called_once()
 
 
+def test_activate_rechecks_empty_folder_for_installed_run_with_backup():
+    from worlds.kh3.gui.save_manager import SaveManagerView
+
+    view = SaveManagerView.__new__(SaveManagerView)
+    run = SimpleNamespace(run_id="installed", active=True, managed=True, pak_available=True, has_save=True)
+    view.runs = {run.run_id: run}
+    view.app = SimpleNamespace(action_running=False)
+    view.ctx = SimpleNamespace(kh3_run_action_running=False, save_seed_mismatch_active=False,
+                               restore_installed_backup_if_empty=Mock())
+    assert view.activation_menu_options(run, False)["state"] == "normal"
+    view.activate(run.run_id)
+    view.ctx.restore_installed_backup_if_empty.assert_called_once_with(expected_run_id=run.run_id)
+
+
 @pytest.mark.parametrize("active", [False, True])
 @pytest.mark.parametrize("save_mismatch", [False, True])
 def test_run_context_menu_targets_clicked_run_even_if_selection_changes(active, save_mismatch, monkeypatch):

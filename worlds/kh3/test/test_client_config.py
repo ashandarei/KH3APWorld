@@ -1567,6 +1567,8 @@ class TestKH3ItemConsumerPlan(unittest.TestCase):
                 order.append(f"start:{ctx.bridge_save_dir}")
 
             ctx.wait_for_integrated_bridge_shutdown = wait_for_shutdown
+            ctx.kh3_run_action_running = False
+            ctx.restore_installed_backup_if_empty = lambda: order.append("restore") or True
             ctx.start_integrated_bridge = start_bridge
             with patch("worlds.kh3.Client.is_process_running", return_value=False):
                 ctx._schedule_integrated_bridge_restart_for_save_directory_change()
@@ -1576,7 +1578,7 @@ class TestKH3ItemConsumerPlan(unittest.TestCase):
 
         order, pending = asyncio.run(run_case())
 
-        self.assertEqual(order, ["stop", "start:new-save-context"])
+        self.assertEqual(order, ["stop", "restore", "start:new-save-context"])
         self.assertFalse(pending)
 
     def test_client_save_directory_change_does_not_restart_bridge_while_kh3_runs(self) -> None:
