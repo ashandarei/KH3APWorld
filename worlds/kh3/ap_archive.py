@@ -127,8 +127,8 @@ def get_slot_name(multidata: dict[str, Any], slot: int) -> str:
 
 
 def require_bridge_locations(multidata: dict[str, Any], slot: int) -> list[dict[str, Any]]:
-    from worlds.kh3.Bridge import BridgeProtocolError
-    from worlds.kh3.SlotData import decode_slot_data
+    from .Bridge import BridgeProtocolError
+    from .SlotData import decode_slot_data
     slot_data = _require_mapping(multidata, "slot_data")
     slot_entry = slot_data.get(slot)
     if not isinstance(slot_entry, dict):

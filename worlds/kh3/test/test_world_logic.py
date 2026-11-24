@@ -3219,8 +3219,6 @@ class TestSplitWallRun(KH3TestBase):
         full.remove(self.world.create_item("Wall Run: Arendelle"))
         self.assertFalse(frozen_chest.can_reach(full))
         self.assertTrue(chest.can_reach(full))
-        rules = self.world.build_runtime_slot_data()["bridge"]["conditional_checks"]
-        self.assertIn("Wall Run: Olympus", [rule.get("unless_item_name") for rule in rules])
 
 
 class TestKH3WorldStartingWallRunLogic(KH3TestBase):

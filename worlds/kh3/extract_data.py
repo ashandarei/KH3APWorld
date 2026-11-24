@@ -196,6 +196,9 @@ def build_items(defaults: dict, display_names: dict[str, str]) -> list[dict]:
 
     items = []
     for value in sorted(values):
+        # Only abilities listed in the source descriptions are AP rewards.
+        if value.startswith("ETresAbilityKind::") and value not in display_names:
+            continue
         items.append({
             "id": value,
             "name": display_names.get(value, value),

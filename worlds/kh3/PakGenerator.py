@@ -18,6 +18,7 @@ from typing import Any
 
 import Utils
 
+from .PackageResources import safe_file_fragment
 from .installer_support.release_archive import verified_archive
 from .platform_support.download_tls import create_download_ssl_context
 
@@ -125,10 +126,6 @@ def iter_kh3_slots(multidata: dict[str, Any], requested_slot: int | None = None)
     if not kh3_slots:
         raise KH3PakGenerationError("This AP zip does not contain a Kingdom Hearts III slot.")
     return kh3_slots
-
-
-def safe_file_fragment(value: str, fallback: str = "kh3") -> str:
-    return re.sub(r"[^a-zA-Z0-9._-]+", "_", value).strip("._") or fallback
 
 
 def kh3_ap_pak_glob_for_seed(seed: str) -> str:
@@ -606,7 +603,6 @@ def load_kh3_container_data(container_path: Path) -> dict[str, Any]:
         from .RaceMode import race_slot_data
         payload["slot_data"] = race_slot_data(payload["slot_data"])
         payload["randomizer_config"] = payload["slot_data"]["kh3_randomizer"]
-        payload["remote_hint_placements"] = []
     return payload
 
 
@@ -640,7 +636,6 @@ def export_exact_randomized_options_from_container(
         randomizer_config=container_data.get("randomizer_config"),
         chrinit_sora_have_ability=[],
         event_reward_override=[],
-        remote_hint_placements=container_data.get("remote_hint_placements"),
         race_mode=bool(slot_data.get("race_mode")),
     )
     randomized_options_path.write_text(json.dumps(result.randomized_options, indent=2), encoding="utf-8")

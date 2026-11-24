@@ -25,7 +25,6 @@ from ..export_ap_kh3_randomized_options import ALWAYS_ON_EVENT_IDS, export_rando
 from ..ExtraVictoryBonuses import extra_vbonus_locations
 from ..Locations import (
     EXTRA_VBONUS_LOCATION_ID_BASE,
-    ROCK_TITAN_VBONUS_BRIDGE_KEY,
     location_name_to_id,
 )
 from ..SlotData import encode_slot_data
@@ -197,12 +196,11 @@ class TestExtraVictoryBonusTracker(TestCase):
         self.assertEqual(sum(i.classification == ItemClassification.filler for i in restored.itempool),
                          0)
         rules = slot["bridge"]["conditional_checks"]
-        self.assertTrue(any(row["trigger_bridge_key"] == ROCK_TITAN_VBONUS_BRIDGE_KEY for row in rules))
         music_rewards = sum(row["type"] == "music_chest_bonus" for row in slot["bridge"]["locations"])
         # Aqua observes a 0.2 victory flag directly rather than a KH3 reward trigger.
         character_rewards = sum(row["type"] == "character_unlock" and "trigger_bridge_key" in row
                                 for row in slot["bridge"]["locations"])
-        self.assertEqual(len(rules), music_rewards + len(world.extra_vbonus_locations) + character_rewards + 1)
+        self.assertEqual(len(rules), music_rewards + len(world.extra_vbonus_locations) + character_rewards)
         self.assertEqual(len({row["ap_location_id"] for row in rules}), len(rules))
         # Check identities are independent of pool composition.
         slot["universal_tracker"]["options"]["trap_percentage"] = 0

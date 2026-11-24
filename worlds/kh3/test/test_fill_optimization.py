@@ -70,26 +70,22 @@ class TestKH3CollectionAndConstantRules(TestCase):
         world._replace_removable_item_pool_items(pool, ['Ability: Fire Boost'], 'extra test reward')
         self.assertEqual(Counter(item.name for item in pool), Counter((*protected, 'Ability: Fire Boost')))
 
-    def test_collection_matches_progression_flags_and_tracks_useful_games(self):
+    def test_collection_matches_progression_flags(self):
         mw = setup_multiworld(KH3World, steps=(), seed=731)
         world = mw.worlds[1]
         state = CollectionState(mw)
         for item_type in (Item, KH3Item):
             for name in ("Ordinary reward", *sorted(CLASSIC_KINGDOM_UNLOCK_ITEM_NAMES)):
-                for flags in range(16):
+                for flags in range(32):
                     item = item_type(name, ItemClassification(flags), 1, 1)
                     expected = name if flags & int(ItemClassification.progression) else None
-                    optional_game = (not expected and bool(flags & int(ItemClassification.useful))
-                                     and name in CLASSIC_KINGDOM_UNLOCK_ITEM_NAMES)
                     with self.subTest(item_type=item_type, name=name, flags=flags):
                         self.assertEqual(world.collect_item(state, item), expected)
                         self.assertEqual(world.collect_item(state, item, True), expected)
                         self.assertEqual(world.collect(state, item), bool(expected))
                         self.assertEqual(state.count(name, 1), int(bool(expected)))
-                        self.assertEqual(state._kh3_useful_classic_games.get(1, {}).get(name, 0), int(optional_game))
-                        self.assertEqual(world.remove(state, item), bool(expected or optional_game))
+                        self.assertEqual(world.remove(state, item), bool(expected))
                         self.assertEqual(state.count(name, 1), 0)
-                        self.assertEqual(state._kh3_useful_classic_games.get(1, {}).get(name, 0), 0)
 
     def test_collection_metadata_follows_name_and_classification_changes(self):
         mw = setup_multiworld(KH3World, steps=(), seed=731)

@@ -21,7 +21,6 @@ from ..ShopEconomy import (
     build_moogle_shop_price_tiers,
     moogle_shop_price_for_classification,
 )
-from ..Options import KH3LocationPoolMode, KH3Options
 from . import KH3TestBase
 
 
@@ -236,14 +235,13 @@ class TestMoogleShopClassificationPrices(KH3TestBase):
 
 
 class TestMoogleShopStandardFill(unittest.TestCase):
-    def test_standard_fill_preserves_funding_in_solo_mixed_and_all_junk_seeds(self):
-        junk = {name: 'junk' for name, kind in KH3Options.type_hints.items()
-                if issubclass(kind, KH3LocationPoolMode)}
+    def test_standard_fill_preserves_funding_in_solo_mixed_and_junk_pool_seeds(self):
         cases = (
             ([KH3World], {'moogle_shop_checks': 14}),
             ([KH3World], {'moogle_shop_checks': 20, 'moogle_shop_price': 10000}),
             ([KH3World, KH1World], {'moogle_shop_checks': 20, 'moogle_shop_price': 10000}),
-            ([KH3World], {**junk, 'moogle_shop_checks': 20, 'moogle_shop_price': 10000}),
+            ([KH3World], {'data_battle_rewards_pool': 'junk', 'battlegates_pool': 'junk',
+                          'moogle_shop_checks': 20, 'moogle_shop_price': 10000}),
         )
         for index, (worlds, options) in enumerate(cases):
             with self.subTest(worlds=[world.game for world in worlds], options=options):

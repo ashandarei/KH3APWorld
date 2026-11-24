@@ -9,13 +9,15 @@ from worlds.generic.Rules import locality_rules
 
 from .. import KH3World
 from ..Locations import KH3Location
-from ..StartingInventory import reserve_all_local_locations
+from ..PreFill import reserve_all_local_locations
 
 
 class TestAllLocalFill(TestCase):
     def make_world(self, local_names=('Magic: Fire', 'Potion'), checks=2):
         mw = setup_multiworld([KH3World, ForeignWorld], steps=(), seed=927019)
-        mw.worlds[1].options.local_items.value = set(KH3World.item_names)
+        local_items = KH3World.options_dataclass.type_hints["local_items"].from_any(["Everything"])
+        local_items.verify(KH3World, mw.player_name[1], mw.plando_options)
+        mw.worlds[1].options.local_items = local_items
         for player in mw.player_ids:
             region = Region('Menu', player, mw)
             mw.regions.append(region)
@@ -32,7 +34,8 @@ class TestAllLocalFill(TestCase):
     def test_full_generation_reserves_before_foreign_early_items_and_balancing(self):
         for junk in (False, True):
             with self.subTest(junk=junk):
-                mw = self.make_world()
+                local_names = ('Potion', 'Hi-Potion') if junk else ('Magic: Fire', 'Potion')
+                mw = self.make_world(local_names=local_names)
                 for location in mw.get_locations(1):
                     location.filler_only = junk
                     if junk:
@@ -46,7 +49,7 @@ class TestAllLocalFill(TestCase):
                 call_all(mw, 'finalize_multiworld')
                 self.assertFalse(mw.get_unfilled_locations())
                 self.assertEqual(len(items), len(mw.get_locations()))
-                self.assertEqual(sum(map(len, mw.precollected_items.values())), int(junk))
+                self.assertFalse(any(mw.precollected_items.values()))
                 for location in mw.get_locations():
                     self.assertEqual(location.player, location.item.player)
                     self.assertIs(location.item.location, location)

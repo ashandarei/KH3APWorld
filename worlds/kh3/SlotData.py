@@ -17,6 +17,7 @@ from .Data import HEART_PIECE_GOAL_COUNT, load_extracted_data, normalize_locatio
 
 WIRE_VERSION = 1
 WIRE_KEY = "location_catalog"
+SERVER_SEED_FORMAT_VERSION = 2
 ASSIGNMENT_FIELDS = (
     "assigned_item_id", "assigned_item_name", "assigned_item_player",
     "assigned_item_player_name", "assigned_item_game", "assigned_item_classification",
@@ -48,8 +49,6 @@ def _catalog() -> tuple[dict[int, dict], str]:
                if row["type"] == "treasure" or row.get("music_chest_placement_version")]
     locations.extend(music_chest_bonus_locations(parents))
     rows = build_bridge_slot_data(locations, HEART_PIECE_GOAL_COUNT)["locations"]
-    from .Locations import ROCK_TITAN_BONUS_BRIDGE_LOCATION
-    rows.append(dict(ROCK_TITAN_BONUS_BRIDGE_LOCATION))
     catalog = {}
     for row in rows:
         # Song selection, difficulty and shop prices/tokens belong to the seed.

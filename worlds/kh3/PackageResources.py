@@ -1,7 +1,12 @@
 from __future__ import annotations
 
+import re
 import zipfile
 from pathlib import Path
+
+
+def safe_file_fragment(value: str, fallback: str = "kh3") -> str:
+    return re.sub(r"[^a-zA-Z0-9._-]+", "_", value).strip("._") or fallback
 
 
 def apworld_archive_context(module_file: str | Path | None) -> tuple[Path, str] | None:

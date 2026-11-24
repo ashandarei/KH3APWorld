@@ -20,7 +20,7 @@ def race_slot_data(slot_data: dict) -> dict:
         for field in ASSIGNMENT_FIELDS:
             location.pop(field, None)
         location["bridge_delivery_required"] = True
-    result.get("kh3_seed", {})["remote_hint_placements"] = []
+    result.get("kh3_seed", {}).pop("secret_reports", None)
     if "kh3_randomizer" in result:
         result["kh3_randomizer"]["hint"] = {"type": "None", "checks": []}
     options = result.get("universal_tracker", {}).get("options", {})

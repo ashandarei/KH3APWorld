@@ -33,6 +33,7 @@
 !/MinimapReference.py
 !/Options.py
 !/PackageResources.py
+!/PreFill.py
 !/Regions.py
 !/RaceMode.py
 !/Rules.py
@@ -43,6 +44,10 @@
 !/Workshop.py
 !/rule_helpers.py
 !/universal_tracker.py
+!/seedgen/__init__.py
+!/seedgen/assets.py
+!/seedgen/localization.py
+!/seedgen/rng.py
 !/kh02/__init__.py
 !/kh02/locations.py
 !/kh02/objectives.py

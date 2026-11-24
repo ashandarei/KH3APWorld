@@ -23,7 +23,7 @@ def slot_payload(payload: dict) -> dict:
     identity = result.get("kh3_seed")
     if isinstance(identity, dict):
         result["kh3_seed"] = {key: value for key, value in identity.items()
-                              if key not in {"remote_hint_placements", "all_players"}}
+                              if key not in {"secret_reports", "all_players"}}
     return result
 
 

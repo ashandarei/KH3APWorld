@@ -6,14 +6,7 @@ from .ColiseumLogic import COLISEUM_WORLD_COMPLETION_SOURCES
 from .Data import LEVEL_UP_XP_SOURCE_REGION_NAMES, LUCKY_EMBLEM_LOGIC_REQUIREMENTS_BY_WORLD
 from .Ingredients import INGREDIENT_WORLD_SOURCES
 from .Adversaries import ADVERSARY_WORLDS
-from .Locations import (
-    COMPLETION_LOCATION_NAME,
-    ROCK_TITAN_NO_WALL_RUN_BONUS_LOCATION_ID,
-    ROCK_TITAN_NO_WALL_RUN_BONUS_LOCATION_NAME,
-    ROCK_TITAN_VBONUS_SOURCE_KEY,
-    KH3Location,
-    location_name_to_id,
-)
+from .Locations import COMPLETION_LOCATION_NAME, KH3Location, location_name_to_id
 from .Space import REGIONS as SPACE_REGIONS
 
 HUB_REGION_NAME = "Garden of Assemblage"
@@ -105,20 +98,6 @@ def create_regions(multiworld: MultiWorld, player: int, locations: list[dict],
                 # Only filler and useful rewards are supported for every player.
                 region.locations[-1].item_rule = lambda item: item.classification in (
                     ItemClassification.filler, ItemClassification.useful)
-                region.locations[-1].progression_allowed = False
-
-        if world_name == "Olympus" and any(
-            (location["source_table"], location["source_id"]) == ROCK_TITAN_VBONUS_SOURCE_KEY
-            for location in world_locations
-        ):
-            region.locations.append(
-                KH3Location(
-                    player,
-                    ROCK_TITAN_NO_WALL_RUN_BONUS_LOCATION_NAME,
-                    ROCK_TITAN_NO_WALL_RUN_BONUS_LOCATION_ID,
-                    region,
-                )
-            )
 
     final_door = Region("Final Door", player, multiworld)
     regions.append(final_door)

@@ -37,6 +37,13 @@ class WorkshopWorldTests(KH3TestBase):
     options = {'synthesis_pool': 'randomize', 'photo_missions_pool': 'randomize',
                'keyblade_upgrade_rewards_pool': 'randomize', 'hundred_acre_wood_pool': 'randomize'}
 
+    def test_native_only_upgrade_reward_keeps_its_ap_check(self):
+        row = next(row for row in self.world.active_locations if row['source_id'] == 'IW_43')
+        self.assertEqual(row['primary_item_name'], '')
+        check = self.get_location_by_source('WeaponEnhance', 'IW_43')
+        self.assertEqual(check.name, 'Moogle Workshop - Ever After Level 4')
+        self.assertEqual(len(self.multiworld.itempool), len(self.multiworld.get_unfilled_locations()))
+
     def test_pools_can_be_enabled_independently(self):
         for enabled_type, enabled_option in WORKSHOP_OPTIONS.items():
             for mode in ('randomize', 'junk'):
@@ -202,9 +209,6 @@ class WorkshopWorldTests(KH3TestBase):
         self.assertFalse(any(r['type'] == 'photo_mission' for r in self.world.active_locations))
         self.assertFalse(any(r['type'] == 'photo_mission'
                              for r in self.world.build_runtime_slot_data()['bridge']['locations']))
-        distribute_items_restrictive(self.multiworld)
-        self.assertFalse(self.multiworld.get_unfilled_locations())
-        self.assertTrue(self.multiworld.can_beat_game())
 
     def test_workshop_bridge_delivery(self):
         rows = [r for r in self.world.build_runtime_slot_data()['bridge']['locations']

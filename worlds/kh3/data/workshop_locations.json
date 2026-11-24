@@ -1575,7 +1575,6 @@
     "source_table": "WeaponEnhance",
     "source_id": "IW_43",
     "vanilla_item": "ETresAbilityKind::AEROGAN",
-    "vanilla_item_name": "Ability: Aeroza",
     "workshop_flag": 43,
     "keyblade_name": "Ever After",
     "keyblade_token": "WEP_KEYBLADE_SO_04",

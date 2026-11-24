@@ -3,6 +3,7 @@ from __future__ import annotations
 import json
 from collections import Counter
 from functools import lru_cache
+from itertools import count
 from typing import Iterable
 
 from .Ingredients import CARIBBEAN_INGREDIENT_SPOT_IDS, append_ingredient_locations, ingredient_spot_is_junk
@@ -1511,6 +1512,10 @@ def uses_strict_junk_setting(location: dict, options) -> bool:
     return False
 
 
+# Reserve retired offsets so removing definitions cannot renumber published items.
+RETIRED_ITEM_ID_OFFSETS = frozenset({123, 134, 151, 165, 228, 240})
+
+
 def build_item_name_to_id(data: dict) -> dict[str, int]:
     item_names = {
         resolve_item_display_name(item["name"])
@@ -1523,78 +1528,62 @@ def build_item_name_to_id(data: dict) -> dict[str, int]:
     appended_item_names = item_names.intersection(APPENDED_ITEM_ID_NAMES)
     item_names.difference_update(appended_item_names)
     base_id = 0x4B483000
+    available_ids = (base_id + offset for offset in count() if offset not in RETIRED_ITEM_ID_OFFSETS)
     # Numeric DataTable values and the unsupported vanilla Orichalcum+ are not
     # AP items. Reserve their source offsets when building the item table.
     reserved_item_name_to_id = {
-        name: base_id + index
-        for index, name in enumerate(sorted(item_names))
+        name: next(available_ids)
+        for name in sorted(item_names)
     }
     item_name_to_id = {
         name: item_id
         for name, item_id in reserved_item_name_to_id.items()
         if not name.strip().isdecimal() and name != "Orichalcum+" and name not in PROOF_ITEMS
     }
-    next_index = len(reserved_item_name_to_id)
     for item_name in CONTROLLER_UNLOCK_ITEM_NAMES:
         # Links was published after the existing item tails; do not shift IDs.
         if item_name in {"Unlock: Links", *CHARACTER_STYLE_ITEM_NAMES, *WORLD_WALL_RUN_ITEMS.values()}:
             continue
         if item_name not in item_name_to_id:
-            item_name_to_id[item_name] = base_id + next_index
-            next_index += 1
+            item_name_to_id[item_name] = next(available_ids)
     for item_name in sorted(DEFAULT_BASE_ABILITY_ITEM_NAMES):
         if item_name not in item_name_to_id:
-            item_name_to_id[item_name] = base_id + next_index
-            next_index += 1
+            item_name_to_id[item_name] = next(available_ids)
     for item_name in sorted(appended_item_names):
-        item_name_to_id[item_name] = base_id + next_index
-        next_index += 1
+        item_name_to_id[item_name] = next(available_ids)
     for item_name in AP_ONLY_ITEM_ID_NAMES:
         if item_name not in item_name_to_id:
-            item_name_to_id[item_name] = base_id + next_index
-            next_index += 1
+            item_name_to_id[item_name] = next(available_ids)
     for item_name in CLASSIC_KINGDOM_APPENDED_NATIVE_ITEM_NAMES:
         if item_name not in item_name_to_id:
-            item_name_to_id[item_name] = base_id + next_index
-            next_index += 1
+            item_name_to_id[item_name] = next(available_ids)
     # Party member unlock IDs were published after every prior AP/native tail.
     # Advance across retired reservations so roster
     # removals cannot renumber existing items.
     for item_name in PARTY_MEMBER_UNLOCK_ID_RESERVATIONS:
+        item_id = next(available_ids)
         if (
             item_name in PARTY_MEMBER_UNLOCK_ITEMS
             and item_name not in item_name_to_id
         ):
-            item_name_to_id[item_name] = base_id + next_index
-        next_index += 1
+            item_name_to_id[item_name] = item_id
     for item_name in KEYBLADE_STYLE_ITEM_NAMES:
-        item_name_to_id[item_name] = base_id + next_index
-        next_index += 1
+        item_name_to_id[item_name] = next(available_ids)
     for item_name in MINIGAME_APPENDED_ITEMS:
-        item_name_to_id[item_name] = base_id + next_index
-        next_index += 1
-    item_name_to_id["Unlock: Links"] = base_id + next_index
-    next_index += 1
+        item_name_to_id[item_name] = next(available_ids)
+    item_name_to_id["Unlock: Links"] = next(available_ids)
     for item_name in CHARACTER_UNLOCK_ITEM_NAMES:
         if item_name == "Playable Character: Riku":
             continue  # Appended below to preserve the published item IDs.
-        item_name_to_id[item_name] = base_id + next_index
-        next_index += 1
-    item_name_to_id[SPELLWEAVER_UNLOCK_ITEM] = base_id + next_index
-    next_index += 1
-    item_name_to_id[KING_MICKEY_TRAP_ITEM_NAME] = base_id + next_index
-    next_index += 1
-    item_name_to_id["Playable Character: Riku"] = base_id + next_index
-    next_index += 1
-    item_name_to_id[BETRAYAL_TRAP_ITEM_NAME] = base_id + next_index
-    next_index += 1
-    item_name_to_id["Stun Trap"] = base_id + next_index
-    next_index += 1
-    item_name_to_id[SEVEN_WISHES_UNLOCK_ITEM] = base_id + next_index
-    next_index += 1
+        item_name_to_id[item_name] = next(available_ids)
+    item_name_to_id[SPELLWEAVER_UNLOCK_ITEM] = next(available_ids)
+    item_name_to_id[KING_MICKEY_TRAP_ITEM_NAME] = next(available_ids)
+    item_name_to_id["Playable Character: Riku"] = next(available_ids)
+    item_name_to_id[BETRAYAL_TRAP_ITEM_NAME] = next(available_ids)
+    item_name_to_id["Stun Trap"] = next(available_ids)
+    item_name_to_id[SEVEN_WISHES_UNLOCK_ITEM] = next(available_ids)
     for name in WORLD_WALL_RUN_ITEMS.values():
-        item_name_to_id[name] = base_id + next_index
-        next_index += 1
+        item_name_to_id[name] = next(available_ids)
     from .Space import SPACE_ITEM_IDS
     item_name_to_id.update(SPACE_ITEM_IDS)
     return item_name_to_id

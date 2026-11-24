@@ -29,7 +29,6 @@ from worlds.LauncherComponents import (
 
 from .Bridge import BRIDGE_PROTOCOL_NAME, BRIDGE_PROTOCOL_VERSION, KH3_WORLD_VERSION, build_bridge_slot_data
 from .CharacterUnlocks import CHARACTER_UNLOCK_ITEM_ALIASES, CHARACTER_UNLOCK_ITEM_NAMES
-from .ClassicKingdomLogic import record_useful_game
 from .WallRun import WALL_RUN, WORLD_WALL_RUN_ITEMS
 from .Data import (
     TRAP_ITEM_NAMES,
@@ -100,15 +99,11 @@ from .ExtraVictoryBonuses import (
     set_extra_vbonus_rules,
 )
 from .Items import (
-    ABILITY_GROUP_EXCLUSIONS, ABILITY_ITEM_NAMES, CONSUMABLE_ITEM_NAMES, MAGIC_ITEM_NAMES,
+    ABILITY_ITEM_NAMES, CONSUMABLE_ITEM_NAMES, MAGIC_ITEM_NAMES,
     HEARTBINDER_ITEM_NAMES, KH3Item, classify_item, item_name_to_id,
 )
 from .Locations import (
     COMPLETION_LOCATION_NAME,
-    ROCK_TITAN_NO_WALL_RUN_BONUS_LOCATION_ID,
-    ROCK_TITAN_NO_WALL_RUN_BONUS_LOCATION_NAME,
-    ROCK_TITAN_VBONUS_BRIDGE_KEY,
-    ROCK_TITAN_VBONUS_SOURCE_KEY,
     location_name_groups,
     location_name_to_id,
     location_id_to_alias,
@@ -125,7 +120,7 @@ from .Options import (
     effective_keyblade_levels,
     option_groups,
 )
-from .PackageResources import read_package_text
+from .PackageResources import read_package_text, safe_file_fragment
 from .Regions import create_regions
 from .Rules import set_rules
 from .ShopEconomy import (
@@ -134,7 +129,7 @@ from .ShopEconomy import (
     build_moogle_shop_price_tiers,
     moogle_shop_price_for_classification,
 )
-from .SlotData import decode_slot_data, encode_slot_data
+from .SlotData import SERVER_SEED_FORMAT_VERSION, decode_slot_data, encode_slot_data
 from .Space import ENDYMION
 from .universal_tracker import (
     KH3_UNIVERSAL_TRACKER_SLOT_DATA_KEY,
@@ -371,7 +366,7 @@ class KH3World(World):
         "Heartbinders": HEARTBINDER_ITEM_NAMES,
         "Reports": frozenset(SECRET_REPORT_ITEM_NAMES),
         "Consumables": CONSUMABLE_ITEM_NAMES,
-        "Abilities": ABILITY_ITEM_NAMES - ABILITY_GROUP_EXCLUSIONS,
+        "Abilities": ABILITY_ITEM_NAMES,
         "Controller Unlocks": CONTROLLER_UNLOCK_ITEM_NAMES,
         "Keyblade Styles": KEYBLADE_STYLE_ITEM_NAMES,
         "Party Member Unlocks": PARTY_MEMBER_UNLOCK_ITEM_NAMES,
@@ -576,10 +571,6 @@ class KH3World(World):
                 if (location["source_table"], location["source_id"]) == YOZORA_REWARD_SOURCE_KEY
             )
             yozora_location.place_locked_item(self.create_item(ULTIMA_WEAPON_ITEM_NAME))
-        if self._rock_titan_sequence_break_bonus_enabled():
-            self.multiworld.get_location(
-                ROCK_TITAN_NO_WALL_RUN_BONUS_LOCATION_NAME, self.player,
-            ).place_locked_item(self.create_item(ULTIMA_WEAPON_ITEM_NAME))
 
     def _add_ultima_weapon_mode_items(self, item_pool: list[Item]) -> None:
         mode = int(self.options.ultima_weapon_mode.value)
@@ -1074,9 +1065,6 @@ class KH3World(World):
         if not item_names:
             return
         protected_item_names = set(protected_item_names or ())
-        # Useful Classic Kingdom games still gate optional checks. Later pool
-        # additions must retain them even after filler has become traps.
-        protected_item_names.update(CLASSIC_KINGDOM_UNLOCK_ITEM_NAMES)
         # Preserve every report and style unlock when extra rewards need to
         # replace useful items after the pool has run out of filler.
         protected_item_names.update(SECRET_REPORT_ITEM_NAMES)
@@ -1133,9 +1121,9 @@ class KH3World(World):
             classification |= ItemClassification.progression
         if name in CLASSIC_KINGDOM_UNLOCK_ITEM_NAMES:
             # High-score checks can hold progression independently of the all-games reward.
-            junk_only = (bool(self.options.junk_classic_kingdom_reward.value)
-                         and not self.options.classic_kingdom_checks.value)
-            classification = ItemClassification.useful if junk_only else ItemClassification.progression
+            classification = ItemClassification.progression
+            if self.options.junk_classic_kingdom_reward.value and not self.options.classic_kingdom_checks.value:
+                classification = ItemClassification.progression_deprioritized_skip_balancing
         if name == HEART_PIECE_ITEM_NAME:
             classification = ItemClassification.progression
         return KH3Item(name, classification, code, self.player)
@@ -1155,9 +1143,6 @@ class KH3World(World):
         except AttributeError:
             name = self.collect_item(state, item)
         if not name:
-            if item.useful and item.name in CLASSIC_KINGDOM_UNLOCK_ITEM_NAMES:
-                record_useful_game(state, self.player, item.name)
-            # Optional receipts do not grow AP progression or trigger its sweep.
             return False
         state.add_item(name, self.player)
         totals = getattr(state, "_kh3_reachable_counts", None)
@@ -1168,8 +1153,6 @@ class KH3World(World):
     def remove(self, state: CollectionState, item: Item) -> bool:
         name = self.collect_item(state, item, True)
         if not name:
-            if item.useful and item.name in CLASSIC_KINGDOM_UNLOCK_ITEM_NAMES:
-                return record_useful_game(state, self.player, item.name, remove=True)
             return False
         state.remove_item(name, self.player)
         totals = getattr(state, "_kh3_reachable_counts", None)
@@ -1207,20 +1190,6 @@ class KH3World(World):
             set_rules(self)
             from .Space import set_space_rules
             set_space_rules(self)
-            if self._rock_titan_sequence_break_bonus_enabled():
-                rock_titan_location = next(
-                    self.multiworld.get_location(location["name"], self.player)
-                    for location in self.active_locations
-                    if (location["source_table"], location["source_id"]) == ROCK_TITAN_VBONUS_SOURCE_KEY
-                )
-                bonus_location = self.multiworld.get_location(
-                    ROCK_TITAN_NO_WALL_RUN_BONUS_LOCATION_NAME,
-                    self.player,
-                )
-                bonus_location.access_rule = rock_titan_location.access_rule
-                bonus_location.item_rule = rock_titan_location.item_rule
-                bonus_location.filler_only = rock_titan_location.filler_only
-                bonus_location.progress_type = rock_titan_location.progress_type
             set_extra_vbonus_rules(self)
         from .LogicRegions import create_logic_regions
         pending = self._pending_region_rules
@@ -1231,29 +1200,14 @@ class KH3World(World):
             create_logic_regions(self, pending)
         self.set_completion_rule(Has("Victory"))
 
-    def _rock_titan_sequence_break_bonus_enabled(self) -> bool:
-        return any(
-            (location["source_table"], location["source_id"]) == ROCK_TITAN_VBONUS_SOURCE_KEY
-            for location in self.active_locations
-        )
-
     @classmethod
     def stage_pre_fill(cls, multiworld):
-        from .Balancing import mark_optional_balancing_items
-        from .StartingInventory import (
-            register_post_fill_classifications,
-            precollect_overflow,
-            precollect_restrictive_starts,
-            reserve_all_local_locations,
-        )
+        from .PreFill import reserve_all_local_locations, validate_fixed_junk_rewards
 
         # LocalItems forbids exports. A saturated local pool also needs to
         # reserve its own checks before AP places other players' early items.
-        register_post_fill_classifications(multiworld)
         reserve_all_local_locations(multiworld)
-        precollect_overflow(multiworld)
-        precollect_restrictive_starts(multiworld)
-        mark_optional_balancing_items(multiworld)
+        validate_fixed_junk_rewards(multiworld)
 
     def build_seed_container_data(self) -> dict[str, Any]:
         slot_data = self.fill_slot_data()
@@ -1269,7 +1223,6 @@ class KH3World(World):
             "all_players": seed_data["all_players"],
             "pak_seed": seed_data["pak_seed"],
             "randomizer_config": slot_data["kh3_randomizer"],
-            "remote_hint_placements": seed_data["remote_hint_placements"],
             "slot_data": slot_data,
         }
 
@@ -1289,55 +1242,32 @@ class KH3World(World):
             world._output_slot_data = None
             world._output_slot_data_lock = Lock()
 
-    def build_remote_hint_placements(self) -> list[dict[str, Any]]:
-        if self.multiworld.is_race:
-            return []
-        placements: list[dict[str, Any]] = []
-        recipient_name = self.multiworld.get_player_name(self.player)
+    def _build_secret_reports(self, seed, settings, bridge_locations):
+        from .seedgen.localization import select_secret_reports
 
+        placements = [
+            dict(row, item_name=row["assigned_item_name"], location_player_slot=self.player)
+            for row in bridge_locations if row.get("assigned_item_player") == self.player
+        ]
         locations = getattr(self, "_output_remote_hint_locations", None)
         if locations is None:
-            locations = self.multiworld.get_locations()
-        for location in locations:
-            item = location.item
-            if (
-                item is None
-                or item.player != self.player
-                or item.code is None
-                or location.player == self.player
-                or location.address is None
-            ):
-                continue
-
-            location_game = self.multiworld.game[location.player]
-            placements.append({
-                "ap_location_id": int(location.address),
-                "ap_location_name": location.name,
-                "location_type": "archipelago",
-                "source_table": "Archipelago",
-                "source_id": str(location.address),
-                "world": location_game,
-                "location_description": location.name,
-                "location_game": location_game,
-                "location_player_slot": location.player,
-                "location_player_name": self.multiworld.get_player_name(location.player),
-                "is_remote_location": True,
-                "item_id": item.code,
-                "item_name": item.name,
-                "item_display_name": item.name,
-                "item_game": "Kingdom Hearts III",
-                "recipient_slot": self.player,
-                "recipient_name": recipient_name,
-                "is_foreign_item": False,
-            })
-
-        return sorted(
-            placements,
-            key=lambda placement: (
-                int(placement["location_player_slot"]),
-                int(placement["ap_location_id"]),
-            ),
-        )
+            locations = [loc for loc in self.multiworld.get_locations()
+                         if loc.item is not None and loc.item.player == self.player and loc.item.code is not None
+                         and loc.address is not None and loc.player != self.player]
+        # Keep local checks in bridge order and remote checks in slot/address order.
+        placements.extend({
+            "ap_location_id": location.address,
+            "ap_location_name": location.name,
+            "location_game": self.multiworld.game[location.player],
+            "location_player_slot": location.player,
+            "location_player_name": self.multiworld.get_player_name(location.player),
+            "item_name": location.item.name,
+        } for location in sorted(locations, key=lambda loc: (loc.player, loc.address)))
+        text, reports = select_secret_reports(safe_file_fragment(seed), settings, placements, self.player)
+        return {"text": text, "reports": {
+            report: [{"player": row["player"], "location": row["location"]} for row in rows]
+            for report, rows in reports.items()
+        }}
 
     def generate_output(self, output_directory: str) -> None:
         container = KH3Container(
@@ -1378,18 +1308,6 @@ class KH3World(World):
                 f"{self.multiworld.seed_name}\0{self.player}".encode("utf-8")
             ).hexdigest()[:10].upper(),
         )
-        if self._rock_titan_sequence_break_bonus_enabled():
-            from .Locations import ROCK_TITAN_BONUS_BRIDGE_LOCATION
-            bridge_data["locations"].append(dict(ROCK_TITAN_BONUS_BRIDGE_LOCATION))
-            if self.options.wall_run_mode != "starting":
-                wall_run = WORLD_WALL_RUN_ITEMS["Olympus"] if self.options.wall_run_mode == "split" else WALL_RUN
-                bridge_data.setdefault("conditional_checks", []).append({
-                    "trigger_bridge_key": ROCK_TITAN_VBONUS_BRIDGE_KEY,
-                    "ap_location_id": ROCK_TITAN_NO_WALL_RUN_BONUS_LOCATION_ID,
-                    "ap_location_name": ROCK_TITAN_NO_WALL_RUN_BONUS_LOCATION_NAME,
-                    "unless_item_id": self.item_name_to_id[wall_run],
-                    "unless_item_name": wall_run,
-                })
         bridge_data["chest_persistence_version"] = 1
         bridge_data["space_version"] = 1 if self.options.include_space.value else 0
         for bridge_location in bridge_data["locations"]:
@@ -1551,7 +1469,7 @@ class KH3World(World):
             "kh3_randomizer": build_randomizer_generation_config(self.options),
             "kh3_seed": {
                 "format": "kh3_server_seed",
-                "format_version": 1,
+                "format_version": SERVER_SEED_FORMAT_VERSION,
                 "seed_creation_version": KH3_WORLD_VERSION,
                 "seed_name": self.multiworld.seed_name,
                 "archive_name": f"AP_{self.multiworld.seed_name}.zip",
@@ -1562,7 +1480,6 @@ class KH3World(World):
                     for player in self.multiworld.player_ids
                 ],
                 "pak_seed": self.multiworld.get_out_file_name_base(self.player),
-                "remote_hint_placements": self.build_remote_hint_placements(),
             },
         })
         slot_data[KH3_UNIVERSAL_TRACKER_SLOT_DATA_KEY] = (
@@ -1575,10 +1492,12 @@ class KH3World(World):
         if slot_data["race_mode"]:
             from .RaceMode import race_slot_data
             return race_slot_data(slot_data)
+        seed_data = slot_data["kh3_seed"]
+        seed_data["secret_reports"] = self._build_secret_reports(
+            seed_data["pak_seed"], slot_data["kh3_randomizer"]["hint"], bridge_data["locations"],
+        )
         return slot_data
 
 
-# AutoWorld supplies catch-all groups after class creation. Keep KH3 location
-# selection explicit and apply the ability exclusions to its item catch-all.
+# AutoWorld supplies catch-all groups after class creation. Keep KH3 location selection explicit.
 KH3World.location_name_groups.pop("Everywhere", None)
-KH3World.item_name_groups["Everything"] -= ABILITY_GROUP_EXCLUSIONS

@@ -21,7 +21,7 @@ def metadata():
         "seed": "AP_12345678-1-Sora", "slot": 1, "slot_name": "Sora",
         "slot_data": {
             "kh3_seed": {"seed_name": "12345678", "slot": 1,
-                         "remote_hint_placements": [{"name": "remote"}], "all_players": ["Sora"]},
+                         "secret_reports": {"text": {"SecretReport02": ["remote"]}}, "all_players": ["Sora"]},
             "bridge": {"locations": [{"bridge_key": "TreasureTS:TS_SBOX_002", "ap_location_id": 123}]},
             "kh3_randomizer": {"pools": {"Enemies": "Randomize"}}, "include_space": 1,
             "universal_tracker": {"schema_version": 1, "options": {"chestsanity": 1, "portal_unlocks": 0}},
@@ -91,7 +91,7 @@ def test_fixed_options_survive_pak_settings_encoding(key, value):
 def test_remote_generation_growth_does_not_increase_runtime_documents(tmp_path):
     source = metadata()
     expected = runtime_documents(source)
-    source["slot_data"]["kh3_seed"]["remote_hint_placements"] *= 10000
+    source["slot_data"]["kh3_seed"]["secret_reports"]["text"]["SecretReport02"] *= 10000
     source["placement_summary"]["locations"] *= 10000
     source["foreign_item_manifest"]["foreign_items"] *= 10000
     assert runtime_documents(source) == expected

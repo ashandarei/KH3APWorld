@@ -143,21 +143,18 @@ def hint_location(placement, category=False, slot=0):
             else f'in {world}.' if world else 'at an Archipelago location.')
 
 
-def make_hints(seed, config, metadata):
-    settings = config.get('hint', {})
-    hint_type = 'None' if metadata.get('slot_data', {}).get('race_mode') else settings.get('type', 'Verbose')
+def select_secret_reports(seed, settings, placements, slot):
+    """Select report text and targets from final item placements."""
+    hint_type = settings.get('type', 'Verbose')
     if 'Category' in hint_type:
         hint_type = 'Category'
     elif 'Vague' in hint_type:
         hint_type = 'Vague'
     if hint_type not in ('None', 'Verbose', 'Vague', 'Category'):
         raise ValueError(f'Unsupported hint type: {hint_type}')
-    summary = metadata['placement_summary']
-    placements = summary.get('hint_locations', summary['locations'])
     important = set(settings.get('checks', list(SPECIAL_NAMES.values()) +
                          [f'Secret Report {n}' for n in range(1, 14)] +
                          ['Magic: ' + name for name in ('Fire', 'Blizzard', 'Thunder', 'Aero', 'Water', 'Cure')]))
-    slot = int(metadata['slot'])
     grouped = {}
     if hint_type != 'None':
         for placement in placements:
@@ -219,5 +216,27 @@ def make_hints(seed, config, metadata):
                                 location_name=source.get('location_description') or source.get('ap_location_name', ''),
                                 player_name=source.get('location_player_name', ''), item_name=source['item_name']))
         reports[str(int(report[12:]) - 1)] = records
+    return values, reports
+
+
+def make_hints(seed, config, metadata):
+    slot_data = metadata.get('slot_data', {})
+    if slot_data.get('race_mode'):
+        values, reports = select_secret_reports(seed, {'type': 'None'}, (), int(metadata['slot']))
+    elif slot_data.get('kh3_seed', {}).get('format') == 'kh3_server_seed':
+        plan = slot_data['kh3_seed'].get('secret_reports')
+        if not isinstance(plan, dict):
+            raise ValueError('KH3 seed is missing its finished Secret Reports.')
+        values, reports = plan.get('text'), plan.get('reports')
+        if (not isinstance(values, dict) or set(values) != {f'SecretReport{n:02}' for n in range(2, 15)}
+                or any(not isinstance(lines, list) or any(not isinstance(line, str) for line in lines)
+                       for lines in values.values())
+                or not isinstance(reports, dict) or set(reports) != {str(n) for n in range(1, 14)}):
+            raise ValueError('Invalid finished KH3 Secret Reports.')
+    else:
+        summary = metadata['placement_summary']
+        values, reports = select_secret_reports(
+            seed, config.get('hint', {}), summary.get('hint_locations', summary['locations']), int(metadata['slot']),
+        )
     metadata['secret_report_hints'] = dict(format_version=1, reports=reports)
     return values

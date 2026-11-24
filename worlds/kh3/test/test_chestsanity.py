@@ -313,6 +313,9 @@ class TestJunkChestRewards(KH3TestBase):
                 self.options = {"junk_san_fransokyo_chests": 1, "junk_the_caribbean_chests": 1,
                                 "ultima_weapon_mode": mode, "frozen_slider_pool": "randomize",
                                 "frozen_slider_max_rank": "a"}
+                if mode == UltimaWeaponMode.option_yozora:
+                    self.options["unreality_pool"] = "randomize"
+                    self.options["data_battle_rewards_pool"] = "randomize"
                 self.world_setup(seed=73)
                 counts = Counter(item.name for item in self.multiworld.itempool)
                 self.assertEqual(counts["Orichalcum+"], 0)

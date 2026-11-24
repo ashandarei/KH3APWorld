@@ -40,15 +40,9 @@ class TestNameGroups(TestCase):
         self.assertIn("Moogle Workshop - Ever After Level 4", workshop.value)
         self.assertTrue(any("Photo Mission" in name for name in workshop.value))
 
-        excluded_abilities = {
-            f"Ability: {name}" for name in
-            ("Aeroza", "Blizzaza", "Curaza", "Firaza", "Thundaza", "Waterza")
-        }
-        for names in data["item_name_groups"].values():
-            self.assertTrue(excluded_abilities.isdisjoint(names))
-        hints = StartHints.from_any(excluded_abilities)
-        hints.verify(KH3World, "Group cleanup", PlandoOptions.none)
-        self.assertEqual(hints.value, excluded_abilities)
+        locality = LocalItems.from_any(["Everything"])
+        locality.verify(KH3World, "Group cleanup", PlandoOptions.none)
+        self.assertEqual(locality.value, set(data["item_name_to_id"]))
 
         individual = StartLocationHints.from_any(excluded_locations)
         individual.verify(KH3World, "Group cleanup", PlandoOptions.none)
