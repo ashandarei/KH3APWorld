@@ -419,7 +419,9 @@ class KH3SeedImportService:
                 f"The room returned KH3 seed {seed_name!r}, not the connected seed {expected_seed_name!r}."
             )
 
-        from ..SlotData import encode_slot_data
+        from ..SlotData import encode_slot_data, needs_seed_rewards
+        if needs_seed_rewards(slot_data):
+            raise KH3SeedImportError("The KH3 seed rewards have not been fetched from the server.")
         copied_slot_data = encode_slot_data(slot_data)
         return {
             "format": "kh3_ap_seed",

@@ -116,7 +116,7 @@ from ..Options import (
     option_groups,
 )
 from ..PakGenerator import generate_kh3_pak_from_container, generate_kh3_paks_from_ap_zip, load_kh3_container_data
-from ..SlotData import decode_slot_data
+from ..SlotData import SERVER_SEED_FORMAT_VERSION, decode_slot_data
 from ..seedgen.localization import make_hints
 from . import KH3TestBase
 from .test_helpers import KH3WorldIntegrityMixin
@@ -1040,7 +1040,7 @@ battle_level_mode: "{battle}"
             self.assertEqual(payload["slot_name"], self.multiworld.get_player_name(self.player))
             self.assertEqual(payload["randomizer_config"], payload["slot_data"]["kh3_randomizer"])
             self.assertEqual(payload["slot_data"]["kh3_seed"]["format"], "kh3_server_seed")
-            self.assertEqual(payload["slot_data"]["kh3_seed"]["format_version"], 2)
+            self.assertEqual(payload["slot_data"]["kh3_seed"]["format_version"], SERVER_SEED_FORMAT_VERSION)
             self.assertEqual(payload["slot_data"]["kh3_seed"]["seed_name"], payload["seed_name"])
             self.assertEqual(payload["slot_data"]["kh3_seed"]["slot"], payload["slot"])
             self.assertEqual(payload["slot_data"]["kh3_seed"]["slot_name"], payload["slot_name"])

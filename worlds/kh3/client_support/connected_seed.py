@@ -38,6 +38,7 @@ class ConnectedSeedService:
         resolve_saves: Callable[[], ActiveRunSaves],
         fallback_room: Callable[[], str | None],
         progress: Callable[[str], None],
+        resolve_inline_rewards: Callable[[], dict[str, Any]] | None = None,
     ) -> KH3SeedPreparationResult:
         save_options: dict[str, Any] = {}
         try:
@@ -91,4 +92,5 @@ class ConnectedSeedService:
                 hosted_error,
             )
             progress("Hosted player-file download was unavailable; generating the KH3 seed pak locally instead...")
-        return self._importer().prepare_server_slot_data(request.slot_data, **options)
+        slot_data = resolve_inline_rewards() if resolve_inline_rewards else request.slot_data
+        return self._importer().prepare_server_slot_data(slot_data, **options)

@@ -3143,6 +3143,7 @@ class TestKH3ItemConsumerPlan(unittest.TestCase):
             ctx.slot = 2
             ctx.auth = "b"
             ctx.kh3_seed_bootstrap_pending = True
+            ctx.slot_data = {}
             ctx.save_seed_mismatch_active = True
             ctx.last_save_seed_status_warning = "old mismatch"
             ctx.kh3_restart_required_seed_id = "11111111111111111111"

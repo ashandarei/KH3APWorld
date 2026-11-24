@@ -37,7 +37,7 @@ from .ap_archive import (
     get_slot_game,
     get_slot_name,
     load_multidata,
-    require_bridge_locations,
+    require_kh3_slot_data,
     resolve_kh3_slot,
 )
 
@@ -1423,14 +1423,10 @@ def export_randomized_options(args: argparse.Namespace) -> ExportResult:
     multidata = load_multidata(args.ap_zip, args.runtime_root)
     slot = resolve_kh3_slot(multidata, args.slot)
 
-    bridge_locations = require_bridge_locations(multidata, slot)
-    slot_data_entry = multidata["slot_data"].get(slot)
-    slot_randomizer_config = (
-        slot_data_entry.get("kh3_randomizer")
-        if isinstance(slot_data_entry, dict)
-        else None
-    )
-    if multidata.get("race_mode") or (isinstance(slot_data_entry, dict) and slot_data_entry.get("race_mode")):
+    slot_data_entry = require_kh3_slot_data(multidata, slot)
+    bridge_locations = slot_data_entry["bridge"]["locations"]
+    slot_randomizer_config = slot_data_entry.get("kh3_randomizer")
+    if multidata.get("race_mode") or slot_data_entry.get("race_mode"):
         return export_randomized_options_from_bridge_data(
             default_kh3=args.default_kh3,
             default_kh3_overrides=args.default_kh3_overrides,

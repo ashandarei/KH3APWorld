@@ -85,12 +85,14 @@ def load_multidata_from_ap_zip(ap_zip_path: Path) -> dict[str, Any]:
 
 def iter_kh3_slots(multidata: dict[str, Any], requested_slot: int | None = None) -> list[dict[str, Any]]:
     from .RaceMode import race_slot_data
-    from .SlotData import decode_slot_data
+    from .SlotData import attach_seed_rewards, decode_slot_data, needs_seed_rewards, seed_reward_assignment
+    from .export_ap_kh3_randomized_options import build_game_item_id_to_name
     slot_info = multidata.get("slot_info")
     slot_data = multidata.get("slot_data")
     if not isinstance(slot_info, dict) or not isinstance(slot_data, dict):
         raise KH3PakGenerationError("Generated AP payload is missing slot_info or slot_data.")
 
+    item_names = build_game_item_id_to_name(multidata)
     kh3_slots: list[dict[str, Any]] = []
     for raw_slot, info in sorted(slot_info.items(), key=lambda entry: int(entry[0])):
         slot_id = int(raw_slot)
@@ -104,14 +106,24 @@ def iter_kh3_slots(multidata: dict[str, Any], requested_slot: int | None = None)
         if not isinstance(data, dict):
             continue
 
-        randomizer_config = data.get("kh3_randomizer")
-        if not isinstance(randomizer_config, dict):
-            continue
-
         runtime_data = decode_slot_data(data)
+        if not isinstance(runtime_data.get("kh3_randomizer"), dict):
+            continue
         if multidata.get("race_mode"):
             runtime_data["race_mode"] = True
         runtime_data = race_slot_data(runtime_data)
+        if needs_seed_rewards(runtime_data):
+            rewards = {}
+            try:
+                for address, (item, recipient, flags) in multidata["locations"][slot_id].items():
+                    recipient_info = slot_info[recipient]
+                    rewards[address] = seed_reward_assignment(
+                        item, recipient, flags, slot_id, recipient_info.name, recipient_info.game,
+                        item_names[recipient_info.game][item],
+                    )
+            except (KeyError, AttributeError) as exc:
+                raise KH3PakGenerationError(f"AP archive is missing reward data for KH3 slot {slot_id}.") from exc
+            runtime_data = attach_seed_rewards(runtime_data, rewards)
         kh3_slots.append(
             {
                 "slot": slot_id,

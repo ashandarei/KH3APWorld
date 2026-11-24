@@ -76,6 +76,16 @@ def moogle_shop_native_item_row_name(location: dict) -> str:
     return f"I{MOOGLE_SHOP_NATIVE_ITEM_CATEGORY:02d}{row_index:03d}"
 
 
+def build_conditional_checks(bridge_locations: list[dict]) -> list[dict]:
+    return [{
+        "trigger_bridge_key": row["trigger_bridge_key"],
+        "ap_location_id": row["ap_location_id"],
+        "ap_location_name": row["ap_location_name"],
+        **({"required_item_ids": row["required_item_ids"]} if "required_item_ids" in row else {}),
+    } for row in bridge_locations if "trigger_bridge_key" in row
+        and row.get("type") in {"music_chest_bonus", "vbonus_extra", "character_unlock"}]
+
+
 def build_bridge_slot_data(
     locations: list[dict],
     heart_piece_count: int,
@@ -181,14 +191,6 @@ def build_bridge_slot_data(
         "completion_location_id": None,
         "locations": bridge_locations,
     }
-    bonuses = [row for row in bridge_locations
-               if row["type"] in {"music_chest_bonus", "vbonus_extra", "character_unlock"}
-               and "trigger_bridge_key" in row]
-    if bonuses:
-        result["conditional_checks"] = [{
-            "trigger_bridge_key": row["trigger_bridge_key"],
-            "ap_location_id": row["ap_location_id"],
-            "ap_location_name": row["ap_location_name"],
-            **({"required_item_ids": row["required_item_ids"]} if "required_item_ids" in row else {}),
-        } for row in bonuses]
+    if conditional_checks := build_conditional_checks(bridge_locations):
+        result["conditional_checks"] = conditional_checks
     return result

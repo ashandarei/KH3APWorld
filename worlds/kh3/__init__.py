@@ -129,7 +129,10 @@ from .ShopEconomy import (
     build_moogle_shop_price_tiers,
     moogle_shop_price_for_classification,
 )
-from .SlotData import SERVER_SEED_FORMAT_VERSION, decode_slot_data, encode_slot_data
+from .SlotData import (
+    SERVER_SEED_FORMAT_VERSION, decode_slot_data, encode_slot_data, seed_reward_assignment,
+    seed_reward_fingerprint, server_slot_data,
+)
 from .Space import ENDYMION
 from .universal_tracker import (
     KH3_UNIVERSAL_TRACKER_SLOT_DATA_KEY,
@@ -1210,7 +1213,7 @@ class KH3World(World):
         validate_fixed_junk_rewards(multiworld)
 
     def build_seed_container_data(self) -> dict[str, Any]:
-        slot_data = self.fill_slot_data()
+        slot_data = self._full_seed_slot_data()
         seed_data = slot_data["kh3_seed"]
 
         return {
@@ -1282,6 +1285,9 @@ class KH3World(World):
         container.write()
 
     def fill_slot_data(self) -> Dict[str, Any]:
+        return server_slot_data(self._full_seed_slot_data())
+
+    def _full_seed_slot_data(self) -> Dict[str, Any]:
         output_lock = getattr(self, "_output_slot_data_lock", None)
         if output_lock is None:
             # Tests and tracker callers may request data before placements are final.
@@ -1289,7 +1295,7 @@ class KH3World(World):
         with output_lock:
             if self._output_slot_data is None:
                 self._output_slot_data = encode_slot_data(self.build_runtime_slot_data())
-            # AP's patch/server serializers only read this finalized payload.
+            # Both output paths share the finalized catalog and Secret Reports.
             return self._output_slot_data
 
     def build_runtime_slot_data(self) -> Dict[str, Any]:
@@ -1317,15 +1323,10 @@ class KH3World(World):
             if location.item is None:
                 continue
             item = location.item
-            bridge_location.update({
-                "assigned_item_id": item.code,
-                "assigned_item_name": item.name,
-                "assigned_item_player": item.player,
-                "assigned_item_player_name": self.multiworld.get_player_name(item.player),
-                "assigned_item_game": self.multiworld.game[item.player],
-                "assigned_item_classification": int(item.classification),
-                "is_foreign_item": item.player != self.player,
-            })
+            bridge_location.update(seed_reward_assignment(
+                item.code, item.player, item.flags, self.player, self.multiworld.get_player_name(item.player),
+                self.multiworld.game[item.player], item.name,
+            ))
             if bridge_location.get("type") == "shop":
                 bridge_location["shop_price"] = moogle_shop_price_for_classification(
                     item.classification,
@@ -1493,11 +1494,8 @@ class KH3World(World):
             from .RaceMode import race_slot_data
             return race_slot_data(slot_data)
         seed_data = slot_data["kh3_seed"]
+        seed_data["reward_sha256"] = seed_reward_fingerprint(bridge_data["locations"])
         seed_data["secret_reports"] = self._build_secret_reports(
             seed_data["pak_seed"], slot_data["kh3_randomizer"]["hint"], bridge_data["locations"],
         )
         return slot_data
-
-
-# AutoWorld supplies catch-all groups after class creation. Keep KH3 location selection explicit.
-KH3World.location_name_groups.pop("Everywhere", None)

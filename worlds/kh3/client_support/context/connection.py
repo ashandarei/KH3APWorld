@@ -2,15 +2,19 @@
 
 from __future__ import annotations
 
+import asyncio
+from collections.abc import Callable
 from pathlib import Path
 from typing import Any
 
+from ...Bridge import BridgeProtocolError
+from ...SlotData import ASSIGNMENT_FIELDS, attach_seed_rewards, needs_seed_rewards, seed_reward_assignment
 from ..client_packets import ClientPacketService, ConnectedSetupService
 from ..connected_run import AutoActivationRequest, ConnectedRunService
 from ..connection_flow import ConnectionFlowService, ConnectionState
 from ..run_manager import KH3RunInfo, KH3RunSuspensionResult
 from ..save_file_policy import checked_root
-from ..seed_import_service import KH3SeedPreparationResult
+from ..seed_import_service import KH3SeedImportError, KH3SeedPreparationResult
 
 class ClientConnectionMixin:
     """Authentication, room selection, connected-seed setup, and packet adapters."""
@@ -205,10 +209,39 @@ class ClientConnectionMixin:
     async def _recover_rejected_inferred_kh3_slot(self) -> None:
         await self._create_connection_flow_service().recover_rejected_slot()
 
+    def _load_connected_pak_rewards(
+        self, slot_data: dict[str, Any], installed_run: KH3RunInfo | None = None,
+    ) -> dict[str, Any]:
+        if not needs_seed_rewards(slot_data):
+            return slot_data
+        if installed_run is None:
+            selected = self.connected_kh3_seed_pak_path()
+            if selected is None:
+                return slot_data
+            pak_path, seed_id = selected
+            slot = self.slot
+        else:
+            pak_path, seed_id, slot = installed_run.installed_pak_path, installed_run.seed_id, installed_run.player
+            if pak_path is None:
+                raise BridgeProtocolError("The prepared KH3 run has no installed seed pak.")
+        installed = self._client_api.load_installed_kh3_ap_seed_metadata(
+            pak_path.parent, expected_seed=seed_id,
+            metadata_cache_path=self._client_api.seed_pak_metadata_cache_path(),
+        )
+        seed_guard = self._client_api.SeedGuardService
+        if (installed is None or installed[1] != pak_path or installed[0].get("slot") != slot
+                or seed_guard.extract_seed_id(installed[0].get("seed")) != seed_id):
+            raise BridgeProtocolError("The installed KH3 pak does not contain rewards for this seed and slot.")
+        rows = installed[0]["slot_data"]["bridge"]["locations"]
+        return attach_seed_rewards(slot_data, {
+            row["ap_location_id"]: {key: row[key] for key in ASSIGNMENT_FIELDS if key in row}
+            for row in rows
+        })
+
     def _reset_connected_kh3_state(self, args: dict[str, Any]) -> None:
         from ...SlotData import decode_slot_data
 
-        runtime_slot_data = decode_slot_data(args.get("slot_data", {}))
+        runtime_slot_data = self._load_connected_pak_rewards(decode_slot_data(args.get("slot_data", {})))
         # Connected precedes the new server's index-zero ReceivedItems snapshot.
         self.items_received = []
         self.invalidate_bridge_item_cache()
@@ -337,7 +370,9 @@ class ClientConnectionMixin:
         room_url = self._client_api.normalize_kh3_room_page_url(room_url) if room_url else self.kh3_room_page_url()
         return self._client_api.open_kh3_room_page_url(room_url)
 
-    def _prepare_connected_kh3_seed(self) -> KH3SeedPreparationResult:
+    def _prepare_connected_kh3_seed(
+        self, resolve_inline_rewards: Callable[[], dict[str, Any]] | None = None,
+    ) -> KH3SeedPreparationResult:
         service = self._client_api.ConnectedSeedService(self._get_seed_import_service, self._get_platform_seed_download_service)
         return service.prepare(
             self._client_api.ConnectedSeedRequest(
@@ -350,10 +385,14 @@ class ClientConnectionMixin:
             resolve_saves=self._active_kh3_run_saves,
             fallback_room=self._connected_kh3_platform_room_fallback_url,
             progress=self._set_kh3_run_action_status,
+            resolve_inline_rewards=resolve_inline_rewards,
         )
 
     def _apply_connected_seed_preparation(self, prepared: KH3SeedPreparationResult) -> None:
         run = prepared.installed_run
+        self.slot_data = self._client_api.freeze_slot_location_catalog(
+            self._load_connected_pak_rewards(self.slot_data, run)
+        )
         self._set_active_kh3_run_profile(run)
         self._commit_prepared_seed_save_ownership(prepared)
         self.auth = self._connection_slot_name_for_run(run)
@@ -361,11 +400,53 @@ class ClientConnectionMixin:
         self.kh3_seed_bootstrap_pending = False
 
     async def _bootstrap_connected_kh3_seed_action(self, args: dict[str, Any]) -> None:
+        server = self.server
+        slot_data = self.slot_data
+        prepare = self._prepare_connected_kh3_seed
+        if needs_seed_rewards(slot_data):
+            loop = asyncio.get_running_loop()
+
+            def resolve_inline_rewards() -> dict[str, Any]:
+                return asyncio.run_coroutine_threadsafe(self._scout_seed_rewards(server, slot_data), loop).result()
+
+            prepare = lambda: self._prepare_connected_kh3_seed(resolve_inline_rewards)
         await self._create_connected_run_service().bootstrap(
             args,
-            prepare=self._prepare_connected_kh3_seed,
+            prepare=prepare,
             apply=self._apply_connected_seed_preparation,
+            connection_changed=lambda: self.server is not server,
         )
+
+    async def _scout_seed_rewards(self, server, slot_data: dict[str, Any]) -> dict[str, Any]:
+        if self.server is not server or not self._is_ap_connected() or slot_data is not self.slot_data:
+            raise KH3SeedImportError("The room connection changed before KH3 could request its rewards.")
+        locations = [row["ap_location_id"] for row in slot_data["bridge"]["locations"]]
+        if not set(locations) <= self.server_locations:
+            raise KH3SeedImportError("The server is missing locations from the KH3 seed catalog.")
+        reply = asyncio.get_running_loop().create_future()
+        self._kh3_seed_scout_reply = reply
+        try:
+            self._set_kh3_run_action_status("Fetching seed rewards from the Archipelago server...")
+            await self.send_msgs([{"cmd": "LocationScouts", "locations": locations, "create_as_hint": 0}])
+            placements = await asyncio.wait_for(reply, timeout=30)
+            if self.server is not server or slot_data is not self.slot_data:
+                raise KH3SeedImportError("The room connection changed while KH3 was fetching its rewards.")
+            rewards = {}
+            for item_id, location, recipient, flags in placements:
+                if location in rewards:
+                    raise KH3SeedImportError(f"The server returned duplicate rewards for KH3 check {location}.")
+                info = self.slot_info.get(recipient)
+                name = self.item_names[info.game].get(item_id) if info else None
+                if info is None or name is None:
+                    raise KH3SeedImportError(f"The server did not provide a named reward for KH3 check {location}.")
+                rewards[location] = seed_reward_assignment(item_id, recipient, flags, self.slot,
+                                                           info.name, info.game, name)
+            return attach_seed_rewards(slot_data, rewards)
+        except TimeoutError as exc:
+            raise KH3SeedImportError("Timed out fetching KH3 seed rewards. Connect again or import the player file.") from exc
+        finally:
+            if self._kh3_seed_scout_reply is reply:
+                self._kh3_seed_scout_reply = None
 
     async def _prepare_connected_olympus_coliseum_companion_action(self, args: dict[str, Any]) -> None:
         await self._create_connected_run_service().prepare_companion(args)

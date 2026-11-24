@@ -130,6 +130,7 @@ from .client_support.runtime_artifact_service import (
     RuntimeArtifactPlan,
     RuntimeArtifactService,
 )
+from .client_support.runtime_seed_warning import WARNING_MESSAGE, WARNING_TITLE, wait_for_seed_startup_mismatch
 from .client_support.secret_report_hint_service import SecretReportHintCallbacks, SecretReportHintService
 from .client_support.seed_import_service import (
     KH3SeedImportResult,
@@ -156,6 +157,7 @@ from .platform_support.game_discovery import (
     is_likely_steam_kh3_root_dir,
 )
 from .platform_support.path_opening import open_path
+from .platform_support.process_status import get_process_status
 from .platform_support.save_discovery import (
     is_kh3_auto_save_dir,
     is_kh3_save_dir_dynamic_root,
@@ -723,6 +725,9 @@ class KH3Context(
                 await publication
 
     def reset_server_state(self) -> None:
+        reply = getattr(self, "_kh3_seed_scout_reply", None)
+        if reply is not None and not reply.done():
+            reply.cancel()
         sync = self.__dict__.get("bridge_sync_service")
         if sync is not None:
             sync.invalidate_pending_observation()
@@ -752,6 +757,10 @@ class KH3Context(
         )
 
     def on_package(self, cmd: str, args: dict[str, Any]) -> None:
+        if cmd == "LocationInfo":
+            reply = getattr(self, "_kh3_seed_scout_reply", None)
+            if reply is not None and not reply.done():
+                reply.set_result(args["locations"])
         self._create_client_packet_service().handle(cmd, args)
 
     async def server_auth(self, password_requested: bool = False) -> None:
@@ -807,6 +816,8 @@ class KH3Context(
 async def bridge_watcher(ctx: KH3Context) -> None:
     from .kh02.store_launch import StoreLaunchService
     store_launch = StoreLaunchService(ctx)
+    seed_startup_task: asyncio.Task[None] | None = None
+    checked_seed_startup = None
     dependencies = {
         "game_state": ("game_state.json",),
         "deathlink_game_over": ("runtime_deathlink_state.json", "deathlink_settings.json", "deathlink_network_state.json", "slot_data.json"),
@@ -819,7 +830,51 @@ async def bridge_watcher(ctx: KH3Context) -> None:
         "kh02_store_launch": ("runtime_kh02_launch_request.json",),
     }
 
+    def seed_startup_route():
+        root, game_dir = ctx.bridge_dir, getattr(ctx, "kh3_dir", None)
+        if root is None or game_dir is None:
+            return None
+        transport = transport_for(root / "runtime_context.json")
+        if transport is None or not transport.connected:
+            return None
+        log_override = ctx.bridge_ue4ss_log if ctx.ue4ss_log_override else None
+        return root, game_dir, log_override, transport, transport.connection_generation
+
+    async def check_seed_startup(route) -> None:
+        nonlocal checked_seed_startup
+        _, game_dir, log_override, _, _ = route
+        process = await asyncio.to_thread(get_process_status, KH3_PROCESS_NAME)
+        pid, started = process.get("pid"), process.get("started_at_utc")
+        if not process.get("running") or not pid or not isinstance(started, str):
+            return
+        launch = (game_dir, pid, started)
+        if launch == checked_seed_startup:
+            return
+        try:
+            started_at = datetime.fromisoformat(started)
+        except ValueError:
+            return
+        mismatch = await wait_for_seed_startup_mismatch(
+            game_dir, log_override, started_at, lambda: seed_startup_route() == route,
+        )
+        if mismatch is None or seed_startup_route() != route:
+            return
+        checked_seed_startup = launch
+        if mismatch:
+            logger.warning("KH3 runtime rejected the seed's location catalog. %s", WARNING_MESSAGE)
+            ctx.gui_error(WARNING_TITLE, WARNING_MESSAGE)
+
+    async def observe_seed_startup() -> None:
+        nonlocal seed_startup_task
+        if seed_startup_task is not None:
+            seed_startup_task.cancel()
+            await asyncio.gather(seed_startup_task, return_exceptions=True)
+        route = seed_startup_route()
+        seed_startup_task = asyncio.create_task(check_seed_startup(route), name="KH3SeedStartupCheck") if route else None
+
     def step_signature(name: str):
+        if name == "runtime_seed_startup":
+            return seed_startup_route()
         root = ctx.bridge_dir
         if root is None:
             return None
@@ -855,6 +910,7 @@ async def bridge_watcher(ctx: KH3Context) -> None:
                 set_activity_notify=lambda notify: setattr(ctx, "pipe_activity_notify", notify),
                 step_signature=step_signature,
                 steps=lambda: (
+                    ("runtime_seed_startup", observe_seed_startup),
                     ("game_state", ctx.handle_game_state_file),
                     ("deathlink_game_over", ctx.handle_runtime_deathlink_game_over),
                     ("poptracker_bounce", ctx.handle_poptracker_runtime_context_bounce),
@@ -869,6 +925,9 @@ async def bridge_watcher(ctx: KH3Context) -> None:
             profile_scope=PythonProfileScope,
         )
     finally:
+        if seed_startup_task is not None:
+            seed_startup_task.cancel()
+            await asyncio.gather(seed_startup_task, return_exceptions=True)
         store_launch.close()
 
 

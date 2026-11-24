@@ -13,7 +13,7 @@ from test.general import setup_multiworld
 from .. import KH3Container, KH3World
 from ..Bridge import BridgeProtocolError, KH3_WORLD_VERSION
 from ..PakGenerator import load_kh3_container_data
-from ..SlotData import decode_slot_data, encode_slot_data
+from ..SlotData import ASSIGNMENT_FIELDS, decode_slot_data, encode_slot_data
 
 
 class TestCompactSlotData(unittest.TestCase):
@@ -35,12 +35,45 @@ class TestCompactSlotData(unittest.TestCase):
         cls.runtime = cls.world.build_runtime_slot_data()
 
     def test_full_round_trip_preserves_all_runtime_fields_and_shrinks_payload(self):
-        wire = self.world.fill_slot_data()
+        wire = self.world.build_seed_container_data()["slot_data"]
         self.assertEqual(wire["kh3_seed"]["seed_creation_version"], KH3_WORLD_VERSION)
         self.assertNotIn("locations", wire["bridge"])
         self.assertEqual(decode_slot_data(wire), self.runtime)
         self.assertLess(len(json.dumps(wire)), len(json.dumps(self.runtime)) * 0.4)
         self.assertEqual(json.loads(json.dumps(decode_slot_data(convert_to_base_types(wire)))), self.runtime)
+        server = self.world.fill_slot_data()
+        self.assertNotIn("assignments", server["location_catalog"])
+        self.assertNotIn("entries", server["location_catalog"])
+        self.assertLess(len(json.dumps(server["location_catalog"])), len(json.dumps(wire["location_catalog"])) / 4)
+        self.assertNotIn("conditional_checks", server["bridge"])
+        self.assertNotIn("kh3_randomizer", server)
+        self.assertIsInstance(server["kh3_seed"]["secret_reports"], list)
+        self.assertLess(len(server["universal_tracker"]["options"]), len(wire["universal_tracker"]["options"]))
+        expected = copy.deepcopy(self.runtime)
+        for row in expected["bridge"]["locations"]:
+            for field in ASSIGNMENT_FIELDS:
+                row.pop(field, None)
+        self.assertEqual(decode_slot_data(convert_to_base_types(server)), expected)
+
+    def test_server_catalog_rejects_invalid_indices_and_mixed_formats(self):
+        server = self.world.fill_slot_data()
+        catalog = server["location_catalog"]
+        for fields, message in (
+            ({"active": [[0, 1000000]]}, "out of bounds"),
+            ({"changes": {"chest_persistence_version": [[1, [0]], [2, [0]]]}}, "Duplicate KH3 catalog override index"),
+            ({"entries": []}, "multiple location catalogs"),
+            ({"songs_sha256": "wrong"}, "song catalog mismatch"),
+        ):
+            with self.subTest(fields=fields), self.assertRaisesRegex(BridgeProtocolError, message):
+                decode_slot_data({**server, "location_catalog": {**catalog, **fields}})
+        tracker = server["universal_tracker"]
+        with self.assertRaisesRegex(BridgeProtocolError, "tracker option defaults differ"):
+            decode_slot_data({**server, "universal_tracker": {**tracker, "defaults_sha256": "wrong"}})
+        with self.assertRaisesRegex(BridgeProtocolError, "randomizer configuration mismatch"):
+            decode_slot_data({**server, "universal_tracker": {**tracker, "randomizer_sha256": "wrong"}})
+        seed = server["kh3_seed"]
+        with self.assertRaisesRegex(BridgeProtocolError, "Secret Report count"):
+            decode_slot_data({**server, "kh3_seed": {**seed, "secret_reports": []}})
 
     def test_reconstruction_does_not_mutate_wire_or_cached_catalog(self):
         wire = encode_slot_data(self.runtime)
