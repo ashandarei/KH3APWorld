@@ -18,7 +18,7 @@ from ..PakGenerator import (
     KH3PakGenerationError,
     KH3PakResult,
     generate_kh3_pak_from_container,
-    generate_kh3_paks_from_ap_zip,
+    generate_kh3_paks_from_archive_slots,
     iter_kh3_slots,
     load_multidata_from_ap_zip,
     safe_file_fragment,
@@ -67,7 +67,7 @@ class KH3SeedPreparationResult:
 
 PathSource = Path | Callable[[], Path]
 ContainerGenerator = Callable[[Path, Path], KH3PakResult]
-ArchiveGenerator = Callable[..., list[KH3PakResult]]
+ArchiveGenerator = Callable[[Path, Path, list[dict[str, Any]]], list[KH3PakResult]]
 ArchiveLoader = Callable[[Path], dict[str, Any]]
 SlotIterator = Callable[[dict[str, Any], int | None], list[dict[str, Any]]]
 ProgressCallback = Callable[[str], None]
@@ -87,7 +87,7 @@ class KH3SeedImportService:
         generated_root: PathSource,
         process_running: Callable[[], bool],
         container_generator: ContainerGenerator = generate_kh3_pak_from_container,
-        archive_generator: ArchiveGenerator = generate_kh3_paks_from_ap_zip,
+        archive_generator: ArchiveGenerator = generate_kh3_paks_from_archive_slots,
         archive_loader: ArchiveLoader = load_multidata_from_ap_zip,
         slot_iterator: SlotIterator = iter_kh3_slots,
         container_writer: SeedContainerWriter | None = None,
@@ -440,7 +440,8 @@ class KH3SeedImportService:
         self,
         source_path: Path,
         *,
-        requested_slot: int | None = None,
+        select_one_player: bool = False,
+        preferred_slot_name: str | None = None,
         progress: ProgressCallback | None = None,
         require_single_player: bool = False,
     ) -> list[KH3PakResult]:
@@ -450,7 +451,9 @@ class KH3SeedImportService:
             self._report(progress, "Generating the KH3 seed pak. This can take about a minute...")
             return [self.container_generator(source_path, output_dir)]
         if suffix == KH3_GENERATED_ARCHIVE_SUFFIX:
-            slots = self.slot_iterator(self.archive_loader(source_path), requested_slot)
+            slots = self.slot_iterator(self.archive_loader(source_path), None)
+            if select_one_player:
+                slots = [self._select_archive_slot(source_path, slots, preferred_slot_name)]
             count = len(slots)
             if require_single_player and count != 1:
                 raise KH3SeedImportError(
@@ -459,7 +462,7 @@ class KH3SeedImportService:
             noun = "pak" if count == 1 else "paks"
             duration = "about a minute" if count == 1 else "a few minutes"
             self._report(progress, f"Generating {count} KH3 player {noun}. This can take {duration}...")
-            return self.archive_generator(source_path, output_dir, requested_slot=requested_slot)
+            return self.archive_generator(source_path, output_dir, slots)
         raise KH3SeedImportError(
             f"Unsupported KH3 seed source {source_path.name}; choose a .pak, .apkh3, or generated .zip file."
         )
@@ -531,15 +534,15 @@ class KH3SeedImportService:
         except (KH3PakGenerationError, KH3RunManagerError, OSError, ValueError) as exc:
             raise KH3SeedImportError(str(exc)) from exc
 
-    def _select_archive_slot(self, source_path: Path, preferred_slot_name: str | None) -> int:
-        multidata = self.archive_loader(source_path)
-        slots = self.slot_iterator(multidata, None)
+    @staticmethod
+    def _select_archive_slot(source_path: Path, slots: list[dict[str, Any]],
+                             preferred_slot_name: str | None) -> dict[str, Any]:
         if len(slots) == 1:
-            return int(slots[0]["slot"])
+            return slots[0]
         preferred = str(preferred_slot_name or "").strip().casefold()
         matching = [slot for slot in slots if str(slot.get("name") or "").strip().casefold() == preferred]
         if preferred and len(matching) == 1:
-            return int(matching[0]["slot"])
+            return matching[0]
         names = ", ".join(str(slot.get("name") or f"Player {slot.get('slot')}") for slot in slots)
         raise KH3SeedImportError(
             f"{source_path.name} contains multiple KH3 players ({names}). Set the client slot name to one of them, "
@@ -571,10 +574,9 @@ class KH3SeedImportService:
         source = sources[0]
         try:
             self._report(progress, f"Found {source.name} in ~mods; preparing its KH3 player pak...")
-            requested_slot = None
-            if source.suffix.casefold() == KH3_GENERATED_ARCHIVE_SUFFIX:
-                requested_slot = self._select_archive_slot(source, preferred_slot_name)
-            generated = self._generate_source(source, requested_slot=requested_slot, progress=progress)
+            generated = self._generate_source(
+                source, select_one_player=True, preferred_slot_name=preferred_slot_name, progress=progress,
+            )
             if len(generated) != 1:
                 raise KH3SeedImportError(
                     f"Expected one KH3 player pak from {source.name}, but generated {len(generated)}."
@@ -789,10 +791,9 @@ class KH3SeedImportService:
                 self._report(progress, "Adding the downloaded KH3 seed pak to managed storage...")
                 pak_paths = [source]
             else:
-                requested_slot = None
-                if source.suffix.casefold() == KH3_GENERATED_ARCHIVE_SUFFIX:
-                    requested_slot = self._select_archive_slot(source, expected_slot_name)
-                generated = self._generate_source(source, requested_slot=requested_slot, progress=progress)
+                generated = self._generate_source(
+                    source, select_one_player=True, preferred_slot_name=expected_slot_name, progress=progress,
+                )
                 if len(generated) != 1:
                     raise KH3SeedImportError(
                         f"Expected one KH3 player pak from {source.name}, but generated {len(generated)}."

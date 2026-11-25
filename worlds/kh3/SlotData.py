@@ -219,7 +219,7 @@ def _restore_tracker_config(result: dict[str, Any], tracker: dict[str, Any]) -> 
     try:
         config = build_randomizer_generation_config(SimpleNamespace(**{
             key: SimpleNamespace(value=value) for key, value in options.items()
-        }))
+        }), result.get("mixed_portal_unlocks"))
     except (TypeError, ValueError) as exc:
         raise BridgeProtocolError("Invalid KH3 randomizer options.") from exc
     if result.get("race_mode"):

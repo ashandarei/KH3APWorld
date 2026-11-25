@@ -20,6 +20,7 @@ from ..universal_tracker import (
     KH3_UNIVERSAL_TRACKER_OPTION_NAMES,
     KH3_UNIVERSAL_TRACKER_SLOT_DATA_KEY,
     KH3_UNIVERSAL_TRACKER_SLOT_DATA_VERSION,
+    restore_universal_tracker_options,
 )
 from . import KH3TestBase
 
@@ -187,6 +188,17 @@ class TestKH3UniversalTracker(KH3TestBase):
             tracker_multiworld.get_location(excluded_location_name, 1).progress_type,
             LocationProgressType.EXCLUDED,
         )
+
+    def test_old_song_rows_cannot_override_the_additional_music_chest_limit(self) -> None:
+        slot_data = {
+            KH3_UNIVERSAL_TRACKER_SLOT_DATA_KEY: {
+                "schema_version": KH3_UNIVERSAL_TRACKER_SLOT_DATA_VERSION,
+                "options": {"music_chest_count": 9},
+            },
+            "bridge": {"locations": [{"type": "melody_of_memory"} for _ in range(9)]},
+        }
+        with self.assertRaisesRegex(ValueError, "Invalid KH3 Universal Tracker value.*music_chest_count"):
+            restore_universal_tracker_options(self.world.options, slot_data)
 
     def test_retired_vanilla_reward_mode_is_rejected(self) -> None:
         slot_data = self.world.build_runtime_slot_data()

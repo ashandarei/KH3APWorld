@@ -9,6 +9,7 @@ from .Data import (
     WORLD_LOCATION_POOL_OPTIONS,
     resolve_item_runtime_token,
 )
+from .Options import PortalUnlocks, resolve_portal_unlocks
 
 KEYBLADE_CHEST_FIELDS = (
     "keyblade_chest_keyblade", "keyblade_chest_token", "keyblade_chest_native",
@@ -22,7 +23,8 @@ def native_chest_keyblade(row: dict) -> str | None:
     return PORTAL_KEYBLADE_REGION_LOCKS.get(world)
 
 
-def assign_keyblade_chests(rng, locations: list[dict], options, slot_data: dict | None = None) -> None:
+def assign_keyblade_chests(rng, locations: list[dict], options, slot_data: dict | None = None,
+                           *, portal_unlock_items: dict[str, str] | None = None) -> None:
     """Melody selection runs first, so converted chests override Chestsanity."""
     enabled = bool(options.chestsanity.value)
     candidates = {}
@@ -35,9 +37,13 @@ def assign_keyblade_chests(rng, locations: list[dict], options, slot_data: dict 
             candidates[(row["source_table"], row["source_id"])] = row
     # Keep chest keys separate from the active world-door keys. In character
     # mode those same door Keyblades instead become the chest requirements.
-    party_portals = int(options.portal_unlocks.value) == 1
-    pool = (RANDOMIZED_KEYBLADE_ITEM_NAMES & PORTAL_KEYBLADE_ITEM_NAMES if party_portals
-            else RANDOMIZED_KEYBLADE_ITEM_NAMES - PORTAL_KEYBLADE_ITEM_NAMES)
+    mode = options.portal_unlocks.value
+    if portal_unlock_items is None:
+        portal_unlock_items = resolve_portal_unlocks(mode, (slot_data or {}).get("mixed_portal_unlocks"))
+    if mode == PortalUnlocks.option_party_members:
+        pool = RANDOMIZED_KEYBLADE_ITEM_NAMES & PORTAL_KEYBLADE_ITEM_NAMES
+    else:
+        pool = RANDOMIZED_KEYBLADE_ITEM_NAMES.difference(portal_unlock_items.values())
     blades = sorted(pool - {"Pandora's Power", "Ultima Weapon"})
     saved = None
     if slot_data is not None:
@@ -50,10 +56,9 @@ def assign_keyblade_chests(rng, locations: list[dict], options, slot_data: dict 
         blade = saved[source_key].get("keyblade_chest_keyblade") if saved is not None else rng.choice(blades)
         if blade not in blades:
             raise ValueError("Invalid Chestsanity Keyblade.")
-        expected = dict(zip(KEYBLADE_CHEST_FIELDS, (
-            blade, resolve_item_runtime_token(blade),
-            not party_portals and blade == native_chest_keyblade(row),
-        )))
+        # No eligible chest key is required to open its world, so even its
+        # native Keyblade needs an explicit chest lock.
+        expected = dict(zip(KEYBLADE_CHEST_FIELDS, (blade, resolve_item_runtime_token(blade), False)))
         if saved is not None and (any(saved[source_key].get(k) != v for k, v in expected.items())
                                  or type(saved[source_key].get("keyblade_chest_native")) is not bool):
             raise ValueError("Invalid Chestsanity Keyblade identity in tracker slot data.")

@@ -56,7 +56,6 @@ from .Data import (
     PORTAL_KEYBLADE_ITEM_NAMES,
     PORTAL_KEYBLADE_REGION_LOCKS,
     PORTAL_PARTY_ITEM_NAMES,
-    PORTAL_PARTY_REGION_LOCKS,
     PROGRESSIVE_KEYBLADE_LEVEL_ITEM_COUNT,
     PROGRESSIVE_KEYBLADE_LEVEL_ITEM_NAME,
     PROGRESSIVE_KEYBLADE_LEVEL_ITEM_NAME_BY_KEYBLADE,
@@ -115,10 +114,13 @@ from .Logic import LOGIC_REQUIREMENT_ITEM_ALIASES, LocationDependency, SourceKey
 from .Options import (
     KeybladeLevels,
     KH3Options,
+    PortalUnlocks,
     UltimaWeaponMode,
     build_randomizer_generation_config,
     effective_keyblade_levels,
     option_groups,
+    resolve_portal_unlocks,
+    roll_mixed_portal_unlocks,
 )
 from .PackageResources import read_package_text, safe_file_fragment
 from .Regions import create_regions
@@ -382,6 +384,8 @@ class KH3World(World):
 
     extracted_data: dict
     active_locations: list[dict]
+    portal_unlock_items: dict[str, str]
+    portal_party_items: frozenset[str] = frozenset()
     logic_reference_locations: list[dict]
     location_logic_dependencies: dict[SourceKey, LocationDependency]
     starting_inventory_locations: list[dict]
@@ -440,6 +444,13 @@ class KH3World(World):
         self.active_locations.extend(space_checks)
         from .MelodyOfMemory import music_chest_bonus_locations, select_music_chests
         tracker_slot_data = getattr(self, "_tracker_runtime_slot_data", None)
+        mode = self.options.portal_unlocks.value
+        if mode == PortalUnlocks.option_mixed and tracker_slot_data is None:
+            self.portal_unlock_items = roll_mixed_portal_unlocks(self.random)
+        else:
+            self.portal_unlock_items = resolve_portal_unlocks(
+                mode, (tracker_slot_data or {}).get("mixed_portal_unlocks"))
+        self.portal_party_items = PORTAL_PARTY_ITEM_NAMES.intersection(self.portal_unlock_items.values())
         mom_locations = select_music_chests(
             self.random, self.active_locations,
             int(self.options.music_chest_count.value),
@@ -450,7 +461,8 @@ class KH3World(World):
         )
         self.active_locations.extend(mom_locations)
         from .KeybladeChests import assign_keyblade_chests
-        assign_keyblade_chests(self.random, self.active_locations, self.options, tracker_slot_data)
+        assign_keyblade_chests(self.random, self.active_locations, self.options, tracker_slot_data,
+                               portal_unlock_items=self.portal_unlock_items)
         self.keyblade_chest_required_items = frozenset(
             row["keyblade_chest_keyblade"] for row in self.active_locations
             if row.get("keyblade_chest_keyblade") and not row["keyblade_chest_native"]
@@ -532,9 +544,9 @@ class KH3World(World):
         self._add_retired_growth_path_ability_items_to_pool(item_pool)
         self._ensure_required_logic_items_in_pool(item_pool)
         self._add_progressive_keyblade_level_items(item_pool)
-        if self.options.portal_unlocks.value == 1:
+        if self.portal_party_items:
             self._add_party_member_unlock_item_pool_items(item_pool)
-        self._move_starting_portal_keyblade_from_pool(item_pool)
+        self._move_starting_portal_unlock_from_pool(item_pool)
         self._move_starting_inventory_items_from_pool(item_pool)
         self._add_controller_unlock_item_pool_items(item_pool)
         self._add_keyblade_style_item_pool_items(item_pool)
@@ -809,13 +821,12 @@ class KH3World(World):
         protected_item_names = (
             set(goal_required_item_names(int(self.options.heart_piece_count.value)))
             | PORTAL_KEYBLADE_ITEM_NAMES
+            | self.portal_party_items
             | set(CONTROLLER_UNLOCK_ITEM_NAMES)
             | set(KEYBLADE_STYLE_ITEM_NAMES)
             | self._required_logic_item_names()
             | self._default_base_ability_item_names_to_add()
         )
-        if self.options.portal_unlocks.value == 1:
-            protected_item_names |= PORTAL_PARTY_ITEM_NAMES
         for _ in range(min(starting_item_count, len(item_pool))):
             eligible_indices = [
                 index
@@ -829,34 +840,25 @@ class KH3World(World):
             self.multiworld.push_precollected(item)
             self.kh3_starting_inventory_items.append(item.name)
 
-    def _move_starting_portal_keyblade_from_pool(self, item_pool: list[Item]) -> None:
+    def _move_starting_portal_unlock_from_pool(self, item_pool: list[Item]) -> None:
         self.kh3_starting_inventory_items = []
         randomized_starting_worlds = {
             str(location.get("world") or "")
             for location in self.active_locations
             if not uses_replace_location_pool(location, self.options)
         }
-        eligible_keyblade_names = {
-            keyblade_name
-            for region_name, keyblade_name in PORTAL_KEYBLADE_REGION_LOCKS.items()
-            if region_name in randomized_starting_worlds
+        eligible_names = {
+            item for region, item in self.portal_unlock_items.items() if region in randomized_starting_worlds
         }
-        starting_names = STARTING_PORTAL_KEYBLADE_ITEM_NAMES
-        if self.options.portal_unlocks.value == 1:
-            starting_names = frozenset(
-                name for region, names in PORTAL_PARTY_REGION_LOCKS.items()
-                if PORTAL_KEYBLADE_REGION_LOCKS.get(region) in STARTING_PORTAL_KEYBLADE_ITEM_NAMES
-                for name in names
-            )
-            eligible_keyblade_names = {
-                name for region, names in PORTAL_PARTY_REGION_LOCKS.items()
-                if region in randomized_starting_worlds for name in names
-            }
+        starting_names = {
+            self.portal_unlock_items[region] for region, blade in PORTAL_KEYBLADE_REGION_LOCKS.items()
+            if blade in STARTING_PORTAL_KEYBLADE_ITEM_NAMES
+        }
         candidate_indices = [
             index
             for index, item in enumerate(item_pool)
             if item.name in starting_names
-            and item.name in eligible_keyblade_names
+            and item.name in eligible_names
         ]
         if not candidate_indices:
             candidate_indices = [
@@ -1114,7 +1116,7 @@ class KH3World(World):
                 and self.options.include_space_superbosses.value):
             # Schwarzgeist still needs its 200-speed ship, independently of zone access.
             classification = ItemClassification.progression
-        if self.options.portal_unlocks.value == 1 and name in PORTAL_PARTY_ITEM_NAMES:
+        if name in self.portal_party_items:
             classification = ItemClassification.progression
         if name in getattr(self, "keyblade_chest_required_items", ()):
             classification |= ItemClassification.progression
@@ -1453,6 +1455,8 @@ class KH3World(World):
         # Keep the native/client wire key compatible with the installed probe.
         slot_data["ingredient_checks"] = int(self.options.ingredients.value == 1)
         slot_data["adversary_checks"] = int(self.options.adversary_checks.value)
+        if self.options.portal_unlocks.value == PortalUnlocks.option_mixed:
+            slot_data["mixed_portal_unlocks"] = self.portal_unlock_items.copy()
         slot_data["keyblade_levels"] = effective_keyblade_levels(self.options)
         slot_data["ultima_weapon_shop_required_keyblades"] = (
             self._ultima_weapon_shop_required_keyblades()
@@ -1467,7 +1471,7 @@ class KH3World(World):
             },
             "moogle_shop_price_tiers": price_tiers.as_dict(),
             "moogle_shop_economy": economy_summary,
-            "kh3_randomizer": build_randomizer_generation_config(self.options),
+            "kh3_randomizer": build_randomizer_generation_config(self.options, self.portal_unlock_items),
             "kh3_seed": {
                 "format": "kh3_server_seed",
                 "format_version": SERVER_SEED_FORMAT_VERSION,

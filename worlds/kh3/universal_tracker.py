@@ -83,16 +83,7 @@ def restore_universal_tracker_options(
     for option_name, value in option_values.items():
         option_type = KH3Options.type_hints[option_name]
         try:
-            legacy_songs = [r for r in slot_data.get("bridge", {}).get("locations", [])
-                            if r.get("type") == "melody_of_memory"]
-            if (option_name == "music_chest_count" and type(value) is int and 8 < value <= 128
-                    and len(legacy_songs) == value
-                    and all(not r.get("music_chest_placement_version") for r in legacy_songs)):
-                # Reconstruct old seeds without raising the new-generation cap.
-                parsed_value = option_type.from_any(0)
-                parsed_value.value = value
-            else:
-                parsed_value = option_type.from_any(value)
+            parsed_value = option_type.from_any(value)
         except Exception as exc:
             raise ValueError(
                 f"Invalid KH3 Universal Tracker value for option {option_name!r}: {value!r}."

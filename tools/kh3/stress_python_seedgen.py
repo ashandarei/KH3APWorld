@@ -52,7 +52,7 @@ def settings_for(index: int, player: int = 1) -> dict:
         "music_shuffle": choose(["vanilla", "shuffle_worlds", "shuffle_battle_themes", "chaos"]),
         "battle_level_mode": choose(["off", "sora_level"]),
         "wall_run_mode": choose(["starting", "shared", "split"]),
-        "portal_unlocks": choose(["keyblades", "party_members"]),
+        "portal_unlocks": choose(["keyblades", "party_members", "mixed"]),
     }
     for name in ("base_sora", "level_up", "keyblade_enhance", "equipment", "food_effect"):
         options[name + "_stats_pool"] = choose(["vanilla", "balanced", "boosted"])

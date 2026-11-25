@@ -115,7 +115,7 @@ from ..Options import (
     build_randomizer_generation_config,
     option_groups,
 )
-from ..PakGenerator import generate_kh3_pak_from_container, generate_kh3_paks_from_ap_zip, load_kh3_container_data
+from ..PakGenerator import generate_kh3_pak_from_container, load_kh3_container_data
 from ..SlotData import SERVER_SEED_FORMAT_VERSION, decode_slot_data
 from ..seedgen.localization import make_hints
 from . import KH3TestBase
@@ -1256,10 +1256,11 @@ battle_level_mode: "{battle}"
                 match = re.fullmatch(r"(AP_\d+)_P(\d+)_(.+)", seed)
                 self.assertIsNotNone(match)
                 ap_seed_id, player_num, player_name = match.groups()
-                (work_dir / f"pakchunk9-{player_name}-randomizer-{ap_seed_id}-{player_num}_99_P.pak").write_bytes(
-                    b"x" * PakGenerator.KH3_MINIMUM_GENERATED_PAK_SIZE_BYTES
-                )
-                (work_dir / f"SpoilerLog-{seed}.txt").write_text("spoiler", encoding="utf-8")
+                pak = work_dir / f"pakchunk9-{player_name}-randomizer-{ap_seed_id}-{player_num}_99_P.pak"
+                pak.write_bytes(b"x" * PakGenerator.KH3_MINIMUM_GENERATED_PAK_SIZE_BYTES)
+                spoiler = work_dir / f"SpoilerLog-{seed}.txt"
+                spoiler.write_text("spoiler", encoding="utf-8")
+                return pak, spoiler
 
             with patch("worlds.kh3.PakGenerator.prepare_randomizer_root", side_effect=lambda work_dir: work_dir), \
                     patch("worlds.kh3.PakGenerator.prepare_extracted_data", side_effect=lambda work_dir: work_dir), \
@@ -1284,48 +1285,6 @@ battle_level_mode: "{battle}"
         glob = PakGenerator.kh3_ap_pak_glob_for_seed("AP_123456789_P2_KH3-EZ5")
 
         self.assertEqual(glob, "pakchunk9-*-randomizer-AP_123456789-2_99_P.pak")
-
-    def test_generate_kh3_paks_from_ap_zip_uses_player_prefixed_pakchunk9_name(self) -> None:
-        with TemporaryDirectory() as temp_dir:
-            root = Path(temp_dir)
-            output_dir = root / "out"
-            ap_zip_path = root / "AP_987654321.zip"
-            ap_zip_path.write_bytes(b"zip payload mocked")
-            slot = {
-                "slot": 2,
-                "name": "PlayerKH",
-                "slot_data": self.world.fill_slot_data(),
-                "randomizer_config": {},
-            }
-
-            def fake_generate(_root, work_dir, seed, _config, _options, _metadata):
-                ap_seed_id, player_num, player_name = seed.split("-", 2)
-                (work_dir / f"pakchunk9-{player_name}-randomizer-{ap_seed_id}-{player_num}_99_P.pak").write_bytes(
-                    b"x" * PakGenerator.KH3_MINIMUM_GENERATED_PAK_SIZE_BYTES
-                )
-                (work_dir / f"SpoilerLog-{seed}.txt").write_text("spoiler", encoding="utf-8")
-
-            with patch("worlds.kh3.PakGenerator.prepare_randomizer_root", side_effect=lambda work_dir: work_dir), \
-                    patch("worlds.kh3.PakGenerator.prepare_extracted_data", side_effect=lambda work_dir: work_dir), \
-                    patch("worlds.kh3.PakGenerator.load_multidata_from_ap_zip", return_value={}), \
-                    patch("worlds.kh3.PakGenerator.iter_kh3_slots", return_value=[slot]), \
-                    patch("worlds.kh3.PakGenerator.export_exact_randomized_options",
-                          side_effect=lambda *_args: root / "options.json"), \
-                    patch("worlds.kh3.PakGenerator.write_archipelago_seed_metadata",
-                          side_effect=lambda *_args: root / "metadata.json"), \
-                    patch("worlds.kh3.PakGenerator.generate_python_seed", side_effect=fake_generate), \
-                    patch("worlds.kh3.PakGenerator.validate_generated_seed_staging") as validate_staging:
-                results = generate_kh3_paks_from_ap_zip(ap_zip_path, output_dir=output_dir)
-
-            expected_pak = output_dir / "pakchunk9-PlayerKH-randomizer-AP_987654321-2_99_P.pak"
-            expected_spoiler = output_dir / "SpoilerLog-AP_987654321-2-PlayerKH.txt"
-            self.assertEqual(len(results), 1)
-            self.assertEqual(results[0].pak_path, expected_pak.resolve())
-            self.assertEqual(results[0].spoiler_log_path, expected_spoiler.resolve())
-            self.assertTrue(expected_pak.is_file())
-            self.assertTrue(expected_spoiler.is_file())
-            self.assertFalse((output_dir / f"PlayerKH_{expected_pak.name}").exists())
-            validate_staging.assert_called_once()
 
     def test_junk_world_pool_excludes_progression_items(self) -> None:
         self.world_setup()

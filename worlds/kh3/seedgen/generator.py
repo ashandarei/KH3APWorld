@@ -148,7 +148,8 @@ def generate_seed(root: Path, output: Path, seed: str, config: dict, items: dict
     staging = staging_root / hashlib.sha256(seed.encode("utf-8")).hexdigest()[:12]
     pak_path = output / pak_name(seed)
     # Build from an isolated directory and atomically replace the pak only after all outputs validate.
-    with tempfile.TemporaryDirectory(prefix="kh3-python-", dir=staging_root) as temporary:
+    with (tempfile.TemporaryDirectory(prefix="kh3-python-", dir=staging_root) as temporary,
+          tempfile.TemporaryDirectory(prefix="kh3-pak-", dir=output) as pak_temporary):
         work = Path(temporary)
         payload = work / "payload"
         payload.mkdir()
@@ -158,7 +159,7 @@ def generate_seed(root: Path, output: Path, seed: str, config: dict, items: dict
                 raise ValueError(f"Seed payload path escapes staging: {name}")
             destination.parent.mkdir(parents=True, exist_ok=True)
             destination.write_bytes(data)
-        packed = work / pak_path.name
+        packed = Path(pak_temporary) / pak_path.name
         pack_directory(payload, packed)
         if packed.stat().st_size < 5 * 1024:
             raise ValueError("Generated KH3 pak is incomplete")
@@ -173,8 +174,7 @@ def generate_seed(root: Path, output: Path, seed: str, config: dict, items: dict
                 raise ValueError("Unsafe KH3 staging directory")
             shutil.rmtree(staging)
         payload.rename(staging)
-        # Pak.pack_directory writes atomically beside the destination, including across drives.
-        pack_directory(staging, pak_path)
+        packed.replace(pak_path)
     spoiler_path = None
     if race_mode:
         from ..RaceMode import remove_race_spoilers

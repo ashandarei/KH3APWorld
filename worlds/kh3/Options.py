@@ -21,7 +21,9 @@ from .Data import (
     CHARACTER_STYLE_ITEM_NAMES,
     KEYBLADE_STYLE_ITEM_NAMES,
     PORTAL_KEYBLADE_ITEM_NAMES,
+    PORTAL_KEYBLADE_REGION_LOCKS,
     PORTAL_PARTY_ITEM_NAMES,
+    PORTAL_PARTY_REGION_LOCKS,
     VANILLA_LOCATION_POOL_VALUE,
     goal_key_item_counts,
 )
@@ -310,7 +312,9 @@ class Chestsanity(Toggle):
     Melody chests do not require a Keyblade.
     With Keyblade portal unlocks, chest keys are Classic Tone, Grand Chef, and
     Hunny Spout. With character portal unlocks, chest keys are the Keyblades
-    normally used for world doors.
+    normally used for world doors. With mixed portal unlocks, chest keys are
+    Classic Tone, Grand Chef, Hunny Spout, and any world Keyblade whose portal
+    opens with a party member.
     """
 
     display_name = "Chestsanity"
@@ -1644,11 +1648,37 @@ class GateOpenerCount(Range):
 
 class PortalUnlocks(Choice):
     """Open worlds with their Keyblade, or with their designated party-member item.
+    Mixed gives each world an independent 50/50 chance to require either one.
+    The seed fixes each world's requirement for the entire run.
     """
     display_name = "Portal Unlocks"
     option_keyblades = 0
     option_party_members = 1
+    option_mixed = 2
     default = 0
+
+
+def roll_mixed_portal_unlocks(rng) -> dict[str, str]:
+    unlocks = {
+        region: rng.choice((blade, *PORTAL_PARTY_REGION_LOCKS[region]))
+        for region, blade in PORTAL_KEYBLADE_REGION_LOCKS.items() if region != "Data Battles"
+    }
+    unlocks["Data Battles"] = unlocks["Radiant Garden"]
+    return unlocks
+
+
+def resolve_portal_unlocks(mode: int, mixed_unlocks: dict | None = None) -> dict[str, str]:
+    if mode == PortalUnlocks.option_keyblades:
+        return PORTAL_KEYBLADE_REGION_LOCKS.copy()
+    if mode == PortalUnlocks.option_party_members:
+        return {region: member for region, (member,) in PORTAL_PARTY_REGION_LOCKS.items()}
+    if (mode != PortalUnlocks.option_mixed or not isinstance(mixed_unlocks, dict)
+            or mixed_unlocks.keys() != PORTAL_KEYBLADE_REGION_LOCKS.keys()
+            or any(mixed_unlocks[region] not in (blade, *PORTAL_PARTY_REGION_LOCKS[region])
+                   for region, blade in PORTAL_KEYBLADE_REGION_LOCKS.items())
+            or mixed_unlocks["Data Battles"] != mixed_unlocks["Radiant Garden"]):
+        raise ValueError("Invalid KH3 mixed portal unlock assignments.")
+    return mixed_unlocks.copy()
 
 
 @dataclass
@@ -1851,13 +1881,11 @@ def build_randomizer_runtime_config(options: KH3Options) -> dict[str, bool]:
     }
 
 
-def build_randomizer_hint_config(options: KH3Options) -> dict[str, object]:
+def build_randomizer_hint_config(options: KH3Options, mixed_unlocks: dict | None = None) -> dict[str, object]:
     checks = set(options.important_hint_checks.value)
     checks.difference_update(GOAL_MANAGED_HINT_CHECKS)
-    if options.portal_unlocks.value == PortalUnlocks.option_party_members:
-        checks.difference_update(PORTAL_KEYBLADE_ITEM_NAMES)
-    else:
-        checks.difference_update(PORTAL_PARTY_ITEM_NAMES)
+    selected = resolve_portal_unlocks(options.portal_unlocks.value, mixed_unlocks)
+    checks.difference_update((PORTAL_KEYBLADE_ITEM_NAMES | PORTAL_PARTY_ITEM_NAMES).difference(selected.values()))
     checks.update(goal_key_item_counts(int(options.heart_piece_count.value)))
     return {
         "type": HintSelectionType.get_option_name(int(options.hint_selection_type.value)),
@@ -1873,7 +1901,7 @@ def build_randomizer_clear_condition_config(options: KH3Options) -> dict[str, ob
     }
 
 
-def build_randomizer_generation_config(options: KH3Options) -> dict[str, object]:
+def build_randomizer_generation_config(options: KH3Options, mixed_unlocks: dict | None = None) -> dict[str, object]:
     return {
         "pools": build_randomizer_pool_config(options),
         "boss_blacklist": sorted(options.boss_blacklist.value),
@@ -1884,7 +1912,7 @@ def build_randomizer_generation_config(options: KH3Options) -> dict[str, object]
         "exp_multiplier": int(options.exp_multiplier.value) / 2,
         "qol": build_randomizer_qol_config(options),
         "runtime": build_randomizer_runtime_config(options),
-        "hint": build_randomizer_hint_config(options),
+        "hint": build_randomizer_hint_config(options, mixed_unlocks),
         "clear_condition": build_randomizer_clear_condition_config(options),
     }
 

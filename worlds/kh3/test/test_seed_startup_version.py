@@ -93,13 +93,12 @@ def test_failed_disable_blocks_offline_startup(tmp_path):
     assert pak.is_file()
 
 
-@pytest.mark.parametrize("writer", ["write_archipelago_seed_metadata", "write_container_seed_metadata"])
-def test_pak_metadata_keeps_generation_version_instead_of_current_client_version(tmp_path, writer):
+def test_pak_metadata_keeps_generation_version_instead_of_current_client_version(tmp_path):
     for suffix in ("foreign-items", "placement-summary"):
         (tmp_path / f"seed.{suffix}.json").write_text("{}")
     slot = {"slot": 1, "name": "Sora", "slot_name": "Sora",
             "slot_data": {"kh3_seed": {"seed_creation_version": "0.17.25"}}}
-    metadata = json.loads(getattr(PakGenerator, writer)(tmp_path, slot, "seed").read_text())
+    metadata = json.loads(PakGenerator.write_container_seed_metadata(tmp_path, slot, "seed").read_text())
     assert metadata["seed_creation_version"] == "0.17.25"
 
 
