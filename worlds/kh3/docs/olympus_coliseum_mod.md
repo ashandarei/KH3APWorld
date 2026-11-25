@@ -52,7 +52,7 @@ completions are also needed for the listed cups:
 
 | Required completion | Cups |
 | --- | --- |
-| Olympus and Twilight Town | Phil; Pain and Panic; Hermes; Chef; Flan; Terra |
+| Olympus and Twilight Town | Phil; Pain and Panic; Hermes; Bistro Cup; Flantastic Cup; Terra |
 | Toy Box and Kingdom of Corona | Pegasus; Cerberus; Apollo; Ventus |
 | Monstropolis and Arendelle | Hercules; Titan; Athena; Aqua |
 | The Caribbean and San Fransokyo | Goddess of Fate |
@@ -81,8 +81,8 @@ rewards. Cups with the same rewards are grouped together.
 | KH3 Hermes | Skill Ring+; Midnight Anklet |
 | KH3 Apollo | Forest Clasp; Mythril Crystal |
 | KH3 Athena | Laughter Pin; Orichalcum |
-| Apro Chef | Gourmand's Ring; Grand Chef; Hunny Spout |
-| Apro Flan | Flanniversary Badge |
+| Apro Bistro Cup | Gourmand's Ring; Grand Chef; Hunny Spout |
+| Apro Flantastic Cup | Flanniversary Badge |
 | Apro The Story So Far | Lucky Ring; Draw Ring; Master Belt; Petite Ribbon |
 | Apro Infernal | Crystal Regalia+ |
 | Apro Limit Cut | Breakthrough; Crystal Regalia+; Power Weight; Magic Weight; Master Belt |
