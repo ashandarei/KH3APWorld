@@ -65,10 +65,23 @@ def test_packet_routes_only_its_own_effects(command):
     assert events == expected[command]
 
 
+@pytest.mark.parametrize(("update", "events_expected"), [
+    ({"hint_points": 12}, []),
+    ({"permissions": {"release": 1}, "hint_cost": 10}, []),
+    ({"players": [], "hint_points": 12}, ["publish"]),
+    ({"checked_locations": [17], "players": [], "permissions": {}},
+     [("location_checks_server_confirmed", [17], "RoomUpdate"), "publish"]),
+])
+def test_room_update_refreshes_only_for_bridge_inputs(update, events_expected):
+    service, _, events, _ = packet_fixture()
+    service.handle("RoomUpdate", update)
+    assert events == events_expected
+
+
 @pytest.mark.parametrize("command", ["RoomUpdate", "DataPackage"])
 def test_packet_without_selected_bridge_does_not_publish(command):
     service, _, events, _ = packet_fixture(bridge=lambda: None)
-    service.handle(command, {})
+    service.handle(command, {"players": []})
     assert events == (["invalidate"] if command == "DataPackage" else [])
 
 

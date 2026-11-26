@@ -57,9 +57,12 @@ def set_extra_vbonus_rules(world: KH3World) -> None:
         world.set_rule(extra, CanReachLocation(parent.name))
         extra.item_rule = lambda item, parent=parent: parent.item_rule(item)
         extra.filler_only = parent.filler_only
+        extra.junk_setting = parent.junk_setting
         # A minigame's own pool can be randomize inside a junk world. Replace
         # the preliminary world-level exclusion with the parent's final policy.
         extra.progress_type = parent.progress_type
         if (parent.name in world.options.exclude_locations.value
                 or parent.progress_type == LocationProgressType.EXCLUDED):
             extra.progress_type = LocationProgressType.EXCLUDED
+            if not extra.junk_setting:
+                extra.junk_setting = "exclude_locations"

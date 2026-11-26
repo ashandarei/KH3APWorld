@@ -12,6 +12,7 @@ from .. import RETIRED_GROWTH_PATH_ABILITY_POOL_ITEMS
 from ..Battlegates import BATTLEGATE_COMPLETION_SOURCES_BY_WORLD, BATTLEGATE_SOURCE_ID_REGION_LOCKS
 from ..Bridge import build_bridge_slot_data
 from ..Data import (
+    CHARACTER_STYLE_ITEM_NAMES,
     CHEST_LOGIC_REQUIREMENTS,
     DEFAULT_BASE_ABILITY_ITEM_NAMES,
     EVENT_LOGIC_REQUIREMENTS,
@@ -3405,12 +3406,13 @@ class TestKH3StylePoolReplacement(KH3TestBase):
     def test_extra_styles_preserve_keyblades_with_generated_upgrades(self) -> None:
         # Force the non-filler replacement path and make it consume all eligible
         # useful items, rather than depending on random selection in a full seed.
-        names = ["Starlight", "Progressive Starlight Level"] + ["Ability: HP Prize Plus"] * len(KEYBLADE_STYLE_ITEM_NAMES)
+        expected_styles = (*KEYBLADE_STYLE_ITEM_NAMES, *CHARACTER_STYLE_ITEM_NAMES)
+        names = ["Starlight", "Progressive Starlight Level"] + ["Ability: HP Prize Plus"] * len(expected_styles)
         pool = [self.world.create_item(name) for name in names]
         self.world._add_keyblade_style_item_pool_items(pool)
         counts = Counter(item.name for item in pool)
         self.assertEqual(counts["Starlight"], 1)
         self.assertEqual(counts["Progressive Starlight Level"], 1)
         self.assertEqual(counts["Ability: HP Prize Plus"], 0)
-        self.assertTrue(all(counts[name] == 1 for name in KEYBLADE_STYLE_ITEM_NAMES))
+        self.assertTrue(all(counts[name] == 1 for name in expected_styles))
         self.assertEqual(len(pool), len(names))

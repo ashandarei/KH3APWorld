@@ -202,6 +202,7 @@ TRAP_ITEM_NAMES = tuple(TRAP_RUNTIME_TOKEN_BY_ITEM_NAME)
 TRAP_RUNTIME_TOKENS = frozenset(TRAP_RUNTIME_TOKEN_BY_ITEM_NAME.values())
 
 ULTIMA_WEAPON_ITEM_NAME = "Ultima Weapon"
+YOZORA_REWARD_SOURCE_KEY = ("Event", "EVENT_YOZORA_001")
 ULTIMA_WEAPON_RUNTIME_TOKEN = "WEP_KEYBLADE_SO_015"
 ULTIMA_WEAPON_SHARD_ITEM_NAME = "Ultima Weapon Shard"
 GATE_OPENER_ITEM_NAME = "Gate Opener"
@@ -1447,37 +1448,50 @@ def uses_level_up_junk(location: dict, options) -> bool:
 
 
 def uses_replace_location_pool(location: dict, options) -> bool:
+    return junk_pool_setting(location, options) is not None
+
+
+def junk_pool_setting(location: dict, options) -> str | None:
     if uses_junk_chests(location, options):
-        return True
+        return JUNK_CHEST_OPTIONS[location["source_table"]]
     if ingredient_spot_is_junk(location):
-        return True
+        return "ingredients"
     workshop_option = WORKSHOP_OPTIONS.get(location.get("type"))
     if workshop_option:
-        return synthesis_is_junk(location, options) or _is_replace_location_pool_option(options, workshop_option)
-    if uses_level_up_junk(location, options) or uses_minigame_rank_junk(location, options):
-        return True
+        if _is_replace_location_pool_option(options, workshop_option):
+            return workshop_option
+        return "moogle_synthesis_limit" if synthesis_is_junk(location, options) else None
+    if uses_level_up_junk(location, options):
+        return "level_up_limit"
+    rank_setting = minigame_junk_rank_setting(location, options)
+    if rank_setting:
+        return rank_setting
     minigame_option = minigame_pool_option(location)
     if minigame_option:
-        return _is_replace_location_pool_option(options, minigame_option)
+        return minigame_option if _is_replace_location_pool_option(options, minigame_option) else None
     world = str(location.get("world") or "")
     for option_name in (
         REWARD_LOCATION_POOL_OPTIONS.get(world),
         WORLD_LOCATION_POOL_OPTIONS.get(world),
     ):
         if option_name and _is_replace_location_pool_option(options, option_name):
-            return True
-    return False
+            return option_name
+    return None
 
 
 def uses_minigame_rank_junk(location: dict, options) -> bool:
+    return minigame_junk_rank_setting(location, options) is not None
+
+
+def minigame_junk_rank_setting(location: dict, options) -> str | None:
     from .Minigames import MINIGAME_RANK_OPTIONS, minigame_reward_rank
     for option in MINIGAME_RANK_OPTIONS:
         rank = minigame_reward_rank(location, option)
         if rank is not None:
             cap = _option_value(options, option)
             # Old seeds and tracker metadata retain the default A cap.
-            return rank > (4 if cap is None else int(cap))
-    return False
+            return option if rank > (4 if cap is None else int(cap)) else None
+    return None
 
 
 def uses_replace_golden_herc_rewards(location: dict, options) -> bool:
@@ -1496,11 +1510,14 @@ def uses_replace_classic_kingdom_reward(location: dict, options) -> bool:
     )
 
 
+JUNK_CHEST_OPTIONS = {
+    "TreasureBX": "junk_san_fransokyo_chests",
+    "TreasureCA": "junk_the_caribbean_chests",
+}
+
+
 def uses_junk_chests(location: dict, options) -> bool:
-    option = {
-        "TreasureBX": "junk_san_fransokyo_chests",
-        "TreasureCA": "junk_the_caribbean_chests",
-    }.get(location.get("source_table"))
+    option = JUNK_CHEST_OPTIONS.get(location.get("source_table"))
     return location.get("type") == "treasure" and bool(option and _option_value(options, option))
 
 

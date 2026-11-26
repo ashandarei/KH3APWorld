@@ -7,6 +7,8 @@ from dataclasses import dataclass
 from pathlib import Path
 from typing import Any
 
+from NetUtils import SlotType
+
 
 class ArchiveValidationError(RuntimeError):
     pass
@@ -74,10 +76,12 @@ def load_multidata(ap_zip: Path, runtime_root: Path) -> dict[str, Any]:
     return multidata
 
 
-def list_slots(multidata: dict[str, Any]) -> list[SlotSummary]:
+def list_slots(multidata: dict[str, Any], *, players_only: bool = False) -> list[SlotSummary]:
     slots = _require_mapping(multidata, "slot_info")
     summaries: list[SlotSummary] = []
     for slot, slot_info in slots.items():
+        if players_only and getattr(slot_info, "type", SlotType.player) != SlotType.player:
+            continue
         summaries.append(
             SlotSummary(
                 slot=int(slot),
@@ -89,7 +93,7 @@ def list_slots(multidata: dict[str, Any]) -> list[SlotSummary]:
 
 
 def list_kh3_slots(multidata: dict[str, Any]) -> list[SlotSummary]:
-    return [summary for summary in list_slots(multidata) if summary.game == "Kingdom Hearts III"]
+    return [summary for summary in list_slots(multidata, players_only=True) if summary.game == "Kingdom Hearts III"]
 
 
 def format_slot_summaries(summaries: list[SlotSummary]) -> str:

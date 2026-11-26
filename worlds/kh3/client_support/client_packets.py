@@ -71,7 +71,8 @@ class ClientPacketService:
                 self._client.record_checks(
                     "location_checks_server_confirmed", args.get("checked_locations", []), command
                 )
-            self._publish_if_selected()
+            if "checked_locations" in args or "players" in args:
+                self._publish_if_selected()
         elif command == "DataPackage":
             self._client.invalidate_items()
             self._publish_if_selected()

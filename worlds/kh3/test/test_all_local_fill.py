@@ -1,4 +1,5 @@
 from unittest import TestCase
+from unittest.mock import patch
 
 from BaseClasses import Item, ItemClassification, Location, LocationProgressType, Region
 from Fill import FillError, balance_multiworld_progression, distribute_items_restrictive
@@ -63,7 +64,9 @@ class TestAllLocalFill(TestCase):
         strict.item_rule = lambda item: not item.advancement and not item.useful
         strict.progress_type = LocationProgressType.EXCLUDED
         foreign = {loc: loc.item_rule for loc in mw.get_locations(2)}
-        self.assertEqual(reserve_all_local_locations(mw), {1: 2})
+        with patch.object(mw, "get_unfilled_locations", wraps=mw.get_unfilled_locations) as unfilled:
+            self.assertEqual(reserve_all_local_locations(mw), {1: 2})
+        unfilled.assert_called_once_with(1)
         fire, potion = mw.itempool[:2]
         self.assertTrue(normal.item_rule(fire))
         self.assertFalse(strict.item_rule(fire))

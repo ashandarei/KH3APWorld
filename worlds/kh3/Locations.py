@@ -20,6 +20,7 @@ from .Space import SPACE_LOCATION_IDS, SPACE_LOCATIONS
 class KH3Location(Location):
     game = "Kingdom Hearts III"
     filler_only = False
+    junk_setting: str | None = None
 
 
 BASE_LOCATION_ID = 0x4B483300

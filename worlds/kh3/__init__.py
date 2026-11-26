@@ -10,6 +10,7 @@ from threading import Lock
 from typing import Any, ClassVar, Dict, Type
 
 from BaseClasses import DEFAULT_COLLECTION_RULE, CollectionState, Item, ItemClassification, Tutorial
+from Options import OptionError
 from rule_builder.rules import Has
 from worlds.AutoWorld import WebWorld, World
 from worlds.Files import APPlayerContainer
@@ -71,6 +72,7 @@ from .Data import (
     SEVEN_WISHES_UNLOCK_ITEM,
     CHARACTER_STYLE_ITEM_NAMES,
     ULTIMA_WEAPON_ITEM_NAME,
+    YOZORA_REWARD_SOURCE_KEY,
     ULTIMA_WEAPON_SHARD_ITEM_NAME,
     VICTORY_BONUS_LOGIC_REQUIREMENTS,
     build_item_counts,
@@ -205,7 +207,6 @@ SECONDARY_VBONUS_ITEM_POOL_REWARDS = frozenset({
     HEART_PIECE_ITEM_NAME,
     "Magic: Water",
 })
-YOZORA_REWARD_SOURCE_KEY = ("Event", "EVENT_YOZORA_001")
 KH3_WORLD_LOAD_PATHS_ENV = "AP_WORLD_LOAD_PATHS"
 
 
@@ -481,6 +482,11 @@ class KH3World(World):
                 for location in normalized_locations
                 if (location["source_table"], location["source_id"]) == YOZORA_REWARD_SOURCE_KEY
             )
+            if yozora_location["name"] in self.options.exclude_locations.value:
+                raise OptionError(
+                    f"ultima_weapon_mode=yozora fixes Ultima Weapon at {yozora_location['name']}. "
+                    "Remove that check from exclude_locations or choose another Ultima Weapon mode."
+                )
             if yozora_location not in self.active_locations:
                 self.active_locations.append(yozora_location)
         validate_locations(self.active_locations)
@@ -548,6 +554,7 @@ class KH3World(World):
         self._add_retired_growth_path_ability_items_to_pool(item_pool)
         self._ensure_required_logic_items_in_pool(item_pool)
         self._add_progressive_keyblade_level_items(item_pool)
+        self._place_fixed_rewards()
         if self.portal_party_items:
             self._add_party_member_unlock_item_pool_items(item_pool)
         self._move_starting_portal_unlock_from_pool(item_pool)
@@ -578,7 +585,6 @@ class KH3World(World):
             set(MUNNY_POUCH_ITEM_NAMES) if self._moogle_shop_funding_plan.shop_check_count > 0 else set(),
         )
         self.multiworld.itempool.extend(item_pool)
-        self._place_fixed_rewards()
 
     def _place_fixed_rewards(self) -> None:
         victory_location = self.multiworld.get_location(COMPLETION_LOCATION_NAME, self.player)
@@ -858,22 +864,36 @@ class KH3World(World):
             self.portal_unlock_items[region] for region, blade in PORTAL_KEYBLADE_REGION_LOCKS.items()
             if blade in STARTING_PORTAL_KEYBLADE_ITEM_NAMES
         }
-        candidate_indices = [
-            index
-            for index, item in enumerate(item_pool)
-            if item.name in starting_names
-            and item.name in eligible_names
-        ]
-        if not candidate_indices:
-            candidate_indices = [
-                index
-                for index, item in enumerate(item_pool)
-                if item.name in starting_names
-            ]
-        if not candidate_indices:
+        candidates = [i for i, item in enumerate(item_pool) if item.name in starting_names]
+        if not candidates:
             return
+        preferred = [i for i in candidates if item_pool[i].name in eligible_names]
+        item_index = self.random.choice(preferred or candidates)
+        # A randomized row can still be unreachable, locked, or unable to hold
+        # progression. Try the rolled opening first to preserve viable starts.
+        portal_names = set(self.portal_unlock_items.values())
+        next_portals = {item.name: item for item in item_pool if item.name in portal_names
+                        and item.name not in self.options.non_local_items.value}
+        excluded = self.options.exclude_locations.value
+        checks = [loc for loc in self.multiworld.get_unfilled_locations(self.player)
+                  if loc.address is not None and not loc.filler_only and loc.name not in excluded]
+        starting_state = self.multiworld.state.copy()
+        for name in sorted(self._starting_controller_unlock_item_names()):
+            if not starting_state.has(name, self.player):
+                starting_state.collect(self.create_item(name), True)
 
-        item_index = self.random.choice(candidate_indices)
+        def can_place_next_portal(index):
+            starter = item_pool[index]
+            state = starting_state.copy()
+            state.collect(starter, True)
+            return any(loc.can_reach(state) and any(
+                name != starter.name and loc.item_rule(item) for name, item in next_portals.items()
+            ) for loc in checks)
+
+        if not can_place_next_portal(item_index):
+            alternatives = [i for i in candidates if item_pool[i].name != item_pool[item_index].name]
+            self.random.shuffle(alternatives)
+            item_index = next((i for i in alternatives if can_place_next_portal(i)), item_index)
         item = item_pool.pop(item_index)
         self.multiworld.push_precollected(item)
         self.kh3_starting_inventory_items.append(item.name)
@@ -1217,6 +1237,13 @@ class KH3World(World):
         # reserve its own checks before AP places other players' early items.
         reserve_all_local_locations(multiworld)
         validate_fixed_junk_rewards(multiworld)
+
+    @classmethod
+    def stage_fill_hook(cls, multiworld, progitempool, usefulitempool, filleritempool, fill_locations):
+        from .PreFill import validate_junk_capacity, validate_solo_start
+
+        validate_junk_capacity(multiworld, fill_locations, len(filleritempool))
+        validate_solo_start(multiworld, fill_locations, progitempool)
 
     def build_seed_container_data(self) -> dict[str, Any]:
         slot_data, _ = self._seed_output_data()
