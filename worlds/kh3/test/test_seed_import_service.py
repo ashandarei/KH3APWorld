@@ -3,6 +3,8 @@ from __future__ import annotations
 import json
 import tempfile
 import unittest
+import zipfile
+import zlib
 from pathlib import Path
 from unittest.mock import patch
 
@@ -30,6 +32,55 @@ def _write_generated_pak(
 
 
 class KH3SeedImportServiceTest(unittest.TestCase):
+    def test_renamed_multiplayer_zip_builds_the_same_paks_as_its_player_files(self) -> None:
+        import Utils
+        from Fill import distribute_items_restrictive
+        from NetUtils import NetworkSlot, SlotType
+        from test.general import setup_multiworld
+        from .. import KH3World, PakGenerator
+        from ..seedgen import generator
+
+        room = setup_multiworld([KH3World, KH3World], seed=3141592653589793,
+                                options={"equipment_abilities_pool": "randomize"})
+        distribute_items_restrictive(room)
+        KH3World.stage_pre_output(room)
+        game = KH3World.game
+        multidata = {
+            "seed_name": room.seed_name,
+            "slot_info": {p: NetworkSlot(room.get_player_name(p), game, SlotType.player) for p in room.player_ids},
+            "slot_data": {p: room.worlds[p].fill_slot_data() for p in room.player_ids},
+            "locations": {
+                p: {loc.address: (loc.item.code, loc.item.player, loc.item.flags)
+                    for loc in room.get_filled_locations(p) if loc.address is not None}
+                for p in room.player_ids
+            },
+            "datapackage": {game: KH3World.get_data_package_data()},
+        }
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            source = root / "Friday.zip"
+            with zipfile.ZipFile(source, "w") as archive:
+                archive.writestr("room.archipelago", b"\x03" + zlib.compress(Utils.restricted_dumps(multidata)))
+                for player in room.player_ids:
+                    room.worlds[player].generate_output(str(root))
+                    filename = room.get_out_file_name_base(player) + ".apkh3"
+                    archive.write(root / filename, filename)
+
+            manager = self._run_manager(root)
+            service = KH3SeedImportService(run_manager=manager, mods_dir=manager.mods_dir,
+                                           generated_root=root / "generated", process_running=lambda: False)
+            with patch.object(zipfile.ZipFile, "read", autospec=True, side_effect=zipfile.ZipFile.read) as reads, \
+                    patch.object(generator, "pack_directory", wraps=generator.pack_directory) as packs:
+                imported = service.import_source(source)
+            self.assertEqual(sum(call.args[1] == "room.archipelago" for call in reads.call_args_list), 1)
+            self.assertEqual(packs.call_count, 2)
+            self.assertEqual(len(imported.generated_paks), 2)
+            for player, pak in zip(room.player_ids, imported.generated_paks):
+                container = root / (room.get_out_file_name_base(player) + ".apkh3")
+                individual = PakGenerator.generate_kh3_pak_from_container(container, root / f"player-{player}")
+                self.assertEqual(pak.name, individual.pak_path.name)
+                self.assertEqual(pak.read_bytes(), individual.pak_path.read_bytes())
+
     def _run_manager(self, root: Path, *, running=False) -> KH3RunManagerService:
         return KH3RunManagerService(
             run_root=root / "user" / "kh3" / "runs",
@@ -65,16 +116,13 @@ class KH3SeedImportServiceTest(unittest.TestCase):
         def generate_archive(
             _source: Path,
             output_dir: Path,
-            *,
-            requested_slot: int | None = None,
+            slots: list[dict],
         ) -> list[KH3PakResult]:
             if archive_calls is not None:
-                archive_calls.append(requested_slot)
-            players = ((1, "Sora"), (2, "Riku"))
+                archive_calls.extend(slot["slot"] for slot in slots)
             results: list[KH3PakResult] = []
-            for player, slot_name in players:
-                if requested_slot is not None and player != requested_slot:
-                    continue
+            for slot in slots:
+                player, slot_name = slot["slot"], slot["name"]
                 pak = _write_generated_pak(
                     output_dir,
                     seed="22222222222222222222",

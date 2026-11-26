@@ -274,14 +274,16 @@ class KH3BridgeSession:
 
 
     def runtime_item_apply_event_context_status(self, payload):
-        runtime = self.load_bridge_runtime_status() or {}
-        seed = self.slot_data.get("kh3_seed") or {}
-        native = self.native_reconciliation_state() or {}
+        # This snapshot is already bound to the active native PID, seed and slot.
+        native = self.native_reconciliation_state()
+        if native is None:
+            return {"ready": False, "reason": "native_reconciliation_pending", "retry": True}
         bound = (payload.get("owner") == "dll" and type(payload.get("process_id")) is int
-                 and payload["process_id"] > 0 and payload["process_id"] == runtime.get("kh3_process_pid")
-                 and payload.get("seed_name") == seed.get("seed_name") and payload.get("slot") == seed.get("slot")
+                 and payload["process_id"] == native["process_id"]
+                 and payload.get("seed_name") == native["seed_name"]
+                 and type(payload.get("slot")) is int and payload["slot"] == native["slot"]
                  and type(payload.get("delivery_epoch")) is int
-                 and 0 <= payload["delivery_epoch"] <= native.get("delivery_epoch", -1))
+                 and 0 <= payload["delivery_epoch"] <= native["delivery_epoch"])
         return {"ready": bound, "reason": "bound_native_ack" if bound else "native_ack_identity_mismatch"}
 
 
@@ -436,7 +438,8 @@ class KH3BridgeSession:
             raise ValueError("KH3 acknowledgment has not completed native receipt bookkeeping")
         context_status = self.runtime_item_apply_event_context_status(payload)
         if not context_status["ready"]:
-            return {"status": "unsafe_context_ignored", "reason": context_status["reason"],
+            status = "awaiting_native_context" if context_status.get("retry") else "unsafe_context_ignored"
+            return {"status": status, "reason": context_status["reason"],
                     "indices": [], "newly_applied_indices": [], "applied_actions": []}
         event_key = payload["event_key"]
         if getattr(self, "_last_receipt_ack_key", None) == event_key:

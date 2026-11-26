@@ -159,10 +159,30 @@ def test_export_keeps_random_and_weighted_choices_unrolled():
     roll_settings(yaml.safe_load(model.export_text()))
 
 
+def test_random_subsets_and_ranges_survive_presets_and_roll_in_archipelago(tmp_path):
+    model = PlayerOptions()
+    model.values.update(ultima_weapon_mode=["shards", "yozora"], lucky_emblem_limit=[30, 50, 60],
+                        ultima_weapon_shard_count="random-range-5-9", battle_level_offset=[-2, -1, 0])
+    store = PresetStore(tmp_path)
+    store.save("Mystery", model)
+    loaded = store.load("Mystery")
+    assert loaded.values == model.values
+    document = yaml.safe_load(loaded.export_text())
+    for _ in range(10):
+        rolled = roll_settings(document)
+        assert rolled.ultima_weapon_mode.current_key in ("shards", "yozora")
+        assert rolled.lucky_emblem_limit.value in (30, 50, 60)
+        assert 5 <= rolled.ultima_weapon_shard_count.value <= 9
+        assert -2 <= rolled.battle_level_offset.value <= 0
+
+
 @pytest.mark.parametrize("key,value", [
     ("heart_piece_count", -1), ("heart_piece_count", "oops"),
     ("death_link", {"true": -1}), ("death_link", {"true": 0}),
     ("death_link", {"true": "lots"}), ("death_link", "random-invalid"),
+    ("ultima_weapon_mode", []), ("ultima_weapon_mode", [["shards"]]),
+    ("lucky_emblem_limit", [30, 45]), ("ultima_weapon_shard_count", "random-range-4-14"),
+    ("ultima_weapon_shard_count", "random-range-9-5"),
     ("start_inventory", {"No such KH3 item": 1}),
     ("start_inventory", {"Potion": -1}),
     ("start_inventory", {"Potion": 1.5}),
@@ -393,6 +413,87 @@ def test_native_creator_categories_search_and_editor_callbacks():
         next(widget for widget in widgets if isinstance(widget, tk.Button)
              and widget.cget('text') == 'Apply').invoke()
         assert app.model.values['start_inventory'] == {first_item: 1}
+
+        app.changed_only.set(False)
+        app.root.deiconify()
+        for key, first, second, expected in (
+                ('ultima_weapon_mode', 'shards', 'yozora', ['shards', 'yozora']),
+                ('lucky_emblem_limit', '50', '30', [30, 50])):
+            app.search.set(key)
+            app.render()
+            app.root.update()
+            row = app.rows[key]
+            buttons = {str(button.cget('value')): button for button in row['selector'].buttons}
+            def selected():
+                return {name for name, button in buttons.items() if button.instate(['selected'])}
+            def mouse(name, number, modifier=''):
+                button = buttons[name]
+                for action in ('Press', 'Release'):
+                    button.event_generate(f'<{modifier}Button{action}-{number}>', x=2, y=2)
+                app.root.update()
+
+            assert selected() == {first}
+            mouse(second, 1, 'Shift-')
+            assert selected() == {first, second} and row['random'].get()
+            assert app.model.values[key] == expected
+            app._replace_model(PlayerOptions.from_text(app._export_text()))
+            assert selected() == {first, second}
+            mouse(first, 3)
+            assert selected() == {second} and not row['random'].get()
+            mouse(second, 3)
+            assert selected() == {second}
+            mouse(first, 3)
+            assert selected() == {first, second}
+            mouse(first, 1)
+            assert selected() == {first} and not row['random'].get()
+            row['random_button'].invoke()
+            assert selected() == set(buttons)
+            mouse(first, 1, 'Shift-')
+            assert selected() == set(buttons) - {first}
+            app.reset_option(key)
+            assert selected() == {first}
+        for key, lower, upper, expected in (('ultima_weapon_shard_count', 5, 9, 'random-range-5-9'),
+                                            ('battle_level_offset', -2, 1, [-2, -1, 0, 1])):
+            app.search.set(key)
+            app.render()
+            row = app.rows[key]
+            with patch('tkinter.Toplevel', side_effect=AssertionError('expected inline fields')):
+                row['random_button'].invoke()
+                app.root.update()
+            fields = [w for w in descendants(row['editor']) if w.winfo_class() == 'TSpinbox']
+            minimum, maximum = fields
+            assert all(w.winfo_viewable() for w in fields)
+            option = app.model.types[key]
+            minimum.set(option.range_start - 99)
+            minimum.event_generate('<FocusOut>')
+            maximum.set(option.range_end + 99)
+            app._export_text()
+            assert [int(w.get()) for w in fields] == [option.range_start, option.range_end]
+            assert app.model.values[key] == 'random'
+            minimum.event_generate('<<Decrement>>')
+            maximum.event_generate('<<Increment>>')
+            assert [int(w.get()) for w in fields] == [option.range_start, option.range_end]
+            minimum.set(lower)
+            minimum.event_generate('<FocusOut>')
+            maximum.set(upper)
+            app._export_text()
+            assert app.model.values[key] == expected
+            assert float(maximum.cget('from')) == lower and float(minimum.cget('to')) == upper
+            saved = app._export_text()
+            minimum.set(upper + 1)
+            minimum.event_generate('<FocusOut>')
+            assert [int(w.get()) for w in fields] == [upper, upper]
+            app._replace_model(PlayerOptions.from_text(saved))
+            assert [int(w.get()) for w in fields] == [lower, upper]
+            maximum.set(lower - 1)
+            maximum.event_generate('<FocusOut>')
+            assert [int(w.get()) for w in fields] == [lower, lower]
+            maximum.set('')
+            app._export_text()
+            assert int(maximum.get()) == lower
+            app.reset_option(key)
+        app.root.withdraw()
+
         app._set('boss_blacklist', ['BOSS_0106'])
         app.pick_entries('boss_blacklist')
         picker = next(child for child in app.root.winfo_children()

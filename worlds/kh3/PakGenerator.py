@@ -13,11 +13,11 @@ import zipfile
 import zlib
 from dataclasses import dataclass
 from pathlib import Path
-from types import SimpleNamespace
 from typing import Any
 
 import Utils
 
+from .ap_archive import ArchiveValidationError, find_archipelago_entry_name
 from .PackageResources import safe_file_fragment
 from .installer_support.release_archive import verified_archive
 from .platform_support.download_tls import create_download_ssl_context
@@ -60,13 +60,10 @@ class KH3PakResult:
 def load_multidata_from_ap_zip(ap_zip_path: Path) -> dict[str, Any]:
     try:
         with zipfile.ZipFile(ap_zip_path) as archive:
-            archipelago_name = next(
-                (name for name in archive.namelist() if name.endswith(".archipelago")),
-                None,
-            )
-            if archipelago_name is None:
-                raise KH3PakGenerationError(f"No .archipelago payload found in {ap_zip_path}.")
+            archipelago_name = find_archipelago_entry_name(archive.namelist())
             payload = archive.read(archipelago_name)
+    except ArchiveValidationError as exc:
+        raise KH3PakGenerationError(str(exc)) from exc
     except zipfile.BadZipFile as exc:
         raise KH3PakGenerationError(f"Generated AP zip is malformed: {ap_zip_path}") from exc
 
@@ -270,11 +267,11 @@ def ensure_kh3_generation_tools_available() -> dict[str, Any]:
 
 
 def generate_python_seed(randomizer_root: Path, output: Path, seed: str,
-                         config_path: Path, options_path: Path, metadata_path: Path) -> None:
+                         config_path: Path, options_path: Path, metadata_path: Path) -> tuple[Path, Path | None]:
     from .seedgen.generator import generate_seed
 
     try:
-        generate_seed(randomizer_root, output, seed,
+        return generate_seed(randomizer_root, output, seed,
                       json.loads(config_path.read_text(encoding="utf-8")),
                       json.loads(options_path.read_text(encoding="utf-8")),
                       json.loads(metadata_path.read_text(encoding="utf-8")))
@@ -534,59 +531,6 @@ def validate_generated_seed_staging(randomizer_root: Path, seed: str, slot_name:
         )
 
 
-def export_exact_randomized_options(
-    ap_zip_path: Path,
-    output_dir: Path,
-    slot_id: int,
-    seed: str,
-    randomizer_root: Path,
-    extracted_data_path: Path,
-) -> Path:
-    from .export_ap_kh3_randomized_options import export_randomized_options
-
-    randomized_options_path = output_dir / f"{seed}.randomized-options.json"
-    foreign_item_manifest_path = output_dir / f"{seed}.foreign-items.json"
-    placement_summary_path = output_dir / f"{seed}.placement-summary.json"
-    result = export_randomized_options(SimpleNamespace(
-        ap_zip=ap_zip_path,
-        default_kh3=randomizer_root / "wwwroot" / "DefaultKH3.json",
-        default_kh3_overrides=randomizer_root / "wwwroot" / "DefaultKH3.ArchipelagoOverrides.json",
-        extracted_data=extracted_data_path,
-        runtime_root=ROOT,
-        slot=slot_id,
-        chrinit_sora_have_ability=[],
-        event_reward_override=[],
-    ))
-    randomized_options_path.write_text(json.dumps(result.randomized_options, indent=2), encoding="utf-8")
-    foreign_item_manifest_path.write_text(json.dumps(result.foreign_item_manifest, indent=2), encoding="utf-8")
-    placement_summary_path.write_text(json.dumps(result.placement_summary, indent=2), encoding="utf-8")
-    return randomized_options_path
-
-
-def write_archipelago_seed_metadata(
-    kh3_output_dir: Path,
-    slot: dict[str, Any],
-    seed: str,
-) -> Path:
-    from .RaceMode import race_slot_data
-    foreign_manifest_path = kh3_output_dir / f"{seed}.foreign-items.json"
-    placement_summary_path = kh3_output_dir / f"{seed}.placement-summary.json"
-    metadata_path = kh3_output_dir / f"{seed}.archipelago-seed-metadata.json"
-    metadata = {
-        "format": "kh3_ap_seed_metadata",
-        "format_version": 1,
-        "seed_creation_version": slot["slot_data"].get("kh3_seed", {}).get("seed_creation_version"),
-        "seed": seed,
-        "slot": slot["slot"],
-        "slot_name": slot["name"],
-        "slot_data": race_slot_data(slot["slot_data"]),
-        "foreign_item_manifest": json.loads(foreign_manifest_path.read_text(encoding="utf-8")),
-        "placement_summary": json.loads(placement_summary_path.read_text(encoding="utf-8")),
-    }
-    metadata_path.write_text(json.dumps(metadata, indent=2, sort_keys=True), encoding="utf-8")
-    return metadata_path
-
-
 def load_kh3_container_data(container_path: Path) -> dict[str, Any]:
     try:
         with zipfile.ZipFile(container_path) as archive:
@@ -691,22 +635,34 @@ def generate_kh3_pak_from_container(
     # Reject malformed inputs before downloading tools, restoring dependencies,
     # or replacing the previous generation's working assets.
     container_data = load_kh3_container_data(container_path)
-    try:
-        slot_id = int(container_data["slot"])
-        slot_name = str(container_data["slot_name"])
-        config_payload = dict(container_data["randomizer_config"])
-    except (KeyError, TypeError, ValueError) as exc:
-        raise KH3PakGenerationError("KH3 container is missing valid player or randomizer settings.") from exc
-    seed = safe_file_fragment(str(container_data.get("pak_seed") or container_path.stem))
-
     output_dir = Path(output_dir).expanduser().resolve() if output_dir else container_path.parent / "kh3-player-paks"
-    output_dir.mkdir(parents=True, exist_ok=True)
+    return _generate_player_paks([container_data], output_dir)[0]
+
+
+def _generate_player_paks(players: list[dict[str, Any]], output_dir: Path) -> list[KH3PakResult]:
+    for player in players:
+        if (not isinstance(player.get("slot"), int) or player["slot"] <= 0
+                or not isinstance(player.get("slot_name"), str) or not player["slot_name"].strip()
+                or not isinstance(player.get("randomizer_config"), dict)
+                or not isinstance(player.get("pak_seed"), str) or not player["pak_seed"].strip()):
+            raise KH3PakGenerationError("KH3 seed is missing valid player, seed or randomizer settings.")
     work_dir = output_dir / "work"
     work_dir.mkdir(parents=True, exist_ok=True)
     ensure_kh3_generation_tools_available()
     randomizer_root = prepare_randomizer_root(work_dir)
     extracted_data_path = prepare_extracted_data(work_dir)
+    return [
+        _generate_player_pak(player, output_dir, work_dir, randomizer_root, extracted_data_path)
+        for player in players
+    ]
 
+
+def _generate_player_pak(container_data: dict[str, Any], output_dir: Path, work_dir: Path,
+                         randomizer_root: Path, extracted_data_path: Path) -> KH3PakResult:
+    slot_id = int(container_data["slot"])
+    slot_name = str(container_data["slot_name"])
+    config_payload = dict(container_data["randomizer_config"])
+    seed = safe_file_fragment(container_data["pak_seed"])
     config_path = work_dir / f"{seed}.json"
     config_payload["seed"] = seed
     config_path.write_text(json.dumps(config_payload, indent=2, sort_keys=True), encoding="utf-8")
@@ -719,25 +675,23 @@ def generate_kh3_pak_from_container(
         extracted_data_path,
     )
     metadata_path = write_container_seed_metadata(work_dir, container_data, seed)
-    generate_python_seed(randomizer_root, work_dir, seed, config_path, randomized_options_path, metadata_path)
+    pak_path, spoiler_path = generate_python_seed(
+        randomizer_root, work_dir, seed, config_path, randomized_options_path, metadata_path,
+    )
     validate_generated_seed_staging(randomizer_root, seed, slot_name)
-
-    pak_path = select_generated_pak(work_dir, seed, slot_name)
     destination = output_dir / pak_path.name
-    shutil.copy2(pak_path, destination)
+    with tempfile.TemporaryDirectory(dir=output_dir) as temporary:
+        copy = Path(temporary) / pak_path.name
+        shutil.copy2(pak_path, copy)
+        copy.replace(destination)
 
     if container_data["slot_data"].get("race_mode"):
         from .RaceMode import remove_race_spoilers
         remove_race_spoilers(output_dir, seed)
-    spoiler_candidates = [] if container_data["slot_data"].get("race_mode") else sorted(
-        work_dir.glob(f"SpoilerLog-{seed}*"),
-        key=lambda path: path.stat().st_mtime,
-        reverse=True,
-    )
     spoiler_destination = None
-    if spoiler_candidates:
-        spoiler_destination = output_dir / spoiler_candidates[0].name
-        shutil.copy2(spoiler_candidates[0], spoiler_destination)
+    if spoiler_path is not None:
+        spoiler_destination = output_dir / spoiler_path.name
+        shutil.copy2(spoiler_path, spoiler_destination)
 
     return KH3PakResult(
         slot=slot_id,
@@ -760,60 +714,32 @@ def generate_kh3_paks_from_ap_zip(
     kh3_slots = iter_kh3_slots(multidata, requested_slot)
 
     output_dir = Path(output_dir).expanduser().resolve() if output_dir else ap_zip_path.parent / "kh3-player-paks"
-    output_dir.mkdir(parents=True, exist_ok=True)
-    work_dir = output_dir / "work"
-    work_dir.mkdir(parents=True, exist_ok=True)
-    ensure_kh3_generation_tools_available()
-    randomizer_root = prepare_randomizer_root(work_dir)
-    extracted_data_path = prepare_extracted_data(work_dir)
+    return generate_kh3_paks_from_archive_slots(ap_zip_path, output_dir, kh3_slots)
 
-    results: list[KH3PakResult] = []
 
-    for slot in kh3_slots:
-        slot_id = int(slot["slot"])
-        slot_name = str(slot["name"])
-        seed = safe_file_fragment(f"{ap_zip_path.stem}-{slot_id}-{slot_name}")
-        config_path = work_dir / f"{seed}.json"
-        config_payload = dict(slot["randomizer_config"])
-        config_payload["seed"] = seed
-        config_path.write_text(json.dumps(config_payload, indent=2, sort_keys=True), encoding="utf-8")
-
-        randomized_options_path = export_exact_randomized_options(
-            ap_zip_path,
-            work_dir,
-            slot_id,
-            seed,
-            randomizer_root,
-            extracted_data_path,
-        )
-        metadata_path = write_archipelago_seed_metadata(work_dir, slot, seed)
-        generate_python_seed(randomizer_root, work_dir, seed, config_path, randomized_options_path, metadata_path)
-        validate_generated_seed_staging(randomizer_root, seed, slot_name)
-
-        pak_path = select_generated_pak(work_dir, seed, slot_name)
-        destination = output_dir / pak_path.name
-        shutil.copy2(pak_path, destination)
-
-        if slot["slot_data"].get("race_mode"):
+def generate_kh3_paks_from_archive_slots(
+    ap_zip_path: Path, output_dir: Path, slots: list[dict[str, Any]],
+) -> list[KH3PakResult]:
+    players = []
+    for slot in slots:
+        slot_data = slot["slot_data"]
+        identity = slot_data.get("kh3_seed", {})
+        if not isinstance(identity, dict) or not isinstance(identity.get("archive_name"), str) or not identity["archive_name"]:
+            raise KH3PakGenerationError(f"KH3 slot {slot['slot']} is missing its embedded seed identity.")
+        players.append({
+            "pak_seed": identity.get("pak_seed"),
+            "archive_name": identity["archive_name"],
+            "slot": slot["slot"],
+            "slot_name": slot["name"],
+            "slot_data": slot_data,
+            "randomizer_config": slot["randomizer_config"],
+        })
+    results = _generate_player_paks(players, output_dir)
+    for player in players:
+        if player["slot_data"].get("race_mode"):
             from .RaceMode import remove_race_spoilers
-            remove_race_spoilers(output_dir, seed)
-        spoiler_candidates = [] if slot["slot_data"].get("race_mode") else sorted(
-            work_dir.glob(f"SpoilerLog-{seed}*"),
-            key=lambda path: path.stat().st_mtime,
-            reverse=True,
-        )
-        spoiler_destination = None
-        if spoiler_candidates:
-            spoiler_destination = output_dir / spoiler_candidates[0].name
-            shutil.copy2(spoiler_candidates[0], spoiler_destination)
-
-        results.append(
-            KH3PakResult(
-                slot=slot_id,
-                slot_name=slot_name,
-                pak_path=destination,
-                spoiler_log_path=spoiler_destination,
-            )
-        )
-
+            # Prior ZIP imports named spoiler files after the downloaded archive.
+            previous_seed = safe_file_fragment(f"{ap_zip_path.stem}-{player['slot']}-{player['slot_name']}")
+            for directory in (output_dir, output_dir / "work"):
+                remove_race_spoilers(directory, previous_seed)
     return results

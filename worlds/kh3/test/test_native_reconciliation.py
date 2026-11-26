@@ -83,11 +83,12 @@ def test_catalog_publishes_only_ap_facts_and_leaves_decoding_to_native(tmp_path)
 
 def test_bound_native_ack_is_valid_across_map_changes_and_old_epochs(tmp_path):
     session, native = native_session(tmp_path, pending=[1])
+    session.store.write_json("bridge_runtime_status.json", {"kh3_process_pid": 35186, "kh3_native_process_pid": 777})
     session.store.write_json("runtime_context.json", {"object": "new pawn real=false"})
     ack = dict(owner="dll", process_id=777, seed_name="test-seed", slot=1, delivery_epoch=3,
         request_id="native-delivery-777-1", action_kind="runtime_item_grant_batch", status="applied", applied_indices=[1])
     assert session.runtime_item_apply_event_context_status(ack)["ready"]
-    for field, value in (("process_id", 999), ("seed_name", "another-seed"), ("slot", 2), ("delivery_epoch", -1)):
+    for field, value in (("process_id", 35186), ("seed_name", "another-seed"), ("slot", 2), ("delivery_epoch", -1)):
         assert not session.runtime_item_apply_event_context_status(dict(ack, **{field: value}))["ready"]
     # Delayed client bookkeeping never alters a newer native restore generation.
     assert session.native_reconciliation_state() == native

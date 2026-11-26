@@ -187,6 +187,9 @@ def select_secret_reports(seed, settings, placements, slot):
             # so each group still has a report that will not point to its own item.
             batches = [[p for p in sources if p['item_name'] != 'Secret Report 13'],
                        [p for p in sources if p['item_name'] == 'Secret Report 13']]
+        if hint_type == 'Category':
+            count = len(sources)
+            text = f'There is 1 important check {text}' if count == 1 else f'There are {count} important checks {text}'
         for batch in batches:
             hinted = {p['item_name'] for p in batch}
             eligible = [report for report in values if f'Secret Report {int(report[12:]) - 1}' not in hinted]
@@ -194,9 +197,6 @@ def select_secret_reports(seed, settings, placements, slot):
                 raise ValueError('Secret Report category would hint every report, including itself')
             minimum = min(len(values[report]) for report in eligible)
             report = rng.choice([report for report in eligible if len(values[report]) == minimum])
-            if hint_type == 'Category':
-                count = len(sources)
-                text = f'There is 1 important check {text}' if count == 1 else f'There are {count} important checks {text}'
             values[report].append(text)
             targets[report].extend(batch)
     maximum = max(map(len, values.values()), default=0)

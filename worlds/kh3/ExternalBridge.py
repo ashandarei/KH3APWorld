@@ -29,6 +29,7 @@ from .bridge_support.paths import (
     SLOT_DATA_FILE,
     bridge_sidecar_path,
 )
+from .bridge_support.runtime_snapshots import native_process_pid
 from .bridge_support.time import parse_utc_datetime
 from .BridgeSession import KH3BridgeSession
 from .platform_support import process_status as _process_status
@@ -426,8 +427,9 @@ class SaveFilesBackend:
                     if status_writer is not None:
                         status_writer.heartbeat("watching_native_channels")
                     status = load_optional_json_view(session.bridge_dir / BRIDGE_RUNTIME_STATUS_FILE) or {}
-                    binding = (status.get("kh3_process_pid"), file_signature(session.bridge_dir / SLOT_DATA_FILE))
-                    consume("runtime_receipt_ack_event.json", self._apply_runtime_item_apply_event_if_present, binding)
+                    binding = (native_process_pid(status), file_signature(session.bridge_dir / SLOT_DATA_FILE))
+                    consume("runtime_receipt_ack_event.json", self._apply_runtime_item_apply_event_if_present, binding,
+                            "runtime_reconciliation_state.json")
                     consume("runtime_ap_message_result.json", self._consume_runtime_ap_message_result_if_present, binding)
                     consume("runtime_loot_event.json", self._apply_runtime_loot_event_if_present, binding)
                     consume("runtime_notification_event.json", self._apply_native_notification_if_present, binding)
@@ -539,6 +541,8 @@ class SaveFilesBackend:
             return None
         session.runtime_item_apply_event_key(payload)
         result = session.apply_runtime_item_apply_event(payload)
+        if result.get("status") == "awaiting_native_context":
+            return result
         if result.get("status") == "duplicate_event":
             acknowledge_pipe_event(runtime_item_apply_path, payload)
             return result

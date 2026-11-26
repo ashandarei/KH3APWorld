@@ -257,7 +257,8 @@ def test_category_hints_cover_all_thirteen_reports_in_one_remote_world_without_s
     assert {p["location"] for records in targets.values() for p in records} == set(range(1, 14))
     for report, records in targets.items():
         assert all(p["item_name"] != f"Secret Report {report}" for p in records)
-    assert all("13 important checks" in text for texts in hints.values() for text in texts if text)
+    hint_lines = [text for texts in hints.values() for text in texts if text]
+    assert hint_lines == ["There are 13 important checks in Riku's A Link to the Past world."] * 2
 
 
 def test_invalid_generation_preserves_an_existing_output_pak(templates, tmp_path):

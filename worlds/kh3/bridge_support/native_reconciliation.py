@@ -6,6 +6,7 @@ the client. Receipt accounting and its durable journal belong to the DLL.
 from __future__ import annotations
 
 from .files import atomic_write_json, load_optional_json_view
+from .runtime_snapshots import native_process_pid
 from .saved_receipts import SavedReceipts
 
 STATE = "runtime_reconciliation_state.json"
@@ -19,7 +20,7 @@ def state(session):
     runtime = session.load_bridge_runtime_status() or {}
     identity = session.slot_data.get("kh3_seed") or {}
     if (payload.get("owner") != "dll" or type(payload.get("process_id")) is not int
-            or payload["process_id"] <= 0 or payload["process_id"] != runtime.get("kh3_native_process_pid", runtime.get("kh3_process_pid"))
+            or payload["process_id"] <= 0 or payload["process_id"] != native_process_pid(runtime)
             or payload.get("seed_name") != identity.get("seed_name")
             or type(payload.get("slot")) is not int or payload.get("slot") != identity.get("slot")
             or type(payload.get("delivery_epoch")) is not int):

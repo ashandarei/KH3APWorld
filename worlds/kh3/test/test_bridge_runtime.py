@@ -188,11 +188,12 @@ def test_unchanged_channels_skip_handlers_and_failed_dispatch_retries(monkeypatc
 def test_backend_dispatches_only_changed_channels_and_new_binding(monkeypatch, tmp_path):
     from .. import ExternalBridge as backend_module
 
-    state = {"cycles": 0, "pid": 1, "checks": 1, "items": 1}
+    state = {"cycles": 0, "native_pid": None, "host_pid": 35186, "checks": 1, "items": 1}
     monkeypatch.setattr(backend_module, "configure_python_profiler", Mock())
     monkeypatch.setattr(backend_module, "record_python_profile_sample", Mock())
     monkeypatch.setattr(backend_module, "transport_for", lambda _: object())
-    monkeypatch.setattr(backend_module, "load_optional_json_view", lambda _: {"kh3_process_pid": state["pid"]})
+    monkeypatch.setattr(backend_module, "load_optional_json_view", lambda _: {
+        "kh3_process_pid": state["host_pid"], "kh3_native_process_pid": state["native_pid"]})
     monkeypatch.setattr(backend_module, "file_signature", lambda p: (
         state["checks"] if p.name == "runtime_check_state.json" else
         state["items"] if p.name == "ap_items.json" else 1))
@@ -207,10 +208,13 @@ def test_backend_dispatches_only_changed_channels_and_new_binding(monkeypatch, t
 
     def wait(_):
         state["cycles"] += 1
+        if state["cycles"] == 1:
+            state["host_pid"] += 1
         if state["cycles"] == 2:
+            assert backend._sync_native_checks.call_count == 1
             state.update(checks=2, items=2)
         if state["cycles"] == 3:
-            state["pid"] = 2
+            state["native_pid"] = 360
 
     monkeypatch.setattr(backend, "_wait_for_next_poll", wait)
     session = Mock(bridge_dir=tmp_path)

@@ -32,16 +32,12 @@ from .Data import (
     EVENT_LOGIC_REQUIREMENTS,
     HIGHER_TIER_TIER_ONE_KEYBLADE_COUNT,
     INGREDIENT_LOGIC_REQUIREMENTS,
-    LEVEL_UP_XP_SOURCE_KEYBLADE_ITEM_NAMES,
     LEVEL_UP_XP_SOURCE_LOGIC_REQUIREMENTS,
     LEVEL_UP_XP_SOURCE_REGION_NAMES,
     LUCKY_EMBLEM_LOGIC_REQUIREMENTS_BY_WORLD,
     PORTAL_KEYBLADE_REGION_LOCKS,
-    PORTAL_PARTY_ITEM_NAMES,
-    PORTAL_PARTY_REGION_LOCKS,
     PROGRESSIVE_KEYBLADE_LEVEL_ITEM_NAME_BY_KEYBLADE,
     THE_CARIBBEAN_PORTAL_LOGIC_REQUIREMENTS,
-    TIER_ONE_PORTAL_KEYBLADE_ITEM_NAMES,
     TWILIGHT_TOWN_PORTAL_LOGIC_REQUIREMENTS,
     VICTORY_BONUS_LOGIC_REQUIREMENTS,
     WORLD_DIFFICULTY_TIERS,
@@ -58,7 +54,7 @@ from .Locations import COMPLETION_LOCATION_NAME
 from .Logic import MAGIC_UNLOCK_ITEM
 from .Regions import HUB_REGION_NAME, KEYBLADE_GRAVEYARD_REMIND_SHARED_REGION_NAME
 from .kh02.locations import KH02_MAGIC_REQUIRED_SOURCE_IDS, KH02_WORLD
-from .rule_helpers import CountReachableRules, CountRules, requirement_rule
+from .rule_helpers import CountReachableRules, requirement_rule
 from .WallRun import WALL_RUN, WALL_RUN_REGION_GROUPS, WORLD_WALL_RUN_ITEMS
 from .Workshop import (
     PHOTO_MISSION_ADDITIONAL_SOURCES,
@@ -89,7 +85,7 @@ def is_level_up_forbidden_item(item, player: int, forbidden_item_names: frozense
 
 def set_rules(world) -> None:
     player = world.player
-    party_portals = world.options.portal_unlocks.value == 1
+    portal_items = world.portal_unlock_items
     rows_by_source_key = {
         (row["source_table"], row["source_id"]): row
         for row in world.active_locations + world.logic_reference_locations
@@ -112,8 +108,7 @@ def set_rules(world) -> None:
     level_up_forbidden_item_names = ALWAYS_LEVEL_UP_FORBIDDEN_ITEM_NAMES | frozenset(
         final_door_required_item_counts
     )
-    if party_portals:
-        level_up_forbidden_item_names |= PORTAL_PARTY_ITEM_NAMES
+    level_up_forbidden_item_names |= world.portal_party_items
     existing_region_names = {region.name for region in world.multiworld.get_regions(player)}
 
     def can_reach_source(source_key, *, chest_area=False):
@@ -276,7 +271,6 @@ def set_rules(world) -> None:
         if not entrance.name.startswith("To "):
             continue
         region_name = entrance.name[3:]
-        required_keyblade = PORTAL_KEYBLADE_REGION_LOCKS.get(region_name)
         rule = True_()
         if region_name == "Final Door":
             rule = HasAllCounts(final_door_required_item_counts) if final_door_required_item_counts else True_()
@@ -293,28 +287,20 @@ def set_rules(world) -> None:
                 ), count=required_worlds, label="Completed worlds")
         elif region_name == KH02_WORLD:
             # Aqua supplies the chapter's combat and movement abilities.
-            rule = (HasAny(*PORTAL_PARTY_REGION_LOCKS["Dark World"])
-                    if party_portals else Has("Oblivion"))
+            rule = Has(portal_items["Dark World"])
         elif region_name == KEYBLADE_GRAVEYARD_REMIND_SHARED_REGION_NAME:
             rule = Or(*(CanReachRegion(name) for name in ("Keyblade Graveyard", "Re Mind")
                         if name in existing_region_names))
-        elif party_portals and region_name in PORTAL_PARTY_REGION_LOCKS:
-            rule = HasAny(*PORTAL_PARTY_REGION_LOCKS[region_name])
-        elif required_keyblade is not None:
-            rule = Has(required_keyblade)
+        elif region_name in portal_items:
+            rule = Has(portal_items[region_name])
         elif region_name == "Level Ups":
-            rule = (Or(*(HasAny(*PORTAL_PARTY_REGION_LOCKS[name])
-                         for name in sorted(LEVEL_UP_XP_SOURCE_REGION_NAMES)))
-                    if party_portals else HasAny(*LEVEL_UP_XP_SOURCE_KEYBLADE_ITEM_NAMES))
+            rule = HasAny(*(portal_items[name] for name in sorted(LEVEL_UP_XP_SOURCE_REGION_NAMES)))
         # Story worlds rely on their check-level combat requirements.
         # Only Data Battles retains the three tier-one world access gate.
         if region_name == "Data Battles":
-            rule &= (CountRules(*(HasAny(*PORTAL_PARTY_REGION_LOCKS[name])
-                                  for name in sorted(WORLD_DIFFICULTY_TIERS[1])
-                                  if name in PORTAL_PARTY_REGION_LOCKS),
-                                count=HIGHER_TIER_TIER_ONE_KEYBLADE_COUNT, label="Open tier-one worlds")
-                     if party_portals else HasFromListUnique(
-                         *TIER_ONE_PORTAL_KEYBLADE_ITEM_NAMES, count=HIGHER_TIER_TIER_ONE_KEYBLADE_COUNT))
+            rule &= HasFromListUnique(
+                *(portal_items[name] for name in sorted(WORLD_DIFFICULTY_TIERS[1]) if name in portal_items),
+                count=HIGHER_TIER_TIER_ONE_KEYBLADE_COUNT)
         if region_name == "Twilight Town":
             rule &= world_requirement(TWILIGHT_TOWN_PORTAL_LOGIC_REQUIREMENTS, region_name)
         if region_name == "Keyblade Graveyard":

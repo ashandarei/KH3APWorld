@@ -70,6 +70,46 @@ def test_completed_ack_is_consumed_even_when_native_last_event_already_matches(t
         session.apply_runtime_item_apply_event(dict(ack, schema='raw'))
 
 
+@pytest.mark.parametrize("late_input", ["pid", "reconciliation"])
+def test_backend_retries_queued_proton_ack_when_binding_is_ready(tmp_path, monkeypatch, late_input):
+    session, native = native_session(tmp_path)
+    native["process_id"] = 360
+    status = {"kh3_process_pid": 35186, "kh3_native_process_pid": 360}
+    ack = {key: native[key] for key in ("owner", "process_id", "seed_name", "slot", "delivery_epoch")}
+    ack.update(schema="kh3ap.receipt_ack.v1", receipt_bookkeeping_owner="dll", event_key="proton-ack",
+               indices=[0], newly_applied_indices=[0], pending_item_count=0, status="applied")
+    channel = "runtime_receipt_ack_event.json"
+    pipe = register(tmp_path)
+    try:
+        def publish_snapshot():
+            pipe.accept([(SET, "runtime_reconciliation_state.json", 1, json.dumps(native).encode())])
+
+        if late_input == "pid":
+            publish_snapshot()
+        initial = {**status, "kh3_native_process_pid": None} if late_input == "pid" else status
+        session.store.write_json("bridge_runtime_status.json", initial)
+        pipe.accept([(SET, channel, 1, json.dumps(ack).encode())])
+        backend = SaveFilesBackend(tmp_path, reporter=Mock())
+        cycles = iter(range(2))
+        monkeypatch.setattr(backend, "_should_stop", lambda: next(cycles, None) is None)
+
+        def wait(_):
+            if pipe.read(channel) is None:
+                return
+            if late_input == "pid":
+                session.store.write_json("bridge_runtime_status.json", status)
+            else:
+                publish_snapshot()
+
+        monkeypatch.setattr(backend, "_wait_for_next_poll", wait)
+        assert backend.run(session) == 0
+        backend.reporter.error.assert_not_called()
+        assert session._last_receipt_ack_key == "proton-ack"
+        assert pipe.read(channel) is None
+    finally:
+        unregister(pipe)
+
+
 def test_native_ack_queue_retains_each_group(tmp_path):
     pipe = register(tmp_path)
     try:

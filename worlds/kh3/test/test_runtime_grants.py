@@ -241,8 +241,9 @@ class TestKH3RuntimeItemGrantPayload(KH3RuntimeGrantTestCase):
         self.assertIn("return;", waiting)
         self.assertNotIn("consume_request()", waiting)
         self.assertNotIn("write_runtime_item_apply", waiting)
-        # Only Game Over can bypass active special battles and the named map exceptions.
-        self.assertEqual(context_source.count("current_runtime_unsafe_map_status(deps.runtime_state, allow_special_battle_game_over)"), 1)
+        # Battle mode does not gate delivery. Game Over retains its map exceptions.
+        self.assertNotIn("special_battle", context_source)
+        self.assertEqual(context_source.count("current_runtime_unsafe_map_status(deps.runtime_state, policy.game_over_only)"), 1)
         self.assertIn("prepare_delivery_context(deps, policy, true, now)", execution_source)
         self.assertIn("prepare_delivery_context(deps, policy, false, now)", execution_source)
         safety = (grants_dir / "grant_safety.cpp").read_text(encoding="utf-8")

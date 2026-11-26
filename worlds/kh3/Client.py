@@ -38,7 +38,7 @@ from .bridge_support.files import (
     safe_unlink,
 )
 from .bridge_support.paths import RUNTIME_CURRENT_SAVE_SLOT_FILE
-from .bridge_support.runtime_snapshots import NATIVE_RUNTIME_SNAPSHOT_SCHEMAS, bound_runtime_snapshot
+from .bridge_support.runtime_snapshots import NATIVE_RUNTIME_SNAPSHOT_SCHEMAS, bound_runtime_snapshot, native_process_pid
 from .BridgeSession import KH3BridgeSession
 from .CharacterUnlocks import CHARACTER_UNLOCK_ITEM_ALIASES
 from .client_support import bridge_sync_service as bridge_sync_support
@@ -888,7 +888,7 @@ async def bridge_watcher(ctx: KH3Context) -> None:
         if name == "deathlink_game_over":
             # Heartbeat timestamps do not change the DeathLink binding.
             status = load_optional_json_view(root / "bridge_runtime_status.json") or {}
-            extra = status.get("kh3_process_pid")
+            extra = native_process_pid(status)
         elif name == "mom_challenges":
             service = ctx.__dict__.get("_mom_client_service")
             challenge = getattr(service, "_service", None)
