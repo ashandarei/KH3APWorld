@@ -126,6 +126,18 @@ def get_slot_name(multidata: dict[str, Any], slot: int) -> str:
     return getattr(slot_info, "name", str(slot))
 
 
+def archive_report_location_lookup(multidata: dict):
+    """Index only the games whose location names appear in verbose reports."""
+    from functools import cache
+
+    @cache
+    def names_for_game(game):
+        names = multidata.get("datapackage", {}).get(game, {}).get("location_name_to_id", {})
+        return {location_id: name for name, location_id in names.items()}
+
+    return lambda game, address: names_for_game(game).get(address)
+
+
 def require_kh3_slot_data(multidata: dict[str, Any], slot: int) -> dict[str, Any]:
     from .Bridge import BridgeProtocolError
     from .SlotData import decode_slot_data
@@ -135,6 +147,7 @@ def require_kh3_slot_data(multidata: dict[str, Any], slot: int) -> dict[str, Any
         raise ArchiveValidationError(f"Archive slot_data is missing KH3 slot {slot}.")
 
     try:
-        return decode_slot_data(slot_entry)
+        return decode_slot_data(slot_entry, slot_info=multidata["slot_info"],
+                                location_name=archive_report_location_lookup(multidata))
     except BridgeProtocolError as exc:
         raise ArchiveValidationError(str(exc)) from exc

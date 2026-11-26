@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import hashlib
 from typing import Any
 from .Battlegates import BRIDGE_ONLY_BATTLEGATE_EVENT_IDS
 
@@ -54,6 +55,15 @@ def validate_slot_data_payload(slot_data: dict[str, Any], source_description: st
 
 def make_bridge_key(location: dict) -> str:
     return f"{location['source_table']}:{location['source_id']}"
+
+
+def shop_token_namespace(seed_name: str, slot: int) -> str:
+    return hashlib.sha256(f"{seed_name}\0{slot}".encode("utf-8")).hexdigest()[:10].upper()
+
+
+def shop_item_token(row_name: str, location_id: int, namespace: str) -> str:
+    suffix = f"_{namespace}" if namespace else ""
+    return f"ITEM_AP_{row_name}_{location_id}{suffix}"
 
 
 def moogle_shop_native_item_row_name(location: dict) -> str:
@@ -163,7 +173,6 @@ def build_bridge_slot_data(
             if optional_key in location:
                 bridge_location[optional_key] = location[optional_key]
         if location["type"] == "shop":
-            token_suffix = f"_{moogle_shop_token_namespace}" if moogle_shop_token_namespace else ""
             native_row_name = moogle_shop_native_item_row_name(location)
             bridge_location.update({
                 # KH3 derives the native item category and id from the numeric
@@ -172,8 +181,8 @@ def build_bridge_slot_data(
                 # both vanilla rows (1-60) and out-of-range CAMPITEM markers.
                 # Encoding that row in the token lets the native AP resolver
                 # map inventory checks to the same id.
-                "shop_item_token": (
-                    f"ITEM_AP_{native_row_name}_{bridge_location['ap_location_id']}{token_suffix}"
+                "shop_item_token": shop_item_token(
+                    native_row_name, bridge_location["ap_location_id"], moogle_shop_token_namespace,
                 ),
                 "shop_item_row_name": native_row_name,
                 "shop_price": max(0, int(moogle_shop_price)),

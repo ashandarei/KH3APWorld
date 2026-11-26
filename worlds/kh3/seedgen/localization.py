@@ -143,15 +143,34 @@ def hint_location(placement, category=False, slot=0):
             else f'in {world}.' if world else 'at an Archipelago location.')
 
 
-def select_secret_reports(seed, settings, placements, slot):
-    """Select report text and targets from final item placements."""
+def report_hint_type(settings):
     hint_type = settings.get('type', 'Verbose')
     if 'Category' in hint_type:
-        hint_type = 'Category'
-    elif 'Vague' in hint_type:
-        hint_type = 'Vague'
-    if hint_type not in ('None', 'Verbose', 'Vague', 'Category'):
+        return 'Category'
+    if 'Vague' in hint_type:
+        return 'Vague'
+    if hint_type not in ('None', 'Verbose'):
         raise ValueError(f'Unsupported hint type: {hint_type}')
+    return hint_type
+
+
+def verbose_report_line(name, location):
+    if name.startswith('Magic: '):
+        name = name[7:] + ' Element'
+    elif name.startswith(('Ability: ', 'Bonus: ')):
+        name = name.split(': ', 1)[1]
+    return f'{name} is {location}'
+
+
+def counted_report_line(count, category):
+    if count == 1:
+        return f'There is 1 important check {category}'
+    return f'There are {count} important checks {category}'
+
+
+def select_secret_reports(seed, settings, placements, slot, *, wire_reports=None):
+    """Choose report lines and targets once, including their final display order."""
+    hint_type = report_hint_type(settings)
     important = set(settings.get('checks', list(SPECIAL_NAMES.values()) +
                          [f'Secret Report {n}' for n in range(1, 14)] +
                          ['Magic: ' + name for name in ('Fire', 'Blizzard', 'Thunder', 'Aero', 'Water', 'Cure')]))
@@ -160,14 +179,13 @@ def select_secret_reports(seed, settings, placements, slot):
         for placement in placements:
             if int(placement.get('recipient_slot', slot)) != slot or placement['item_name'] not in important:
                 continue
-            name = placement['item_name']
-            if name.startswith('Magic: '):
-                name = name[7:] + ' Element'
-            elif ': ' in name and name.startswith(('Ability:', 'Bonus:')):
-                name = name.split(': ', 1)[1]
             location = hint_location(placement, hint_type in ('Vague', 'Category'), slot)
-            text = f'{name} is {location}' if hint_type == 'Verbose' else (
-                f'There is 1 important check {location}' if hint_type == 'Vague' else location)
+            if hint_type == 'Verbose':
+                text = verbose_report_line(placement['item_name'], location)
+            elif hint_type == 'Vague':
+                text = counted_report_line(1, location)
+            else:
+                text = location
             grouped.setdefault(text, []).append(placement)
     rng = SeedRandom(seed)
     if hint_type == 'Category':
@@ -188,8 +206,8 @@ def select_secret_reports(seed, settings, placements, slot):
             batches = [[p for p in sources if p['item_name'] != 'Secret Report 13'],
                        [p for p in sources if p['item_name'] == 'Secret Report 13']]
         if hint_type == 'Category':
-            count = len(sources)
-            text = f'There is 1 important check {text}' if count == 1 else f'There are {count} important checks {text}'
+            category = text
+            text = counted_report_line(len(sources), category)
         for batch in batches:
             hinted = {p['item_name'] for p in batch}
             eligible = [report for report in values if f'Secret Report {int(report[12:]) - 1}' not in hinted]
@@ -197,14 +215,26 @@ def select_secret_reports(seed, settings, placements, slot):
                 raise ValueError('Secret Report category would hint every report, including itself')
             minimum = min(len(values[report]) for report in eligible)
             report = rng.choice([report for report in eligible if len(values[report]) == minimum])
-            values[report].append(text)
+            # Category counts describe the entire category, including when its
+            # targets are split across reports or there are no targets at all.
+            line_ref = [len(sources), category] if hint_type == 'Category' else len(targets[report])
+            values[report].append((text, line_ref))
             targets[report].extend(batch)
     maximum = max(map(len, values.values()), default=0)
     for hints in values.values():
-        hints.extend([''] * (maximum - len(hints)))
+        hints.extend([('', None)] * (maximum - len(hints)))
         rng.shuffle(hints)
     reports = {}
     for report, sources in targets.items():
+        if wire_reports is not None:
+            target_refs = []
+            for source in sources:
+                target = [source['location_player_slot'], source['ap_location_id']]
+                if hint_type == 'Verbose':
+                    target.append(source['assigned_item_id'])
+                target_refs.append(target)
+            wire_reports.append([target_refs, [ref for _, ref in values[report]]])
+        values[report] = [text for text, _ in values[report]]
         seen = set()
         records = []
         for source in sources:

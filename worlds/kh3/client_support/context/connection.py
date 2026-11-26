@@ -241,7 +241,10 @@ class ClientConnectionMixin:
     def _reset_connected_kh3_state(self, args: dict[str, Any]) -> None:
         from ...SlotData import decode_slot_data
 
-        runtime_slot_data = self._load_connected_pak_rewards(decode_slot_data(args.get("slot_data", {})))
+        runtime_slot_data = self._load_connected_pak_rewards(decode_slot_data(
+            args.get("slot_data", {}), slot_info=getattr(self, "slot_info", None),
+            location_name=lambda game, address: self.location_names[game].get(address),
+        ))
         # Connected precedes the new server's index-zero ReceivedItems snapshot.
         self.items_received = []
         self.invalidate_bridge_item_cache()

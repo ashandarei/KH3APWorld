@@ -4,6 +4,7 @@ from tempfile import TemporaryDirectory
 from unittest import TestCase
 
 from BaseClasses import CollectionState, ItemClassification
+from ..SlotData import decode_slot_data
 from . import KH3TestBase
 from ..Data import resolve_item_runtime_token, resolve_runtime_token_display_name
 from ..Options import GateOpenerCount
@@ -90,7 +91,7 @@ class TestGateOpeners(KH3TestBase):
         items = [item for item in self.multiworld.get_items() if item.name == "Gate Opener"]
         self.assertEqual(len(items), 7)
         self.assertTrue(all(item.classification == ItemClassification.useful for item in items))
-        self.assertEqual(self.world.fill_slot_data()["gate_opener_count"], 7)
+        self.assertEqual(decode_slot_data(self.world.fill_slot_data())["gate_opener_count"], 7)
 
     def test_does_not_unlock_logic(self):
         state = CollectionState(self.multiworld)

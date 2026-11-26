@@ -12,6 +12,7 @@ from test.general import setup_multiworld
 
 from .. import KH3Container, KH3World
 from ..Bridge import BridgeProtocolError, KH3_WORLD_VERSION
+from ..Options import RUNTIME_SLOT_OPTION_NAMES
 from ..PakGenerator import load_kh3_container_data
 from ..SlotData import ASSIGNMENT_FIELDS, decode_slot_data, encode_slot_data
 
@@ -47,6 +48,10 @@ class TestCompactSlotData(unittest.TestCase):
         self.assertLess(len(json.dumps(server["location_catalog"])), len(json.dumps(wire["location_catalog"])) / 4)
         self.assertNotIn("conditional_checks", server["bridge"])
         self.assertNotIn("kh3_randomizer", server)
+        self.assertTrue(set(RUNTIME_SLOT_OPTION_NAMES).isdisjoint(server))
+        self.assertNotIn("moogle_shop_economy", server["bridge"])
+        self.assertNotIn("moogle_shop_price_tiers", server)
+        self.assertNotIn("shop_item_token", server["location_catalog"]["changes"])
         self.assertIsInstance(server["kh3_seed"]["secret_reports"], list)
         self.assertLess(len(server["universal_tracker"]["options"]), len(wire["universal_tracker"]["options"]))
         expected = copy.deepcopy(self.runtime)
