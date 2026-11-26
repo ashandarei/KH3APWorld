@@ -108,10 +108,19 @@ def is_random(value):
 def normalize_value(option, value):
     """Validate without rolling exported random settings into fixed choices."""
     if is_random(value) and issubclass(option, (Toggle, Choice, Range)):
+        if issubclass(option, Range) and (bounds := re.fullmatch(r"random-range-(\d+)-(\d+)", value)):
+            minimum, maximum = map(int, bounds.groups())
+            if not option.range_start <= minimum <= maximum <= option.range_end:
+                raise ValueError(f"Choose ordered bounds from {option.range_start} to {option.range_end}.")
+            return value
         if value not in (("random", "random-low", "random-high", "random-middle")
                          if issubclass(option, Range) else ("random",)):
             raise ValueError("Use random, or a supported range randomization mode.")
         return value
+    if isinstance(value, list) and issubclass(option, (Choice, Range, Toggle)) and option.supports_weighting:
+        if not value or any(isinstance(item, (list, dict)) for item in value):
+            raise ValueError("Choose at least one outcome, with one value per entry.")
+        return [normalize_value(option, item) for item in value]
     if isinstance(value, dict) and option.supports_weighting:
         if not value or not any(value.values()):
             raise ValueError("Weighted choices need at least one positive weight.")

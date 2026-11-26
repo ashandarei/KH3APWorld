@@ -1,5 +1,6 @@
 """Consume the DLL's final check and goal decisions without inferring progress."""
 from .files import load_optional_json_file
+from .runtime_snapshots import native_process_pid
 
 
 def read(session):
@@ -8,7 +9,7 @@ def read(session):
     seed = session.slot_data.get("kh3_seed") or {}
     if (not isinstance(payload, dict) or payload.get("schema") != "kh3ap.check_state.v1"
             or payload.get("owner") != "dll" or type(payload.get("process_id")) is not int
-            or payload["process_id"] <= 0 or payload["process_id"] != runtime.get("kh3_native_process_pid", runtime.get("kh3_process_pid"))
+            or payload["process_id"] <= 0 or payload["process_id"] != native_process_pid(runtime)
             or payload.get("seed_name") != seed.get("seed_name")
             or type(payload.get("slot")) is not int or payload["slot"] != seed.get("slot")):
         return None

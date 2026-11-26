@@ -1,7 +1,7 @@
 import asyncio
 import json
 from types import SimpleNamespace
-from unittest.mock import AsyncMock, patch
+from unittest.mock import AsyncMock, Mock, patch
 
 import pytest
 
@@ -98,6 +98,47 @@ def test_incoming_network_custody_waits_for_native_durable_acceptance(harness):
     h.poll()
     assert h.service.custody(h.root).network()["incoming"] == []
     h.sent.assert_not_awaited()
+
+
+def test_proton_uses_native_pid_for_both_directions(harness):
+    h = harness
+    h.service.custody(h.root).store.write_json("bridge_runtime_status.json", {
+        "kh3_process_pid": 35186, "kh3_native_process_pid": 360,
+    })
+    h.service.handle_incoming(h.root, {"time": 1234.5, "source": "Riku", "cause": "Defeated"})
+    outgoing = [{"id": "deathlink-local-1", "cause": "Sora hit Game Over."}]
+    h.publish(process_id=35186, outgoing=outgoing)
+    h.poll()
+    h.sent.assert_not_awaited()
+    assert h.transport.read("runtime_deathlink_control.json") is None
+
+    h.publish(process_id=360, outgoing=outgoing)
+    h.poll()
+    h.sent.assert_awaited_once_with("Sora hit Game Over.")
+    control = h.transport.read("runtime_deathlink_control.json")
+    assert control["process_id"] == 360 and control["enabled"] is True
+    assert control["incoming"] == [{"request_id": "deathlink-gameover-1234500", "source": "Riku", "cause": "Defeated"}]
+    assert control["sent_ids"] == ["deathlink-local-1"]
+
+
+def test_watcher_retries_when_native_pid_becomes_available(harness, monkeypatch):
+    from .. import Client
+
+    store = harness.service.custody(harness.root).store
+
+    async def watch(callbacks, **_):
+        status = {"kh3_process_pid": 35186, "kh3_native_process_pid": None}
+        store.write_json("bridge_runtime_status.json", status)
+        waiting = callbacks.step_signature("deathlink_game_over")
+        status["kh3_native_process_pid"] = 360
+        store.write_json("bridge_runtime_status.json", status)
+        bound = callbacks.step_signature("deathlink_game_over")
+        assert bound != waiting
+        store.write_json("bridge_runtime_status.json", {**status, "kh3_process_pid": 35187})
+        assert callbacks.step_signature("deathlink_game_over") == bound
+
+    monkeypatch.setattr(Client, "watch_bridge", watch)
+    asyncio.run(Client.bridge_watcher(Mock(bridge_dir=harness.root)))
 
 
 def test_settings_refresh_changes_network_tag_and_rejects_disabled_incoming(harness):

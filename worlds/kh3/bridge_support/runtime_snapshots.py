@@ -11,6 +11,11 @@ NATIVE_RUNTIME_SNAPSHOT_SCHEMAS = {
 }
 
 
+def native_process_pid(runtime):
+    # On Proton the DLL reports a Wine PID. None means the bridge is still disconnected.
+    return runtime.get("kh3_native_process_pid", runtime.get("kh3_process_pid"))
+
+
 def bound_runtime_snapshot(payload, schema, runtime, slot_data):
     if not all(isinstance(value, Mapping) for value in (payload, runtime, slot_data)):
         return None
@@ -20,7 +25,7 @@ def bound_runtime_snapshot(payload, schema, runtime, slot_data):
             or type(seed.get("slot")) is not int
             or runtime.get("status") != "running" or runtime.get("kh3_process_running") is not True
             or type(payload.get("process_id")) is not int or payload["process_id"] <= 0
-            or payload["process_id"] != runtime.get("kh3_native_process_pid", runtime.get("kh3_process_pid"))
+            or payload["process_id"] != native_process_pid(runtime)
             or type(payload.get("slot")) is not int or payload["slot"] != seed.get("slot")
             or payload.get("seed_name") != seed["seed_name"] or payload.get("error")):
         return None

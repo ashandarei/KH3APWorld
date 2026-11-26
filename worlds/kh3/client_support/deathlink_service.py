@@ -6,6 +6,7 @@ from pathlib import Path
 
 from ..bridge_support.deathlink import DeathLinkService as NetworkCustody
 from ..bridge_support.files import atomic_write_json
+from ..bridge_support.runtime_snapshots import native_process_pid
 from ..bridge_support.store import BridgeStore
 from ..transport.pipe_transport import transport_for
 
@@ -68,7 +69,7 @@ class DeathLinkService:
         runtime = custody.store.read_optional_json_view("bridge_runtime_status.json") or {}
         if (not isinstance(payload, dict) or payload.get("schema") != "kh3ap.deathlink_state.v1"
                 or payload.get("owner") != "dll" or type(payload.get("process_id")) is not int
-                or payload["process_id"] <= 0 or payload["process_id"] != runtime.get("kh3_process_pid")
+                or payload["process_id"] <= 0 or payload["process_id"] != native_process_pid(runtime)
                 or any(payload.get(k) != v for k, v in identity.items())):
             return
         if payload.get("ready") is not True:

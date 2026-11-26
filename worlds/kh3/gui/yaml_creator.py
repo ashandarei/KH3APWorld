@@ -50,13 +50,31 @@ class AutoScrollbar(ttk.Scrollbar):
 class PillSelector(ttk.Frame):
     """Native radio buttons with rounded faces and width-bounded wrapping."""
 
-    def __init__(self, parent, choices, variable, command):
+    def __init__(self, parent, choices, variable, command, toggle=None):
         super().__init__(parent, style="Selector.TFrame")
         self.buttons = []
+        self.variable = variable
         for value, caption in choices:
             button = ttk.Radiobutton(self, text=caption, value=value, variable=variable,
                                      command=command, style="Pill.TRadiobutton")
+            if toggle:
+                def toggle_outcome(event, name=value):
+                    toggle(name)
+                    return "break"
+
+                button.bind("<Shift-ButtonPress-1>", toggle_outcome)
+                button.bind("<ButtonPress-3>", toggle_outcome)
+                button.bind("<Shift-space>", toggle_outcome)
             self.buttons.append(button)
+
+    def show_selection(self, value):
+        multiple = isinstance(value, list) or value == "random"
+        self.variable.set("" if multiple else str(value))
+        if multiple:
+            selected = {str(item) for item in value} if isinstance(value, list) else None
+            for button in self.buttons:
+                active = selected is None or str(button.cget("value")) in selected
+                button.state(["selected" if active else "!selected"])
 
     def fit(self, width):
         if getattr(self, "fit_width", None) == width:
@@ -76,6 +94,93 @@ class PillSelector(ttk.Frame):
             x += button_width
             row_height = max(row_height, button_height)
         self.configure(width=width, height=y + row_height + 3)
+
+
+def choice_labels(option):
+    if issubclass(option, ExpMultiplier):
+        return [(name, option.get_option_name(value).replace("x", "×"))
+                for value, name in option.name_lookup.items()]
+    return [(name, "On" if name == "true" else "Off" if name == "false" else name.replace("_", " ").title())
+            for name in option.name_lookup.values()]
+
+
+def range_bounds(option, value):
+    if isinstance(value, list):
+        # AP's random-range syntax cannot encode negative endpoints. An
+        # equal-weight list represents every integer in such an interval.
+        if (all(type(item) is int and option.range_start <= item <= option.range_end for item in value)
+                and value and value == list(range(value[0], value[-1] + 1))):
+            return value[0], value[-1]
+        return None
+    if value in ("random", "random-low", "random-middle", "random-high"):
+        return option.range_start, option.range_end
+    if isinstance(value, str) and (bounds := re.fullmatch(r"random-range-(\d+)-(\d+)", value)):
+        return tuple(map(int, bounds.groups()))
+    return None
+
+
+class RangeFields(ttk.Frame):
+    """An inclusive interval with each spinbox bounded by its neighbor."""
+
+    def __init__(self, parent, option, value, command):
+        super().__init__(parent, style="Card.TFrame")
+        self.option = option
+        self.command = command
+        self.fields = []
+        for index, label in enumerate(("Min", "Max")):
+            ttk.Label(self, text=label, style="CardMuted.TLabel").pack(side="left", padx=(6, 3))
+
+            def commit(event=None, index=index):
+                self.commit(index)
+
+            field = ttk.Spinbox(self, width=5, wrap=False, command=commit)
+            field.pack(side="left")
+            field.bind("<FocusOut>", commit)
+            field.bind("<Return>", commit)
+            self.fields.append(field)
+        self.bias = ttk.Label(self, style="CardMuted.TLabel")
+        self.sync(value)
+
+    def sync(self, value):
+        self.bounds = range_bounds(self.option, value)
+        minimum, maximum = self.bounds
+        self.fields[0].configure(from_=self.option.range_start, to=maximum)
+        self.fields[1].configure(from_=minimum, to=self.option.range_end)
+        for field, number in zip(self.fields, self.bounds):
+            if field.get() != str(number):
+                field.set(number)
+        if value in ("random-low", "random-middle", "random-high"):
+            self.bias.configure(text=f"({value[7:]})")
+            self.bias.pack(side="left", padx=(4, 0))
+        else:
+            self.bias.pack_forget()
+
+    def commit(self, index):
+        field = self.fields[index]
+        previous = self.bounds[index]
+        try:
+            number = int(field.get())
+        except ValueError:
+            number = previous
+        lower = self.option.range_start if index == 0 else self.bounds[0]
+        upper = self.bounds[1] if index == 0 else self.option.range_end
+        number = max(lower, min(upper, number))
+        if field.get() != str(number):
+            field.set(number)
+        if number == previous:
+            return
+        minimum, maximum = self.bounds
+        if index == 0:
+            minimum = number
+            self.fields[1].configure(from_=minimum)
+        else:
+            maximum = number
+            self.fields[0].configure(to=maximum)
+        self.bounds = minimum, maximum
+        self.bias.pack_forget()
+        # Archipelago represents intervals with negative endpoints as choice lists.
+        value = list(range(minimum, maximum + 1)) if minimum < 0 else f"random-range-{minimum}-{maximum}"
+        self.command(value)
 
 
 class YamlCreator:
@@ -462,7 +567,18 @@ class YamlCreator:
     def _control_kind(option, value):
         if issubclass(option, (OptionSet, OptionCounter)):
             return "picker"
-        if is_random(value) and issubclass(option, (Toggle, Choice, Range)):
+        if isinstance(value, list) and issubclass(option, (Choice, Range, Toggle)) and option.supports_weighting:
+            if issubclass(option, Choice) and len(set(value)) == len(value) and all(
+                    str(item) in option.name_lookup.values() for item in value):
+                return "choice"
+            if issubclass(option, Range) and range_bounds(option, value) is not None:
+                return "random"
+            return "outcomes"
+        if issubclass(option, Range) and is_random(value) and range_bounds(option, value) is not None:
+            return "random"
+        if issubclass(option, Choice) and not isinstance(value, dict) and (option.supports_weighting or value != "random"):
+            return "choice"
+        if issubclass(option, (Toggle, Choice)) and value == "random":
             return "random"
         if isinstance(value, dict):
             return "weighted"
@@ -481,6 +597,9 @@ class YamlCreator:
                 if row["picker"].cget("text") != caption:
                     row["picker"].configure(text=caption)
                 row["picker"].tooltip.text = ", ".join(entry_label(option, name) for name in value) if value else "Choose entries"
+            elif row["kind"] == "choice":
+                row["selector"].show_selection(value)
+                row["random"].set(isinstance(value, list) or value == "random")
             elif row["kind"] == "value":
                 variable = self.editors[key]
                 desired = bool(value) if issubclass(option, Toggle) else str(value)
@@ -490,6 +609,8 @@ class YamlCreator:
                     caption = "  On" if value else "  Off"
                     if row["switch"].cget("text") != caption:
                         row["switch"].configure(text=caption)
+            elif row["range_fields"] is not None:
+                row["range_fields"].sync(value)
         finally:
             self.updating_controls = False
         return True
@@ -511,6 +632,8 @@ class YamlCreator:
         label = ttk.Label(title, text=option.display_name, style="CardTitle.TLabel", wraplength=240)
         label.pack(anchor="w")
         description = option_description(option)
+        if issubclass(option, Choice) and option.supports_weighting:
+            description += "\n\nShift-click or right-click choices to add or remove outcomes. Each highlighted choice has an equal chance."
         label.tooltip = self.tooltip(label, description + "\n\nDefault: " + self._default_label(option))
         group_label = ttk.Label(title, text=self.group_label(group), style="CardMuted.TLabel")
         controls = ttk.Frame(card, style="Card.TFrame")
@@ -538,20 +661,34 @@ class YamlCreator:
 
     def _populate_editor(self, key, option, row):
         controls = row["editor"]
-        selector = picker = switch = None
+        selector = picker = switch = range_fields = None
         value = self.model.values[key]
+        kind = self._control_kind(option, value)
         if row["random"] is not None:
-            row["random"].set(is_random(value))
+            row["random"].set(kind in ("random", "outcomes") or
+                              kind == "choice" and (isinstance(value, list) or value == "random"))
         if issubclass(option, (OptionSet, OptionCounter)):
             count = len(value)
             picker = self.button(controls, f"{count} selected…", lambda: self.pick_entries(key))
             picker.configure(pady=3, padx=10)
             picker.pack(side="left")
             picker.tooltip = self.tooltip(picker, ", ".join(entry_label(option, name) for name in value) if count else "Choose entries")
-        elif is_random(value) and issubclass(option, (Toggle, Choice, Range)):
+        elif kind == "choice":
+            variable = tk.StringVar(self.root)
+            self.editors[key] = variable
+            selector = PillSelector(controls, choice_labels(option), variable,
+                                    lambda: self._choose(key, variable.get()),
+                                    (lambda name: self._choose(key, name, extend=True)) if option.supports_weighting else None)
+            selector.show_selection(value)
+            selector.pack(side="left")
+        elif kind == "random" and issubclass(option, Range) and option.supports_weighting:
+            range_fields = RangeFields(controls, option, value, lambda bounds: self._set(key, bounds))
+            range_fields.pack(side="left")
+        elif kind == "random":
             ttk.Label(controls, text="Randomized", style="CardMuted.TLabel").pack(side="left")
-        elif isinstance(value, dict):
-            self.button(controls, "Edit weighted choices", lambda: self.edit_weights(key)).pack(side="left")
+        elif kind in ("weighted", "outcomes"):
+            caption = "Edit weighted choices" if kind == "weighted" else "Edit outcomes"
+            self.button(controls, caption, lambda: self.edit_weights(key)).pack(side="left")
         else:
             variable = tk.StringVar(self.root, value=str(value).lower() if isinstance(value, bool) else str(value))
             self.editors[key] = variable
@@ -567,15 +704,6 @@ class YamlCreator:
 
                 switch.configure(command=toggle)
                 switch.pack(side="left")
-            elif issubclass(option, Choice):
-                choices = [(str(name), "On" if name == "true" else "Off" if name == "false" else
-                            name.replace("_", " ").title()) for name in option.name_lookup.values()]
-                if issubclass(option, ExpMultiplier):
-                    choices = [(name, option.get_option_name(value).replace("x", "×"))
-                               for value, name in option.name_lookup.items()]
-                selector = PillSelector(controls, choices, variable,
-                                        lambda k=key, v=variable: self._set(k, v.get()))
-                selector.pack(side="left")
             elif issubclass(option, Range):
                 spin = ttk.Spinbox(controls, from_=option.range_start, to=option.range_end, textvariable=variable, width=6)
                 spin.pack(side="left")
@@ -591,8 +719,27 @@ class YamlCreator:
             else:
                 ttk.Entry(controls, textvariable=variable, width=35).pack(side="left")
                 variable.trace_add("write", lambda *_, k=key, v=variable: self._set(k, v.get()))
-        row.update(selector=selector, kind=self._control_kind(option, value), picker=picker, switch=switch)
+        row.update(selector=selector, kind=kind, picker=picker, switch=switch, range_fields=range_fields)
         return row
+
+    def _choose(self, key, name, *, extend=False):
+        value = name
+        if extend:
+            names = self.model.types[key].name_lookup.values()
+            current = self.model.values[key]
+            if current == "random":
+                selected = set(names)
+            elif isinstance(current, list):
+                selected = {str(item) for item in current}
+            else:
+                selected = {str(current)}
+            selected.symmetric_difference_update([name])
+            if not selected:
+                return
+            outcomes = [item for item in names if item in selected]
+            value = outcomes[0] if len(outcomes) == 1 else outcomes
+        self._set(key, value)
+        self._refresh_option(key)
 
     @staticmethod
     def _default_label(option):
@@ -610,6 +757,11 @@ class YamlCreator:
         self._refresh_option(key)
 
     def _commit_range(self, key):
+        fields = self.rows[key]["range_fields"]
+        if fields is not None:
+            fields.commit(0)
+            fields.commit(1)
+            return
         value = clamp_range_value(self.model.types[key], self.model.values[key])
         if value != self.model.values[key]:
             self._set(key, value)
@@ -748,7 +900,7 @@ class YamlCreator:
 
     def edit_weights(self, key):
         dialog = tk.Toplevel(self.root)
-        dialog.title("Weighted choices · " + self.model.types[key].display_name)
+        dialog.title(self.model.types[key].display_name)
         dialog.transient(self.root)
         dialog.grab_set()
         text = tk.Text(dialog, width=60, height=16, background=FIELD, foreground=TEXT)

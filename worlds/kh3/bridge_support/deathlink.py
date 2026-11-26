@@ -4,6 +4,7 @@ from __future__ import annotations
 from collections.abc import Mapping
 from typing import Any, TypedDict
 
+from .runtime_snapshots import native_process_pid
 from .store import BridgeStore
 from .time import UtcClock, system_utc_now, utc_now
 
@@ -104,7 +105,7 @@ class DeathLinkService:
         runtime = self.store.read_optional_json("bridge_runtime_status.json") or {}
         if (payload.get("schema") != "kh3ap.deathlink_state.v1" or payload.get("owner") != "dll"
                 or type(payload.get("process_id")) is not int or payload["process_id"] <= 0
-                or payload["process_id"] != runtime.get("kh3_native_process_pid", runtime.get("kh3_process_pid"))
+                or payload["process_id"] != native_process_pid(runtime)
                 or any(payload.get(k) != v for k, v in identity.items())):
             return None
         return payload
