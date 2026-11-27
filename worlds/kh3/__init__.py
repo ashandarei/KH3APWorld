@@ -2,7 +2,6 @@
 # Copyright (c) 2026 Aesais and contributors.
 # See LICENSE and COPYRIGHT.txt for scope and separate component licenses.
 
-import hashlib
 import json
 import os
 import zipfile
@@ -11,6 +10,7 @@ from threading import Lock
 from typing import Any, ClassVar, Dict, Type
 
 from BaseClasses import DEFAULT_COLLECTION_RULE, CollectionState, Item, ItemClassification, Tutorial
+from Options import OptionError
 from rule_builder.rules import Has
 from worlds.AutoWorld import WebWorld, World
 from worlds.Files import APPlayerContainer
@@ -27,7 +27,9 @@ from worlds.LauncherComponents import (
     launch as launch_component,
 )
 
-from .Bridge import BRIDGE_PROTOCOL_NAME, BRIDGE_PROTOCOL_VERSION, KH3_WORLD_VERSION, build_bridge_slot_data
+from .Bridge import (
+    BRIDGE_PROTOCOL_NAME, BRIDGE_PROTOCOL_VERSION, KH3_WORLD_VERSION, build_bridge_slot_data, shop_token_namespace,
+)
 from .CharacterUnlocks import CHARACTER_UNLOCK_ITEM_ALIASES, CHARACTER_UNLOCK_ITEM_NAMES
 from .WallRun import WALL_RUN, WORLD_WALL_RUN_ITEMS
 from .Data import (
@@ -70,6 +72,7 @@ from .Data import (
     SEVEN_WISHES_UNLOCK_ITEM,
     CHARACTER_STYLE_ITEM_NAMES,
     ULTIMA_WEAPON_ITEM_NAME,
+    YOZORA_REWARD_SOURCE_KEY,
     ULTIMA_WEAPON_SHARD_ITEM_NAME,
     VICTORY_BONUS_LOGIC_REQUIREMENTS,
     build_item_counts,
@@ -114,6 +117,7 @@ from .Logic import LOGIC_REQUIREMENT_ITEM_ALIASES, LocationDependency, SourceKey
 from .Options import (
     KeybladeLevels,
     KH3Options,
+    RUNTIME_SLOT_OPTION_NAMES,
     PortalUnlocks,
     UltimaWeaponMode,
     build_randomizer_generation_config,
@@ -203,7 +207,6 @@ SECONDARY_VBONUS_ITEM_POOL_REWARDS = frozenset({
     HEART_PIECE_ITEM_NAME,
     "Magic: Water",
 })
-YOZORA_REWARD_SOURCE_KEY = ("Event", "EVENT_YOZORA_001")
 KH3_WORLD_LOAD_PATHS_ENV = "AP_WORLD_LOAD_PATHS"
 
 
@@ -407,7 +410,9 @@ class KH3World(World):
         slot_data = passthrough[self.game]
         if not isinstance(slot_data, dict):
             raise ValueError("KH3 Universal Tracker passthrough data must be an object.")
-        self._tracker_runtime_slot_data = decode_slot_data(slot_data)
+        if KH3_UNIVERSAL_TRACKER_SLOT_DATA_KEY not in slot_data:
+            raise ValueError("KH3 slot data is missing the universal_tracker payload.")
+        self._tracker_runtime_slot_data = decode_slot_data(slot_data, include_reports=False)
         restore_universal_tracker_options(self.options, self._tracker_runtime_slot_data)
 
     def create_regions(self) -> None:
@@ -477,6 +482,11 @@ class KH3World(World):
                 for location in normalized_locations
                 if (location["source_table"], location["source_id"]) == YOZORA_REWARD_SOURCE_KEY
             )
+            if yozora_location["name"] in self.options.exclude_locations.value:
+                raise OptionError(
+                    f"ultima_weapon_mode=yozora fixes Ultima Weapon at {yozora_location['name']}. "
+                    "Remove that check from exclude_locations or choose another Ultima Weapon mode."
+                )
             if yozora_location not in self.active_locations:
                 self.active_locations.append(yozora_location)
         validate_locations(self.active_locations)
@@ -544,6 +554,7 @@ class KH3World(World):
         self._add_retired_growth_path_ability_items_to_pool(item_pool)
         self._ensure_required_logic_items_in_pool(item_pool)
         self._add_progressive_keyblade_level_items(item_pool)
+        self._place_fixed_rewards()
         if self.portal_party_items:
             self._add_party_member_unlock_item_pool_items(item_pool)
         self._move_starting_portal_unlock_from_pool(item_pool)
@@ -574,7 +585,6 @@ class KH3World(World):
             set(MUNNY_POUCH_ITEM_NAMES) if self._moogle_shop_funding_plan.shop_check_count > 0 else set(),
         )
         self.multiworld.itempool.extend(item_pool)
-        self._place_fixed_rewards()
 
     def _place_fixed_rewards(self) -> None:
         victory_location = self.multiworld.get_location(COMPLETION_LOCATION_NAME, self.player)
@@ -854,22 +864,36 @@ class KH3World(World):
             self.portal_unlock_items[region] for region, blade in PORTAL_KEYBLADE_REGION_LOCKS.items()
             if blade in STARTING_PORTAL_KEYBLADE_ITEM_NAMES
         }
-        candidate_indices = [
-            index
-            for index, item in enumerate(item_pool)
-            if item.name in starting_names
-            and item.name in eligible_names
-        ]
-        if not candidate_indices:
-            candidate_indices = [
-                index
-                for index, item in enumerate(item_pool)
-                if item.name in starting_names
-            ]
-        if not candidate_indices:
+        candidates = [i for i, item in enumerate(item_pool) if item.name in starting_names]
+        if not candidates:
             return
+        preferred = [i for i in candidates if item_pool[i].name in eligible_names]
+        item_index = self.random.choice(preferred or candidates)
+        # A randomized row can still be unreachable, locked, or unable to hold
+        # progression. Try the rolled opening first to preserve viable starts.
+        portal_names = set(self.portal_unlock_items.values())
+        next_portals = {item.name: item for item in item_pool if item.name in portal_names
+                        and item.name not in self.options.non_local_items.value}
+        excluded = self.options.exclude_locations.value
+        checks = [loc for loc in self.multiworld.get_unfilled_locations(self.player)
+                  if loc.address is not None and not loc.filler_only and loc.name not in excluded]
+        starting_state = self.multiworld.state.copy()
+        for name in sorted(self._starting_controller_unlock_item_names()):
+            if not starting_state.has(name, self.player):
+                starting_state.collect(self.create_item(name), True)
 
-        item_index = self.random.choice(candidate_indices)
+        def can_place_next_portal(index):
+            starter = item_pool[index]
+            state = starting_state.copy()
+            state.collect(starter, True)
+            return any(loc.can_reach(state) and any(
+                name != starter.name and loc.item_rule(item) for name, item in next_portals.items()
+            ) for loc in checks)
+
+        if not can_place_next_portal(item_index):
+            alternatives = [i for i in candidates if item_pool[i].name != item_pool[item_index].name]
+            self.random.shuffle(alternatives)
+            item_index = next((i for i in alternatives if can_place_next_portal(i)), item_index)
         item = item_pool.pop(item_index)
         self.multiworld.push_precollected(item)
         self.kh3_starting_inventory_items.append(item.name)
@@ -1214,8 +1238,15 @@ class KH3World(World):
         reserve_all_local_locations(multiworld)
         validate_fixed_junk_rewards(multiworld)
 
+    @classmethod
+    def stage_fill_hook(cls, multiworld, progitempool, usefulitempool, filleritempool, fill_locations):
+        from .PreFill import validate_junk_capacity, validate_solo_start
+
+        validate_junk_capacity(multiworld, fill_locations, len(filleritempool))
+        validate_solo_start(multiworld, fill_locations, progitempool)
+
     def build_seed_container_data(self) -> dict[str, Any]:
-        slot_data = self._full_seed_slot_data()
+        slot_data, _ = self._seed_output_data()
         seed_data = slot_data["kh3_seed"]
 
         return {
@@ -1247,7 +1278,7 @@ class KH3World(World):
             world._output_slot_data = None
             world._output_slot_data_lock = Lock()
 
-    def _build_secret_reports(self, seed, settings, bridge_locations):
+    def _build_secret_reports(self, seed, settings, bridge_locations, report_refs):
         from .seedgen.localization import select_secret_reports
 
         placements = [
@@ -1267,8 +1298,11 @@ class KH3World(World):
             "location_player_slot": location.player,
             "location_player_name": self.multiworld.get_player_name(location.player),
             "item_name": location.item.name,
+            "assigned_item_id": location.item.code,
         } for location in sorted(locations, key=lambda loc: (loc.player, loc.address)))
-        text, reports = select_secret_reports(safe_file_fragment(seed), settings, placements, self.player)
+        text, reports = select_secret_reports(
+            safe_file_fragment(seed), settings, placements, self.player, wire_reports=report_refs,
+        )
         return {"text": text, "reports": {
             report: [{"player": row["player"], "location": row["location"]} for row in rows]
             for report, rows in reports.items()
@@ -1287,20 +1321,26 @@ class KH3World(World):
         container.write()
 
     def fill_slot_data(self) -> Dict[str, Any]:
-        return server_slot_data(self._full_seed_slot_data())
+        full, report_refs = self._seed_output_data()
+        return server_slot_data(full, report_refs)
 
-    def _full_seed_slot_data(self) -> Dict[str, Any]:
+    def _seed_output_data(self) -> tuple[dict, list]:
+        def build():
+            report_refs = []
+            full = encode_slot_data(self.build_runtime_slot_data(report_refs=report_refs))
+            return full, report_refs
+
         output_lock = getattr(self, "_output_slot_data_lock", None)
         if output_lock is None:
             # Tests and tracker callers may request data before placements are final.
-            return encode_slot_data(self.build_runtime_slot_data())
+            return build()
         with output_lock:
             if self._output_slot_data is None:
-                self._output_slot_data = encode_slot_data(self.build_runtime_slot_data())
+                self._output_slot_data = build()
             # Both output paths share the finalized catalog and Secret Reports.
             return self._output_slot_data
 
-    def build_runtime_slot_data(self) -> Dict[str, Any]:
+    def build_runtime_slot_data(self, *, report_refs=None) -> Dict[str, Any]:
         funding_plan = getattr(self, "_moogle_shop_funding_plan", None)
         price_tiers = (
             funding_plan.price_tiers
@@ -1312,9 +1352,7 @@ class KH3World(World):
             int(self.options.heart_piece_count.value),
             worlds_required=int(self.options.worlds_required.value),
             moogle_shop_price=price_tiers.filler,
-            moogle_shop_token_namespace=hashlib.sha256(
-                f"{self.multiworld.seed_name}\0{self.player}".encode("utf-8")
-            ).hexdigest()[:10].upper(),
+            moogle_shop_token_namespace=shop_token_namespace(self.multiworld.seed_name, self.player),
         )
         bridge_data["chest_persistence_version"] = 1
         bridge_data["space_version"] = 1 if self.options.include_space.value else 0
@@ -1370,84 +1408,7 @@ class KH3World(World):
         })
         bridge_data["moogle_shop_economy"] = economy_summary
 
-        slot_data = self.options.as_dict(
-            "portal_unlocks",
-            "ally_characters",
-            "gate_opener_count",
-            "include_space",
-            "include_grindy_space_missions",
-            "include_space_superbosses",
-            "synthesis_pool",
-            "photo_missions_pool",
-            "keyblade_upgrade_rewards_pool",
-            "moogle_synthesis_limit",
-            "heart_piece_count",
-            "worlds_required",
-            "battle_level_mode",
-            "lucky_emblems_per_check",
-            "classic_kingdom_checks",
-            "kh02_enabled",
-            "kh02_challenges",
-            "festival_dance_max_rank",
-            "verum_rex_max_rank",
-            "frozen_slider_max_rank",
-            "flash_tracer_course_a_max_rank",
-            "flash_tracer_course_b_max_rank",
-            "ingredients",
-            "exclude_caribbean_ingredients",
-            "olympus_coliseum_pool",
-            "music_chest_count",
-            "music_chest_vanilla_conversion",
-            "melody_of_memory_song_whitelist",
-            "melody_of_memory_song_blacklist",
-            "chestsanity",
-            "roxas_chestsanity",
-            "junk_san_fransokyo_chests",
-            "junk_the_caribbean_chests",
-            "melody_of_memory_difficulty",
-            "melody_of_memory_party",
-            "melody_of_memory_play_style",
-            "melody_of_memory_starting_item",
-            "battle_level_offset",
-            "ultima_weapon_mode",
-            "ultima_weapon_shard_count",
-            "moogle_shop_checks",
-            "moogle_shop_price",
-            "trap_percentage",
-            "auto_skip_cutscenes",
-            "auto_equip_essential_abilities",
-            "color_randomization",
-            "music_shuffle",
-            "include_custom_music",
-            "form_themes",
-            "map_overlay_keybinds",
-            "map_overlay_enabled",
-            "song_display",
-            "hide_locked_chest_icons",
-            "map_chest_icons",
-            "map_emblem_icons",
-            "map_ingredient_icons",
-            "minimap_icons",
-            "large_map_icons",
-            "skip_guardians_and_mickey_walk",
-            "skip_collecting_kairi_heart_pieces",
-            "faster_sora_collection",
-            "faster_lich_sequence",
-            "fast_union_cross",
-            "fast_dance_minigame",
-            "fast_beat_of_lead",
-            "fun_10k_heartless",
-            "dark_baymax_phase_1_skip",
-            "max_level_ship",
-            "death_link",
-            "death_link_amnesty",
-            "fast_death_link",
-            "wall_run_mode",
-            "stylesanity",
-            "start_with_magic",
-            "start_with_links",
-            "start_with_attraction_flow",
-        )
+        slot_data = self.options.as_dict(*RUNTIME_SLOT_OPTION_NAMES)
         # Airstep is baseline movement, not a YAML setting.
         slot_data["start_with_airstep"] = 1
         # Every music chest awards a bonus item; this is not a YAML setting.
@@ -1500,6 +1461,6 @@ class KH3World(World):
         seed_data = slot_data["kh3_seed"]
         seed_data["reward_sha256"] = seed_reward_fingerprint(bridge_data["locations"])
         seed_data["secret_reports"] = self._build_secret_reports(
-            seed_data["pak_seed"], slot_data["kh3_randomizer"]["hint"], bridge_data["locations"],
+            seed_data["pak_seed"], slot_data["kh3_randomizer"]["hint"], bridge_data["locations"], report_refs,
         )
         return slot_data

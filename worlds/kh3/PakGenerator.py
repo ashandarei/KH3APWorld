@@ -17,7 +17,7 @@ from typing import Any
 
 import Utils
 
-from .ap_archive import ArchiveValidationError, find_archipelago_entry_name
+from .ap_archive import ArchiveValidationError, archive_report_location_lookup, find_archipelago_entry_name
 from .PackageResources import safe_file_fragment
 from .installer_support.release_archive import verified_archive
 from .platform_support.download_tls import create_download_ssl_context
@@ -89,6 +89,7 @@ def iter_kh3_slots(multidata: dict[str, Any], requested_slot: int | None = None)
     if not isinstance(slot_info, dict) or not isinstance(slot_data, dict):
         raise KH3PakGenerationError("Generated AP payload is missing slot_info or slot_data.")
 
+    location_name = archive_report_location_lookup(multidata)
     item_names = build_game_item_id_to_name(multidata)
     kh3_slots: list[dict[str, Any]] = []
     for raw_slot, info in sorted(slot_info.items(), key=lambda entry: int(entry[0])):
@@ -103,7 +104,7 @@ def iter_kh3_slots(multidata: dict[str, Any], requested_slot: int | None = None)
         if not isinstance(data, dict):
             continue
 
-        runtime_data = decode_slot_data(data)
+        runtime_data = decode_slot_data(data, slot_info=slot_info, location_name=location_name)
         if not isinstance(runtime_data.get("kh3_randomizer"), dict):
             continue
         if multidata.get("race_mode"):

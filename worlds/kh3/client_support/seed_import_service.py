@@ -24,6 +24,7 @@ from ..PakGenerator import (
     safe_file_fragment,
 )
 from ..SlotData import SERVER_SEED_FORMAT_VERSION
+from ..ap_archive import ArchiveValidationError, SlotSummary, list_kh3_slots
 from .run_manager import KH3RunInfo, KH3RunManagerError, KH3RunManagerService
 from .save_file_policy import checked_root
 from .seed_guard import SeedGuardService
@@ -451,14 +452,22 @@ class KH3SeedImportService:
             self._report(progress, "Generating the KH3 seed pak. This can take about a minute...")
             return [self.container_generator(source_path, output_dir)]
         if suffix == KH3_GENERATED_ARCHIVE_SUFFIX:
-            slots = self.slot_iterator(self.archive_loader(source_path), None)
-            if select_one_player:
-                slots = [self._select_archive_slot(source_path, slots, preferred_slot_name)]
+            multidata = self.archive_loader(source_path)
+            requested_slot = None
+            if select_one_player or require_single_player:
+                try:
+                    players = list_kh3_slots(multidata)
+                except ArchiveValidationError as exc:
+                    raise KH3SeedImportError(str(exc)) from exc
+                if not players:
+                    raise KH3SeedImportError("This AP zip does not contain a Kingdom Hearts III slot.")
+                if require_single_player and len(players) != 1:
+                    raise KH3SeedImportError(
+                        "Connection details can be assigned during import only when the seed source has one KH3 player."
+                    )
+                requested_slot = self._select_archive_slot(source_path, players, preferred_slot_name)
+            slots = self.slot_iterator(multidata, requested_slot)
             count = len(slots)
-            if require_single_player and count != 1:
-                raise KH3SeedImportError(
-                    "Connection details can be assigned during import only when the seed source has one KH3 player."
-                )
             noun = "pak" if count == 1 else "paks"
             duration = "about a minute" if count == 1 else "a few minutes"
             self._report(progress, f"Generating {count} KH3 player {noun}. This can take {duration}...")
@@ -535,15 +544,15 @@ class KH3SeedImportService:
             raise KH3SeedImportError(str(exc)) from exc
 
     @staticmethod
-    def _select_archive_slot(source_path: Path, slots: list[dict[str, Any]],
-                             preferred_slot_name: str | None) -> dict[str, Any]:
+    def _select_archive_slot(source_path: Path, slots: list[SlotSummary],
+                             preferred_slot_name: str | None) -> int:
         if len(slots) == 1:
-            return slots[0]
+            return slots[0].slot
         preferred = str(preferred_slot_name or "").strip().casefold()
-        matching = [slot for slot in slots if str(slot.get("name") or "").strip().casefold() == preferred]
+        matching = [slot for slot in slots if slot.name.strip().casefold() == preferred]
         if preferred and len(matching) == 1:
-            return matching[0]
-        names = ", ".join(str(slot.get("name") or f"Player {slot.get('slot')}") for slot in slots)
+            return matching[0].slot
+        names = ", ".join(slot.name for slot in slots)
         raise KH3SeedImportError(
             f"{source_path.name} contains multiple KH3 players ({names}). Set the client slot name to one of them, "
             "or import the archive from Save Manager and activate the desired player."

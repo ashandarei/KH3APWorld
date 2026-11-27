@@ -41,17 +41,18 @@ from .Data import (
     TWILIGHT_TOWN_PORTAL_LOGIC_REQUIREMENTS,
     VICTORY_BONUS_LOGIC_REQUIREMENTS,
     WORLD_DIFFICULTY_TIERS,
+    YOZORA_REWARD_SOURCE_KEY,
     goal_required_item_counts,
     required_level_up_xp_source_count,
-    uses_level_up_junk,
-    uses_minigame_rank_junk,
-    uses_replace_location_pool,
-    uses_strict_junk_setting,
+    junk_pool_setting,
+    uses_replace_classic_kingdom_reward,
+    uses_replace_golden_herc_rewards,
 )
-from .Ingredients import INGREDIENT_SPOTS_BY_ID, ingredient_spot_is_junk
+from .Ingredients import INGREDIENT_SPOTS_BY_ID
 from .Adversaries import ADVERSARIES_BY_ID, ADVERSARY_WORLDS
 from .Locations import COMPLETION_LOCATION_NAME
 from .Logic import MAGIC_UNLOCK_ITEM
+from .Options import UltimaWeaponMode
 from .Regions import HUB_REGION_NAME, KEYBLADE_GRAVEYARD_REMIND_SHARED_REGION_NAME
 from .kh02.locations import KH02_MAGIC_REQUIRED_SOURCE_IDS, KH02_WORLD
 from .rule_helpers import CountReachableRules, requirement_rule
@@ -322,15 +323,21 @@ def set_rules(world) -> None:
                              if row.get("type") == "music_chest_bonus" else source_key)
         if parent_source_key in ARENDELLE_STARTING_CHEST_SOURCE_KEYS:
             add_item_rule(location, lambda item: not item.advancement)
-        location.filler_only = (uses_replace_location_pool(row, world.options)
-                or uses_strict_junk_setting(row, world.options)
-                or (row.get("type") == "keyblade_upgrade" and int(world.options.keyblade_levels.value) == 0)
-                or uses_minigame_rank_junk(row, world.options)
-                or ingredient_spot_is_junk(row)
-                or uses_level_up_junk(row, world.options))
-        if "fixed_character_reward" in row:
-            location.filler_only = False
-        if location.filler_only:
+        junk_setting = junk_pool_setting(row, world.options)
+        if not junk_setting:
+            if uses_replace_golden_herc_rewards(row, world.options):
+                junk_setting = "junk_golden_herc_rewards"
+            elif uses_replace_classic_kingdom_reward(row, world.options):
+                junk_setting = "junk_classic_kingdom_reward"
+            elif row.get("type") == "keyblade_upgrade" and int(world.options.keyblade_levels.value) == 0:
+                junk_setting = "keyblade_levels"
+        if "fixed_character_reward" in row or (
+            source_key == YOZORA_REWARD_SOURCE_KEY and world.options.ultima_weapon_mode == UltimaWeaponMode.option_yozora
+        ):
+            junk_setting = None
+        if junk_setting:
+            location.junk_setting = junk_setting
+            location.filler_only = True
             location.progress_type = LocationProgressType.EXCLUDED
             add_item_rule(location, is_junk_item)
         if row["source_table"] == "LevelUp":

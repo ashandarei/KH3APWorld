@@ -87,6 +87,8 @@ def test_patch_and_launch_check_loader_before_proceeding(tmp_path, monkeypatch, 
     ctx = SimpleNamespace(
         kh3_dir=tmp_path,
         kh3_mods_dir=tmp_path,
+        kh3_run_action_running=False,
+        restore_installed_backup_if_empty=Mock(return_value=True),
         disable_steam_cloud_during_patch_game=Mock(side_effect=check_ready),
         _reconcile_olympus_coliseum_reward_companion=Mock(),
         _get_client_command_service=Mock(),

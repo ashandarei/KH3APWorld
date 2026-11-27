@@ -1,3 +1,5 @@
+from unittest import TestCase
+
 from BaseClasses import CollectionState, ItemClassification
 
 from ..Data import (
@@ -5,6 +7,31 @@ from ..Data import (
     PORTAL_PARTY_REGION_LOCKS, STARTING_PORTAL_KEYBLADE_ITEM_NAMES, WORLD_DIFFICULTY_TIERS,
 )
 from . import KH3TestBase
+
+
+class TestMixedPortalMask(TestCase):
+    def test_wire_bits_select_the_designated_party_member(self):
+        from ..SlotData import _decode_portal_mask, _encode_portal_mask
+
+        regions = ("Re Mind", "Keyblade Graveyard", "Olympus", "The Caribbean", "Arendelle", "Kingdom of Corona",
+                   "Dark World", "Radiant Garden", "San Fransokyo", "Monstropolis", "Toy Box", "Twilight Town")
+        self.assertEqual(set(regions) | {"Data Battles"}, set(PORTAL_KEYBLADE_REGION_LOCKS))
+        for mask in range(1 << len(regions)):
+            expected = PORTAL_KEYBLADE_REGION_LOCKS.copy()
+            for bit, region in enumerate(regions):
+                if mask & (1 << bit):
+                    expected[region], = PORTAL_PARTY_REGION_LOCKS[region]
+            expected["Data Battles"] = expected["Radiant Garden"]
+            self.assertEqual(_decode_portal_mask(mask), expected, mask)
+            self.assertEqual(_encode_portal_mask(expected), mask)
+
+    def test_rejects_invalid_wire_values(self):
+        from ..Bridge import BridgeProtocolError
+        from ..SlotData import _decode_portal_mask
+
+        for value in (None, False, True, -1, 4096, "255", 1.0, {}):
+            with self.subTest(value=value), self.assertRaises(BridgeProtocolError):
+                _decode_portal_mask(value)
 
 
 class TestPartyPortals(KH3TestBase):
@@ -71,6 +98,7 @@ class TestPartyPortals(KH3TestBase):
             item_name = "Party Member: " + name
             self.assertNotIn(item_name, PORTAL_PARTY_ITEM_NAMES)
             self.assertEqual(self.world.create_item(item_name).classification, ItemClassification.useful)
+        self.assertNotIn("mixed_portal_unlocks", self.world.fill_slot_data())
         slot = self.world.build_runtime_slot_data()
         self.assertEqual(slot["portal_unlocks"], 1)
         self.assertEqual({name for name in slot if name.startswith("portal_")}, {"portal_unlocks"})
@@ -199,7 +227,11 @@ class TestMixedPortals(KH3TestBase):
         from ..SlotData import decode_slot_data
         from .test_universal_tracker import TestKH3UniversalTracker
 
-        slot = decode_slot_data(convert_to_base_types(self.world.fill_slot_data()))
+        wire = convert_to_base_types(self.world.fill_slot_data())
+        self.assertIs(type(wire["mixed_portal_unlocks"]), int)
+        slot = decode_slot_data(wire)
+        player_file = self.world.build_seed_container_data()["slot_data"]
+        self.assertEqual(player_file["mixed_portal_unlocks"], self.world.portal_unlock_items)
         unlocks = slot["mixed_portal_unlocks"]
         self.assertEqual(unlocks, self.world.portal_unlock_items)
         hints = set(slot["kh3_randomizer"]["hint"]["checks"])

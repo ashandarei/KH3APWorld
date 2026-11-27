@@ -12,6 +12,7 @@ from unittest import TestCase
 from unittest.mock import Mock, patch
 
 from BaseClasses import Item, ItemClassification, Location, Region
+from CommonClient import process_server_cmd
 from NetUtils import NetworkItem, NetworkSlot, SlotType
 from test.general import TestWorld as ForeignWorld
 from test.general import setup_multiworld
@@ -22,7 +23,7 @@ from ..Client import KH3Context
 from ..PackageResources import safe_file_fragment
 from ..PakGenerator import iter_kh3_slots
 from ..RuntimeSeed import hint_reports
-from ..SlotData import decode_slot_data, needs_seed_rewards, server_slot_data
+from ..SlotData import decode_slot_data, needs_seed_rewards
 from ..client_support.seed_import_service import KH3SeedImportService
 from ..seedgen.localization import make_hints
 
@@ -54,6 +55,17 @@ class TestOutputGeneration(TestCase):
         region.locations[2].item = Item("Event", ItemClassification.progression, None, 1)
         region.locations[3].item = Item("Foreign reward", ItemClassification.useful, 900004, 3)
 
+        self.slot_info = {p: NetworkSlot(self.mw.get_player_name(p), self.mw.game[p], SlotType.player)
+                          for p in self.mw.player_ids}
+        self.location_names = {
+            KH3World.game: {address: name for name, address in KH3World.location_name_to_id.items()},
+            ForeignWorld.game: {900001: "Foreign remote"},
+        }
+
+    def decode_server(self, data):
+        return decode_slot_data(data, slot_info=self.slot_info,
+                                location_name=lambda game, address: self.location_names[game].get(address))
+
     def test_one_room_scan_preserves_both_players_and_foreign_hints(self):
         expected = {player: self.mw.worlds[player].fill_slot_data() for player in (1, 2)}
         with patch.object(self.mw, "get_locations", wraps=self.mw.get_locations) as scan:
@@ -61,13 +73,20 @@ class TestOutputGeneration(TestCase):
             for player in (1, 2):
                 world = self.mw.worlds[player]
                 self.assertEqual(world.fill_slot_data(), expected[player])
-                self.assertEqual(server_slot_data(world.build_seed_container_data()["slot_data"]), expected[player])
             self.assertEqual(scan.call_count, 1)
-        hints = decode_slot_data(expected[1])["kh3_seed"]["secret_reports"]
+        hints = self.decode_server(expected[1])["kh3_seed"]["secret_reports"]
         self.assertEqual({(row["player"], row["location"]) for rows in hints["reports"].values() for row in rows},
                          {(2, self.exported.address), (3, 900001)})
         self.assertTrue(any(f"Foreign remote in {self.mw.get_player_name(3)}'s {ForeignWorld.game} world" in line
                             for lines in hints["text"].values() for line in lines))
+
+    def test_tracker_can_restore_remote_hint_seed_before_loading_foreign_games(self):
+        wire = self.world.fill_slot_data()
+        self.mw.re_gen_passthrough = {self.world.game: wire}
+        self.world._restore_universal_tracker_options()
+        self.assertNotIn("secret_reports", self.world._tracker_runtime_slot_data["kh3_seed"])
+        with self.assertRaisesRegex(BridgeProtocolError, "Missing Secret Report location"):
+            decode_slot_data(wire, slot_info=self.slot_info, location_name=lambda game, address: None)
 
     def test_early_requests_do_not_freeze_partial_placements(self):
         before = self.world.fill_slot_data()
@@ -107,8 +126,9 @@ class TestOutputGeneration(TestCase):
             with zipfile.ZipFile(next(Path(directory).glob("*.apkh3"))) as archive:
                 self.assertIsNone(archive.testzip())
                 payload = json.loads(archive.read(KH3_CONTAINER_PAYLOAD))
-            self.assertEqual(server_slot_data(payload["slot_data"]), expected)
-            server_locations = decode_slot_data(expected)["bridge"]["locations"]
+            self.assertEqual(payload["slot_data"]["kh3_seed"]["secret_reports"],
+                             self.decode_server(expected)["kh3_seed"]["secret_reports"])
+            server_locations = self.decode_server(expected)["bridge"]["locations"]
             self.assertTrue(all("assigned_item_id" not in row for row in server_locations))
             locations = decode_slot_data(payload["slot_data"])["bridge"]["locations"]
             self.assertTrue(all("assigned_item_id" in row for row in locations))
@@ -128,11 +148,11 @@ class TestOutputGeneration(TestCase):
             )
             for row in expected["bridge"]["locations"]
         }
-        slot_info = {player: NetworkSlot(self.mw.get_player_name(player), self.mw.game[player], SlotType.player)
-                     for player in self.mw.player_ids}
-        self.assertTrue(needs_seed_rewards(decode_slot_data(server)))
+        slot_info = self.slot_info
+        self.assertTrue(needs_seed_rewards(self.decode_server(server)))
         archive = {"slot_info": slot_info, "slot_data": {1: server}, "locations": {1: rewards},
-                   "datapackage": {world.game: {"item_name_to_id": world.item_name_to_id}}}
+                   "datapackage": {world.game: world.get_data_package_data(),
+                                   ForeignWorld.game: {"location_name_to_id": {"Foreign remote": 900001}}}}
         archived_slot, = iter_kh3_slots(archive, 1)
         self.assertEqual(archived_slot["name"], self.mw.get_player_name(1))
         self.assertEqual(archived_slot["slot_data"], expected)
@@ -147,11 +167,29 @@ class TestOutputGeneration(TestCase):
             ctx = KH3Context.__new__(KH3Context)
             ctx.slot, ctx.slot_info = 1, slot_info
             ctx.server = SimpleNamespace(socket=SimpleNamespace(closed=False))
-            ctx.slot_data = decode_slot_data(server)
-            ctx.server_locations = set(rewards)
-            ctx.item_names = {world.game: {code: name for name, code in world.item_name_to_id.items()}}
-            ctx._set_kh3_run_action_status = Mock()
+            ctx.checksums = {}
+            ctx.location_names = ctx.NameLookupDict(ctx, "location")
+            ctx.item_names = ctx.NameLookupDict(ctx, "item")
+            ctx.locations_checked = set()
+            ctx.locations_scouted = set()
+            ctx.connected_kh3_seed_pak_path = Mock(return_value=None)
+            ctx.invalidate_bridge_item_cache = Mock()
             ctx._create_client_packet_service = Mock()
+
+            async def deliver_packages(messages):
+                for msg in messages:
+                    self.assertEqual(msg["cmd"], "GetDataPackage")
+                    game, = msg["games"]
+                    data = {"games": {game: {"item_name_to_id": {}, **archive["datapackage"][game]}}}
+                    await process_server_cmd(ctx, {"cmd": "DataPackage", "data": data})
+
+            ctx.send_msgs = deliver_packages
+            with patch("Utils.store_data_package_for_checksum"):
+                await ctx.prepare_data_package(set(archive["datapackage"]), dict.fromkeys(archive["datapackage"]))
+            ctx._reset_connected_kh3_state({"slot_data": server})
+            self.assertEqual(ctx.slot_data["kh3_seed"]["secret_reports"], expected["kh3_seed"]["secret_reports"])
+            ctx.server_locations = set(rewards)
+            ctx._set_kh3_run_action_status = Mock()
 
             async def send(messages):
                 self.assertEqual(messages, [{"cmd": "LocationScouts", "locations": list(rewards), "create_as_hint": 0}])
@@ -177,15 +215,31 @@ class TestOutputGeneration(TestCase):
         KH3World.stage_pre_output(self.mw)
         refreshed = self.world.fill_slot_data()
         self.assertNotEqual(old, refreshed)
-        hints = decode_slot_data(refreshed)["kh3_seed"]["secret_reports"]
+        hints = self.decode_server(refreshed)["kh3_seed"]["secret_reports"]
         self.assertEqual([row for rows in hints["reports"].values() for row in rows],
                          [{"player": 3, "location": 900001}])
+
+    def test_split_category_keeps_total_and_targets_after_server_round_trip(self):
+        self.world.options.hint_selection_type.value = 2
+        self.world.options.important_hint_checks.value = {f"Secret Report {n}" for n in range(1, 14)}
+        remote_checks = [loc for loc in self.mw.get_filled_locations(2) if loc.address is not None][:13]
+        for number, location in enumerate(remote_checks, 1):
+            location.item = self.world.create_item(f"Secret Report {number}")
+        expected = self.world.build_seed_container_data()["slot_data"]["kh3_seed"]["secret_reports"]
+        actual = self.decode_server(self.world.fill_slot_data())["kh3_seed"]["secret_reports"]
+        self.assertEqual(actual, expected)
+        lines = [line for report in actual["text"].values() for line in report]
+        self.assertEqual(sum(line.startswith("There are 13 important checks") for line in lines), 2)
+        self.assertTrue(any(line.startswith("There are 0 important checks") for line in lines))
 
     def test_finished_reports_match_pak_time_selection(self):
         for style in range(4):
             with self.subTest(style=style):
                 self.world.options.hint_selection_type.value = style
                 runtime = self.world.build_runtime_slot_data()
+                server = self.world.fill_slot_data()
+                self.assertEqual(self.decode_server(server)["kh3_seed"]["secret_reports"],
+                                 runtime["kh3_seed"]["secret_reports"])
                 config = runtime["kh3_randomizer"]
                 seed = safe_file_fragment(runtime["kh3_seed"]["pak_seed"])
                 candidates = [

@@ -6,7 +6,9 @@ import unittest
 import zipfile
 import zlib
 from pathlib import Path
-from unittest.mock import patch
+from unittest.mock import Mock, patch
+
+from NetUtils import NetworkSlot, SlotType
 
 from ..Bridge import BRIDGE_PROTOCOL_NAME, BRIDGE_PROTOCOL_VERSION
 from ..client_support.run_manager import KH3RunManagerService
@@ -35,7 +37,6 @@ class KH3SeedImportServiceTest(unittest.TestCase):
     def test_renamed_multiplayer_zip_builds_the_same_paks_as_its_player_files(self) -> None:
         import Utils
         from Fill import distribute_items_restrictive
-        from NetUtils import NetworkSlot, SlotType
         from test.general import setup_multiworld
         from .. import KH3World, PakGenerator
         from ..seedgen import generator
@@ -80,6 +81,18 @@ class KH3SeedImportServiceTest(unittest.TestCase):
                 individual = PakGenerator.generate_kh3_pak_from_container(container, root / f"player-{player}")
                 self.assertEqual(pak.name, individual.pak_path.name)
                 self.assertEqual(pak.read_bytes(), individual.pak_path.read_bytes())
+
+            # A different player's broken payload must not block selecting this player.
+            selected = room.player_ids[1]
+            multidata["slot_data"][room.player_ids[0]] = {}
+            with zipfile.ZipFile(source, "w") as archive:
+                archive.writestr("room.archipelago", b"\x03" + zlib.compress(Utils.restricted_dumps(multidata)))
+            generated = service._generate_source(
+                source, select_one_player=True, preferred_slot_name=room.get_player_name(selected),
+            )
+            self.assertEqual([result.slot for result in generated], [selected])
+            expected = root / f"player-{selected}" / generated[0].pak_path.name
+            self.assertEqual(generated[0].pak_path.read_bytes(), expected.read_bytes())
 
     def _run_manager(self, root: Path, *, running=False) -> KH3RunManagerService:
         return KH3RunManagerService(
@@ -146,7 +159,12 @@ class KH3SeedImportServiceTest(unittest.TestCase):
             process_running=(running if callable(running) else lambda: bool(running)),
             container_generator=generate_container,
             archive_generator=generate_archive,
-            archive_loader=lambda _path: {},
+            archive_loader=lambda _path: {"slot_info": {
+                1: NetworkSlot("Sora", "Kingdom Hearts III", SlotType.player),
+                2: NetworkSlot("Riku", "Kingdom Hearts III", SlotType.player),
+                3: NetworkSlot("Riku", "Kingdom Hearts III", SlotType.group, (1, 2)),
+                4: NetworkSlot("Riku", "Kingdom Hearts II", SlotType.player),
+            }},
             slot_iterator=iter_slots,
             container_writer=container_writer,
             seed_metadata_loader=seed_metadata_loader,
@@ -314,8 +332,11 @@ class KH3SeedImportServiceTest(unittest.TestCase):
             source.write_bytes(b"synthetic archive")
             calls: list[int | None] = []
             service = self._service(root, archive_calls=calls)
-            with self.assertRaisesRegex(KH3SeedImportError, "one KH3 player"):
+            with patch.object(service, "slot_iterator") as decoder, self.assertRaisesRegex(
+                KH3SeedImportError, "one KH3 player"
+            ):
                 service.import_source(source, server_address="localhost:38281", connection_slot_name="Sora")
+            decoder.assert_not_called()
             self.assertEqual(calls, [])
             self.assertTrue(source.is_file())
             self.assertEqual(service.run_manager.list_runs(), [])
@@ -353,12 +374,15 @@ class KH3SeedImportServiceTest(unittest.TestCase):
             archive_calls: list[int | None] = []
             service = self._service(root, manager=manager, archive_calls=archive_calls)
 
-            with self.assertRaisesRegex(KH3SeedImportError, "contains multiple KH3 players"):
+            service.slot_iterator = Mock(wraps=service.slot_iterator)
+            with self.assertRaisesRegex(KH3SeedImportError, r"contains multiple KH3 players \(Sora, Riku\)"):
                 service.prepare_missing_installed_pak()
+            service.slot_iterator.assert_not_called()
             self.assertTrue(source.is_file())
 
             result = service.prepare_missing_installed_pak(preferred_slot_name="rIkU")
 
+            self.assertEqual([call.args[1] for call in service.slot_iterator.call_args_list], [2])
             self.assertEqual(archive_calls, [2])
             self.assertEqual(result.installed_run.slot_name, "Riku")
             self.assertEqual([path.name for path in manager.mods_dir.glob("*.pak")], [result.installed_run.pak_name])
