@@ -58,16 +58,6 @@ MONSTROPOLIS_FINAL_COMBAT = (
 )
 
 
-LEVEL_UP_XP_SOURCE_LOGIC_REQUIREMENT_SUMMARIES = {
-    "Olympus": "Wall Run OR Super Jump + Wall Kick + Air Slide + Wall Run + Double Flight",
-}
-
-LEVEL_UP_XP_SOURCE_LOGIC_REQUIREMENTS = {
-    region_name: parse_requirement_summary(summary)
-    for region_name, summary in LEVEL_UP_XP_SOURCE_LOGIC_REQUIREMENT_SUMMARIES.items()
-}
-
-
 CHEST_LOGIC_RULES = (
     logic_rule(
         "Advanced movement chests",

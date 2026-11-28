@@ -215,12 +215,14 @@ class TestMixedPortals(KH3TestBase):
             blade = PORTAL_KEYBLADE_REGION_LOCKS[region]
             friend, = PORTAL_PARTY_REGION_LOCKS[region]
             state.add_item(friend if self.world.portal_unlock_items[region] == blade else blade, self.player)
-        self.assertFalse(entrance.access_rule(state))
+        state.collect(self.world.create_item("Unlock: Wall Run"))
+        state.collect(self.world.create_item("Ability: Air Slide"))
+        self.assertFalse(entrance.can_reach(state))
         for region in LEVEL_UP_XP_SOURCE_REGION_NAMES:
             selected = self.world.portal_unlock_items[region]
-            state.add_item(selected, self.player)
-            self.assertTrue(entrance.access_rule(state), region)
-            state.remove_item(selected, self.player)
+            state.collect(self.world.create_item(selected))
+            self.assertTrue(entrance.can_reach(state), region)
+            state.remove(self.world.create_item(selected))
 
     def test_server_tracker_hints_and_chests_share_the_roll(self):
         from NetUtils import convert_to_base_types

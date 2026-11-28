@@ -32,7 +32,6 @@ from .Data import (
     EVENT_LOGIC_REQUIREMENTS,
     HIGHER_TIER_TIER_ONE_KEYBLADE_COUNT,
     INGREDIENT_LOGIC_REQUIREMENTS,
-    LEVEL_UP_XP_SOURCE_LOGIC_REQUIREMENTS,
     LEVEL_UP_XP_SOURCE_REGION_NAMES,
     LUCKY_EMBLEM_LOGIC_REQUIREMENTS_BY_WORLD,
     PORTAL_KEYBLADE_REGION_LOCKS,
@@ -43,7 +42,6 @@ from .Data import (
     WORLD_DIFFICULTY_TIERS,
     YOZORA_REWARD_SOURCE_KEY,
     goal_required_item_counts,
-    required_level_up_xp_source_count,
     junk_pool_setting,
     uses_replace_classic_kingdom_reward,
     uses_replace_golden_herc_rewards,
@@ -139,13 +137,6 @@ def set_rules(world) -> None:
         group = WALL_RUN_REGION_GROUPS.get(region_name, region_name)
         return requirement_rule(routes, starting_logic_item_names, WORLD_WALL_RUN_ITEMS.get(group))
 
-    xp_source_rules = tuple(
-        CanReachRegion(region_name) & world_requirement(
-            LEVEL_UP_XP_SOURCE_LOGIC_REQUIREMENTS.get(region_name, ((),)), region_name,
-        )
-        for region_name in sorted(LEVEL_UP_XP_SOURCE_REGION_NAMES)
-        if region_name in existing_region_names
-    )
     lucky_emblem_rules = tuple(
         CanReachRegion(region_name) & world_requirement(routes or ((),), region_name)
         for region_name, spot_requirements in sorted(LUCKY_EMBLEM_LOGIC_REQUIREMENTS_BY_WORLD.items())
@@ -223,14 +214,6 @@ def set_rules(world) -> None:
             elif required_unlock_item is not None:
                 rule &= Has(required_unlock_item)
 
-        if row["source_table"] == "LevelUp":
-            try:
-                level = int(str(row["source_id"]))
-            except ValueError:
-                level = 0
-            rule &= (CountReachableRules(*xp_source_rules, count=required_level_up_xp_source_count(level),
-                                label="reachable XP sources") if xp_source_rules else False_())
-
         if row["source_table"] == "LuckyMark":
             try:
                 required_emblem_count = int(str(row["source_id"]))
@@ -295,7 +278,8 @@ def set_rules(world) -> None:
         elif region_name in portal_items:
             rule = Has(portal_items[region_name])
         elif region_name == "Level Ups":
-            rule = HasAny(*(portal_items[name] for name in sorted(LEVEL_UP_XP_SOURCE_REGION_NAMES)))
+            xp_sources = LEVEL_UP_XP_SOURCE_REGION_NAMES | {KH02_WORLD}
+            rule = Or(*(CanReachRegion(source) for source in sorted(xp_sources & existing_region_names)))
         # Story worlds rely on their check-level combat requirements.
         # Only Data Battles retains the three tier-one world access gate.
         if region_name == "Data Battles":

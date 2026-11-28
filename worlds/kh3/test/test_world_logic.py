@@ -30,7 +30,6 @@ from ..Data import (
     MUNNY_POUCH_RUNTIME_TOKENS,
     PORTAL_KEYBLADE_ITEM_NAMES,
     PORTAL_KEYBLADE_REGION_LOCKS,
-    SCALED_STORY_END_LEVEL,
     STARTING_PORTAL_KEYBLADE_ITEM_NAMES,
     STYLE_CHANGE_UNLOCK_ITEM,
     THE_CARIBBEAN_PORTAL_LOGIC_REQUIREMENTS,
@@ -43,7 +42,6 @@ from ..Data import (
     goal_required_item_names,
     load_extracted_data,
     normalize_locations,
-    required_level_up_xp_source_count,
 )
 from ..export_ap_kh3_randomized_options import (
     ALWAYS_ON_EVENT_IDS,
@@ -1312,93 +1310,67 @@ class TestKH3WorldIntegrity(KH3WorldIntegrityMixin, KH3TestBase):
         safety_tool_without_keyblade.collect(self.world.create_item("Ability: Air Slide"))
         self.assertFalse(caribbean.can_reach(safety_tool_without_keyblade))
 
-    def test_level_ups_require_reachable_xp_source_world(self) -> None:
+    def test_level_ups_require_a_repeatable_xp_farm(self) -> None:
         self.world_setup()
-
         level_ups = self.multiworld.get_region("Level Ups", self.player)
         self.assertFalse(level_ups.can_reach(self._state_without_precollected_items()))
 
-        dark_world_only = self._state_without_precollected_items()
-        dark_world_only.collect(self.world.create_item("Oblivion"))
-        self.assertFalse(level_ups.can_reach(dark_world_only))
+        for region_name in ("Twilight Town", "Data Battles", "Keyblade Graveyard"):
+            with self.subTest(region=region_name):
+                state = self._state_without_precollected_items()
+                state.collect(self.world.create_item(self.world.portal_unlock_items[region_name]))
+                state.collect(self.world.create_item("Ability: Block"))
+                state.collect(self.world.create_item("Unlock: Attraction Flow"))
+                if region_name == "Twilight Town":
+                    self.assertTrue(self.get_location_by_source("VBonus", "Vbonus_014").can_reach(state))
+                self.assertFalse(level_ups.can_reach(state))
 
-        data_battles_only = self._state_without_precollected_items()
-        data_battles_only.collect(self.world.create_item("Oathkeeper"))
-        self.assertFalse(level_ups.can_reach(data_battles_only))
+    def test_one_farm_unlocks_all_levels_in_either_battle_level_mode(self) -> None:
+        for battle_level_mode in ("off", "sora_level"):
+            with self.subTest(battle_level_mode=battle_level_mode):
+                self.options = {"battle_level_mode": battle_level_mode}
+                self.world_setup()
+                locations = [
+                    self.multiworld.get_location(f"Level Ups - Sora Level {level}", self.player)
+                    for level in range(2, 100)
+                ]
+                for region in sorted(LEVEL_UP_XP_SOURCE_REGION_NAMES):
+                    with self.subTest(region=region):
+                        state = self._state_without_precollected_items()
+                        state.collect(self.world.create_item("Ability: Air Slide"))
+                        state.collect(self.world.create_item(self.world.portal_unlock_items[region]))
+                        self.assertTrue(all(location.can_reach(state) for location in locations))
 
-        olympus_access = self._state_without_precollected_items()
-        olympus_access.collect(self.world.create_item("Hero's Origin"))
-        self.assertFalse(level_ups.can_reach(olympus_access))
-
-        keyblade_graveyard_access = self._state_without_precollected_items()
-        keyblade_graveyard_access.collect(self.world.create_item("Starlight"))
-        self.assertFalse(level_ups.can_reach(keyblade_graveyard_access))
-
-        toy_box_access = self._state_without_precollected_items()
-        toy_box_access.collect(self.world.create_item("Favorite Deputy"))
-        self.assertTrue(level_ups.can_reach(toy_box_access))
-
-        for region_name in ("Olympus", "Dark World", "Data Battles", "Unreality", "Keyblade Graveyard"):
-            self.assertNotIn(region_name, LEVEL_UP_XP_SOURCE_REGION_NAMES)
-
-    def test_level_up_locations_scale_with_reachable_xp_source_world_count(self) -> None:
+    def test_olympus_does_not_unlock_level_checks_past_first_wall(self) -> None:
+        self.options = {"wall_run_mode": "shared", "default_base_abilities": False}
         self.world_setup()
+        level_up = self.get_location_by_source("LevelUp", "2")
+        agora = self.get_location_by_source("VBonus", "Vbonus_002")
+        routes = (
+            ("Unlock: Wall Run",),
+            ("Ability: Superjump", "Ability: Wall Kick", "Ability: Air Slide", "Ability: Doubleflight"),
+            ("Ability: Superjump", "Ability: Wall Kick", "Ability: Air Slide", "Ability: High Jump"),
+        )
+        for route in routes:
+            with self.subTest(route=route):
+                state = self._state_without_precollected_items()
+                state.collect(self.world.create_item(self.world.portal_unlock_items["Olympus"]))
+                self.assertFalse(agora.can_reach(state))
+                for item_name in route:
+                    state.collect(self.world.create_item(item_name))
+                self.assertTrue(agora.can_reach(state))
+                self.assertFalse(level_up.can_reach(state))
 
-        level_locations = {
-            level: self.multiworld.get_location(f"Level Ups - Sora Level {level}", self.player)
-            for level in (3, 4, 5, 6, 8, 9, 22, 25)
-        }
-
-        one_world = self._state_without_precollected_items()
-        one_world.collect(self.world.create_item("Favorite Deputy"))
-        self.assertTrue(level_locations[3].can_reach(one_world))
-        self.assertFalse(level_locations[4].can_reach(one_world))
-
-        two_worlds = self._state_without_precollected_items()
-        for item_name in ("Favorite Deputy", "Ever After"):
-            two_worlds.collect(self.world.create_item(item_name))
-        self.assertTrue(level_locations[5].can_reach(two_worlds))
-        self.assertFalse(level_locations[6].can_reach(two_worlds))
-
-        three_worlds = self._state_without_precollected_items()
-        for item_name in ("Favorite Deputy", "Ever After", "Happy Gear"):
-            three_worlds.collect(self.world.create_item(item_name))
-        self.assertTrue(level_locations[8].can_reach(three_worlds))
-        self.assertFalse(level_locations[9].can_reach(three_worlds))
-
-        all_story_worlds = self._state_without_precollected_items()
-        for region_name in LEVEL_UP_XP_SOURCE_REGION_NAMES:
-            all_story_worlds.collect(
-                self.world.create_item(PORTAL_KEYBLADE_REGION_LOCKS[region_name])
-            )
-        for item_name in ("Unlock: Wall Run", "Ability: Block", "Ability: Air Slide"):
-            all_story_worlds.collect(self.world.create_item(item_name))
-        self.assertTrue(level_locations[22].can_reach(all_story_worlds))
-        self.assertTrue(level_locations[25].can_reach(all_story_worlds))
-
-    def test_level_up_source_count_curve_reaches_level_22_after_all_story_worlds(self) -> None:
-        self.assertEqual(SCALED_STORY_END_LEVEL, 22)
-        expected_required_counts = {
-            2: 1,
-            3: 1,
-            4: 2,
-            5: 2,
-            6: 3,
-            8: 3,
-            9: 4,
-            12: 4,
-            13: 5,
-            15: 5,
-            16: 6,
-            19: 6,
-            20: 7,
-            22: 7,
-            25: 7,
-            50: 7,
-        }
-        for level, expected_count in expected_required_counts.items():
-            with self.subTest(level=level):
-                self.assertEqual(required_level_up_xp_source_count(level), expected_count)
+    def test_kh02_xp_farm_requires_enabled_chapter_and_dark_world_access(self) -> None:
+        for enabled in (False, True):
+            with self.subTest(kh02_enabled=enabled):
+                self.options = {"kh02_enabled": enabled}
+                self.world_setup()
+                level_up = self.multiworld.get_location("Level Ups - Sora Level 99", self.player)
+                state = self._state_without_precollected_items()
+                self.assertFalse(level_up.can_reach(state))
+                state.collect(self.world.create_item(self.world.portal_unlock_items["Dark World"]))
+                self.assertEqual(level_up.can_reach(state), enabled)
 
     def test_level_ups_reject_keyblades_and_goal_items(self) -> None:
         self.world_setup()
@@ -3208,12 +3180,18 @@ class TestSplitWallRun(KH3TestBase):
         for name in WORLD_WALL_RUN_ITEMS.values():
             self.assertEqual(names.count(name), 1)
         state = CollectionState(self.multiworld)
+        for item in self.multiworld.precollected_items[self.player]:
+            if item.name in PORTAL_KEYBLADE_ITEM_NAMES:
+                state.remove(item)
         state.collect(self.world.create_item("Hero's Origin"))
         chest = self.get_location_by_source("TreasureHE", "HE_SBOX_017")
+        level_up = self.get_location_by_source("LevelUp", "2")
         state.collect(self.world.create_item("Wall Run: Toy Box"))
         self.assertFalse(chest.can_reach(state))
+        self.assertFalse(level_up.can_reach(state))
         state.collect(self.world.create_item("Wall Run: Olympus"))
         self.assertTrue(chest.can_reach(state))
+        self.assertFalse(level_up.can_reach(state))
         full = self.multiworld.get_all_state()
         frozen_chest = self.get_location_by_source("TreasureFZ", "FZ_SBOX_012")
         self.assertTrue(frozen_chest.can_reach(full))
@@ -3245,7 +3223,7 @@ class TestKH3WorldStartingWallRunLogic(KH3TestBase):
 
         self.assertTrue(target_location.can_reach(state))
 
-    def test_starting_wall_run_does_not_make_olympus_a_grindable_xp_source(self) -> None:
+    def test_starting_wall_run_does_not_make_olympus_an_xp_farm(self) -> None:
         self.world_setup()
 
         level_3 = self.multiworld.get_location("Level Ups - Sora Level 3", self.player)
@@ -3253,12 +3231,14 @@ class TestKH3WorldStartingWallRunLogic(KH3TestBase):
         for item in self.multiworld.precollected_items[self.player]:
             if item.name in PORTAL_KEYBLADE_ITEM_NAMES:
                 state.remove(item)
-        state.collect(self.world.create_item("Hero's Origin"))
+        self.assertFalse(level_3.can_reach(state))
 
+        state.collect(self.world.create_item("Hero's Origin"))
         self.assertFalse(level_3.can_reach(state))
 
         state.collect(self.world.create_item("Favorite Deputy"))
         self.assertTrue(level_3.can_reach(state))
+
 
 class TestKH3WorldDefaultBaseAbilitiesOff(KH3TestBase):
     options = {
