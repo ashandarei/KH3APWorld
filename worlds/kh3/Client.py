@@ -19,6 +19,7 @@ from CommonClient import (
     logger,
 )
 from NetUtils import ClientStatus
+from . import KH3World
 from .client_support.network import server_loop
 
 from .Bridge import (
@@ -182,6 +183,14 @@ from .client_support.context.connection import ClientConnectionMixin
 from .client_support.context.runtime import ClientRuntimeMixin
 
 RUNTIME_DISPLAY_SAVE_SLOT_FILE = "runtime_display_save_slot.json"
+_RESERVED_HINT_NAMES = {name.casefold() for name in KH3World.all_item_and_group_names}
+_CHAT_ITEM_ALIASES = {
+    "!getitem": {alias.casefold(): item for alias, item in CHARACTER_UNLOCK_ITEM_ALIASES.items()},
+    "!hint": {
+        alias.casefold(): item for alias, item in KH3World.item_name_aliases.items()
+        if alias.casefold() not in _RESERVED_HINT_NAMES and item in KH3World.item_name_to_id
+    },
+}
 
 KH3_SAVE_SEED_ASSOCIATIONS_KEY = seed_guard_support.KH3_SAVE_SEED_ASSOCIATIONS_KEY
 KH3_SAVE_SEED_GUARD_VERSION = seed_guard_support.KH3_SAVE_SEED_GUARD_VERSION
@@ -539,12 +548,11 @@ class KH3Context(
     # private adapters when notifications delegate to the base presentation.
     def on_user_say(self, text: str) -> str | None:
         parts = text.split(maxsplit=1)
-        if len(parts) == 2 and parts[0].casefold() == "!getitem":
-            requested_item = parts[1].strip().casefold()
-            for alias, item_name in CHARACTER_UNLOCK_ITEM_ALIASES.items():
-                if requested_item == alias.casefold():
-                    text = f"!getitem {item_name}"
-                    break
+        if len(parts) == 2:
+            command = parts[0].casefold()
+            aliases = _CHAT_ITEM_ALIASES.get(command)
+            if aliases and (item_name := aliases.get(parts[1].strip().casefold())):
+                text = f"{command} {item_name}"
         return super().on_user_say(text)
 
     def on_print_json(self, args: dict) -> None:
