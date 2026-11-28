@@ -33,9 +33,6 @@ from .LogicData import (
     INGREDIENT_LOGIC_REQUIREMENTS as INGREDIENT_LOGIC_REQUIREMENTS,
 )
 from .LogicData import (
-    LEVEL_UP_XP_SOURCE_LOGIC_REQUIREMENTS as LEVEL_UP_XP_SOURCE_LOGIC_REQUIREMENTS,
-)
-from .LogicData import (
     LOCATION_LOGIC_DEPENDENCIES as LOCATION_LOGIC_DEPENDENCIES,
 )
 from .LogicData import (
@@ -298,6 +295,7 @@ STARTING_PORTAL_KEYBLADE_ITEM_NAMES = TIER_ONE_PORTAL_KEYBLADE_ITEM_NAMES.differ
     PORTAL_KEYBLADE_REGION_LOCKS["The Caribbean"],
 })
 
+# Olympus is excluded for now, and Twilight Town's post-Demon Tide grind is too slow to require.
 LEVEL_UP_XP_SOURCE_REGION_NAMES = frozenset({
     "The Caribbean",
     "Arendelle",
@@ -305,32 +303,7 @@ LEVEL_UP_XP_SOURCE_REGION_NAMES = frozenset({
     "San Fransokyo",
     "Monstropolis",
     "Toy Box",
-    "Twilight Town"
 })
-
-LEVEL_UP_XP_SOURCE_KEYBLADE_ITEM_NAMES = frozenset(
-    PORTAL_KEYBLADE_REGION_LOCKS[region_name]
-    for region_name in LEVEL_UP_XP_SOURCE_REGION_NAMES
-)
-
-SCALED_STORY_LEVEL_CAPS_BY_XP_SOURCE_COUNT = (3, 5, 8, 12, 15, 19, 22)
-SCALED_STORY_END_LEVEL = SCALED_STORY_LEVEL_CAPS_BY_XP_SOURCE_COUNT[-1]
-assert len(SCALED_STORY_LEVEL_CAPS_BY_XP_SOURCE_COUNT) == len(LEVEL_UP_XP_SOURCE_REGION_NAMES)
-
-
-def required_level_up_xp_source_count(level: int) -> int:
-    """Return how many grindable story worlds are needed to support a Sora level check."""
-    source_count = len(LEVEL_UP_XP_SOURCE_REGION_NAMES)
-    if level < 2:
-        return source_count
-
-    for required_count, level_cap in enumerate(
-        SCALED_STORY_LEVEL_CAPS_BY_XP_SOURCE_COUNT,
-        start=1,
-    ):
-        if level <= level_cap:
-            return required_count
-    return source_count
 
 
 ZERO_COUNT_LUCKY_EMBLEM_WORLDS = frozenset({
