@@ -203,7 +203,7 @@ class TestCharacterDoorChestsanity(KH3TestBase):
             if item.name != name:
                 state.collect(item, True)
         location = self.multiworld.get_location(row["name"], self.player)
-        self.assertTrue(self.get_location_base_region(location).can_reach(state))
+        self.assertTrue(location.parent_region.can_reach(state))
         self.assertFalse(location.can_reach(state))
         blade = self.world.create_item(name)
         self.assertTrue(blade.advancement)
@@ -238,7 +238,7 @@ class TestRoxasChestsanity(KH3TestBase):
                 for name in excluded:
                     while state.has(name, self.player):
                         state.remove(self.world.create_item(name))
-                self.assertTrue(self.get_location_base_region(location).can_reach(state))
+                self.assertTrue(location.parent_region.can_reach(state))
                 self.assertFalse(location.can_reach(state))
                 for character in CHARACTER_UNLOCK_ITEM_NAMES:
                     item = self.world.create_item(character)
@@ -278,7 +278,7 @@ class TestRoxasChestsanityDisabled(TestRoxasChestsanity):
                 state.remove(self.world.create_item(blade))
             state.collect(self.world.create_item("Playable Character: Roxas"), True)
             location = self.multiworld.get_location(row["name"], self.player)
-            self.assertTrue(self.get_location_base_region(location).can_reach(state))
+            self.assertTrue(location.parent_region.can_reach(state))
             self.assertFalse(location.can_reach(state))
 
     def test_runtime_and_tracker_preserve_roxas_option_and_melody_precedence(self):

@@ -107,7 +107,7 @@ class TestPartyPortals(KH3TestBase):
 
     def test_level_locations_cannot_hold_party_gates(self):
         level = next(location for location in self.multiworld.get_locations(self.player)
-                     if self.get_location_base_region(location).name == "Level Ups")
+                     if location.parent_region.name == "Level Ups")
         for name in PORTAL_PARTY_ITEM_NAMES:
             self.assertFalse(level.item_rule(self.world.create_item(name)))
 
@@ -199,7 +199,7 @@ class TestMixedPortals(KH3TestBase):
                     if blade in STARTING_PORTAL_KEYBLADE_ITEM_NAMES}
         self.assertEqual(len(starters.intersection(self.world.kh3_starting_inventory_items)), 1)
         level = next(loc for loc in self.multiworld.get_locations(self.player)
-                     if self.get_location_base_region(loc).name == "Level Ups")
+                     if loc.parent_region.name == "Level Ups")
         for name in PORTAL_PARTY_ITEM_NAMES:
             item = self.world.create_item(name)
             self.assertEqual(item.advancement, name in unlocks.values())

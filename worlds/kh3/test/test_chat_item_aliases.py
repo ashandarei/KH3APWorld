@@ -8,7 +8,7 @@ from ..CharacterUnlocks import CHARACTER_UNLOCK_ITEM_NAMES
 from ..Client import KH3Context
 
 
-class TestGetitemAliases(IsolatedAsyncioTestCase):
+class TestChatItemAliases(IsolatedAsyncioTestCase):
     async def test_character_aliases_send_canonical_commands_to_stock_hosts(self):
         ctx = KH3Context.__new__(KH3Context)
         ctx.send_msgs = AsyncMock()
@@ -24,14 +24,31 @@ class TestGetitemAliases(IsolatedAsyncioTestCase):
                         {"cmd": "Say", "text": f"!getitem {item_name}"},
                     ])
 
+    async def test_hint_aliases_send_canonical_commands_to_stock_hosts(self):
+        ctx = KH3Context.__new__(KH3Context)
+        ctx.send_msgs = AsyncMock()
+        processor = ClientCommandProcessor(ctx)
+        for command, expected in (
+            ("!hint Fire", "!hint Magic: Fire"),
+            ("!HINT  wAlL rUn", "!hint Unlock: Wall Run"),
+            ("!hint PC: aqua", "!hint Playable Character: Aqua"),
+            ("!hint Aqua", "!hint Party Member: Aqua"),
+        ):
+            with self.subTest(command=command), patch("CommonClient.async_start") as start:
+                processor(command)
+                await start.call_args.args[0]
+                ctx.send_msgs.assert_awaited_with([{"cmd": "Say", "text": expected}])
 
-class TestGetitemAliasBoundaries(TestCase):
+
+class TestChatItemAliasBoundaries(TestCase):
     def test_other_chat_and_commands_pass_through(self):
         ctx = KH3Context.__new__(KH3Context)
         for text in (
             "", "pc: aqua", "!getitem", "!getitem pc: unknown",
             "!getitem pc: aqua extra", "!getitem Playable Character: Aqua",
-            "!getitem Magic: Fire", "!hint pc: aqua", "hello pc: aqua",
+            "!getitem Magic: Fire", "hello pc: aqua", "!hint", "!hint Magic",
+            "!hint Everything", "!hint Magic: Fire", "!hint unknown",
+            f"!hint {KH3World.item_name_to_id['Magic: Fire']}", "!hint_location Fire",
         ):
             with self.subTest(text=text):
                 self.assertEqual(ctx.on_user_say(text), text)

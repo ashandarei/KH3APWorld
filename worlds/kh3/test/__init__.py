@@ -25,13 +25,6 @@ class KH3TestBase(WorldTestBase):
         state.blocked_connections[self.player].clear()
         state.stale[self.player] = True
 
-    @staticmethod
-    def get_location_base_region(location):
-        region = location.parent_region
-        while region.name.startswith("Access: "):
-            region = region.entrances[0].parent_region
-        return region
-
     def get_location_by_source(self, source_table: str, source_id: str):
         for location_data in self.world.active_locations:
             if (location_data["source_table"], location_data["source_id"]) == (source_table, source_id):

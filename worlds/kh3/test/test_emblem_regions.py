@@ -28,7 +28,7 @@ class TestKH3EmblemRegions(KH3TestBase):
             with self.subTest(world=world_name):
                 region = self.multiworld.get_region(world_name, self.player)
                 self.assertTrue(region.can_reach(state))
-                self.assertTrue(any(self.get_location_base_region(location) is region
+                self.assertTrue(any(location.parent_region is region
                                     for location in self.multiworld.get_locations(self.player)))
                 self.assertTrue(any(row["world"] == world_name for row in self.world.active_locations))
 

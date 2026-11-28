@@ -129,6 +129,7 @@ from .Options import (
 from .PackageResources import read_package_text, safe_file_fragment
 from .Regions import create_regions
 from .Rules import set_rules
+from .rule_helpers import cache_reachable_rule_construction
 from .ShopEconomy import (
     MoogleShopFundingPlan,
     build_moogle_shop_funding_plan,
@@ -139,7 +140,7 @@ from .SlotData import (
     SERVER_SEED_FORMAT_VERSION, decode_slot_data, encode_slot_data, seed_reward_assignment,
     seed_reward_fingerprint, server_slot_data,
 )
-from .Space import ENDYMION
+from .Space import ENDYMION, set_space_rules
 from .universal_tracker import (
     KH3_UNIVERSAL_TRACKER_SLOT_DATA_KEY,
     build_universal_tracker_slot_data,
@@ -416,10 +417,15 @@ class KH3World(World):
         restore_universal_tracker_options(self.options, self._tracker_runtime_slot_data)
 
     def create_regions(self) -> None:
+        if not self.location_name_to_id:
+            raise RuntimeError("KH3 extracted location data is empty.")
         create_regions(self.multiworld, self.player, self.active_locations, self.logic_reference_locations)
-        # Shared access regions depend on these predicates. Build both during
-        # the region stage, before AP records the finished graph's size.
-        self._create_access_rules_and_regions()
+        # create_items uses access and item rules to choose a viable starting portal.
+        with cache_reachable_rule_construction(self):
+            set_rules(self)
+            set_space_rules(self)
+            set_extra_vbonus_rules(self)
+        self.set_completion_rule(Has("Victory"))
 
     def generate_early(self) -> None:
         self._restore_universal_tracker_options()
@@ -1193,9 +1199,6 @@ class KH3World(World):
         return self.random.choice(FILLER_ITEM_NAMES)
 
     def set_rule(self, spot, rule) -> None:
-        pending = getattr(self, "_pending_region_rules", None)
-        if pending is not None:
-            pending[spot] = rule
         super().set_rule(spot, rule)
         # Keep the default AP predicate for checks whose compiled rule is
         # unconditional. Avoid a Rule Builder call on every reachability sweep.
@@ -1204,30 +1207,6 @@ class KH3World(World):
 
     def create_event_item(self, name: str) -> Item:
         return KH3Item(name, ItemClassification.progression, None, self.player)
-
-    def set_rules(self) -> None:
-        # Access predicates are built with their shared regions in create_regions.
-        pass
-
-    def _create_access_rules_and_regions(self) -> None:
-        if not self.location_name_to_id:
-            raise RuntimeError("KH3 extracted location data is empty.")
-        from .rule_helpers import cache_reachable_rule_construction
-
-        self._pending_region_rules = {}
-        with cache_reachable_rule_construction(self):
-            set_rules(self)
-            from .Space import set_space_rules
-            set_space_rules(self)
-            set_extra_vbonus_rules(self)
-        from .LogicRegions import create_logic_regions
-        pending = self._pending_region_rules
-        del self._pending_region_rules
-        # Moving checks changes CanReachLocation's parent-region dependencies.
-        # Resolve against the final layout with a fresh construction cache.
-        with cache_reachable_rule_construction(self):
-            create_logic_regions(self, pending)
-        self.set_completion_rule(Has("Victory"))
 
     @classmethod
     def stage_pre_fill(cls, multiworld):

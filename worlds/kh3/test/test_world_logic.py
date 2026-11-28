@@ -1904,7 +1904,7 @@ class TestKH3WorldIntegrity(KH3WorldIntegrityMixin, KH3TestBase):
                 self.assertEqual(CHEST_LOGIC_REQUIREMENTS.get(source_key), expected_requirements)
                 location = self.get_location_by_source(*source_key)
                 self.assertEqual(
-                    self.get_location_base_region(location).name,
+                    location.parent_region.name,
                     KEYBLADE_GRAVEYARD_REMIND_SHARED_REGION_NAME,
                 )
 

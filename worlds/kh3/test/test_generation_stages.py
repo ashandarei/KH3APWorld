@@ -12,19 +12,19 @@ from ..SlotData import decode_slot_data
 
 
 class TestFixedRewardGenerationStages(TestCase):
-    def test_shared_regions_exist_before_rules_and_later_stages_keep_graph_size(self):
+    def test_locations_keep_their_regions_through_pre_fill(self):
         for options in ({}, {"include_space": 1, "classic_kingdom_checks": 1},
                         {"synthesis_pool": "randomize", "photo_missions_pool": "randomize"}):
             with self.subTest(options=options):
                 multiworld = setup_multiworld(KH3World, seed=31, options=options,
                     steps=("generate_early", "create_regions", "create_items"))
-                self.assertGreater(multiworld.worlds[1].logic_region_count, 0)
                 regions = set(multiworld.get_regions())
-                locations = set(multiworld.get_locations())
+                locations = {location: location.parent_region for location in multiworld.get_locations()}
                 for step in ("set_rules", "connect_entrances", "generate_basic", "pre_fill"):
                     call_all(multiworld, step)
                     self.assertEqual(regions, set(multiworld.get_regions()), step)
-                    self.assertEqual(locations, set(multiworld.get_locations()), step)
+                    current_locations = {location: location.parent_region for location in multiworld.get_locations()}
+                    self.assertEqual(locations, current_locations, step)
 
     def test_fixed_rewards_exist_before_rules_without_duplicating_pool_items(self):
         for mode in UltimaWeaponMode.name_lookup:

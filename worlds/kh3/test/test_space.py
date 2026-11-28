@@ -194,7 +194,7 @@ class TestSpaceEnabled(KH3TestBase):
                 ('Master Builder', 'The Eclipse', False)):
             with self.subTest(mission=name):
                 location = self.multiworld.get_location('Space - ' + name, self.player)
-                self.assertEqual(self.get_location_base_region(location).name, zone)
+                self.assertEqual(location.parent_region.name, zone)
                 self.assertEqual(location.can_reach(self.multiworld.state), reachable)
 
     def test_physical_space_checks_live_in_their_native_zone(self):
@@ -202,7 +202,7 @@ class TestSpaceEnabled(KH3TestBase):
             if row['type'] == 'space':
                 with self.subTest(location=row['name']):
                     location = self.multiworld.get_location(row['name'], self.player)
-                    self.assertEqual(self.get_location_base_region(location).name, row.get('space_zone') or 'Space')
+                    self.assertEqual(location.parent_region.name, row.get('space_zone') or 'Space')
 
     def test_treasure_milestones_need_enough_open_zones(self):
         self.collect_all_but(SHIP_BLUEPRINTS)
